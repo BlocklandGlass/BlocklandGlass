@@ -1,0 +1,5 @@
+version	0.1.2
+channel	stable
+repository	http://blockland.jincux.tk/api/support_updater/repo.php
+id	11
+format	JSON
