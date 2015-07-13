@@ -8,7 +8,6 @@
 
 
 //Object-based structure, for data's sake
-
 function BLG::init() {
 
 	%fo = new FileObject();
@@ -21,11 +20,15 @@ function BLG::init() {
 		break;
 	}
 	%fo.close();
-	
+
 	new ScriptObject(BLG) {
 		version = %version;
-		address = "localhost";
-		netAddress = "localhost";
+		//address = "192.168.1.2";
+		//netAddress = "192.168.1.2";
+		address = "blocklandglass.com";
+		netAddress = "blocklandglass.com";
+
+		enableCLI = true;
 	};
 }
 
@@ -37,6 +40,7 @@ function BLG::fuckBitches() {
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./support/BLG_VerifyAccount.gui");
+	exec("./GlassModManagerGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./auth.cs");
@@ -44,16 +48,18 @@ function BLG::fuckBitches() {
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
 
+	exec("./client/GlassModManager.cs");
+
 	echo(" ===                   Sticking it in                   ===");
 	BLG_Con.pollServer();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
 
+	GlassModManager::init();
+
 	echo(" ===            Drunkenly staggering forward            ===");
 
 	//tests
-	%fileData = GlassFileData::create("TDM Server Pack", 15, 1, "Server_TDMServerPack.zip");
-	GlassDownloadManager.fetchAddon(%fileData);
 }
 
 BLG::fuckBitches();

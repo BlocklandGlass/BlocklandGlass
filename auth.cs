@@ -1,3 +1,4 @@
+return; //depreciated
 new ScriptObject(BLG_Con) {
 	apiPath = "/api/api.php";
 };

@@ -1,0 +1,258 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassModManagerGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "800 600";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl() {
+      profile = "GuiWindowProfile";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "62 25";
+      extent = "675 550";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Blockland Glass Mod Manager";
+      maxLength = "255";
+      resizeWidth = "0";
+      resizeHeight = "0";
+      canMove = "1";
+      canClose = "1";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+
+      new GuiSwatchCtrl() {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "15 35";
+         extent = "130 500";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         color = "128 128 128 128";
+      };
+      new GuiSwatchCtrl() {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "145 35";
+         extent = "515 500";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         color = "255 255 255 128";
+
+         new GuiScrollCtrl() {
+            profile = "GuiScrollProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "515 500";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            willFirstRespond = "0";
+            hScrollBar = "alwaysOff";
+            vScrollBar = "alwaysOn";
+            constantThumbHeight = "0";
+            childMargin = "0 0";
+            rowHeight = "40";
+            columnWidth = "30";
+
+            new GuiSwatchCtrl(GlassModManager_ActivityFeed) {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 1";
+               extent = "500 498";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "220 220 220 255";
+
+               new GuiTextCtrl() {
+                  profile = "BlockButtonProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "0 0";
+                  extent = "500 25";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Today";
+                  maxLength = "255";
+               };
+               new GuiSwatchCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "center";
+                  vertSizing = "bottom";
+                  position = "17 25";
+                  extent = "465 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  color = "172 216 230 255";
+
+                  new GuiBitmapCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "7 7";
+                     extent = "16 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     bitmap = "./image/icon/accept.png";
+                     wrap = "0";
+                     lockAspectRatio = "0";
+                     alignLeft = "0";
+                     alignTop = "0";
+                     overflowImage = "0";
+                     keepCached = "0";
+                     mColor = "255 255 255 255";
+                     mMultiply = "0";
+                  };
+                  new GuiMLTextCtrl() {
+                     profile = "GuiMLTextProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "30 7";
+                     extent = "429 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     lineSpacing = "2";
+                     allowColorChars = "0";
+                     maxChars = "-1";
+                     text = "<font:impact:16>Slap<font:arial:16> was given moderator approval by <font:impact:16>Greek2me";
+                     maxBitmapHeight = "-1";
+                     selectable = "1";
+                     autoResize = "1";
+                  };
+               };
+               new GuiSwatchCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "center";
+                  vertSizing = "bottom";
+                  position = "17 60";
+                  extent = "465 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  color = "172 216 230 255";
+
+                  new GuiBitmapCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "7 7";
+                     extent = "16 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     bitmap = "./image/icon/accept.png";
+                     wrap = "0";
+                     lockAspectRatio = "0";
+                     alignLeft = "0";
+                     alignTop = "0";
+                     overflowImage = "0";
+                     keepCached = "0";
+                     mColor = "255 255 255 255";
+                     mMultiply = "0";
+                  };
+                  new GuiMLTextCtrl() {
+                     profile = "GuiMLTextProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "30 7";
+                     extent = "429 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     lineSpacing = "2";
+                     allowColorChars = "0";
+                     maxChars = "-1";
+                     text = "<font:impact:16>Slap<font:arial:16> was given moderator approval by <font:impact:16>Greek2me";
+                     maxBitmapHeight = "-1";
+                     selectable = "1";
+                     autoResize = "1";
+                  };
+               };
+               new GuiSwatchCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "center";
+                  vertSizing = "bottom";
+                  position = "17 95";
+                  extent = "465 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  color = "172 216 230 255";
+
+                  new GuiBitmapCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "7 7";
+                     extent = "16 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     bitmap = "./image/icon/accept.png";
+                     wrap = "0";
+                     lockAspectRatio = "0";
+                     alignLeft = "0";
+                     alignTop = "0";
+                     overflowImage = "0";
+                     keepCached = "0";
+                     mColor = "255 255 255 255";
+                     mMultiply = "0";
+                  };
+                  new GuiMLTextCtrl() {
+                     profile = "GuiMLTextProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "30 7";
+                     extent = "429 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     lineSpacing = "2";
+                     allowColorChars = "0";
+                     maxChars = "-1";
+                     text = "<font:impact:16>Slap<font:arial:16> was given moderator approval by <font:impact:16>Greek2me";
+                     maxBitmapHeight = "-1";
+                     selectable = "1";
+                     autoResize = "1";
+                  };
+               };
+            };
+         };
+      };
+   };
+};
+//--- OBJECT WRITE END ---
