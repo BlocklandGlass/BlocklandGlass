@@ -145,13 +145,39 @@ function GlassModManager::setPane(%pane) {
 
   if(%pane == 2) {
     GlassModManager.loadBoards();
+    GlassModManager::setLoading(true);
   }
 
   %obj = "GlassModManager_Pane" @ %pane;
   %obj.setVisible(true);
 }
 
+function GlassModManager::setLoading(%bool) {
+  if(%bool) {
+    //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
+    //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);
 
+    GlassModManagerGui_LoadingAnimation.setVisible(true);
+    GlassModManagerGui_LoadingAnimation.frame = 1;
+
+    GlassModManager.animationTick();
+  } else {
+    GlassModManagerGui_LoadingAnimation.setVisible(false);
+    cancel(GlassModManagerGui_LoadingAnimation.schedule);
+  }
+}
+
+function GlassModManager::animationTick(%this) {
+  %obj = GlassModManagerGui_LoadingAnimation;
+  cancel(%obj.schedule);
+
+  %obj.frame++;
+  if(%obj.frame > 22) {
+    %obj.frame = 1;
+  }
+  GlassModManagerGui_LoadingAnimation.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %obj.frame @ ".png");
+  %obj.schedule = %this.schedule(100, "animationTick");
+}
 //====================================
 // Boards
 //====================================
@@ -182,6 +208,7 @@ function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
 }
 
 function GlassModManager::renderBoards() {
+  GlassModManager::setLoading(false);
   GlassModManager.location = "boards";
   GlassModManager_Boards.clear();
   %currentY = 10;
@@ -324,6 +351,8 @@ function GlassModManager::loadBoard(%this, %id) {
   %downloadPath = "";
   %className = "GlassModManagerBoardTCP";
 
+  GlassModManager::setLoading(true);
+
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
@@ -364,6 +393,7 @@ function GlassModManager_AddonButton::onMouseDown(%this) {
 }
 
 function GlassModManager::renderCurrentBoard() {
+  GlassModManager::setLoading(false);
   GlassModManager_Boards.clear();
   %currentY = 10;
   for(%i = 0; %i < GlassModManagerBoardListings.getCount(); %i++) {

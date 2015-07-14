@@ -25,7 +25,7 @@ function BLG::init() {
 		version = %version;
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
-		address = "blocklandglass.com";
+		address = "api.blocklandglass.com";
 		netAddress = "blocklandglass.com";
 
 		enableCLI = true;
@@ -48,10 +48,14 @@ function BLG::fuckBitches() {
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
 
+
+	exec("./client/GlassAuth.cs");
+
 	exec("./client/GlassModManager.cs");
 
 	echo(" ===                   Sticking it in                   ===");
 	BLG_Con.pollServer();
+	GlassAuth::init();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
 
