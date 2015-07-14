@@ -123,6 +123,7 @@ function GlassModManager::renderActivity() {
     if(%currentY > 500) {
       GlassModManager_ActivityFeed.extent = getWord(GlassModManager_ActivityFeed.extent, 0) SPC %currentY;
     }
+    canvas.pushDialog(GlassModManagerGui);
   }
 }
 
@@ -140,6 +141,10 @@ function GlassModManager::setPane(%pane) {
   for(%a = 0; %a < 4; %a++) {
     %obj = "GlassModManager_Pane" @ %a+1;
     %obj.setVisible(false);
+  }
+
+  if(%pane == 2) {
+    GlassModManager.loadBoards();
   }
 
   %obj = "GlassModManager_Pane" @ %pane;
@@ -177,6 +182,7 @@ function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
 }
 
 function GlassModManager::renderBoards() {
+  GlassModManager.location = "boards";
   GlassModManager_Boards.clear();
   %currentY = 10;
   for(%i = 0; %i < GlassModManagerBoards.getCount(); %i++) {
@@ -228,6 +234,24 @@ function GlassModManager::renderBoards() {
           allowColorChars = "0";
           maxChars = "-1";
           text = "<font:arial bold:16>" @ %bo.title;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+       };
+       new GuiTextCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "left";
+          vertSizing = "center";
+          position = "450 7";
+          extent = "20 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = %bo.filecount;
           maxBitmapHeight = "-1";
           selectable = "1";
           autoResize = "1";
@@ -303,20 +327,143 @@ function GlassModManager::loadBoard(%this, %id) {
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
+function GlassModManager::addBoardListing(%this, %aid, %name, %author, %client, %server, %downloads, %fd) {
+  if(!isObject(GlassModManagerBoardListings)) {
+    new ScriptGroup(GlassModManagerBoardListings);
+  }
+
+  %listing = new ScriptObject() {
+    class = "GlassModManagerBoardListing";
+
+    aid = %aid;
+    name = %name;
+    author = %author;
+    client = %client;
+    server = %server;
+    downloads = %downloads;
+
+    temp_filedata = %fd;
+  };
+
+  GlassModManagerBoardListings.add(%listing);
+}
+
+function GlassModManager_AddonButton::onMouseEnter(%this) {
+  %board = "GlassModManager_AddonListing_" @ %this.addonId;
+  %board.color = "150 200 255 255";
+}
+
+function GlassModManager_AddonButton::onMouseLeave(%this) {
+  %board = "GlassModManager_AddonListing_" @ %this.addonId;
+  %board.color = "172 216 230 255";
+}
+
+function GlassModManager_AddonButton::onMouseDown(%this) {
+  GlassModManager.loadBoard(%this.boardId);
+  GlassDownloadManager.fetchAddon(%this.fileObject);
+}
+
+function GlassModManager::renderCurrentBoard() {
+  GlassModManager_Boards.clear();
+  %currentY = 10;
+  for(%i = 0; %i < GlassModManagerBoardListings.getCount(); %i++) {
+    %bo = GlassModManagerBoardListings.getObject(%i);
+
+    %board = new GuiSwatchCtrl("GlassModManager_AddonListing_" @ %bo.aid) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "center";
+       vertSizing = "bottom";
+       position = 10 SPC %currentY;
+       extent = "475 30";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       color = "172 216 230 255";
+
+       new GuiMLTextCtrl() {
+          profile = "GuiMLTextProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "10 7";
+          extent = "429 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = "<font:arial bold:16>" @ %bo.name @ " <font:arial:14>by " @ %bo.author;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+       };
+       new GuiTextCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "left";
+          vertSizing = "center";
+          position = "450 7";
+          extent = "20 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = %bo.downloads;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+       };
+       new GuiMouseEventCtrl("GlassModManager_AddonButton") {
+          addonId = %bo.aid;
+          fileObject = %bo.temp_filedata;
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "0 0";
+          extent = "465 30";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lockMouse = "0";
+       };
+    };
+    GlassModManager_Boards.add(%board);
+    %currentY += 32;
+  }
+}
+
 function GlassModManagerBoardTCP::onDone(%this) {
   if(!%error) {
 		%array = parseJSON(%this.buffer);
-    GlassModManagerBoards.deleteAll();
+    GlassModManagerBoardListings.clear();
 		if(getJSONType(%array) $= "array") {
 			for(%i = 0; %i < %array.length; %i++) {
 				%obj = %array.item[%i];
+
+        //$ro->title = $addon->getName();
+        //$ro->rating = $ratingData['average'];
+        //$ro->author = $addon->getAuthor()->getName();
+        //$ro->server = $addon->isServer();
+        //$ro->client
         %id = %obj.get("id");
-        %image = %obj.get("image");
-        %name = %obj.get("name");
-        %files = %obj.get("files");
-        GlassModManager.addBoard(%id, %image, %name, %files);
+        %author = %obj.get("author");
+        %server = %obj.get("server");
+        %client = %obj.get("client");
+        %name = %obj.get("title");
+
+        %filename = %obj.get("temp_filename");
+        %branch = %obj.get("temp_branch");
+
+        %fileData = GlassFileData::create(%name, %id, %branch, %filename);
+
+        GlassModManager.addBoardListing(%id, %name, %author, %client, %server, 0, %fileData);
 			}
-      GlassModManager.renderBoards();
+      GlassModManager.renderCurrentBoard();
 		} else {
     }
 	} else {

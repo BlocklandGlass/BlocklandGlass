@@ -47,8 +47,11 @@ function GlassDownloadTCP::onDone(%this, %error) {
 	}
 
 	GlassDownloadManagerQueue.fetchFinished();
+	GlassModManager_ProgressBar.schedule(1000, setVisible, false);
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
-	echo("Progress: " @ %float);	
+	GlassModManager_ProgressBar.setVisible(true);
+	echo("Progress: " @ %float);
+	GlassModManager_ProgressBar.setValue(%float);
 }

@@ -20,6 +20,7 @@ function BLG_Con::pollServer(%this) {
 }
 
 function BLG_Con::pollServerRet(%this, %line) {
+	canvas.pushDialog(GlassModManagerGui);
 	%call = getField(%line, 0);
 	switch$(%call) {
 		case "update":
