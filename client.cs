@@ -39,7 +39,7 @@ function BLG::fuckBitches() {
 	exec("./support/Support_UpdaterMigration.cs");
 
 	echo(" ===                 Loading Interface                  ===");
-	exec("./support/BLG_VerifyAccount.gui");
+	exec("./BLG_VerifyAccount.gui");
 	exec("./GlassModManagerGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
