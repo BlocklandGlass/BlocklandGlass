@@ -541,7 +541,44 @@ function GlassModManagerTCP::handleText(%this, %line) {
 	%this.buffer = %this.buffer NL %line;
 }
 
+//====================================
+// My Add-Ons
+//====================================
+
+function GlassModManager_MyAddons::defaults() {
+  //uh...
+}
+
+function GlassModManager_MyAddons::enableAll() {
+  for(%i = 0; %i < GlassModManagerGui_MyAddons.getCount(); %i++) {
+    %guiObj = GlassModManagerGui_MyAddons.getObject(%i);
+    %check = %guiObj.getObject(1);
+    %check.setValue(true);
+  }
+}
+
+function GlassModManager_MyAddons::disableAll() {
+  for(%i = 0; %i < GlassModManagerGui_MyAddons.getCount(); %i++) {
+    %guiObj = GlassModManagerGui_MyAddons.getObject(%i);
+    %check = %guiObj.getObject(1);
+    %check.setValue(false);
+  }
+}
+
+function GlassModManager_MyAddons::apply() {
+  for(%i = 0; %i < GlassModManagerGui_MyAddons.getCount(); %i++) {
+    %guiObj = GlassModManagerGui_MyAddons.getObject(%i);
+    %check = %guiObj.getObject(1);
+    echo(%check.addon);
+    $AddOn["__" @ %check.addon] = %check.getValue();
+  }
+
+  GlassModManager.renderMyAddons();
+  export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
+}
+
 function GlassModManager::populateMyAddons(%this) {
+  discoverFile("Add-Ons/*.zip");
   if(isObject(GlassModManager_MyAddons)) {
     GlassModManager_MyAddons.delete();
   }
