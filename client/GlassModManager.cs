@@ -8,6 +8,7 @@ function GlassModManager::init() {
   };
 
   GlassModManager.pullActivityFeed();
+  GlassModManager::setPane(1);
 }
 
 function GlassModManager::pullActivityFeed(%this) {
@@ -145,6 +146,11 @@ function GlassModManager::setPane(%pane) {
 
   if(%pane == 2) {
     GlassModManager.loadBoards();
+    GlassModManager::setLoading(true);
+  }
+
+  if(%pane == 3) {
+    GlassModManager.populateMyAddons();
     GlassModManager::setLoading(true);
   }
 
@@ -533,4 +539,144 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
 function GlassModManagerTCP::handleText(%this, %line) {
 	%this.buffer = %this.buffer NL %line;
+}
+
+function GlassModManager::populateMyAddons(%this) {
+  if(isObject(GlassModManager_MyAddons)) {
+    GlassModManager_MyAddons.delete();
+  }
+
+  new ScriptGroup(GlassModManager_MyAddons);
+
+  //rtbInfo.txt
+  //server.cs
+  %pattern = "Add-ons/*/server.cs";
+	%idArrayLen = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+    %name = getsubstr(%file, 8, strlen(%file)-18);
+    if(strpos(%name, "/") >= 0) { //removes sub-directories
+      continue;
+    }
+    %so = new ScriptObject() {
+      class = "GlassModManager_MyAddon";
+      name = %name;
+      isRTB = isfile("Add-Ons/" @ %name @ "/rtbInfo.txt");
+    };
+    GlassModManager_MyAddons.add(%so);
+	}
+  %this.renderMyAddons();
+}
+
+function GlassModManager::renderMyAddons(%this) {
+  %this.setLoading(false);
+  GlassModManagerGui_MyAddons.clear();
+  %currentY = 10;
+  for(%i = 0; %i < GlassModManager_MyAddons.getCount(); %i++) {
+    //I guess they load in reverse order. lets fix that
+    %addon = GlassModManager_MyAddons.getObject(GlassModManager_MyAddons.getCount()-%i-1);
+    %enabled = $AddOn["__" @ %addon.name];
+    if(%enabled) {
+      %color = "153 204 119 255";
+    } else {
+      %color = "204 119 119 255";
+    }
+
+    %gui = new GuiSwatchCtrl() {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = 10 SPC %currentY;
+       extent = "335 30";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       color = %color;
+       //color = "172 216 230 255";
+
+       new GuiMLTextCtrl() {
+          profile = "GuiMLTextProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "30 7";
+          extent = "281 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          //text = "<font:arial bold:16>Slap <font:arial:14>Server_Slap";
+          text = "<font:arial bold:16>" @ %addon.name;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+       };
+       new GuiCheckBoxCtrl(GlassTempCheck) {
+          addon = %addon.name;
+          profile = "GuiCheckBoxProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "7 0";
+          extent = "297 30";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          groupNum = "-1";
+          buttonType = "ToggleButton";
+          text = "";
+       };
+       new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "291 7";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = %addon.isRTB;
+          clipToParent = "1";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+          overflowImage = "0";
+          keepCached = "0";
+          mColor = "255 255 255 255";
+          mMultiply = "0";
+       };
+       new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "312 7";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/gear_in.png";
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+          overflowImage = "0";
+          keepCached = "0";
+          mColor = "255 255 255 255";
+          mMultiply = "0";
+       };
+    };
+    GlassTempCheck.setValue($AddOn["__" @ %addon.name]);
+    GlassTempCheck.setName("GlassModManagerGui_MyAddonCheckbox");
+    %currentY += 32;
+    GlassModManagerGui_MyAddons.add(%gui);
+  }
+
+  if(%currentY > 500) {
+    GlassModManagerGui_MyAddons.extent = 500 SPC %currentY;
+    GlassModManagerGui_MyAddons.setVisible(true);
+  }
 }

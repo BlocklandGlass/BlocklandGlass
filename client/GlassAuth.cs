@@ -18,7 +18,7 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
-	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ GlassAuth.sid @ "&request=checkauth&name=" @ $Pref::Player::NetName;
+	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ GlassAuth.sid @ "&request=checkauth&name=" @ $Pref::Player::NetName @ "&version=" @ BLG.version;
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";

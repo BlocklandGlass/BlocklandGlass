@@ -758,7 +758,7 @@ new GuiControl(GlassModManagerGui) {
             extent = "515 500";
             minExtent = "8 2";
             enabled = "1";
-            visible = "1";
+            visible = "0";
             clipToParent = "1";
             willFirstRespond = "0";
             hScrollBar = "alwaysOff";
@@ -1871,7 +1871,7 @@ new GuiControl(GlassModManagerGui) {
             enabled = "1";
             visible = "0";
             clipToParent = "1";
-            bitmap = "./image/loading_animation/1.png";
+            bitmap = "./image/loading_animation/2.png";
             wrap = "0";
             lockAspectRatio = "0";
             alignLeft = "0";
@@ -1880,6 +1880,104 @@ new GuiControl(GlassModManagerGui) {
             keepCached = "0";
             mColor = "255 255 255 255";
             mMultiply = "0";
+               frame = "2";
+               schedule = "3361";
+         };
+         new GuiScrollCtrl(GlassModManager_Pane3) {
+            profile = "GuiScrollProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "515 500";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            willFirstRespond = "0";
+            hScrollBar = "alwaysOff";
+            vScrollBar = "alwaysOn";
+            constantThumbHeight = "0";
+            childMargin = "0 0";
+            rowHeight = "40";
+            columnWidth = "30";
+
+            new GuiSwatchCtrl(GlassModManagerGui_MyAddons) {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 1";
+               extent = "500 500";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "220 220 220 255";
+
+               new GuiSwatchCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "10 10";
+                  extent = "335 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  color = "172 216 230 255";
+
+                  new GuiMLTextCtrl() {
+                     profile = "GuiMLTextProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "30 7";
+                     extent = "281 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     lineSpacing = "2";
+                     allowColorChars = "0";
+                     maxChars = "-1";
+                     text = "<font:arial bold:16>Slap <font:arial:14>Server_Slap";
+                     maxBitmapHeight = "-1";
+                     selectable = "1";
+                     autoResize = "1";
+                  };
+                  new GuiCheckBoxCtrl() {
+                     profile = "GuiCheckBoxProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "7 0";
+                     extent = "297 30";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     groupNum = "-1";
+                     buttonType = "ToggleButton";
+                  };
+                  new GuiBitmapCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "center";
+                     position = "312 7";
+                     extent = "16 16";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     bitmap = "./image/icon/gear_in.png";
+                     wrap = "0";
+                     lockAspectRatio = "0";
+                     alignLeft = "0";
+                     alignTop = "0";
+                     overflowImage = "0";
+                     keepCached = "0";
+                     mColor = "255 255 255 255";
+                     mMultiply = "0";
+                  };
+               };
+            };
          };
       };
    };
