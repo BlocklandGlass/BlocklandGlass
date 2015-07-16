@@ -598,7 +598,23 @@ function GlassModManager::populateMyAddons(%this) {
       class = "GlassModManager_MyAddon";
       name = %name;
       isRTB = isfile("Add-Ons/" @ %name @ "/rtbInfo.txt");
+      isBLG = isfile("Add-Ons/" @ %name @ "/glass.json");
     };
+
+    if(%so.isBLG) {
+      %fo = new FileObject();
+      %fo.openforread("Add-Ons/" @ %name @ "/glass.json");
+      while(!%fo.isEOF()) {
+        if(%buffer !$= "") {
+          %buffer = %buffer NL %fo.readLine();
+        } else {
+          %buffer = %fo.readLine();
+        }
+      }
+      %fo.close();
+      %fo.delete();
+      %so.glassdata = parseJSON(%buffer);
+    }
     GlassModManager_MyAddons.add(%so);
 	}
   %this.renderMyAddons();
@@ -618,12 +634,18 @@ function GlassModManager::renderMyAddons(%this) {
       %color = "204 119 119 255";
     }
 
+    %text = "<font:arial bold:16>" @ %addon.name;
+
+    if(%addon.isBLG) {
+      %text = "<font:arial bold:16>" @ %addon.glassdata.get("title") @ " <font:arial:14>" @ %addon.name;
+    }
+
     %gui = new GuiSwatchCtrl() {
        profile = "GuiDefaultProfile";
        horizSizing = "right";
        vertSizing = "bottom";
        position = 10 SPC %currentY;
-       extent = "335 30";
+       extent = "340 30";
        minExtent = "8 2";
        enabled = "1";
        visible = "1";
@@ -644,8 +666,7 @@ function GlassModManager::renderMyAddons(%this) {
           lineSpacing = "2";
           allowColorChars = "0";
           maxChars = "-1";
-          //text = "<font:arial bold:16>Slap <font:arial:14>Server_Slap";
-          text = "<font:arial bold:16>" @ %addon.name;
+          text = %text;
           maxBitmapHeight = "-1";
           selectable = "1";
           autoResize = "1";
