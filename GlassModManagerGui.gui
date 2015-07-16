@@ -157,7 +157,7 @@ new GuiControl(GlassModManagerGui) {
          color = "255 255 255 128";
 
          new GuiScrollCtrl(GlassModManager_Pane1) {
-            profile = "GuiScrollProfile";
+            profile = "GlassScrollProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -179,7 +179,7 @@ new GuiControl(GlassModManagerGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "500 525";
+               extent = "505 525";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -751,7 +751,7 @@ new GuiControl(GlassModManagerGui) {
             };
          };
          new GuiScrollCtrl(GlassModManager_Pane2) {
-            profile = "GuiScrollProfile";
+            profile = "GlassScrollProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -773,7 +773,7 @@ new GuiControl(GlassModManagerGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "500 500";
+               extent = "505 500";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1871,7 +1871,7 @@ new GuiControl(GlassModManagerGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            bitmap = "./image/loading_animation/6.png";
+            bitmap = "./image/loading_animation/22.png";
             wrap = "0";
             lockAspectRatio = "0";
             alignLeft = "0";
@@ -1880,8 +1880,8 @@ new GuiControl(GlassModManagerGui) {
             keepCached = "0";
             mColor = "255 255 255 255";
             mMultiply = "0";
-               frame = "6";
-               schedule = "6718";
+               frame = "22";
+               schedule = "1285";
          };
          new GuiSwatchCtrl(GlassModManager_Pane3) {
             profile = "GuiDefaultProfile";
@@ -1896,7 +1896,7 @@ new GuiControl(GlassModManagerGui) {
             color = "0 24 96 3";
 
             new GuiScrollCtrl() {
-               profile = "GuiScrollProfile";
+               profile = "GlassScrollProfile";
                horizSizing = "right";
                vertSizing = "bottom";
                position = "0 0";
@@ -1918,7 +1918,7 @@ new GuiControl(GlassModManagerGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "1 1";
-                  extent = "500 2666";
+                  extent = "500 2698";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
@@ -1935,7 +1935,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2020,7 +2020,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2105,7 +2105,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2190,7 +2190,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2275,7 +2275,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2360,7 +2360,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2445,7 +2445,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2530,7 +2530,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2615,7 +2615,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2700,7 +2700,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2870,7 +2870,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -2955,7 +2955,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3040,7 +3040,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3125,7 +3125,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3210,7 +3210,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3295,7 +3295,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3380,7 +3380,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3465,7 +3465,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -3975,7 +3975,7 @@ new GuiControl(GlassModManagerGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4075,6 +4075,91 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
+                        text = "<font:arial bold:16>Event_Server";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                     new GuiCheckBoxCtrl(GlassModManagerGui_MyAddonCheckbox) {
+                        profile = "GuiCheckBoxProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "7 0";
+                        extent = "297 30";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        groupNum = "-1";
+                        buttonType = "ToggleButton";
+                           addon = "Event_Server";
+                     };
+                     new GuiBitmapCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "center";
+                        position = "291 7";
+                        extent = "16 16";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "0";
+                        clipToParent = "1";
+                        bitmap = "./image/icon/bricks.png";
+                        wrap = "0";
+                        lockAspectRatio = "0";
+                        alignLeft = "0";
+                        alignTop = "0";
+                        overflowImage = "0";
+                        keepCached = "0";
+                        mColor = "255 255 255 255";
+                        mMultiply = "0";
+                     };
+                     new GuiBitmapCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "center";
+                        position = "312 7";
+                        extent = "16 16";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        bitmap = "./image/icon/gear_in.png";
+                        wrap = "0";
+                        lockAspectRatio = "0";
+                        alignLeft = "0";
+                        alignTop = "0";
+                        overflowImage = "0";
+                        keepCached = "0";
+                        mColor = "255 255 255 255";
+                        mMultiply = "0";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "10 842";
+                     extent = "335 30";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "153 204 119 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "right";
+                        vertSizing = "center";
+                        position = "30 7";
+                        extent = "281 16";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
                         text = "<font:arial bold:16>GameMode_Blockheads_Ruin_Xmas";
                         maxBitmapHeight = "-1";
                         selectable = "1";
@@ -4139,13 +4224,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 842";
+                     position = "10 874";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4224,13 +4309,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 874";
+                     position = "10 906";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4309,13 +4394,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 906";
+                     position = "10 938";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4394,13 +4479,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 938";
+                     position = "10 970";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4479,13 +4564,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 970";
+                     position = "10 1002";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4564,13 +4649,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1002";
+                     position = "10 1034";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4649,13 +4734,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1034";
+                     position = "10 1066";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4734,13 +4819,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1066";
+                     position = "10 1098";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4819,13 +4904,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1098";
+                     position = "10 1130";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4904,13 +4989,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1130";
+                     position = "10 1162";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -4989,13 +5074,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1162";
+                     position = "10 1194";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5074,13 +5159,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1194";
+                     position = "10 1226";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5159,13 +5244,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1226";
+                     position = "10 1258";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5244,13 +5329,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1258";
+                     position = "10 1290";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5329,13 +5414,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1290";
+                     position = "10 1322";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5414,13 +5499,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1322";
+                     position = "10 1354";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5499,13 +5584,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1354";
+                     position = "10 1386";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5584,7 +5669,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1386";
+                     position = "10 1418";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -5669,13 +5754,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1418";
+                     position = "10 1450";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -5754,7 +5839,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1450";
+                     position = "10 1482";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -5839,7 +5924,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1482";
+                     position = "10 1514";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -5924,7 +6009,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1514";
+                     position = "10 1546";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6009,7 +6094,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1546";
+                     position = "10 1578";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6094,7 +6179,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1578";
+                     position = "10 1610";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6179,7 +6264,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1610";
+                     position = "10 1642";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6264,7 +6349,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1642";
+                     position = "10 1674";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6349,7 +6434,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1674";
+                     position = "10 1706";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -6434,13 +6519,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1706";
+                     position = "10 1738";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6519,13 +6604,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1738";
+                     position = "10 1770";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6604,13 +6689,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1770";
+                     position = "10 1802";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6689,13 +6774,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1802";
+                     position = "10 1834";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6774,13 +6859,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1834";
+                     position = "10 1866";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6859,13 +6944,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1866";
+                     position = "10 1898";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -6944,7 +7029,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1898";
+                     position = "10 1930";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -7029,7 +7114,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1930";
+                     position = "10 1962";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -7114,7 +7199,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1962";
+                     position = "10 1994";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -7199,7 +7284,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 1994";
+                     position = "10 2026";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
@@ -7284,13 +7369,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2026";
+                     position = "10 2058";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7369,13 +7454,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2058";
+                     position = "10 2090";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7454,13 +7539,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2090";
+                     position = "10 2122";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7539,13 +7624,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2122";
+                     position = "10 2154";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7624,13 +7709,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2154";
+                     position = "10 2186";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7709,13 +7794,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2186";
+                     position = "10 2218";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7794,13 +7879,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2218";
+                     position = "10 2250";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7879,13 +7964,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2250";
+                     position = "10 2282";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -7964,13 +8049,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2282";
+                     position = "10 2314";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8049,13 +8134,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2314";
+                     position = "10 2346";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8134,13 +8219,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2346";
+                     position = "10 2378";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8219,13 +8304,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2378";
+                     position = "10 2410";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8304,13 +8389,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2410";
+                     position = "10 2442";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8389,13 +8474,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2442";
+                     position = "10 2474";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8474,13 +8559,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2474";
+                     position = "10 2506";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8559,13 +8644,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2506";
+                     position = "10 2538";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8644,13 +8729,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2538";
+                     position = "10 2570";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8729,13 +8814,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2570";
+                     position = "10 2602";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8814,13 +8899,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2602";
+                     position = "10 2634";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -8899,13 +8984,13 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiDefaultProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "10 2634";
+                     position = "10 2666";
                      extent = "335 30";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     color = "204 119 119 255";
+                     color = "153 204 119 255";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";

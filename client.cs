@@ -39,8 +39,9 @@ function BLG::fuckBitches() {
 	exec("./support/Support_UpdaterMigration.cs");
 
 	echo(" ===                 Loading Interface                  ===");
-	exec("./BLG_VerifyAccount.gui");
-	exec("./GlassModManagerGui.gui");
+	exec("./client/gui/profiles.cs");
+	exec("./BLG_VerifyAccount.gui"); //need to move
+	exec("./GlassModManagerGui.gui"); //need to move
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./auth.cs");
