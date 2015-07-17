@@ -394,8 +394,9 @@ function GlassModManager_AddonButton::onMouseLeave(%this) {
 }
 
 function GlassModManager_AddonButton::onMouseDown(%this) {
-  GlassModManager.loadBoard(%this.boardId);
-  GlassDownloadManager.fetchAddon(%this.fileObject);
+  //GlassModManager.loadBoard(%this.boardId);
+  //GlassDownloadManager.fetchAddon(%this.fileObject);
+  GlassModManager_AddonPage.loadAddon(%this.addonId);
 }
 
 function GlassModManager::renderCurrentBoard() {
@@ -738,3 +739,5 @@ function GlassModManager::renderMyAddons(%this) {
     GlassModManagerGui_MyAddons.setVisible(true);
   }
 }
+
+exec("./GlassModManager_AddonPage.cs");
