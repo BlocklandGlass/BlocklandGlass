@@ -757,7 +757,7 @@ new GuiControl(GlassModManagerGui) {
                      profile = "GuiMLTextProfile";
                      horizSizing = "right";
                      vertSizing = "bottom";
-                     position = "15 10";
+                     position = "10 10";
                      extent = "455 24";
                      minExtent = "8 2";
                      enabled = "1";
@@ -766,7 +766,7 @@ new GuiControl(GlassModManagerGui) {
                      lineSpacing = "2";
                      allowColorChars = "0";
                      maxChars = "-1";
-                     text = "<font:arial bold:25>Blockland Glass<font:arial:16> by Jincux";
+                     text = "<font:arial bold:25>Blockland Glass<font:arial:16> by <font:arial bold:16>Jincux";
                      maxBitmapHeight = "-1";
                      selectable = "1";
                      autoResize = "1";
@@ -788,7 +788,7 @@ new GuiControl(GlassModManagerGui) {
                      horizSizing = "right";
                      vertSizing = "bottom";
                      position = "10 45";
-                     extent = "133 32";
+                     extent = "133 72";
                      minExtent = "133 32";
                      enabled = "1";
                      visible = "1";
@@ -796,7 +796,7 @@ new GuiControl(GlassModManagerGui) {
                      lineSpacing = "2";
                      allowColorChars = "0";
                      maxChars = "-1";
-                     text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png> <font:arial:16>Board<br>";
+                     text = "<font:arial:16><bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png><br>Board - WIP<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/page_white_zip.png><br><font:arial:12>System_BlocklandGlass.zip<br>";
                      maxBitmapHeight = "-1";
                      selectable = "1";
                      autoResize = "1";
@@ -814,11 +814,144 @@ new GuiControl(GlassModManagerGui) {
                      lineSpacing = "2";
                      allowColorChars = "0";
                      maxChars = "-1";
-                     text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png> <font:arial:16>Board<br>";
+                     text = "Blockland Glass is aimed at extending the functionality of Blockland, and making it an easier game to play. The primary feature of Blockland Glass is add-on hosting, with an upcoming in-game downloader.\r\n\r\nFeatures of v0.1:\r\n- Verify your account";
                      maxBitmapHeight = "-1";
                      selectable = "1";
                      autoResize = "1";
                   };
+               };
+               new GuiSwatchCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "10 325";
+                  extent = "485 105";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  color = "240 240 240 255";
+
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "10 10";
+                     extent = "85 85";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "220 220 220 255";
+
+                     new GuiBitmapCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 0";
+                        extent = "85 85";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        bitmap = "config/BLG/tmp/screenshots/0_thumb.png";
+                        wrap = "0";
+                        lockAspectRatio = "1";
+                        alignLeft = "0";
+                        alignTop = "0";
+                        overflowImage = "0";
+                        keepCached = "0";
+                        mColor = "255 255 255 255";
+                        mMultiply = "0";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "105 10";
+                     extent = "85 85";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "220 220 220 255";
+
+                     new GuiBitmapCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 0";
+                        extent = "85 85";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        bitmap = "config/BLG/tmp/screenshots/1_thumb.png";
+                        wrap = "0";
+                        lockAspectRatio = "1";
+                        alignLeft = "0";
+                        alignTop = "0";
+                        overflowImage = "0";
+                        keepCached = "0";
+                        mColor = "255 255 255 255";
+                        mMultiply = "0";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "200 10";
+                     extent = "85 85";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "220 220 220 255";
+
+                     new GuiBitmapCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 0";
+                        extent = "85 85";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        bitmap = "config/BLG/tmp/screenshots/2_thumb.png";
+                        wrap = "0";
+                        lockAspectRatio = "1";
+                        alignLeft = "0";
+                        alignTop = "0";
+                        overflowImage = "0";
+                        keepCached = "0";
+                        mColor = "255 255 255 255";
+                        mMultiply = "0";
+                     };
+                  };
+               };
+               new GuiBitmapButtonCtrl() {
+                  profile = "BlockButtonProfile";
+                  horizSizing = "center";
+                  vertSizing = "bottom";
+                  position = "202 440";
+                  extent = "100 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Download";
+                  groupNum = "-1";
+                  buttonType = "PushButton";
+                  bitmap = "base/client/ui/button1";
+                  lockAspectRatio = "0";
+                  alignLeft = "0";
+                  alignTop = "0";
+                  overflowImage = "0";
+                  mKeepCached = "0";
+                  mColor = "170 255 170 255";
                };
             };
          };
@@ -842,7 +975,7 @@ new GuiControl(GlassModManagerGui) {
             mColor = "255 255 255 255";
             mMultiply = "0";
                frame = "2";
-               schedule = "4843";
+               schedule = "8727";
          };
          new GuiSwatchCtrl(GlassModManager_Pane3) {
             profile = "GuiDefaultProfile";
@@ -878,7 +1011,7 @@ new GuiControl(GlassModManagerGui) {
                   profile = "GuiDefaultProfile";
                   horizSizing = "right";
                   vertSizing = "bottom";
-                  position = "1 1";
+                  position = "1 -2079";
                   extent = "500 2730";
                   minExtent = "8 2";
                   enabled = "1";

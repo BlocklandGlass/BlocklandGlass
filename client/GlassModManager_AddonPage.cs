@@ -20,7 +20,7 @@ function GlassModManager_AddonPage::render(%this) {
   GlassModManager_Boards.clear();
   %text = "<font:arial:16>";
   %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png><br>Board - WIP<br>";
-  %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/page_white_zip.png><br> <font:arial:12>" @ %this.filename @ "<br>";
+  %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/page_white_zip.png><br><font:arial:12>" @ %this.filename @ "<br>";
   %gui = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -37,7 +37,7 @@ function GlassModManager_AddonPage::render(%this) {
         profile = "GuiMLTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = "15 10";
+        position = "10 10";
         extent = "455 24";
         minExtent = "8 2";
         enabled = "1";
@@ -103,6 +103,86 @@ function GlassModManager_AddonPage::render(%this) {
      };
   };
   GlassModManager_Boards.add(%gui);
+
+  %screenshotBox = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 325";
+    extent = "485 105";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "240 240 240 255";
+  };
+
+  %currentX = 10;
+  for(%i = 0; %i < %this.ss; %i++) {
+    %ssObj = new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = %currentX SPC 10;
+      extent = "85 85";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "220 220 220 255";
+
+      new GuiBitmapCtrl() {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "0 0";
+         extent = "85 85";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         bitmap = "config/BLG/tmp/screenshots/" @ %i @ "_thumb.png";
+         wrap = "0";
+         lockAspectRatio = "1";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         keepCached = "0";
+         mColor = "255 255 255 255";
+         mMultiply = "0";
+      };
+    };
+    %currentX += 95;
+    %screenshotBox.add(%ssObj);
+  }
+  if(%this.ss) {
+    GlassModManager_Boards.add(%screenshotBox);
+  }
+  if(isObject(%this.branch[1])) {
+    %dlButton = new GuiBitmapButtonCtrl() {
+       profile = "BlockButtonProfile";
+       horizSizing = "center";
+       vertSizing = "bottom";
+       position = "202 440";
+       extent = "100 30";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       text = "Download";
+       groupNum = "-1";
+       buttonType = "PushButton";
+       bitmap = "base/client/ui/button1";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       mKeepCached = "0";
+       mColor = "170 255 170 255";
+       command = "GlassDownloadManager.fetchAddon(" @ %this.branch[1] @ ");";
+    };
+    GlassModManager_Boards.add(%dlButton);
+  }
 }
 
 function GlassModManager_AddonPage::downloadThumbnail(%this, %id) {
@@ -192,7 +272,9 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
       %ap.authorBlid = %main.get("author").get("blid");
 
       %ap.ss = %main.get("screenshotcount");
+
       %ssArray = %main.get("screenshots");
+      %ap.ss = %ssArray.length;
       for(%i = 0; %i < %ssArray.length; %i++) {
         %screenObj = %ssArray.item[%i];
         %ap.screenshotUrl[%screenObj.id] = %screenObj.get("url");
