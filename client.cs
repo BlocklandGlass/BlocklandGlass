@@ -9,20 +9,8 @@
 
 //Object-based structure, for data's sake
 function BLG::init() {
-
-	%fo = new FileObject();
-	%fo.openForRead("Add-ons/System_BlocklandGlass/version.txt");
-	while(!%fo.isEOF()) {
-		%line = %fo.readLine();
-		if(getField(%line, 0) $= "version") {
-			%version = getField(%line, 1);
-		}
-		break;
-	}
-	%fo.close();
-
 	new ScriptObject(BLG) {
-		version = %version;
+		version = "nightly.2015.07.17";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
