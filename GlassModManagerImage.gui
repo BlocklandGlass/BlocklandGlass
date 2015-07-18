@@ -1,0 +1,59 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassModManagerImage) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "relative";
+   vertSizing = "relative";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "relative";
+      vertSizing = "relative";
+      position = "0 0";
+      extent = "640 480";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "0 0 0 128";
+
+      new GuiBitmapCtrl(GlassModManagerImageCtrl) {
+         profile = "GuiDefaultProfile";
+         horizSizing = "center";
+         vertSizing = "center";
+         position = "288 208";
+         extent = "64 64";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         bitmap = "config/BLG/tmp/screenshots/1_thumb.png";
+         wrap = "0";
+         lockAspectRatio = "1";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         keepCached = "0";
+         mColor = "255 255 255 255";
+         mMultiply = "0";
+      };
+   };
+   new GuiMouseEventCtrl("GlassModManagerImage_Mouse") {
+      profile = "GuiDefaultProfile";
+      horizSizing = "relative";
+      vertSizing = "relative";
+      position = "0 0";
+      extent = "640 480";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lockMouse = "0";
+   };
+};
+//--- OBJECT WRITE END ---

@@ -153,6 +153,33 @@ function GlassModManager_AddonPage::render(%this) {
          mColor = "255 255 255 255";
          mMultiply = "0";
       };
+
+      new GuiSwatchCtrl("GlassModManager_AddonPage_Screenshot" @ %i) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "85 85";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "220 220 220 0";
+      };
+
+      new GuiMouseEventCtrl("GlassModManager_ScreenshotMouseCtrl") {
+         screenshotId = %i;
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "0 0";
+         extent = "85 85";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lockMouse = "0";
+      };
     };
     %currentX += 95;
     %screenshotBox.add(%ssObj);
@@ -185,6 +212,24 @@ function GlassModManager_AddonPage::render(%this) {
     };
     GlassModManager_Boards.add(%dlButton);
   }
+}
+
+function GlassModManager_ScreenshotMouseCtrl::onMouseEnter(%this) {
+  %swatch = "GlassModManager_AddonPage_Screenshot" @ %this.screenshotId;
+  %swatch.color = "255 255 255 128";
+}
+
+function GlassModManager_ScreenshotMouseCtrl::onMouseLeave(%this) {
+  %swatch = "GlassModManager_AddonPage_Screenshot" @ %this.screenshotId;
+  %swatch.color = "255 255 255 0";
+}
+
+function GlassModManager_ScreenshotMouseCtrl::onMouseDown(%this) {
+  GlassModManager_AddonPage.downloadScreenshot(%this.screenshotId);
+}
+
+function GlassModManagerImage_Mouse::onMouseDown(%this) {
+  canvas.popDialog(GlassModManagerImage);
 }
 
 function GlassModManager_AddonPage::downloadThumbnail(%this, %id) {
@@ -257,8 +302,19 @@ function GlassModManager_AddonPageTCP::handleText(%this, %line) {
 
 function GlassModManager_AddonPageTCP::onDone(%this, %error) {
   if(%this.screenshotDl || %this.thumbnailDl) {
-    echo("Downloaded image");
-    //something about rendering it
+    if(%this.screenshotDl) {
+      echo("Downloaded Screenshot");
+      %extent = GlassModManager_AddonPage.extent[%this.screenshot];
+      GlassModManagerImageCtrl.setBitmap("config/BLG/tmp/screenshots/" @ %this.screenshot @ ".png");
+      GlassModManagerImageCtrl.extent = %extent;
+      %x = (getWord(GlassModManagerImage.extent, 0)/2) - (getWord(%extent, 0)/2);
+      %y = (getWord(GlassModManagerImage.extent, 1)/2) - (getWord(%extent, 1)/2);
+      GlassModManagerImageCtrl.position = mfloor(%x) SPC mfloor(%y);
+      canvas.pushDialog(GlassModManagerImage);
+
+    } else {
+      echo("Downloaded thumb");
+    }
   } else if(!%error) {
 		%main = parseJSON(%this.buffer);
 		if(getJSONType(%main) $= "hash") {
@@ -281,6 +337,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
         %screenObj = %ssArray.item[%i];
         %ap.screenshotUrl[%screenObj.id] = %screenObj.get("url");
         %ap.thumbnailUrl[%screenObj.id] = %screenObj.get("thumbnail");
+        %ap.extent[%screenObj.id] = %screenObj.get("extent");
         GlassModManager_AddonPage.downloadThumbnail(%screenObj.id);
       }
 

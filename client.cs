@@ -42,6 +42,7 @@ function BLG::fuckBitches() {
 	exec("./client/gui/profiles.cs");
 	exec("./BLG_VerifyAccount.gui"); //need to move
 	exec("./GlassModManagerGui.gui"); //need to move
+	exec("./GlassModManagerImage.gui"); //need to move
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./auth.cs");
