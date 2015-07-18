@@ -16,6 +16,24 @@ function GlassModManager_AddonPage::loadAddon(%this, %id) {
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
+function GlassModManager_AddonPage::resize(%this) { //to be run for dynamic elements
+  %currentY = 10;
+  for(%i = 0; %i < GlassModManager_Boards.getCount(); %i++) {
+    %obj = GlassModManager_Boards.getObject(%i);
+    %obj.position = getWord(%obj.position, 0) SPC %currentY;
+
+    %currentY += getWord(%obj.extent, 1);
+    %currentY += 10;
+  }
+
+  if(%currentY > 499) {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
+  } else {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
+  }
+  GlassModManager_Boards.setVisible(true);
+}
+
 function GlassModManager_AddonPage::render(%this) {
   GlassModManager_Boards.clear();
   %board = GlassModManagerBoards.board[%this.boardid];
@@ -211,6 +229,21 @@ function GlassModManager_AddonPage::render(%this) {
        command = "GlassDownloadManager.fetchAddon(" @ %this.branch[1] @ ");";
     };
     GlassModManager_Boards.add(%dlButton);
+
+    %commentBox = new GuiSwatchCtrl(GlassModManagerGui_Comments) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "10 479";
+       extent = "485 317";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       color = "240 240 240 255";
+     };
+     GlassModManager_Boards.add(%commentBox);
+     GlassModManager_AddonPage.fetchComments();
   }
 }
 
@@ -355,4 +388,136 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
 	} else {
 
   }
+}
+
+function GlassModManager_AddonPage::fetchComments(%this, %page) {
+  if(%page $= "" || %page < 0) {
+    %page = 0;
+  }
+  %url = "http://" @ BLG.address @ "/api/mm.php?request=comments&aid=" @ %this.aid @ "&page=" @ %page;
+  %method = "GET";
+  %downloadPath = "";
+  %className = "GlassModManager_AddonPage_CommentsTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+}
+
+function GlassModManager_AddonPage_CommentsTCP::handleText(%this, %line) {
+	%this.buffer = %this.buffer NL %line;
+}
+
+function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
+  if(!%error) {
+    echo(%this.buffer);
+		%main = parseJSON(%this.buffer);
+		if(getJSONType(%main) $= "array") {
+      if(isObject(GlassModManager_AddonPage_CommentGroup)) {
+        GlassModManager_AddonPage_CommentGroup.delete();
+      }
+      new ScriptGroup(GlassModManager_AddonPage_CommentGroup);
+      for(%i = 0; %i < %main.length; %i++) {
+        %com = %main.item[%i];
+        %obj = new ScriptObject() {
+          authorName = %com.get("author");
+          authorblid = %com.get("authorblid");
+          date = %com.get("date");
+          text = %com.get("text");
+        };
+        GlassModManager_AddonPage_CommentGroup.add(%obj);
+        GlassModManager_AddonPage.renderComments();
+      }
+		} else {
+
+    }
+	} else {
+
+  }
+}
+
+function GlassModManager_AddonPage::renderComments(%this) {
+  %currentY = 10;
+  for(%i = 0; %i < GlassModManager_AddonPage_CommentGroup.getCount(); %i++) {
+    %comObj = GlassModManager_AddonPage_CommentGroup.getObject(%i);
+
+    %commentSwatch = new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = 10 SPC %currentY;
+      extent = "465 100";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "220 220 220 255";
+
+      new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "100 100";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "200 200 200 255";
+
+        new GuiMLTextCtrl() {
+          profile = "GuiMLTextProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "10 10";
+          extent = "90 100";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = "<font:arial bold:16>" @ %comObj.authorName @ "<br><font:arial:12>" @ %comObj.authorblid @ "<br>" @ "" @ "<br><br>" @ %comObj.date;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+        };
+      };
+      new GuiMLTextCtrl() {
+        profile = "GuiMLTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "110 10";
+        extent = "346 14";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lineSpacing = "2";
+        allowColorChars = "0";
+        maxChars = "-1";
+        text = "<font:arial:14>" @ %comObj.text;
+        maxBitmapHeight = "-1";
+        selectable = "1";
+        autoResize = "1";
+      };
+    };
+    %currentY += 100;
+    %spacer = new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = 10 SPC %currentY;
+      extent = "465 2";
+      minExtent = "1 1";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "160 160 160 255";
+    };
+    %currentY += 2;
+    GlassModManagerGui_Comments.add(%commentSwatch);
+    GlassModManagerGui_Comments.add(%spacer);
+  }
+  GlassModManagerGui_Comments.extent = getWord(GlassModManagerGui_Comments.extent, 0) SPC %currentY+10;
+  GlassModManager_AddonPage.resize();
 }
