@@ -7,8 +7,8 @@ function GlassModManager::init() {
 
   };
 
-  GlassModManager.pullActivityFeed();
   GlassModManager::setPane(1);
+  GlassModManager_AddonPage::init();
 }
 
 function GlassModManager::pullActivityFeed(%this) {
@@ -123,6 +123,7 @@ function GlassModManager::renderActivity() {
 
     if(%currentY > 500) {
       GlassModManager_ActivityFeed.extent = getWord(GlassModManager_ActivityFeed.extent, 0) SPC %currentY;
+      GlassModManager_ActivityFeed.setVisible(true);
     }
     canvas.pushDialog(GlassModManagerGui);
   }
@@ -142,6 +143,11 @@ function GlassModManager::setPane(%pane) {
   for(%a = 0; %a < 4; %a++) {
     %obj = "GlassModManager_Pane" @ %a+1;
     %obj.setVisible(false);
+  }
+
+  if(%pane == 1) {
+    GlassModManagerActivityList.clear();
+    GlassModManager.pullActivityFeed();
   }
 
   if(%pane == 2) {
@@ -210,6 +216,7 @@ function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
     filecount = %fileCount;
   };
 
+  GlassModManagerBoards.board[%id] = %so;
   GlassModManagerBoards.add(%so);
 }
 
@@ -496,9 +503,11 @@ function GlassModManagerBoardTCP::onDone(%this) {
         %filename = %obj.get("temp_filename");
         %branch = %obj.get("temp_branch");
 
+        %dl = %obj.get("downloads");
+
         %fileData = GlassFileData::create(%name, %id, %branch, %filename);
 
-        GlassModManager.addBoardListing(%id, %name, %author, %client, %server, 0, %fileData);
+        GlassModManager.addBoardListing(%id, %name, %author, %client, %server, %dl, %fileData);
 			}
       GlassModManager.renderCurrentBoard();
 		} else {

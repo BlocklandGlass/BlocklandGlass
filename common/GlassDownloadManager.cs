@@ -17,14 +17,14 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 	echo("Trying next");
 	if(%this.busy || %this.getCount() == 0)
 		return;
-	
+
 	echo("Downloading");
 
 	%this.busy = true;
 
 	%fileData = %this.getObject(0);
 
-	%url = "http://" @ BLG.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.branch;
+	%url = "http://" @ BLG.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.branch @ "&ingame=1";
 	%method = "GET";
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";

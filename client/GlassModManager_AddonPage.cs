@@ -18,8 +18,10 @@ function GlassModManager_AddonPage::loadAddon(%this, %id) {
 
 function GlassModManager_AddonPage::render(%this) {
   GlassModManager_Boards.clear();
-  %text = "<font:arial:16>";
-  %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png><br>Board - WIP<br>";
+  %board = GlassModManagerBoards.board[%this.boardid];
+
+  %text = "<font:arial:12>";
+  %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %board.image @ ".png><br>" @ %board.title @ "<br><br>";
   %text = %text @ "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/page_white_zip.png><br><font:arial:12>" @ %this.filename @ "<br>";
   %gui = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
