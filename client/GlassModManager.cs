@@ -352,6 +352,12 @@ function GlassModManager::renderBoards() {
     GlassModManager_Boards.add(%board);
     %currentY += 32;
   }
+  if(%currentY > 499) {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
+  } else {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
+  }
+  GlassModManager_Boards.setVisible(true);
 }
 
 function GlassModManager_BoardButton::onMouseEnter(%this) {
@@ -518,6 +524,12 @@ function GlassModManager::renderCurrentBoard() {
     GlassModManager_Boards.add(%board);
     %currentY += 32;
   }
+  if(%currentY > 499) {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
+  } else {
+    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
+  }
+  GlassModManager_Boards.setVisible(true);
 }
 
 function GlassModManagerBoardTCP::onDone(%this) {

@@ -229,22 +229,56 @@ function GlassModManager_AddonPage::render(%this) {
        command = "GlassDownloadManager.fetchAddon(" @ %this.branch[1] @ ");";
     };
     GlassModManager_Boards.add(%dlButton);
+  } else {
+    %board = new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "center";
+      vertSizing = "bottom";
+      position = "10 40";
+      extent = "485 40";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "200 119 119 255";
 
-    %commentBox = new GuiSwatchCtrl(GlassModManagerGui_Comments) {
-       profile = "GuiDefaultProfile";
-       horizSizing = "right";
-       vertSizing = "bottom";
-       position = "10 479";
-       extent = "485 317";
-       minExtent = "8 2";
-       enabled = "1";
-       visible = "1";
-       clipToParent = "1";
-       color = "240 240 240 255";
-     };
-     GlassModManager_Boards.add(%commentBox);
-     GlassModManager_AddonPage.fetchComments();
+      new GuiMLTextCtrl() {
+        profile = "GuiMLTextProfile";
+        horizSizing = "center";
+        vertSizing = "center";
+        position = "5 5";
+        extent = "475 40";
+        minExtent = "475 40";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lineSpacing = "2";
+        allowColorChars = "0";
+        maxChars = "-1";
+        text = "<just:center><font:arial bold:16>Add-on does not have a stable branch<br><font:arial:12>Only \"stable\" add-ons may be downloaded in-game. You can access an unstable version on the website";
+        maxBitmapHeight = "-1";
+        selectable = "1";
+        autoResize = "1";
+      };
+    };
+    GlassModManager_Boards.add(%board);
   }
+  %commentBox = new GuiSwatchCtrl(GlassModManagerGui_Comments) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 479";
+    extent = "485 317";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "240 240 240 255";
+  };
+  GlassModManager_Boards.add(%commentBox);
+  GlassModManager_AddonPage.fetchComments();
+
+  %this.resize();
 }
 
 function GlassModManager_ScreenshotMouseCtrl::onMouseEnter(%this) {
@@ -424,8 +458,8 @@ function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
           text = %com.get("text");
         };
         GlassModManager_AddonPage_CommentGroup.add(%obj);
-        GlassModManager_AddonPage.renderComments();
       }
+      GlassModManager_AddonPage.renderComments();
 		} else {
 
     }
@@ -435,6 +469,10 @@ function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
 }
 
 function GlassModManager_AddonPage::renderComments(%this) {
+  if(GlassModManager_AddonPage_CommentGroup.getCount() == 0) {
+    GlassModManagerGui_Comments.extent = getWord(GlassModManagerGui_Comments, 0) SPC 0;
+    return;
+  }
   %currentY = 10;
   for(%i = 0; %i < GlassModManager_AddonPage_CommentGroup.getCount(); %i++) {
     %comObj = GlassModManager_AddonPage_CommentGroup.getObject(%i);
@@ -502,19 +540,21 @@ function GlassModManager_AddonPage::renderComments(%this) {
       };
     };
     %currentY += 100;
-    %spacer = new GuiSwatchCtrl() {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = 10 SPC %currentY;
-      extent = "465 2";
-      minExtent = "1 1";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "160 160 160 255";
-    };
-    %currentY += 2;
+    if(%i < GlassModManager_AddonPage_CommentGroup.getCount()-1) {
+      %spacer = new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 10 SPC %currentY;
+        extent = "465 2";
+        minExtent = "1 1";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "160 160 160 255";
+      };
+      %currentY += 2;
+    }
     GlassModManagerGui_Comments.add(%commentSwatch);
     GlassModManagerGui_Comments.add(%spacer);
   }
