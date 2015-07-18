@@ -20,7 +20,7 @@ function BLG::init() {
 	};
 }
 
-function BLG::fuckBitches() {
+function BLG::exec() {
 	BLG::init();
 	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
 	exec("./support/Support_TCPClient.cs");
@@ -53,7 +53,12 @@ function BLG::fuckBitches() {
 
 	echo(" ===            Drunkenly staggering forward            ===");
 
+	exec("config/BLG/client/mm.cs");
+
 	//tests
+	if($BLG::MM::Colorset $= "") {
+		$BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt";
+	}
 }
 
-BLG::fuckBitches();
+BLG::exec();

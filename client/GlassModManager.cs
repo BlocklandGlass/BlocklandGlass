@@ -9,7 +9,68 @@ function GlassModManager::init() {
 
   GlassModManager::setPane(1);
   GlassModManager_AddonPage::init();
+  GlassModManager_MyColorsets::init();
 }
+
+function GlassModManager::setPane(%pane) {
+  for(%a = 0; %a < 4; %a++) {
+    %obj = "GlassModManager_Pane" @ %a+1;
+    %obj.setVisible(false);
+  }
+
+  if(%pane == 1) {
+    GlassModManagerActivityList.clear();
+    GlassModManager.pullActivityFeed();
+  }
+
+  if(%pane == 2) {
+    GlassModManager.loadBoards();
+    GlassModManager::setLoading(true);
+  }
+
+  if(%pane == 3) {
+    GlassModManager.populateMyAddons();
+    GlassModManager::setLoading(true);
+  }
+
+  if(%pane == 4) {
+    GlassModManager::populateColorsets();
+  }
+
+  %obj = "GlassModManager_Pane" @ %pane;
+  %obj.setVisible(true);
+}
+
+function GlassModManager::setLoading(%bool) {
+  if(%bool) {
+    //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
+    //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);
+
+    GlassModManagerGui_LoadingAnimation.setVisible(true);
+    GlassModManagerGui_LoadingAnimation.frame = 1;
+
+    GlassModManager.animationTick();
+  } else {
+    GlassModManagerGui_LoadingAnimation.setVisible(false);
+    cancel(GlassModManagerGui_LoadingAnimation.schedule);
+  }
+}
+
+function GlassModManager::animationTick(%this) {
+  %obj = GlassModManagerGui_LoadingAnimation;
+  cancel(%obj.schedule);
+
+  %obj.frame++;
+  if(%obj.frame > 22) {
+    %obj.frame = 1;
+  }
+  GlassModManagerGui_LoadingAnimation.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %obj.frame @ ".png");
+  %obj.schedule = %this.schedule(100, "animationTick");
+}
+
+//====================================
+// Activity
+//====================================
 
 function GlassModManager::pullActivityFeed(%this) {
   %url = "http://" @ BLG.address @ "/api/activity.php";
@@ -129,6 +190,35 @@ function GlassModManager::renderActivity() {
   }
 }
 
+function GlassModManagerTCP::onDone(%this, %error) {
+	if(!%error) {
+		%array = parseJSON(%this.buffer);
+		if(getJSONType(%array) $= "array") {
+      echo(%array.length);
+			for(%i = 0; %i < %array.length; %i++) {
+				%obj = %array.item[%i];
+        %id = %obj.get("id");
+        %image = %obj.get("image");
+        %text = %obj.get("text");
+        %action = %obj.get("action");
+        %date = %obj.get("datestring");
+        GlassModManager.addActivityEvent(%id, %image, %text, %action, %date);
+			}
+      GlassModManager.renderActivity();
+		} else {
+
+    }
+	} else {
+
+  }
+
+}
+
+function GlassModManagerTCP::handleText(%this, %line) {
+	%this.buffer = %this.buffer NL %line;
+}
+
+
 //  [
 //    {
 //      "id": 12,
@@ -139,57 +229,6 @@ function GlassModManager::renderActivity() {
 //    }
 //  ]
 
-function GlassModManager::setPane(%pane) {
-  for(%a = 0; %a < 4; %a++) {
-    %obj = "GlassModManager_Pane" @ %a+1;
-    %obj.setVisible(false);
-  }
-
-  if(%pane == 1) {
-    GlassModManagerActivityList.clear();
-    GlassModManager.pullActivityFeed();
-  }
-
-  if(%pane == 2) {
-    GlassModManager.loadBoards();
-    GlassModManager::setLoading(true);
-  }
-
-  if(%pane == 3) {
-    GlassModManager.populateMyAddons();
-    GlassModManager::setLoading(true);
-  }
-
-  %obj = "GlassModManager_Pane" @ %pane;
-  %obj.setVisible(true);
-}
-
-function GlassModManager::setLoading(%bool) {
-  if(%bool) {
-    //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
-    //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);
-
-    GlassModManagerGui_LoadingAnimation.setVisible(true);
-    GlassModManagerGui_LoadingAnimation.frame = 1;
-
-    GlassModManager.animationTick();
-  } else {
-    GlassModManagerGui_LoadingAnimation.setVisible(false);
-    cancel(GlassModManagerGui_LoadingAnimation.schedule);
-  }
-}
-
-function GlassModManager::animationTick(%this) {
-  %obj = GlassModManagerGui_LoadingAnimation;
-  cancel(%obj.schedule);
-
-  %obj.frame++;
-  if(%obj.frame > 22) {
-    %obj.frame = 1;
-  }
-  GlassModManagerGui_LoadingAnimation.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %obj.frame @ ".png");
-  %obj.schedule = %this.schedule(100, "animationTick");
-}
 //====================================
 // Boards
 //====================================
@@ -520,37 +559,6 @@ function GlassModManagerBoardTCP::handleText(%this, %line) {
 	%this.buffer = %this.buffer NL %line;
 }
 
-
-
-
-function GlassModManagerTCP::onDone(%this, %error) {
-	if(!%error) {
-		%array = parseJSON(%this.buffer);
-		if(getJSONType(%array) $= "array") {
-      echo(%array.length);
-			for(%i = 0; %i < %array.length; %i++) {
-				%obj = %array.item[%i];
-        %id = %obj.get("id");
-        %image = %obj.get("image");
-        %text = %obj.get("text");
-        %action = %obj.get("action");
-        %date = %obj.get("datestring");
-        GlassModManager.addActivityEvent(%id, %image, %text, %action, %date);
-			}
-      GlassModManager.renderActivity();
-		} else {
-
-    }
-	} else {
-
-  }
-
-}
-
-function GlassModManagerTCP::handleText(%this, %line) {
-	%this.buffer = %this.buffer NL %line;
-}
-
 //====================================
 // My Add-Ons
 //====================================
@@ -747,6 +755,227 @@ function GlassModManager::renderMyAddons(%this) {
     GlassModManagerGui_MyAddons.extent = 500 SPC %currentY;
     GlassModManagerGui_MyAddons.setVisible(true);
   }
+}
+
+//====================================
+// Colorsets
+//====================================
+
+function GlassModManager::populateColorsets() {
+  %this = GlassModManager_MyColorsets;
+
+  %this.colorsets = 0;
+  %pattern = "Add-ons/*/colorset.txt";
+	%idArrayLen = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+    %name = getsubstr(%file, 8, strlen(%file)-21);
+    if(strpos(%name, "/") >= 0) { //removes sub-directories
+      continue;
+    }
+
+    %this.colorsetFile[%this.colorsets] = %file;
+    %this.colorsetName[%this.colorsets] = %name;
+    %this.colorsets++;
+	}
+
+  GlassModManagerGui_MyColorsets.clear();
+  %currentY = 5;
+  for(%i = 0; %i < %this.colorsets; %i++) {
+    if($BLG::MM::Colorset $= %this.colorsetFile[%i]) {
+      %color = "153 204 119 255";
+    } else {
+      %color = "204 119 119 255";
+    }
+    %cs = new GuiSwatchCtrl("GlassModManager_ColorsetListing_" @ %i) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "center";
+       vertSizing = "bottom";
+       position = 5 SPC %currentY;
+       extent = "240 30";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       dcolor = %color;
+       color = %color;
+
+       new GuiMLTextCtrl() {
+          profile = "GuiMLTextProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "10 7";
+          extent = "429 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = "<font:arial bold:16>" @ %this.colorsetName[%i];
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+       };
+       new GuiMouseEventCtrl("GlassModManager_ColorsetButton") {
+          colorsetId = %i;
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "0 0";
+          extent = "465 30";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lockMouse = "0";
+       };
+    };
+    %currentY += 35;
+    GlassModManagerGui_MyColorsets.add(%cs);
+    if(%currentY > 498) {
+      GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC %currentY;
+    } else {
+      GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC 498;
+      GlassModManagerGui_MyColorsets.setVisible(true);
+    }
+  }
+}
+
+function GlassModManager_ColorsetButton::onMouseDown(%this) {
+  if(GlassModManager_MyColorsets.selected !$= "") {
+    %swatch = "GlassModManager_ColorsetListing_" @ GlassModManager_MyColorsets.selected;
+    %swatch.color = %swatch.dcolor;
+  }
+
+  GlassModManager_MyColorsets.renderColorset(GlassModManager_MyColorsets.colorsetFile[%this.colorsetId]);
+  GlassModManager_MyColorsets.selected = %this.colorsetId;
+  %swatch = "GlassModManager_ColorsetListing_" @ GlassModManager_MyColorsets.selected;
+  %swatch.color = "119 119 204 255";
+  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
+}
+
+function GlassModManager_ColorsetButton::onMouseEnter(%this) {
+  %swatch = "GlassModManager_ColorsetListing_" @ %this.colorsetId;
+  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
+}
+
+function GlassModManager_ColorsetButton::onMouseLeave(%this) {
+  %swatch = "GlassModManager_ColorsetListing_" @ %this.colorsetId;
+  %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
+}
+
+function GlassModManager_MyColorsets::init() {
+  if(!isObject(GlassModManager_MyColorsets)) {
+    new ScriptObject(GlassModManager_MyColorsets);
+  }
+}
+
+function GlassModManager_MyColorsets::def() {
+  GlassModManager_MyColorsets.renderColorset($BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt");
+  filecopy("config/server/colorset.txt", "config/server/colorset.old");
+  filecopy_hack($BLG::MM::Colorset, "config/server/colorset.txt");
+  export("$BLG::MM::*", "config/BLG/client/mm.cs");
+  GlassModManager::populateColorsets();
+}
+
+function GlassModManager_MyColorsets::apply() {
+  if(GlassModManager_MyColorsets.selected $= "") {
+    return;
+  }
+
+  $BLG::MM::Colorset = GlassModManager_MyColorsets.colorsetFile[GlassModManager_MyColorsets.selected];
+  GlassModManager::populateColorsets();
+  GlassModManager_MyColorsets.selected = "";
+  //do file stuff
+  echo($BLG::MM::Colorset);
+  filecopy("config/server/colorset.txt", "config/server/colorset.old");
+  filecopy_hack($BLG::MM::Colorset, "config/server/colorset.txt");
+  export("$BLG::MM::*", "config/BLG/client/mm.cs");
+}
+
+//filecopy doesnt like zips
+function filecopy_hack(%source, %destination) {
+  %fo_source = new FileObject();
+  %fo_dest = new FileObject();
+  %fo_source.openForRead(%source);
+  %fo_dest.openForWrite(%destination);
+  while(!%fo_source.isEOF()) {
+    %fo_dest.writeLine(%fo_source.readLine());
+  }
+  %fo_source.close();
+  %fo_dest.close();
+  %fo_source.delete();
+  %fo_dest.delete();
+}
+
+function GlassModManager_MyColorsets::renderColorset(%this, %file) {
+  %fo = new FileObject();
+  %fo.openforread(%file);
+  %this.divs = 0;
+  %this.divPointer = 0;
+  while(!%fo.isEOF()) {
+    %line = %fo.readLine();
+    if(%line $= "") {
+      continue;
+    }
+
+    if(strpos(%line, "DIV:") == 0) {
+      %this.divCount[%this.divs] = %this.divPointer;
+      %this.divs++;
+      %this.divPointer = 0;
+      continue;
+    }
+
+    if(strpos(getWord(%line, 0), ".") > 0) { //float color
+      %r = mFloor(getword(%line, 0)*255);
+      %g = mFloor(getword(%line, 1)*255);
+      %b = mFloor(getword(%line, 2)*255);
+      %a = mFloor(getword(%line, 3)*255);
+      %this.color[%this.divs @ "_" @ %this.divPointer] = %r SPC %g SPC %b SPC %a;
+      %this.divPointer++;
+    } else {
+      %this.color[%this.divs @ "_" @ %this.divPointer] = %line;
+      %this.divPointer++;
+    }
+  }
+  %fo.close();
+  %fo.delete();
+
+  GlassModManagerGui_ColorsetPreview.clear();
+  GlassModManager_MyColorsets.selected = "";
+  %maxY = 8;
+  %currentX = 8;
+  %currentY = 8;
+  for(%a = 0; %a < %this.divs; %a++) {
+    for(%b = 0; %b < %this.divCount[%a]; %b++) {
+      %swatch = new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %currentX SPC %currentY;
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = %this.color[%a @ "_" @ %b];
+      };
+      GlassModManagerGui_ColorsetPreview.add(%swatch);
+      %currentY += 16;
+      if(%currentY > %maxY) {
+        %maxY = %currentY;
+      }
+    }
+    %currentX += 16;
+    %currentY = 8;
+  }
+  GlassModManagerGui_ColorsetPreview.extent = %currentX+8 SPC %maxY+8;
+  //center
+  %parent = GlassModManagerGui_ColorsetPreview.getGroup();
+  %x = (getWord(%parent.extent, 0)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 0)/2);
+  %y = (getWord(%parent.extent, 1)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 1)/2);
+  GlassModManagerGui_ColorsetPreview.position = mFloor(%x) SPC mFloor(%y);
 }
 
 exec("./GlassModManager_AddonPage.cs");
