@@ -135,6 +135,51 @@ function GlassModManager::historyForward(%this) {
   }
 }
 
+function GlassModManager_keybind(%down) {
+  if(%down) {
+    return;
+  }
+  
+  if(GlassModManagerGui.isAwake()) {
+    canvas.popDialog(GlassModManagerGui);
+  } else {
+    canvas.pushDialog(GlassModManagerGui);
+  }
+}
+
+function GlassModManager::changeKeybind(%this) {
+  %remapper = new GuiInputCtrl(GlassModManager_Remapper);
+  GlassModManagerGui.add(%remapper);
+  %remapper.makeFirstResponder(1);
+
+  //swatch
+}
+
+function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
+  echo(%device TAB %key);
+  if(%device $= "mouse0") {
+    return;
+  }
+
+  if(strlen(%key) == 1) {
+    %badChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789[]\\/{};:'\"<>,./?!@#$%^&*-_=+`~";
+    if(strpos(%key, %badChar) >= 0) {
+      echo("bad key");
+      //bad key
+      return;
+    }
+  }
+
+  //clearSwatch
+
+  %bind = $BLG::MM::Keybind;
+
+  GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
+  GlobalActionMap.bind(%device, %key, "GlassModManager_keybind");
+  GlassModManager_Remapper.delete();
+  $BLG::MM::Keybind = %device TAB %key;
+}
+
 //====================================
 // Activity
 //====================================
@@ -254,7 +299,6 @@ function GlassModManager::renderActivity() {
       GlassModManager_ActivityFeed.setVisible(true);
     }
     GlassModManager_ActivityFeed.getGroup().scrollToTop();
-    canvas.pushDialog(GlassModManagerGui);
   }
 }
 

@@ -10,7 +10,7 @@
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "nightly.2015.07.18";
+		version = "nightly.2015.07.20";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
@@ -18,6 +18,8 @@ function BLG::init() {
 
 		enableCLI = true;
 	};
+
+	//GlobalActionMap.bind("keyboard", ,"RTB_toggleOverlay");
 }
 
 function BLG::exec() {
@@ -43,7 +45,7 @@ function BLG::exec() {
 
 	exec("./client/GlassModManager.cs");
 
-	echo(" ===                   Sticking it in                   ===");
+	echo(" ===                   Starting it up                   ===");
 	BLG_Con.pollServer();
 	GlassAuth::init();
 	GlassDownloadManager::init();
@@ -59,6 +61,13 @@ function BLG::exec() {
 	if($BLG::MM::Colorset $= "") {
 		$BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt";
 	}
+
+	if($BLG::MM::Keybind $= "") {
+		$BLG::MM::Keybind = "keyboard\tctrl m";
+	}
+	
+	%bind = $BLG::MM::Keybind;
+	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
 }
 
 BLG::exec();
