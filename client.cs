@@ -4,13 +4,12 @@
 //=	If you're looking at this, go you. either that, or you're a  =
 //=	little skiddy trying to 'troll'								 =
 //================================================================
-// DISCLAIMER: Through majority of production, I was drunk
 
 
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "nightly.2015.07.20";
+		version = "1.0.0-alpha.1";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
