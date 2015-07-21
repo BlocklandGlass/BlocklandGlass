@@ -4,7 +4,7 @@ function GlassModManager::init() {
   }
 
   new ScriptObject(GlassModManager) {
-
+    historyPos = -1;
   };
 
   GlassModManager::setPane(1);
@@ -66,6 +66,73 @@ function GlassModManager::animationTick(%this) {
   }
   GlassModManagerGui_LoadingAnimation.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %obj.frame @ ".png");
   %obj.schedule = %this.schedule(100, "animationTick");
+}
+
+function GlassModManager::historyAdd(%this, %page, %parameter) {
+  if(%this.historyWriteIgnore) {
+    %this.historyWriteIgnore = false;
+    return;
+  }
+
+  %this.historyLen = %this.historyPos+1;
+  %this.history[%this.historyLen] = %page TAB %parameter;
+
+  %this.historyLen++;
+  %this.historyPos++;
+
+  //code to disable forward button
+}
+
+function GlassModManager::historyBack(%this) {
+  if(%this.historyPos <= 1) {
+    echo("less than 1");
+    //diable back
+  }
+
+  if(%this.historyPos <= 0) {
+    echo("Can't go back");
+    return;
+  }
+
+  %this.historyPos--;
+  %this.historyWriteIgnore = true;
+  %hdat = %this.history[%this.historyPos];
+  %page = getField(%hdat, 0);
+  %parm = getField(%hdat, 1);
+
+  //main, board, addon
+  if(%page $= "main") {
+    GlassModManager.loadBoards();
+    GlassModManager::setLoading(true);
+  } else if(%page $= "board") {
+    GlassModManager.loadBoard(%parm);
+  } else if(%page $= "addon") {
+    GlassModManager_AddonPage.loadAddon(%parm);
+  }
+}
+
+function GlassModManager::historyForward(%this) {
+  if(%this.historyPos < %this.historyLen-1) {
+    %this.historyPos++;
+    %hdat = %this.history[%this.historyPos];
+    %page = getField(%hdat, 0);
+    %parm = getField(%hdat, 1);
+
+    %this.historyWriteIgnore = true;
+    //main, board, addon
+    if(%page $= "main") {
+      GlassModManager.loadBoards();
+      GlassModManager::setLoading(true);
+    } else if(%page $= "board") {
+      GlassModManager.loadBoard(%parm);
+      GlassModManager::setLoading(true);
+    } else if(%page $= "addon") {
+      GlassModManager_AddonPage.loadAddon(%parm);
+      GlassModManager::setLoading(true);
+    }
+  } else {
+    echo("At history position " @ %this.historyPos @ " out of " @ %this.historyLen);
+  }
 }
 
 //====================================
@@ -186,6 +253,7 @@ function GlassModManager::renderActivity() {
       GlassModManager_ActivityFeed.extent = getWord(GlassModManager_ActivityFeed.extent, 0) SPC %currentY;
       GlassModManager_ActivityFeed.setVisible(true);
     }
+    GlassModManager_ActivityFeed.getGroup().scrollToTop();
     canvas.pushDialog(GlassModManagerGui);
   }
 }
@@ -261,7 +329,7 @@ function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
 
 function GlassModManager::renderBoards() {
   GlassModManager::setLoading(false);
-  GlassModManager.location = "boards";
+  GlassModManager.historyAdd("main");
   GlassModManager_Boards.clear();
   %currentY = 10;
   for(%i = 0; %i < GlassModManagerBoards.getCount(); %i++) {
@@ -272,7 +340,7 @@ function GlassModManager::renderBoards() {
        horizSizing = "center";
        vertSizing = "bottom";
        position = 10 SPC %currentY;
-       extent = "475 30";
+       extent = "485 30";
        minExtent = "8 2";
        enabled = "1";
        visible = "1";
@@ -357,6 +425,7 @@ function GlassModManager::renderBoards() {
   } else {
     GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
   }
+  GlassModManager_Boards.getGroup().scrollToTop();
   GlassModManager_Boards.setVisible(true);
 }
 
@@ -410,6 +479,7 @@ function GlassModManager::loadBoard(%this, %id) {
   %className = "GlassModManagerBoardTCP";
 
   GlassModManager::setLoading(true);
+  GlassModManager.historyAdd("board", %id);
 
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
@@ -463,7 +533,7 @@ function GlassModManager::renderCurrentBoard() {
        horizSizing = "center";
        vertSizing = "bottom";
        position = 10 SPC %currentY;
-       extent = "475 30";
+       extent = "485 30";
        minExtent = "8 2";
        enabled = "1";
        visible = "1";
@@ -524,11 +594,13 @@ function GlassModManager::renderCurrentBoard() {
     GlassModManager_Boards.add(%board);
     %currentY += 32;
   }
+  %currentY += 8;
   if(%currentY > 499) {
     GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
   } else {
     GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
   }
+  GlassModManager_Boards.getGroup().scrollToTop();
   GlassModManager_Boards.setVisible(true);
 }
 
@@ -767,6 +839,7 @@ function GlassModManager::renderMyAddons(%this) {
     GlassModManagerGui_MyAddons.extent = 500 SPC %currentY;
     GlassModManagerGui_MyAddons.setVisible(true);
   }
+  GlassModManagerGui_MyAddons.getGroup().scrollToTop();
 }
 
 //====================================
@@ -851,6 +924,7 @@ function GlassModManager::populateColorsets() {
       GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC 498;
       GlassModManagerGui_MyColorsets.setVisible(true);
     }
+    GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }
 }
 
