@@ -65,9 +65,17 @@ function BLG::exec() {
 	if($BLG::MM::Keybind $= "") {
 		$BLG::MM::Keybind = "keyboard\tctrl m";
 	}
-	
+
 	%bind = $BLG::MM::Keybind;
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
 }
 
 BLG::exec();
+
+package GlassPrefs {
+	function onExit() {
+		export("$BLG::MM::*", "config/BLG/client/mm.cs");
+		parent::onExit();
+	}
+};
+activatePackage(GlassPrefs);

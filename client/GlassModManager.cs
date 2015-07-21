@@ -10,6 +10,10 @@ function GlassModManager::init() {
   GlassModManager::setPane(1);
   GlassModManager_AddonPage::init();
   GlassModManager_MyColorsets::init();
+
+
+    GlassModManagerGui_ForwardButton.setVisible(false);
+    GlassModManagerGui_BackButton.setVisible(false);
 }
 
 function GlassModManager::setPane(%pane) {
@@ -80,13 +84,15 @@ function GlassModManager::historyAdd(%this, %page, %parameter) {
   %this.historyLen++;
   %this.historyPos++;
 
-  //code to disable forward button
+  GlassModManagerGui_ForwardButton.setVisible(false);
+  GlassModManagerGui_BackButton.setVisible(true);
 }
 
 function GlassModManager::historyBack(%this) {
+  GlassModManagerGui_ForwardButton.setVisible(true);
   if(%this.historyPos <= 1) {
     echo("less than 1");
-    //diable back
+    GlassModManagerGui_BackButton.setVisible(false);
   }
 
   if(%this.historyPos <= 0) {
@@ -112,6 +118,7 @@ function GlassModManager::historyBack(%this) {
 }
 
 function GlassModManager::historyForward(%this) {
+  GlassModManagerGui_BackButton.setVisible(true);
   if(%this.historyPos < %this.historyLen-1) {
     %this.historyPos++;
     %hdat = %this.history[%this.historyPos];
@@ -130,7 +137,12 @@ function GlassModManager::historyForward(%this) {
       GlassModManager_AddonPage.loadAddon(%parm);
       GlassModManager::setLoading(true);
     }
+
+    if(%this.historyPos == %this.historyLen-1) {
+      GlassModManagerGui_ForwardButton.setVisible(false);
+    }
   } else {
+    GlassModManagerGui_ForwardButton.setVisible(false);
     echo("At history position " @ %this.historyPos @ " out of " @ %this.historyLen);
   }
 }
@@ -139,7 +151,7 @@ function GlassModManager_keybind(%down) {
   if(%down) {
     return;
   }
-  
+
   if(GlassModManagerGui.isAwake()) {
     canvas.popDialog(GlassModManagerGui);
   } else {
@@ -148,6 +160,8 @@ function GlassModManager_keybind(%down) {
 }
 
 function GlassModManager::changeKeybind(%this) {
+  GlassModManagerGui_KeybindText.setText("<font:Arial Bold:16><just:center><color:ffffff>Press any key ...");
+  GlassModManagerGui_KeybindOverlay.setVisible(true);
   %remapper = new GuiInputCtrl(GlassModManager_Remapper);
   GlassModManagerGui.add(%remapper);
   %remapper.makeFirstResponder(1);
@@ -163,14 +177,14 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 
   if(strlen(%key) == 1) {
     %badChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789[]\\/{};:'\"<>,./?!@#$%^&*-_=+`~";
-    if(strpos(%key, %badChar) >= 0) {
-      echo("bad key");
-      //bad key
+    if(strpos(%badChar, strupr(%key)) >= 0) {
+      GlassModManagerGui_KeybindText.setText("<font:Arial Bold:16><just:center><color:ffffff>Invalid Character. <font:arial:16>Please try again");
       return;
     }
   }
 
   //clearSwatch
+  GlassModManagerGui_KeybindOverlay.setVisible(false);
 
   %bind = $BLG::MM::Keybind;
 
