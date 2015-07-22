@@ -370,7 +370,7 @@ function GlassModManager::loadBoards() {
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
-function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
+function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount, %sub) {
   $BLG::MM::BoardCache::Image[%id] = %image;
   if(!isObject(GlassModManagerBoards)) {
     new ScriptGroup(GlassModManagerBoards);
@@ -382,6 +382,7 @@ function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
     image = %image;
     title = %title;
     filecount = %fileCount;
+    subcategory = %sub;
   };
 
   GlassModManagerBoards.board[%id] = %so;
@@ -392,9 +393,48 @@ function GlassModManager::renderBoards() {
   GlassModManager::setLoading(false);
   GlassModManager.historyAdd("main");
   GlassModManager_Boards.clear();
-  %currentY = 10;
+  %currentY = 0;
+  %lastSub = "";
   for(%i = 0; %i < GlassModManagerBoards.getCount(); %i++) {
     %bo = GlassModManagerBoards.getObject(%i);
+
+    if(%bo.subcategory !$= %lastSub) {
+      %currentY += 10;
+      %div = new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "center";
+        vertSizing = "bottom";
+        position = 10 SPC %currentY;
+        extent = "485 30";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "122 170 200 255";
+
+        new GuiMLTextCtrl() {
+          profile = "GuiMLTextProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "0 7";
+          extent = "485 30";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lineSpacing = "2";
+          allowColorChars = "0";
+          maxChars = "-1";
+          text = "<just:center><font:arial bold:18>" @ %bo.subcategory;
+          maxBitmapHeight = "-1";
+          selectable = "1";
+          autoResize = "1";
+        };
+      };
+      GlassModManager_Boards.add(%div);
+      %currentY += 32;
+    }
+    %lastSub = %bo.subcategory;
 
     %board = new GuiSwatchCtrl("GlassModManager_Board_" @ %bo.id) {
        profile = "GuiDefaultProfile";
@@ -481,6 +521,9 @@ function GlassModManager::renderBoards() {
     GlassModManager_Boards.add(%board);
     %currentY += 32;
   }
+  
+  %currentY += 8;
+
   if(%currentY > 499) {
     GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
   } else {
@@ -515,7 +558,8 @@ function GlassModManagerBoardsTCP::onDone(%this) {
         %image = %obj.get("image");
         %name = %obj.get("name");
         %files = %obj.get("files");
-        GlassModManager.addBoard(%id, %image, %name, %files);
+        %sub = %obj.get("sub");
+        GlassModManager.addBoard(%id, %image, %name, %files, %sub);
 			}
       GlassModManager.renderBoards();
 		} else {

@@ -331,49 +331,12 @@ function GlassModManager_AddonPageTCP::handleText(%this, %line) {
 	%this.buffer = %this.buffer NL %line;
 }
 
-//{
-//    "aid": "11",
-//    "filename": "System_BlocklandGlass.zip",
-//    "board": "9",
-//    "screenshotcount": "3",
-//    "name": "Blockland Glass",
-//    "description": "Blockland Glass is aimed at extending the functionality of Blockland, and making it an easier game to play. The primary feature of Blockland Glass is add-on hosting, with an upcoming in-game downloader.\r\n\r\nFeatures of v0.1:\r\n- Verify your account",
-//    "author": {
-//        "blid": "9789",
-//        "name": "Jincux"
-//    },
-//    "screenshots": [
-//        {
-//            "id": 0,
-//            "url": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/0.png",
-//            "thumbnail": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/0_thumbnail.png"
-//        },
-//        {
-//            "id": 1,
-//            "url": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/1.png",
-//            "thumbnail": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/1_thumbnail.png"
-//        },
-//        {
-//            "id": 2,
-//            "url": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/2.png",
-//            "thumbnail": "http:\/\/api.blocklandglass.com\/files\/screenshots\/11\/2_thumbnail.png"
-//        }
-//    ],
-//    "branches": [
-//        {
-//            "id": 1,
-//            "file": "1553",
-//            "version": "0.2.0-alpha.1",
-//            "mal": "2"
-//        }
-//    ]
-//}
-
 function GlassModManager_AddonPageTCP::onDone(%this, %error) {
   if(%this.screenshotDl || %this.thumbnailDl) {
     if(%this.screenshotDl) {
       echo("Downloaded Screenshot");
       %extent = GlassModManager_AddonPage.extent[%this.screenshot];
+      discoverFile("config/BLG/tmp/screenshots/" @ %this.screenshot @ ".png");
       GlassModManagerImageCtrl.setBitmap("config/BLG/tmp/screenshots/" @ %this.screenshot @ ".png");
       GlassModManagerImageCtrl.extent = %extent;
       %x = (getWord(GlassModManagerImage.extent, 0)/2) - (getWord(%extent, 0)/2);
@@ -383,6 +346,11 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
 
     } else {
       echo("Downloaded thumb");
+      discoverFile("config/BLG/tmp/screenshots/" @ %this.screenshot @ "_thumb.png");
+      %obj = "GlassModManager_AddonPage_Screenshot" @ %this.screenshot;
+      %obj = %obj.getGroup().getObject(0);
+      %obj.setBitmap("");
+      %obj.setBitmap("config/BLG/tmp/screenshots/" @ %this.screenshot @ "_thumb.png"); //redraw
     }
   } else if(!%error) {
 		%main = parseJSON(%this.buffer);
