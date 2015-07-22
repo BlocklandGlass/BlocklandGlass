@@ -4,7 +4,7 @@ function GlassAuth::init() {
 	}
 
 	new ScriptObject(GlassAuth) {
-		heartbeatRate = 1;
+		heartbeatRate = 4;
 	};
 	GlassAuth.heartbeat();
 }

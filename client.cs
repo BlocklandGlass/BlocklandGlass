@@ -29,7 +29,8 @@ function BLG::exec() {
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");
-	exec("./BLG_VerifyAccount.gui"); //need to move
+	exec("./client/gui/GlassUpdatesGui.gui");
+	exec("./BLG_VerifyAccount.gui"); //need to rename/move
 	exec("./GlassModManagerGui.gui"); //need to move
 	exec("./GlassModManagerImage.gui"); //need to move
 
@@ -38,6 +39,7 @@ function BLG::exec() {
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
+	exec("./common/GlassUpdaterSupport.cs");
 
 
 	exec("./client/GlassAuth.cs");
@@ -45,10 +47,10 @@ function BLG::exec() {
 	exec("./client/GlassModManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
-	BLG_Con.pollServer();
 	GlassAuth::init();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
+	GlassUpdaterSupport::verifyInstall();
 
 	GlassModManager::init();
 

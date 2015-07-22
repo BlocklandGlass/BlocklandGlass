@@ -23,7 +23,9 @@ function GlassModManager::setPane(%pane) {
   }
 
   if(%pane == 1) {
-    GlassModManagerActivityList.clear();
+    if(isObject(GlassModManagerActivityList)) {
+      GlassModManagerActivityList.clear();
+    }
     GlassModManager.pullActivityFeed();
   }
 
@@ -369,6 +371,7 @@ function GlassModManager::loadBoards() {
 }
 
 function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount) {
+  $BLG::MM::BoardCache::Image[%id] = %image;
   if(!isObject(GlassModManagerBoards)) {
     new ScriptGroup(GlassModManagerBoards);
   }

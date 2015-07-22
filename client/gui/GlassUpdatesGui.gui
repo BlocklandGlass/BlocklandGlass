@@ -1,0 +1,198 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassUpdatesGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl() {
+      profile = "GuiWindowProfile";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "20 65";
+      extent = "600 350";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Updates";
+      maxLength = "255";
+      resizeWidth = "0";
+      resizeHeight = "0";
+      canMove = "1";
+      canClose = "0";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+
+      new GuiScrollCtrl(GlassUpdatesGui_Scroll) {
+         profile = "GlassScrollProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "15 35";
+         extent = "285 300";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         willFirstRespond = "0";
+         hScrollBar = "alwaysOff";
+         vScrollBar = "alwaysOn";
+         constantThumbHeight = "0";
+         childMargin = "0 0";
+         rowHeight = "40";
+         columnWidth = "30";
+
+         new GuiSwatchCtrl() {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "1 1";
+            extent = "280 30";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            color = "200 220 200 255";
+
+            new GuiMLTextCtrl() {
+               profile = "GuiMLTextProfile";
+               horizSizing = "right";
+               vertSizing = "center";
+               position = "28 7";
+               extent = "280 16";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               lineSpacing = "2";
+               allowColorChars = "0";
+               maxChars = "-1";
+               text = "<font:arial bold:16>Trust List Manager <font:arial:14>system_trustlist";
+               maxBitmapHeight = "-1";
+               selectable = "1";
+               autoResize = "1";
+            };
+            new GuiBitmapCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "center";
+               position = "7 7";
+               extent = "16 16";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               bitmap = "~/System_BlocklandGlass/image/icon/construction.png";
+               wrap = "0";
+               lockAspectRatio = "0";
+               alignLeft = "0";
+               alignTop = "0";
+               overflowImage = "0";
+               keepCached = "0";
+               mColor = "255 255 255 255";
+               mMultiply = "0";
+            };
+         };
+      };
+      new GuiSwatchCtrl() {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "300 35";
+         extent = "285 300";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         color = "170 170 170 255";
+
+         new GuiBitmapButtonCtrl() {
+            profile = "BlockButtonProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "15 255";
+            extent = "100 30";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassUpdaterSupport::close();";
+            text = "Close";
+            groupNum = "-1";
+            buttonType = "PushButton";
+            bitmap = "base/client/ui/button1";
+            lockAspectRatio = "0";
+            alignLeft = "0";
+            alignTop = "0";
+            overflowImage = "0";
+            mKeepCached = "0";
+            mColor = "220 170 170 255";
+         };
+         new GuiBitmapButtonCtrl() {
+            profile = "BlockButtonProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "170 255";
+            extent = "100 30";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassUpdaterSupport::doUpdates();";
+            text = "Update";
+            groupNum = "-1";
+            buttonType = "PushButton";
+            bitmap = "base/client/ui/button1";
+            lockAspectRatio = "0";
+            alignLeft = "0";
+            alignTop = "0";
+            overflowImage = "0";
+            mKeepCached = "0";
+            mColor = "170 220 170 255";
+         };
+         new GuiScrollCtrl() {
+            profile = "ImpactScrollProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "10 10";
+            extent = "265 235";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            willFirstRespond = "0";
+            hScrollBar = "alwaysOff";
+            vScrollBar = "dynamic";
+            constantThumbHeight = "0";
+            childMargin = "0 0";
+            rowHeight = "40";
+            columnWidth = "30";
+
+            new GuiMLTextCtrl(GlassUpdatesGui_Changelog) {
+               profile = "GuiMLTextProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "0 0";
+               extent = "250 14";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               lineSpacing = "2";
+               allowColorChars = "0";
+               maxChars = "-1";
+               maxBitmapHeight = "-1";
+               selectable = "1";
+               autoResize = "1";
+            };
+         };
+      };
+   };
+};
+//--- OBJECT WRITE END ---
