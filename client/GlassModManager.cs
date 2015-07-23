@@ -395,10 +395,18 @@ function GlassModManager::renderBoards() {
   GlassModManager_Boards.clear();
   %currentY = 0;
   %lastSub = "";
+  %boardcolor = "172 216 230 255";
   for(%i = 0; %i < GlassModManagerBoards.getCount(); %i++) {
     %bo = GlassModManagerBoards.getObject(%i);
 
     if(%bo.subcategory !$= %lastSub) {
+      %divcolor = "122 170 200 255";
+      if(%bo.subcategory $= "Special") {
+        %currentY += 30;
+        %divcolor = "232 118 0 255";
+        //%boardcolor = "200 200 70 255";
+      }
+
       %currentY += 10;
       %div = new GuiSwatchCtrl() {
         profile = "GuiDefaultProfile";
@@ -410,7 +418,7 @@ function GlassModManager::renderBoards() {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        color = "122 170 200 255";
+        color = %divcolor;
 
         new GuiMLTextCtrl() {
           profile = "GuiMLTextProfile";
@@ -446,7 +454,7 @@ function GlassModManager::renderBoards() {
        enabled = "1";
        visible = "1";
        clipToParent = "1";
-       color = "172 216 230 255";
+       color = %boardColor;
 
        new GuiBitmapCtrl() {
           profile = "GuiDefaultProfile";
