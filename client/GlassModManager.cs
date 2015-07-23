@@ -521,7 +521,7 @@ function GlassModManager::renderBoards() {
     GlassModManager_Boards.add(%board);
     %currentY += 32;
   }
-  
+
   %currentY += 8;
 
   if(%currentY > 499) {
@@ -578,6 +578,10 @@ function GlassModManagerBoardsTCP::handleText(%this, %line) {
 //====================================
 
 function GlassModManager::loadBoard(%this, %id) {
+  if(%id == -2) {
+    gotoWebPage("http://blocklandglass.com/rtb/");
+    return;
+  }
   %url = "http://" @ BLG.address @ "/api/mm.php?request=board&board=" @ %id;
   %method = "GET";
   %downloadPath = "";
