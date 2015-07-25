@@ -371,7 +371,9 @@ function GlassModManager::loadBoards() {
 }
 
 function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount, %sub) {
-  $BLG::MM::BoardCache::Image[%id] = %image;
+  if($id >= 0) {
+    $BLG::MM::BoardCache::Image[%id] = %image;
+  }
   if(!isObject(GlassModManagerBoards)) {
     new ScriptGroup(GlassModManagerBoards);
   }
@@ -597,6 +599,7 @@ function GlassModManager::loadBoard(%this, %id) {
 
   GlassModManager::setLoading(true);
   GlassModManager.historyAdd("board", %id);
+  %this.currentBoard = %id;
 
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
@@ -642,6 +645,40 @@ function GlassModManager::renderCurrentBoard() {
   GlassModManager::setLoading(false);
   GlassModManager_Boards.clear();
   %currentY = 10;
+  %div = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "center";
+    vertSizing = "bottom";
+    position = 10 SPC %currentY;
+    extent = "485 30";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "122 170 200 255";
+
+    new GuiMLTextCtrl() {
+      profile = "GuiMLTextProfile";
+      horizSizing = "right";
+      vertSizing = "center";
+      position = "0 7";
+      extent = "485 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lineSpacing = "2";
+      allowColorChars = "0";
+      maxChars = "-1";
+      text = "<just:center><font:arial bold:18>" @ GlassModManagerBoards.board[GlassModManager.currentBoard].title;
+      maxBitmapHeight = "-1";
+      selectable = "1";
+      autoResize = "1";
+    };
+  };
+  GlassModManager_Boards.add(%div);
+  %currentY += 32;
+
   for(%i = 0; %i < GlassModManagerBoardListings.getCount(); %i++) {
     %bo = GlassModManagerBoardListings.getObject(%i);
 
