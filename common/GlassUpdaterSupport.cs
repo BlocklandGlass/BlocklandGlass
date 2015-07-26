@@ -18,7 +18,18 @@ function GlassUpdaterSupport::verifyInstall() {
   }
 }
 
-function GlassUpdaterSupport::pushGlassUpdater() {
+function GlassUpdaterSupport::pushGlassUpdater(%force) {
+  if(GlassUpdatesGui.getObject(0).text !$= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
+		echo("\c2Add-On Updates is currently open, setting the close button to open RTB Support and redrawing");
+    GlassUpdatesGui_Decline.command = "GlassRTBSupport::openGui(true);";
+  } else {
+    GlassUpdatesGui_Decline.command = "GlassUpdaterSupport::close();";
+  }
+
+  GlassUpdatesGui.getObject(0).setText("Add-On Updates");
+  GlassUpdatesGui_Accept.command = "GlassUpdaterSupport::doUpdates();";
+  GlassUpdatesGui_Accept.text = "Update";
+
   GlassUpdatesGui_Scroll.clear();
   %currentY = 1;
   for(%i = 0; %i < updater.queue.getCount(); %i++) {

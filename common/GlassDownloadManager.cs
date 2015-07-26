@@ -51,6 +51,9 @@ function GlassDownloadTCP::onDone(%this, %error) {
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
+	if(%this.fileData.rtbImport) {
+		GlassRTBSupport::updateProgressBar(%this.fileData.rtbImportId, %float);
+	}
 	GlassModManager_ProgressBar.setVisible(true);
 	echo("Progress: " @ %float);
 	GlassModManager_ProgressBar.setValue(%float);

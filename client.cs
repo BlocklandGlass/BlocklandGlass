@@ -9,7 +9,7 @@
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.0.0-alpha.2";
+		version = "1.0.0-alpha.1.3+nightly.2015.07.24";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
@@ -31,8 +31,8 @@ function BLG::exec() {
 	exec("./client/gui/profiles.cs");
 	exec("./client/gui/GlassUpdatesGui.gui");
 	exec("./BLG_VerifyAccount.gui"); //need to rename/move
-	exec("./GlassModManagerGui.gui"); //need to move
-	exec("./GlassModManagerImage.gui"); //need to move
+	exec("./client/gui/GlassModManagerGui.gui");
+	exec("./client/gui/GlassModManagerImage.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./auth.cs");
@@ -66,6 +66,8 @@ function BLG::exec() {
 	if($BLG::MM::Keybind $= "") {
 		$BLG::MM::Keybind = "keyboard\tctrl m";
 	}
+
+  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField($BLG::MM::Keybind, 1)));
 
 	%bind = $BLG::MM::Keybind;
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");

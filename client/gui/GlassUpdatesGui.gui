@@ -47,58 +47,6 @@ new GuiControl(GlassUpdatesGui) {
          childMargin = "0 0";
          rowHeight = "40";
          columnWidth = "30";
-
-         new GuiSwatchCtrl() {
-            profile = "GuiDefaultProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "1 1";
-            extent = "280 30";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            color = "200 220 200 255";
-
-            new GuiMLTextCtrl() {
-               profile = "GuiMLTextProfile";
-               horizSizing = "right";
-               vertSizing = "center";
-               position = "28 7";
-               extent = "280 16";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               lineSpacing = "2";
-               allowColorChars = "0";
-               maxChars = "-1";
-               text = "<font:arial bold:16>Trust List Manager <font:arial:14>system_trustlist";
-               maxBitmapHeight = "-1";
-               selectable = "1";
-               autoResize = "1";
-            };
-            new GuiBitmapCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "center";
-               position = "7 7";
-               extent = "16 16";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               bitmap = "~/System_BlocklandGlass/image/icon/construction.png";
-               wrap = "0";
-               lockAspectRatio = "0";
-               alignLeft = "0";
-               alignTop = "0";
-               overflowImage = "0";
-               keepCached = "0";
-               mColor = "255 255 255 255";
-               mMultiply = "0";
-            };
-         };
       };
       new GuiSwatchCtrl() {
          profile = "GuiDefaultProfile";
@@ -112,7 +60,7 @@ new GuiControl(GlassUpdatesGui) {
          clipToParent = "1";
          color = "170 170 170 255";
 
-         new GuiBitmapButtonCtrl() {
+         new GuiBitmapButtonCtrl(GlassUpdatesGui_Decline) {
             profile = "BlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -134,7 +82,7 @@ new GuiControl(GlassUpdatesGui) {
             mKeepCached = "0";
             mColor = "220 170 170 255";
          };
-         new GuiBitmapButtonCtrl() {
+         new GuiBitmapButtonCtrl(GlassUpdatesGui_Accept) {
             profile = "BlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -179,7 +127,7 @@ new GuiControl(GlassUpdatesGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "0 0";
-               extent = "250 14";
+               extent = "250 80";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";

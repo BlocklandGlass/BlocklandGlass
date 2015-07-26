@@ -17,7 +17,7 @@ function GlassModManager::init() {
 }
 
 function GlassModManager::setPane(%pane) {
-  for(%a = 0; %a < 4; %a++) {
+  for(%a = 0; %a < 5; %a++) {
     %obj = "GlassModManager_Pane" @ %a+1;
     %obj.setVisible(false);
   }
@@ -193,6 +193,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   GlobalActionMap.bind(%device, %key, "GlassModManager_keybind");
   GlassModManager_Remapper.delete();
+  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
   $BLG::MM::Keybind = %device TAB %key;
 }
 
