@@ -835,6 +835,7 @@ function GlassModManager_MyAddons::apply() {
 }
 
 function GlassModManager::populateMyAddons(%this) {
+  GlassModManager::setLoading(false);
   discoverFile("Add-Ons/*.zip");
   if(isObject(GlassModManager_MyAddons)) {
     GlassModManager_MyAddons.delete();
@@ -1002,6 +1003,7 @@ function GlassModManager::renderMyAddons(%this) {
 //====================================
 
 function GlassModManager::populateColorsets() {
+  GlassModManager::setLoading(false);
   %this = GlassModManager_MyColorsets;
 
   %this.colorsets = 0;

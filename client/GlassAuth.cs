@@ -69,6 +69,11 @@ function GlassAuthTCP::onDone(%this) {
 			} else {
 				echo("BLG auth success");
 			}
+
+			echo(%object.get("hasGlassAccount"));
+			if(%object.get("hasGlassAccount")) {
+				GlassAuth.hasAccount = true;
+			}
 		}
 
 		if(GlassAuth.heartbeat $= "") {
