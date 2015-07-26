@@ -41,7 +41,7 @@ function GlassModManager_AddonPage::submitComment() {
   if(trim(%comment) $= "") {
     return;
   }
-  
+
   GlassModManagerGui_AddonPage_NewComment.setText("");
 
   %url = "http://" @ BLG.address @ "/api/mm.php?sid=" @ GlassAuth.sid @ "&request=submitcomment&id=" @ GlassModManager_AddonPage.aid @ "&comment=" @ urlEnc(%comment);
@@ -558,32 +558,24 @@ function GlassModManager_AddonPage::renderNewComment(%this, %uPos) {
   GlassModManagerGui_Comments.add(%spacer);
 }
 
-function GlassModManagerGui_AddonPage_NewComment::onWake(%this) {
-  cancel(%this.tick);
-  //%this.tick = %this.schedule(250, tick);
-}
+function GlassModManagerGui_AddonPage_NewComment::onResize(%this, %thisx, %thisy) {
+  echo("Resized! " @ %thisx SPC %thisy);
 
-function GlassModManagerGui_AddonPage_NewComment::onSleep(%this) {
-  cancel(%this.tick);
-}
-
-function GlassModManagerGui_AddonPage_NewComment::tick(%this) {
-  //echo("tick");
   %x = getWord(%this.getGroup().extent, 0);
-  %y = getWord(%this.extent, 1)+10;
-
-  //%this.extent = 430 SPC 20;
+  %y = %thisY + 10;
 
   if(%y < 153) {
     %y = 153;
   }
 
   if(%this.getGroup().extent !$= (%x SPC %y)) {
+    echo("Old: " @ %this.getGroup().extent);
     %this.getGroup().extent = %x SPC %y;
     %this.getGroup().setVisible(true);
-    //%this.makeFirstResponder(1);
+    %this.makeFirstResponder(1);
+    %this.getGroup().getGroup().scrollToBottom();
+    echo("New: " @ %x SPC %y);
   }
-  %this.tick = %this.schedule(250, tick);
 }
 
 function GlassModManager_AddonPage::renderComments(%this) {
