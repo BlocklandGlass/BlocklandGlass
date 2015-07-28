@@ -194,7 +194,6 @@ function GlassUpdaterSupport::removeFromQueue(%obj) {
     messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
     return;
   }
-  updaterInterfacePopItem(%obj);
   %obj.glassSwatch.delete();
   %obj.delete();
   GlassUpdaterSupport::resize();
