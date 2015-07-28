@@ -373,7 +373,7 @@ function GlassModManager::loadBoards() {
 }
 
 function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount, %sub) {
-  if($id >= 0) {
+  if(%id >= 0) {
     $BLG::MM::BoardCache::Image[%id] = %image;
   }
   if(!isObject(GlassModManagerBoards)) {

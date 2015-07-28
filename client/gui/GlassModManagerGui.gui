@@ -2944,7 +2944,7 @@ new GuiControl(GlassModManagerGui) {
                   profile = "GuiDefaultProfile";
                   horizSizing = "right";
                   vertSizing = "bottom";
-                  position = "1 -1775";
+                  position = "1 -1895";
                   extent = "500 2794";
                   minExtent = "8 2";
                   enabled = "1";
@@ -11675,7 +11675,7 @@ new GuiControl(GlassModManagerGui) {
                extent = "300 100";
                minExtent = "8 2";
                enabled = "1";
-               visible = "1";
+               visible = "0";
                clipToParent = "1";
                maxLength = "255";
                resizeWidth = "0";
