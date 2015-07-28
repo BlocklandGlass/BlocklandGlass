@@ -1,3 +1,16 @@
+function GlassUpdaterSupport::pushItem(%item) {
+  if(!isObject(GlassUpdatesGroup)) {
+    new ScriptGroup(GlassUpdatesGroup);
+  }
+
+  %up = new ScriptObject() {
+    class = "GlassUpdate";
+    addonHandler = %item;
+  };
+
+  GlassUpdatesGroup.add(%up);
+}
+
 function GlassUpdaterSupport::verifyInstall() {
   if(!isObject(updater)) {
     if(!isfile("Add-Ons/Support_Updater.zip")) {
@@ -32,8 +45,9 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
 
   GlassUpdatesGui_Scroll.clear();
   %currentY = 1;
-  for(%i = 0; %i < updater.queue.getCount(); %i++) {
-    %queueObj = updater.queue.getObject(%i);
+  for(%i = 0; %i < GlassUpdatesGroup.getCount(); %i++) {
+    %glassUpdate = GlassUpdatesGroup.getObject(%i);
+    %queueObj = %glassUpdate.addonHandler;
     echo("queueObj: " @ %queueObj);
     %swatch = GlassUpdaterSupport::buildSwatch(%queueObj, %currentY);
     %queueObj.glassSwatch = %swatch;
@@ -180,6 +194,7 @@ function GlassUpdaterSupport::removeFromQueue(%obj) {
     messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
     return;
   }
+  updaterInterfacePopItem(%obj);
   %obj.glassSwatch.delete();
   %obj.delete();
   GlassUpdaterSupport::resize();
@@ -279,6 +294,12 @@ if($BLG::MM::UseUpdaterDefault $= "") {
   $BLG::MM::UseUpdaterDefault = false; //use BLG skinned
 }
 
+//updaterInterfacePushItem(%item) //Called when an item is added to the display.
+//updaterInterfacePopItem(%item) //Called when an item is removed from the display.
+//updaterInterfaceSelectItem(%item) //Called when the updater selects an item to display in detail (changelog, etc).
+//updaterInterfaceOnQueueEmpty() //Called when the queue is empty.
+//updaterInterfaceDisplay(%refreshing) //Called when updates are ready to be displayed to the user.
+
 package GlassUpdaterSupportPackage {
   function canvas::pushDialog(%this, %dlg) {
     if(%dlg.getName() $= "updaterDlg" && !$BLG::MM::UseUpdaterDefault) {
@@ -290,6 +311,18 @@ package GlassUpdaterSupportPackage {
     }
   }
 
+  function updaterInterfacePushItem(%item) {
+    echo("Push item");
+    GlassUpdaterSupport::pushItem(%item);
+    parent::updaterInterfacePushItem(%item);
+  }
+
+  function updaterInterfaceDisplay(%refreshing) {
+    echo("interface display");
+    GlassUpdaterSupport::pushGlassUpdater(false);
+    parent::updaterInterfaceDisplay(%refreshing);
+  }
+
   function UpdaterDownloadTCP::setProgressBar(%this, %value) {
     if(!$BLG::MM::UseUpdaterDefault) {
 	     %queueObj = updater.queue.currentDownload;
@@ -298,6 +331,7 @@ package GlassUpdaterSupportPackage {
 
     parent::setProgressBar(%this, %value);
   }
+
   function doSupportUpdaterInstallNotify() {
     return;
   }
