@@ -168,11 +168,13 @@ function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui.add(%remapper);
   %remapper.makeFirstResponder(1);
 
+
+  %bind = $BLG::MM::Keybind;
+  GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   //swatch
 }
 
 function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
-  echo(%device TAB %key);
   if(%device $= "mouse0") {
     return;
   }
