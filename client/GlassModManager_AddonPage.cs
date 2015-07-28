@@ -134,7 +134,7 @@ function GlassModManager_AddonPage::render(%this) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = %this.desc;
+        text = parseMarkdown(%this.desc);
         //text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/delete.png> <font:arial:16>Board<br>";
         maxBitmapHeight = "-1";
         selectable = "1";
@@ -650,7 +650,7 @@ function GlassModManager_AddonPage::renderComments(%this) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = "<font:arial:14>" @ %comObj.text;
+        text = "<font:arial:14>" @ parseMarkdown(%comObj.text);
         maxBitmapHeight = "-1";
         selectable = "1";
         autoResize = "1";

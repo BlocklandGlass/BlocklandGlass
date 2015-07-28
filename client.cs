@@ -25,7 +25,8 @@ function BLG::exec() {
 	BLG::init();
 	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
 	exec("./support/Support_TCPClient.cs");
-	exec("./support/Support_UpdaterMigration.cs");
+	//exec("./support/Support_UpdaterMigration.cs"); //redundant
+	exec("./support/Support_Markdown.cs");
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");
