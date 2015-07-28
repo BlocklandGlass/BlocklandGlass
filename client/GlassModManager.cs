@@ -168,7 +168,6 @@ function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui.add(%remapper);
   %remapper.makeFirstResponder(1);
 
-
   %bind = $BLG::MM::Keybind;
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   //swatch
@@ -881,7 +880,7 @@ function GlassModManager::populateMyAddons(%this) {
 }
 
 function GlassModManager::renderMyAddons(%this) {
-  %this.setLoading(false);
+  GlassModManager::setLoading(false);
   GlassModManagerGui_MyAddons.clear();
   %currentY = 10;
   for(%i = 0; %i < GlassModManager_MyAddons.getCount(); %i++) {
