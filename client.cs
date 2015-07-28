@@ -1,15 +1,15 @@
 //================================================================
-//=	Title: 	Blockland Glass (i3)								 =
-//=	Author:	Jincux (9789)										 =
+//=	Title: 	Blockland Glass (i3)								                 =
+//=	Author:	Jincux (9789)								                     		 =
 //=	If you're looking at this, go you. either that, or you're a  =
-//=	little skiddy trying to 'troll'								 =
+//=	little skiddy trying to 'troll'						              		 =
 //================================================================
 
 
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.0.0-alpha.3";
+		version = "1.0.0-beta.1";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
