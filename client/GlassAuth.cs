@@ -4,9 +4,8 @@ function GlassAuth::init() {
 	}
 
 	new ScriptObject(GlassAuth) {
-		heartbeatRate = 4;
+		heartbeatRate = 4; //minutes
 	};
-	GlassAuth.heartbeat();
 }
 
 function GlassAuth::heartbeat(%this) {
@@ -14,7 +13,7 @@ function GlassAuth::heartbeat(%this) {
 	cancel(%this.heartbeat);
 	echo("BLG heartbeat");
 	%this.check();
-	%this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
+	return %this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
 }
 
 function GlassAuth::check(%this) {
@@ -87,3 +86,11 @@ function GlassAuthTCP::onDone(%this) {
 function GlassAuthTCP::handleText(%this, %line) {
 	%this.buffer = %this.buffer NL %line;
 }
+
+package GlassAuthPackage {
+	function MM_AuthBar::blinkSuccess(%this) {
+		GlassAuth.heartbeat();
+		parent::blinkSuccess(%this);
+	}
+};
+activatePackage(GlassAuthPackage);

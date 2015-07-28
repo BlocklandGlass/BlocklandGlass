@@ -74,12 +74,26 @@ function BLG::exec() {
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
 }
 
+function Glass::doWelcomeMessage() {
+	if(!$BLG::MM::WelcomeMessage) messageBoxOk("Welcome to Blockland Glass", "<font:arial bold:20>Welcome to Blockland Glass<font:arial: 14><br><br>Thank you very much for downloading Blockland Glass!<br><br>To get started, press <font:arial bold:14>CTRL M<font:arial:14>!", "Glass::welcomeMessageSeen();");
+}
+
+function Glass::welcomeMessageSeen() {
+	$BLG::MM::WelcomeMessage = true;
+	export("$BLG::MM::*", "config/BLG/client/mm.cs");
+}
+
 BLG::exec();
 
 package GlassPrefs {
 	function onExit() {
 		export("$BLG::MM::*", "config/BLG/client/mm.cs");
 		parent::onExit();
+	}
+
+	function MM_AuthBar::blinkSuccess(%this) {
+		Glass::doWelcomeMessage();
+		parent::blinkSuccess(%this);
 	}
 };
 activatePackage(GlassPrefs);
