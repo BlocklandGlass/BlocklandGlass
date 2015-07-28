@@ -25,7 +25,6 @@ function BLG::exec() {
 	BLG::init();
 	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
 	exec("./support/Support_TCPClient.cs");
-	//exec("./support/Support_UpdaterMigration.cs"); //redundant
 	exec("./support/Support_Markdown.cs");
 
 	echo(" ===                 Loading Interface                  ===");
@@ -36,15 +35,11 @@ function BLG::exec() {
 	exec("./client/gui/GlassModManagerImage.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
-	exec("./auth.cs");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
-
-
 	exec("./client/GlassAuth.cs");
-
 	exec("./client/GlassModManager.cs");
 
 	echo(" ===                   Starting it up                   ===");

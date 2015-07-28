@@ -174,7 +174,6 @@ function GlassRTBSupport::updateProgressBar(%id, %float) {
 }
 
 function GlassRTBSupportTCP::onDone(%this, %error) {
-	echo("done - " @ %this.buffer);
 	if(!%error) {
 		%array = parseJSON(%this.buffer);
 		if(getJSONType(%array) $= "array" && %array.length) {
@@ -197,6 +196,5 @@ function GlassRTBSupportTCP::onDone(%this, %error) {
 }
 
 function GlassRTBSupportTCP::handleText(%this, %line) {
-	echo("RTBSupport - " @ %line);
 	%this.buffer = trim(%this.buffer NL %line);
 }

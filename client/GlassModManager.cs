@@ -93,12 +93,10 @@ function GlassModManager::historyAdd(%this, %page, %parameter) {
 function GlassModManager::historyBack(%this) {
   GlassModManagerGui_ForwardButton.setVisible(true);
   if(%this.historyPos <= 1) {
-    echo("less than 1");
     GlassModManagerGui_BackButton.setVisible(false);
   }
 
   if(%this.historyPos <= 0) {
-    echo("Can't go back");
     return;
   }
 
@@ -145,7 +143,6 @@ function GlassModManager::historyForward(%this) {
     }
   } else {
     GlassModManagerGui_ForwardButton.setVisible(false);
-    echo("At history position " @ %this.historyPos @ " out of " @ %this.historyLen);
   }
 }
 
@@ -324,7 +321,6 @@ function GlassModManagerTCP::onDone(%this, %error) {
 	if(!%error) {
 		%array = parseJSON(%this.buffer);
 		if(getJSONType(%array) $= "array") {
-      echo(%array.length);
 			for(%i = 0; %i < %array.length; %i++) {
 				%obj = %array.item[%i];
         %id = %obj.get("id");
@@ -804,7 +800,7 @@ function GlassModManagerBoardTCP::handleText(%this, %line) {
 //====================================
 
 function GlassModManager_MyAddons::defaults() {
-  echo("loading defaults");
+  echo("Loading defaults");
   for(%i = 0; %i < GlassModManagerGui_MyAddons.getCount(); %i++) {
     %guiObj = GlassModManagerGui_MyAddons.getObject(%i);
     %check = %guiObj.getObject(1);
@@ -904,7 +900,6 @@ function GlassModManager_MyAddons::apply() {
   for(%i = 0; %i < GlassModManagerGui_MyAddons.getCount(); %i++) {
     %guiObj = GlassModManagerGui_MyAddons.getObject(%i);
     %check = %guiObj.getObject(1);
-    echo(%check.addon);
     $AddOn["__" @ %check.addon] = %check.getValue();
   }
 
@@ -1097,7 +1092,6 @@ function GlassModManager::renderMyAddons(%this) {
 }
 
 function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
-  echo("Clicked settings!");
   if(!%this.addon.isBLG) {
     messageBoxOk("Add-On", %this.addon.name);
   } else {
@@ -1247,7 +1241,6 @@ function GlassModManager_MyColorsets::apply() {
   GlassModManager::populateColorsets();
   GlassModManager_MyColorsets.selected = "";
   //do file stuff
-  echo($BLG::MM::Colorset);
   filecopy("config/server/colorset.txt", "config/server/colorset.old");
   filecopy_hack($BLG::MM::Colorset, "config/server/colorset.txt");
   export("$BLG::MM::*", "config/BLG/client/mm.cs");

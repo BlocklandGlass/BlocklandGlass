@@ -48,11 +48,11 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
   for(%i = 0; %i < GlassUpdatesGroup.getCount(); %i++) {
     %glassUpdate = GlassUpdatesGroup.getObject(%i);
     %queueObj = %glassUpdate.addonHandler;
-    echo("queueObj: " @ %queueObj);
+    
     %swatch = GlassUpdaterSupport::buildSwatch(%queueObj, %currentY);
     %queueObj.glassSwatch = %swatch;
     %currentY += 31;
-    echo(%queueObj.updatechangelogtext);
+
     GlassUpdatesGui_Changelog.setText(%queueObj.updateChangeLogText);
     GlassUpdatesGui_Changelog.setVisible(true);
     GlassUpdatesGui_Changelog.getGroup().scrollToTop();
@@ -311,13 +311,11 @@ package GlassUpdaterSupportPackage {
   }
 
   function updaterInterfacePushItem(%item) {
-    echo("Push item");
     GlassUpdaterSupport::pushItem(%item);
     parent::updaterInterfacePushItem(%item);
   }
 
   function updaterInterfaceDisplay(%refreshing) {
-    echo("interface display");
     GlassUpdaterSupport::pushGlassUpdater(false);
     parent::updaterInterfaceDisplay(%refreshing);
   }

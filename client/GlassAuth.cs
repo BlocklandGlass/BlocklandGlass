@@ -48,11 +48,11 @@ function BLG_Verify::decline(%this) {
 }
 
 function GlassAuthTCP::onDone(%this) {
-	echo(%this.buffer);
+	//echo(%this.buffer);
 	if(!%error) {
 		%object = parseJSON(%this.buffer);
 		GlassAuth.sid = %object.get("sid");
-		echo("Setting SID: " @ %object.get("sid"));
+		//echo("Setting SID: " @ %object.get("sid"));
 		if(%object.get("status") $= "error") {
 			error("error authenticating: " @ %object.get("error"));
 		}
@@ -69,7 +69,7 @@ function GlassAuthTCP::onDone(%this) {
 				echo("BLG auth success");
 			}
 
-			echo(%object.get("hasGlassAccount"));
+			//echo(%object.get("hasGlassAccount"));
 			if(%object.get("hasGlassAccount")) {
 				GlassAuth.hasAccount = true;
 			}
