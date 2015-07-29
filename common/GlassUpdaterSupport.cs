@@ -305,29 +305,23 @@ if($BLG::MM::UseUpdaterDefault $= "") {
 //updaterInterfaceDisplay(%refreshing) //Called when updates are ready to be displayed to the user.
 
 package GlassUpdaterSupportPackage {
-  function canvas::pushDialog(%this, %dlg) {
-    if(%dlg.getName() $= "updaterDlg" && !$BLG::MM::UseUpdaterDefault) {
-      echo("Pushing glass updater instead!");
-      GlassUpdaterSupport::pushGlassUpdater();
-      return;
-    } else {
-      return parent::pushDialog(%this, %dlg);
-    }
-  }
-
   function updaterInterfacePushItem(%item) {
-    GlassUpdaterSupport::pushItem(%item);
-    parent::updaterInterfacePushItem(%item);
+    if($BLG::MM::UseUpdaterDefault)
+      parent::updaterInterfacePushItem(%item);
+    else
+      GlassUpdaterSupport::pushItem(%item);
   }
 
   function updaterInterfaceDisplay(%refreshing) {
-    GlassUpdaterSupport::pushGlassUpdater(false);
-    parent::updaterInterfaceDisplay(%refreshing);
+    if($BLG::MM::UseUpdaterDefault)
+      parent::updaterInterfaceDisplay(%refreshing);
+    else
+      GlassUpdaterSupport::pushGlassUpdater(false);
   }
 
   function UpdaterDownloadTCP::setProgressBar(%this, %value) {
     if(!$BLG::MM::UseUpdaterDefault) {
-	     %queueObj = updater.queue.currentDownload;
+      %queueObj = updater.queue.currentDownload;
       GlassUpdaterSupport::updateProgressBar(%queueObj, %value);
     }
 
