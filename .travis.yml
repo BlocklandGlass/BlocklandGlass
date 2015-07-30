@@ -7,3 +7,5 @@ install:
   - git clone https://github.com/BlocklandGlass/ParseTS.git parsets && cd parsets && cabal install --jobs && cd ..
 script:
   - parsets .
+notifications:
+  webhooks: https://webhooks.gitter.im/e/3f5dda8eb78aa8cc9b00
