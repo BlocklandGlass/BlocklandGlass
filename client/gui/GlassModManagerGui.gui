@@ -30,6 +30,8 @@ new GuiControl(GlassModManagerGui) {
       canMinimize = "0";
       canMaximize = "0";
       minSize = "50 50";
+      accelerator = "escape";
+      altCommand =  "canvas.popDialog(GlassModManagerGui);";
       closeCommand = "canvas.popDialog(GlassModManagerGui);";
 
       new GuiSwatchCtrl() {
