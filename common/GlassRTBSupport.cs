@@ -68,7 +68,7 @@ function GlassRTBSupport::closeGui() {
 }
 
 function GlassRTBSupport::openGui(%force) {
-	if(GlassUpdatesGui.getObject(0).text $= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
+	if(GlassUpdatesGui.getObject(0).getValue() $= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
 		echo("\c2Add-On Updates is currently open, setting the close button to open RTB Support");
 		GlassUpdatesGui_Decline.command = "GlassRTBSupport::openGui(true);";
 		//rewrite close command

@@ -9,6 +9,7 @@ function GlassUpdaterSupport::pushItem(%item) {
   };
 
   GlassUpdatesGroup.add(%up);
+  GlassUpdaterSupport::pushGlassUpdater(false);
 }
 
 function GlassUpdaterSupport::verifyInstall() {
@@ -32,7 +33,7 @@ function GlassUpdaterSupport::verifyInstall() {
 }
 
 function GlassUpdaterSupport::pushGlassUpdater(%force) {
-  if(GlassUpdatesGui.getObject(0).text !$= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
+  if(GlassUpdatesGui.getObject(0).getValue() !$= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
 		echo("\c2Add-On Updates is currently open, setting the close button to open RTB Support and redrawing");
     GlassUpdatesGui_Decline.command = "GlassRTBSupport::openGui(true);";
   } else {
@@ -48,7 +49,7 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
   for(%i = 0; %i < GlassUpdatesGroup.getCount(); %i++) {
     %glassUpdate = GlassUpdatesGroup.getObject(%i);
     %queueObj = %glassUpdate.addonHandler;
-    
+
     %swatch = GlassUpdaterSupport::buildSwatch(%queueObj, %currentY);
     %queueObj.glassSwatch = %swatch;
     %currentY += 31;
@@ -188,7 +189,8 @@ function GlassUpdaterSupport::resize() {
   GlassUpdatesGui_Scroll.scrollToTop();
 }
 
-function GlassUpdaterSupport::removeFromQueue(%obj) {
+function GlassUpdaterSupport::removeFromQueue(%glassObj) {
+  %obj = %glassObj.addonHandler;
   if(%obj.name $= "System_BlocklandGlass") {
     //must update!
     messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
@@ -201,6 +203,7 @@ function GlassUpdaterSupport::removeFromQueue(%obj) {
   }
   %obj.glassSwatch.delete();
   %obj.delete();
+  %glassObj.delete();
   GlassUpdaterSupport::resize();
 }
 
@@ -210,12 +213,13 @@ function GlassUpdaterSupport::doUpdates() {
 
 function GlassUpdaterSupport::close() {
   %glassUpdate = false;
-  for(%i = 0; %i < updater.queue.getCount(); %i++) {
-    %queueObj = updater.queue.getObject(%i);
+  for(%i = 0; %i < GlassUpdatesGroup.getCount(); %i++) {
+    %glassObj = GlassUpdatesGroup.getObject(%i);
+    %queueObj = %glassObj.addonHandler;
     if(%queueObj.name $= "System_BlocklandGlass") {
       %glassUpdate = true;
     } else {
-      GlassUpdaterSupport::removeFromQueue(%queueObj);
+      GlassUpdaterSupport::removeFromQueue(%glassObj);
     }
   }
 
@@ -313,6 +317,7 @@ package GlassUpdaterSupportPackage {
   }
 
   function updaterInterfaceDisplay(%refreshing) {
+    //not called!
     if($BLG::MM::UseUpdaterDefault)
       parent::updaterInterfaceDisplay(%refreshing);
     else
