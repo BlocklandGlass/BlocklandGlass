@@ -16,6 +16,16 @@ function GlassModManager::init() {
     GlassModManagerGui_BackButton.setVisible(false);
 }
 
+function GlassModManager::setPaneRaw(%pane) {
+  for(%a = 0; %a < 5; %a++) {
+    %obj = "GlassModManager_Pane" @ %a+1;
+    %obj.setVisible(false);
+  }
+
+  %obj = "GlassModManager_Pane" @ %pane;
+  %obj.setVisible(true);
+}
+
 function GlassModManager::setPane(%pane) {
   for(%a = 0; %a < 5; %a++) {
     %obj = "GlassModManager_Pane" @ %a+1;
@@ -115,6 +125,8 @@ function GlassModManager::historyBack(%this) {
   } else if(%page $= "addon") {
     GlassModManager_AddonPage.loadAddon(%parm);
   }
+
+  GlassModManager::setPaneRaw(2);
 }
 
 function GlassModManager::historyForward(%this) {
@@ -144,6 +156,8 @@ function GlassModManager::historyForward(%this) {
   } else {
     GlassModManagerGui_ForwardButton.setVisible(false);
   }
+
+  GlassModManager::setPaneRaw(2);
 }
 
 function GlassModManager_keybind(%down) {
