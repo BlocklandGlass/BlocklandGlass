@@ -1,3 +1,51 @@
+function removeItemFromList(%list, %item) {
+  for(%i = 0; %i < getWordCount(%list); %i++) {
+    %id = getWord(trim(%list), %i);
+    if(%id !$= %item) {
+      %newList = %newList SPC %item;
+    }
+  }
+
+  return trim(%newList);
+}
+
+function addItemToList(%list, %item) {
+  return trim(%list SPC %item);
+}
+
+function GlassPreferences::addAutoAdmin(%blid, %super) {
+  $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
+  $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+
+  %client = findClientByBL_ID(%blid);
+  if(isObject(%client)) {
+    %name = %client.name;
+  } else {
+    %name = "BLID_" @ %blid;
+  }
+
+  if(%super) {
+    $Pref::Server::AutoSuperAdminList = addItemToList($Pref::Server::AutoSuperAdminList, %blid);
+    messageAll('MsgAdminForce','\c2%1 has become Super Admin (Auto)',%name);
+    if(isObject(%client)) {
+      %client.isAdmin = true;
+      %client.isSuperAdmin = true;
+    }
+  } else {
+    $Pref::Server::AutoAdminList = addItemToList($Pref::Server::AutoAdminList, %blid);
+    messageAll('MsgAdminForce','\c2%1 has become Admin (Auto)',%name);
+    if(isObject(%client)) {
+      %client.isAdmin = true;
+      %client.isSuperAdmin = false;
+    }
+  }
+
+  if(isObject(%client)) {
+    %client.sendPlayerListUpdate();
+    commandtoclient(%client,'setAdminLevel',2);
+  }
+}
+
 //%addon - must be reference to actual add-on
 //%title - title
 //%type - bool, slider, text, int
@@ -72,6 +120,11 @@ function GlassPreferences::loadPrefs() {
     %file = "config/BLG/server/gamemodePrefs/" @ %addon @ ".cs";
   }
 
+  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %pref = GlassPrefGroup.getObject(%i);
+    %pref.value = %pref.def;
+  }
+
   %fo = new FileObject();
   %fo.openForRead(%file);
   while(!%fo.isEOF()) {
@@ -100,7 +153,7 @@ function GameConnection::sendGlassPrefs(%client) {
   for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
     %pref = GlassPrefGroup.getObject(%i);
     echo(%pref.idx TAB %pref.title);
-    commandToClient(%client, 'GlassPref', %pref.idx, %pref.title, %pref);
+    commandToClient(%client, 'GlassPref', %pref.idx, %pref.title, %pref.type, %pref.parameters, %pref.value);
   }
 }
 
@@ -108,8 +161,14 @@ package GlassPreferences {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
 
-    %client.sendGlassPrefs();
+    if(%client.isAdmin || %client.isSuperAdmin || %client.isHost) {
+      %client.sendGlassPrefs();
+      //send permissions, auto admin lists?
+    }
 
+    //ret 1 for admin, 2 for super
+
+    trace(1);
     return %ret;
   }
 };
