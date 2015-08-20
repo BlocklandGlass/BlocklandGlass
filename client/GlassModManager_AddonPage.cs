@@ -431,7 +431,6 @@ function GlassModManager_AddonPage_CommentsTCP::handleText(%this, %line) {
 
 function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
   if(!%error) {
-    echo(%this.buffer);
 		%main = parseJSON(%this.buffer);
 		if(getJSONType(%main) $= "array") {
       if(isObject(GlassModManager_AddonPage_CommentGroup)) {
@@ -559,7 +558,6 @@ function GlassModManager_AddonPage::renderNewComment(%this, %uPos) {
 }
 
 function GlassModManagerGui_AddonPage_NewComment::onResize(%this, %thisx, %thisy) {
-  echo("Resized! " @ %thisx SPC %thisy);
 
   %x = getWord(%this.getGroup().extent, 0);
   %y = %thisY + 10;
@@ -569,7 +567,6 @@ function GlassModManagerGui_AddonPage_NewComment::onResize(%this, %thisx, %thisy
   }
 
   if(%this.getGroup().extent !$= (%x SPC %y)) {
-    echo("Old: " @ %this.getGroup().extent);
     %this.getGroup().extent = %x SPC %y;
     %this.getGroup().setVisible(true);
     %this.makeFirstResponder(1);
