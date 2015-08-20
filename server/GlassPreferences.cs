@@ -1,3 +1,8 @@
+
+//====================================
+// Admin
+//====================================
+
 function removeItemFromList(%list, %item) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
     %id = getWord(trim(%list), %i);
@@ -16,6 +21,11 @@ function addItemToList(%list, %item) {
 function GlassPreferences::addAutoAdmin(%blid, %super) {
   $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
   $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+
+  if(%blid == getNumKeyId()) {
+    error("Attempted to promote host to admin.");
+    return;
+  }
 
   %client = findClientByBL_ID(%blid);
   if(isObject(%client)) {
@@ -42,9 +52,41 @@ function GlassPreferences::addAutoAdmin(%blid, %super) {
 
   if(isObject(%client)) {
     %client.sendPlayerListUpdate();
-    commandtoclient(%client,'setAdminLevel',2);
+    if(%super) {
+      commandtoclient(%client,'setAdminLevel', 2);
+    } else {
+      commandtoclient(%client,'setAdminLevel', 1);
+    }
   }
 }
+
+function GlassPreferences::removeAutoAdmin(%blid) {
+  $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
+  $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+
+  %client = findClientByBL_ID(%blid);
+  if(isObject(%client)) {
+    %name = %client.name;
+  } else {
+    %name = "BLID_" @ %blid;
+  }
+
+  $Pref::Server::AutoSuperAdminList = addItemToList($Pref::Server::AutoSuperAdminList, %blid);
+  messageAll('MsgAdminForce','\c2%1 has been demoted (Manual)',%name);
+  if(isObject(%client)) {
+    %client.isAdmin = true;
+    %client.isSuperAdmin = true;
+  }
+
+  if(isObject(%client)) {
+    %client.sendPlayerListUpdate();
+    commandtoclient(%client,'setAdminLevel',0);
+  }
+}
+
+//====================================
+// Preferences
+//====================================
 
 //%addon - must be reference to actual add-on
 //%title - title
@@ -60,6 +102,7 @@ function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, 
   %pref = new ScriptObject() {
     class = "GlassPref";
 
+    addon = %addon;
     title = %title;
     type = %type;
     parameters = %parm;
@@ -109,6 +152,7 @@ function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, 
 
   GlassPrefGroup.add(%pref);
   %pref.idx = GlassPrefGroup.idx++;
+  GlassPrefGroup.idx[%pref.idx] = %pref;
 }
 
 function GlassPreferences::loadPrefs() {
@@ -142,34 +186,68 @@ function GlassPreferences::loadPrefs() {
 
 function GlassPref::setValue(%this, %value) {
   %this.value = %value;
-  eval(%this.callback @ "(" @ expandEscape(%value) @ ");");
+  if(%this.callback !$= "") eval(%this.callback @ "(" @ expandEscape(%value) @ ");");
 }
 
 function GlassPref::getValue(%this) {
   return %this.value;
 }
 
+//====================================
+// Server Commands / Communication
+//====================================
+
+
+function serverCmdGlassUpdateSend(%client) {
+  messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
+}
+
+function serverCmdGlassUpdatePref(%client, %prefIdx, %value) {
+  if(%client.isAdmin) {
+    GlassPrefGroup.idx[%prefIdx].setValue(%value);
+    echo("Pref " @ %prefIdx @ " updated to " @ %value);
+  } else {
+    messageClient(%client, '', "You don't have permission to do that");
+  }
+}
+
 function GameConnection::sendGlassPrefs(%client) {
+  commandToClient(%client, 'GlassPrefStart'); //signals client to wipe old prefs
   for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
     %pref = GlassPrefGroup.getObject(%i);
     echo(%pref.idx TAB %pref.title);
-    commandToClient(%client, 'GlassPref', %pref.idx, %pref.title, %pref.type, %pref.parameters, %pref.value);
+    commandToClient(%client, 'GlassPref', %pref.idx, %pref.title, %pref.addon, %pref.type, %pref.parameters, %pref.value);
   }
+  commandToClient(%client, 'GlassPrefEnd'); //signals client to render
 }
 
 package GlassPreferences {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
+    commandToClient(%client, 'GlassHandshake', BLG.version);
+    return %ret;
+  }
+
+  function serverCmdGlassHandshake(%client, %version) {
+    parent::serverCmdGlassHandshake(%client, %version);
+    echo(%client.name @ " - blg version " @ %version);
 
     if(%client.isAdmin || %client.isSuperAdmin || %client.isHost) {
       %client.sendGlassPrefs();
       //send permissions, auto admin lists?
     }
-
-    //ret 1 for admin, 2 for super
-
-    trace(1);
-    return %ret;
   }
 };
 activatePackage(GlassPreferences);
+
+if(isObject(GlassPrefGroup)) {
+  GlassPrefGroup.deleteAll();
+  GlassPrefGroup.delete();
+}
+
+//TESTING WOOT!
+GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid?", "bool", "", false);
+GlassPreferences::registerPref("System_BlocklandGlass", "How cool?", "slider", "0 9000", 6);
+GlassPreferences::registerPref("System_BlocklandGlass", "Multiplying factor", "int", "0 15", 1);
+GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid club?", "text", "100", "kkk");
+GlassPreferences::loadPrefs();
