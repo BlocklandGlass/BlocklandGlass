@@ -139,7 +139,7 @@ new GuiControl(GlassModManagerGui) {
             profile = "GuiProgressProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "5 515";
+            position = "5 475";
             extent = "120 20";
             minExtent = "8 2";
             enabled = "1";

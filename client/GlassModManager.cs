@@ -1203,8 +1203,8 @@ function GlassModManager::populateColorsets() {
       GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC %currentY;
     } else {
       GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC 498;
-      GlassModManagerGui_MyColorsets.setVisible(true);
     }
+    GlassModManagerGui_MyColorsets.setVisible(true);
     GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }
 }
