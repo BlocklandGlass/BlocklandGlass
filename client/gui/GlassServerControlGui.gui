@@ -1,0 +1,340 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassServerControlGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl() {
+      profile = "GuiWindowProfile";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "122 90";
+      extent = "395 300";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      command = "canvas.popDialog(GlassServerControlGui);";
+      accelerator = "escape";
+      text = "Server Preferences";
+      maxLength = "255";
+      resizeWidth = "0";
+      resizeHeight = "0";
+      canMove = "1";
+      canClose = "1";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+      closeCommand = "canvas.popDialog(GlassServerControlGui);";
+
+      new GuiBitmapButtonCtrl() {
+         profile = "BlockButtonProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "14 30";
+         extent = "120 25";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         text = "Admin";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "base/client/ui/tab1";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "255 255 255 150";
+      };
+      new GuiBitmapButtonCtrl() {
+         profile = "BlockButtonProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "140 30";
+         extent = "120 25";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         text = "Preferences";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "base/client/ui/tab1";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "255 255 255 150";
+      };
+      new GuiBitmapButtonCtrl() {
+         profile = "BlockButtonProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "266 30";
+         extent = "120 25";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         text = "Settings";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "base/client/ui/tab1";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "255 255 255 150";
+      };
+      new GuiSwatchCtrl() {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "15 55";
+         extent = "370 235";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         color = "128 128 128 128";
+
+         new GuiSwatchCtrl() {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "80 235";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            color = "170 170 170 255";
+         };
+         new GuiScrollCtrl(GlassServerControl_PrefScroll) {
+            profile = "GlassScrollProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "80 0";
+            extent = "290 235";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            willFirstRespond = "0";
+            hScrollBar = "alwaysOff";
+            vScrollBar = "alwaysOn";
+            constantThumbHeight = "0";
+            childMargin = "0 0";
+            rowHeight = "40";
+            columnWidth = "30";
+
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 1";
+               extent = "280 24";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "100 100 100 255";
+
+               new GuiMLTextCtrl() {
+                  profile = "GuiMLTextProfile";
+                  horizSizing = "center";
+                  vertSizing = "center";
+                  position = "0 4";
+                  extent = "280 16";
+                  minExtent = "280 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  lineSpacing = "2";
+                  allowColorChars = "0";
+                  maxChars = "-1";
+                  text = "<just:center><font:arial bold:16>My Add-On";
+                  maxBitmapHeight = "-1";
+                  selectable = "1";
+                  autoResize = "1";
+               };
+            };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 25";
+               extent = "280 32";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "100 100 100 50";
+
+               new GuiTextCtrl() {
+                  profile = "GuiTextProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "10 7";
+                  extent = "77 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Some checkbox";
+                  maxLength = "255";
+               };
+               new GuiCheckBoxCtrl() {
+                  profile = "GuiCheckBoxProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "257 8";
+                  extent = "16 16";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  groupNum = "-1";
+                  buttonType = "ToggleButton";
+               };
+            };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 57";
+               extent = "280 32";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "100 100 100 50";
+
+               new GuiTextCtrl() {
+                  profile = "GuiTextProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "10 7";
+                  extent = "91 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Some other integer";
+                  maxLength = "255";
+               };
+               new GuiTextEditCtrl() {
+                  profile = "GuiTextEditProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "245 7";
+                  extent = "30 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  maxLength = "255";
+                  historySize = "0";
+                  password = "0";
+                  tabComplete = "0";
+                  sinkAllKeyEvents = "0";
+               };
+            };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 121";
+               extent = "280 32";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "100 100 100 50";
+
+               new GuiTextCtrl() {
+                  profile = "GuiTextProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "10 7";
+                  extent = "48 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Some text";
+                  maxLength = "255";
+               };
+               new GuiTextEditCtrl() {
+                  profile = "GuiTextEditProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "175 7";
+                  extent = "100 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  maxLength = "255";
+                  historySize = "0";
+                  password = "0";
+                  tabComplete = "0";
+                  sinkAllKeyEvents = "0";
+               };
+            };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "1 89";
+               extent = "280 32";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "100 100 100 50";
+
+               new GuiTextCtrl() {
+                  profile = "GuiTextProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "10 7";
+                  extent = "56 18";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Some slider";
+                  maxLength = "255";
+               };
+               new GuiSliderCtrl() {
+                  profile = "GuiSliderProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "175 6";
+                  extent = "100 20";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  range = "0.000000 1.000000";
+                  ticks = "10";
+                  value = "0.433333";
+                  snap = "0";
+               };
+            };
+         };
+      };
+   };
+};
+//--- OBJECT WRITE END ---

@@ -33,7 +33,12 @@ function BLG::exec() {
 
 	echo(" ===                   Starting it up                   ===");
 
-  
+
+}
+
+function serverCmdGlassHandshake(%client, %ver) {
+  %client.hasGlass = true;
+  %client._glassVersion = %ver;
 }
 
 function BLG::reload() {

@@ -33,6 +33,7 @@ function BLG::exec() {
 	exec("./BLG_VerifyAccount.gui"); //need to rename/move
 	exec("./client/gui/GlassModManagerGui.gui");
 	exec("./client/gui/GlassModManagerImage.gui");
+	exec("./client/gui/GlassServerControlGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -41,6 +42,8 @@ function BLG::exec() {
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./client/GlassAuth.cs");
 	exec("./client/GlassModManager.cs");
+	exec("./client/GlassPreferences.cs");
+	exec("./client/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
 	GlassAuth::init();
@@ -76,6 +79,12 @@ function Glass::doWelcomeMessage() {
 function Glass::welcomeMessageSeen() {
 	$BLG::MM::WelcomeMessage = true;
 	export("$BLG::MM::*", "config/BLG/client/mm.cs");
+}
+
+function clientCmdGlassHandshake(%ver) {
+  ServerConnection.hasGlass = true;
+  ServerConnection._glassVersion = %ver;
+	commandToServer('GlassHandshake', BLG.version);
 }
 
 BLG::exec();
