@@ -1,5 +1,14 @@
 //commandToClient(%client, 'GlassPref', %pref.idx, %pref.title, %pref.type, %pref.parameters, %pref.value);
 
+$remapDivision[$remapCount] = "Blockland Glass";
+   $remapName[$remapCount] = "Server Settings";
+   $remapCmd[$remapCount] = "openGlassSettings";
+   $remapCount++;
+
+function openGlassSettings() {
+  canvas.pushDialog(GlassServerControlGui);
+}
+
 function clientcmdGlassPref(%idx, %title, %addon, %type, %parm, %value) {
   echo("Received pref! " @ %idx @":"@ %title @":"@ %type @":"@ %parm @":"@ %value);
   if(!isObject(GlassPrefs)) {
@@ -20,6 +29,8 @@ function clientcmdGlassPref(%idx, %title, %addon, %type, %parm, %value) {
   };
   GlassPrefs.add(%obj);
 
+  GlassPrefs.idx[%idx] = %obj;
+
   if(GlassPrefs.addonCount[%addon] $= "") {
     GlassPrefs.addons = trim(GlassPrefs.addons SPC %addon);
   }
@@ -37,4 +48,9 @@ function clientCmdGlassPrefStart() {
 
 function clientCmdGlassPrefEnd() {
   GlassServerControl::renderPrefs();
+}
+
+function clientCmdGlassUpdatePref(%idx, %value) {
+  GlassPrefs.idx[%idx].value = %value;
+  GlassServerControl::updatePrefs();
 }

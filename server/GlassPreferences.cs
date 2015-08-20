@@ -187,6 +187,13 @@ function GlassPreferences::loadPrefs() {
 function GlassPref::setValue(%this, %value) {
   %this.value = %value;
   if(%this.callback !$= "") eval(%this.callback @ "(" @ expandEscape(%value) @ ");");
+
+  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+    %client = ClientGroup.getObject(%i);
+    if(%client.hasGlass && %client.isAdmin) {
+      commandToClient(%client, 'GlassUpdatePref', %this.idx, %value);
+    }
+  }
 }
 
 function GlassPref::getValue(%this) {
