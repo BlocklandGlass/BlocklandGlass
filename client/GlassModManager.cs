@@ -333,7 +333,7 @@ function GlassModManager::renderActivity() {
 
 function GlassModManagerTCP::onDone(%this, %error) {
 	if(!%error) {
-		%array = parseJSON(%this.buffer);
+		%array = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%array) $= "array") {
 			for(%i = 0; %i < %array.length; %i++) {
 				%obj = %array.item[%i];
@@ -571,7 +571,7 @@ function GlassModManager_BoardButton::onMouseDown(%this) {
 
 function GlassModManagerBoardsTCP::onDone(%this) {
   if(!%error) {
-		%array = parseJSON(%this.buffer);
+		%array = parseJSON(collapseEscape(%this.buffer));
     GlassModManagerBoards.deleteAll();
 		if(getJSONType(%array) $= "array") {
 			for(%i = 0; %i < %array.length; %i++) {
@@ -772,7 +772,7 @@ function GlassModManager::renderCurrentBoard() {
 
 function GlassModManagerBoardTCP::onDone(%this) {
   if(!%error) {
-		%array = parseJSON(%this.buffer);
+		%array = parseJSON(collapseEscape(%this.buffer));
     GlassModManagerBoardListings.clear();
 		if(getJSONType(%array) $= "array") {
 			for(%i = 0; %i < %array.length; %i++) {
@@ -964,7 +964,7 @@ function GlassModManager::populateMyAddons(%this) {
       }
       %fo.close();
       %fo.delete();
-      %so.glassdata = parseJSON(%buffer);
+      %so.glassdata = parseJSON(collapseEscape(%buffer));
     }
     GlassModManager_MyAddons.add(%so);
 	}

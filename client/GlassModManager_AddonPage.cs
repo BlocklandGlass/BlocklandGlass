@@ -372,7 +372,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
       %obj.setBitmap("config/BLG/tmp/screenshots/" @ %this.screenshot @ "_thumb.png"); //redraw
     }
   } else if(!%error) {
-		%main = parseJSON(%this.buffer);
+		%main = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%main) $= "hash") {
       %ap = GlassModManager_AddonPage;
 
@@ -431,7 +431,7 @@ function GlassModManager_AddonPage_CommentsTCP::handleText(%this, %line) {
 
 function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
   if(!%error) {
-		%main = parseJSON(%this.buffer);
+		%main = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%main) $= "array") {
       if(isObject(GlassModManager_AddonPage_CommentGroup)) {
         GlassModManager_AddonPage_CommentGroup.delete();

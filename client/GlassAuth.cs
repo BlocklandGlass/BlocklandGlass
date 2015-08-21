@@ -52,7 +52,7 @@ function GlassAuthTCP::onDone(%this) {
 		echo(%this.buffer);
 
 	if(!%error) {
-		%object = parseJSON(%this.buffer);
+		%object = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%object) $= "hash") {
 			GlassAuth.sid = %object.get("sid");
 			//echo("Setting SID: " @ %object.get("sid"));
