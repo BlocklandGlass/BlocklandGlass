@@ -209,6 +209,7 @@ function GlassUpdaterSupport::removeFromQueue(%glassObj) {
 
 function GlassUpdaterSupport::doUpdates() {
   updater.doUpdates();
+  GlassUpdatesGroup.didUpdate = true;
 }
 
 function GlassUpdaterSupport::close() {
@@ -223,7 +224,7 @@ function GlassUpdaterSupport::close() {
     }
   }
 
-  if(%glassUpdate) {
+  if(%glassUpdate && !GlassUpdatesGroup.didUpdate) {
     messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
   } else {
     canvas.popDialog(GlassUpdatesGui);
