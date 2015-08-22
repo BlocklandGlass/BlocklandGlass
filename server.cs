@@ -9,7 +9,7 @@
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.1.0-alpha.0";
+		version = "1.1.0-alpha.0+nightly.8.22.15";
 		address = "api.blocklandglass.com";
 		netAddress = "blocklandglass.com";
 
