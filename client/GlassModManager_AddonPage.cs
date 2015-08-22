@@ -224,6 +224,11 @@ function GlassModManager_AddonPage::render(%this) {
   if(%this.ss) {
     GlassModManager_Boards.add(%screenshotBox);
   }
+  %depBox = GlassModManager_AddonPage.renderDependencies();
+  if(isObject(%depBox)) {
+    GlassModManager_Boards.add(%depBox);
+  }
+
   if(isObject(%this.branch[1])) {
     %dlButton = new GuiBitmapButtonCtrl() {
        profile = "BlockButtonProfile";
@@ -396,6 +401,17 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
         %ap.extent[%screenObj.id] = %screenObj.get("extent");
         GlassModManager_AddonPage.downloadThumbnail(%screenObj.id);
       }
+
+      %depArray = %main.get("dependencies");
+      %ap.depCount = %depArray.length;
+      for(%i = 0; %i < %depArray.length; %i++) {
+        %depObj = %depArray.item[%i];
+        %ap.depName[%i] = %depObj.get("name");
+        %ap.depId[%i] = %depObj.get("id");
+        %ap.depFilename[%i] = %depObj.get("filename");
+        %ap.depBoard[%i] = %depObj.get("board");
+      }
+      echo("dependencies: " @ %ap.depCount);
 
       %branches = %main.get("branches");
       for(%i = 0; %i < %branches.length; %i++) {
@@ -573,6 +589,90 @@ function GlassModManagerGui_AddonPage_NewComment::onResize(%this, %thisx, %thisy
     %this.getGroup().getGroup().scrollToBottom();
     echo("New: " @ %x SPC %y);
   }
+}
+
+function GlassModManager_AddonPage::renderDependencies(%this) {
+  if(%this.depCount == 0) {
+    return 0;
+  }
+
+  %swatch = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 325";
+    extent = "485 105";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "240 240 200 255";
+
+    new GuiMLTextCtrl() {
+      profile = "GuiMLTextProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 10";
+      extent = "465 32";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lineSpacing = "2";
+      allowColorChars = "0";
+      maxChars = "-1";
+      text = "<font:arial bold:16>Dependencies!<br><font:arial:12>This add-on has other add-ons that it requires in order to function properly.";
+      maxBitmapHeight = "-1";
+      selectable = "1";
+      autoResize = "1";
+    };
+  };
+
+  %currentX = 10;
+  %currentY = 45;
+  for(%i = 0; %i < %this.depCount; %i++) {
+    %x++;
+    if(%x > 3) {
+      %x = 1;
+      %currentY += 31;
+      %currentX = 10;
+    }
+    %sw = new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = %currentX SPC %currentY;
+      extent = "150 26";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "210 210 170 150";
+
+      new GuiMLTextCtrl() {
+        profile = "GuiMLTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "5 5";
+        extent = "465 32";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lineSpacing = "2";
+        allowColorChars = "0";
+        maxChars = "-1";
+        text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ $BLG::MM::BoardCache::Image[%this.depBoard[%i]] @ ".png><font:arial bold:14> " @ %this.depName[%i];
+        maxBitmapHeight = "-1";
+        selectable = "1";
+        autoResize = "1";
+      };
+    };
+    %swatch.add(%sw);
+    %currentX += 157;
+  }
+  %swatch.extent = 485 SPC %currentY+36;
+  return %swatch;
 }
 
 function GlassModManager_AddonPage::renderComments(%this) {
