@@ -1,4 +1,6 @@
-
+if($Glass::Modules::Prefs)
+  return;
+$Glass::Modules::Prefs = true;
 //====================================
 // Admin
 //====================================
@@ -243,6 +245,13 @@ package GlassPreferences {
       %client.sendGlassPrefs();
       //send permissions, auto admin lists?
     }
+  }
+
+  function RTB_registerPref(%name,%cat,%pref,%vartype,%mod,%default,%requiresRestart,%hostOnly,%callback) {
+    parent::RTB_registerPref(%name,%cat,%pref,%vartype,%mod,%default,%requiresRestart,%hostOnly,%callback);
+    warn("Importing legacy RTB pref! Errors expected.");
+    echo(%vartype);
+    GlassPreferences::registerPref(%mod, %name, %vartype, %parm, %default, %callback);
   }
 };
 activatePackage(GlassPreferences);
