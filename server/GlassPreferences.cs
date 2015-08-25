@@ -1,5 +1,6 @@
 if($Glass::Modules::Prefs)
   return;
+
 $Glass::Modules::Prefs = true;
 //====================================
 // Admin
@@ -232,6 +233,7 @@ function GameConnection::sendGlassPrefs(%client) {
 
 package GlassPreferences {
   function GameConnection::autoAdminCheck(%client) {
+    echo(" + glass shit");
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', BLG.version);
     return %ret;
@@ -248,22 +250,21 @@ package GlassPreferences {
   }
 
   function RTB_registerPref(%name,%cat,%pref,%vartype,%mod,%default,%requiresRestart,%hostOnly,%callback) {
-    parent::RTB_registerPref(%name,%cat,%pref,%vartype,%mod,%default,%requiresRestart,%hostOnly,%callback);
+    %ret = parent::RTB_registerPref(%name,%cat,%pref,%vartype,%mod,%default,%requiresRestart,%hostOnly,%callback);
     warn("Importing legacy RTB pref! Errors expected.");
     echo(%vartype);
-    GlassPreferences::registerPref(%mod, %name, %vartype, %parm, %default, %callback);
+    %type = getWord(%vartype, 0);
+
+    if(%type $= "string") {
+      %type = "text";
+      %parm = getWord(%vartype, 1);
+    }
+
+    GlassPreferences::registerPref(%mod, %name, %type, %parm, %default, %callback);
+    return %ret;
   }
 };
 activatePackage(GlassPreferences);
 
-if(isObject(GlassPrefGroup)) {
-  GlassPrefGroup.deleteAll();
-  GlassPrefGroup.delete();
-}
-
 //TESTING WOOT!
-GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid?", "bool", "", false);
-GlassPreferences::registerPref("System_BlocklandGlass", "How cool?", "slider", "0 9000", 6);
-GlassPreferences::registerPref("System_BlocklandGlass", "Multiplying factor", "int", "0 15", 1);
-GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid club?", "text", "100", "kkk");
 GlassPreferences::loadPrefs();
