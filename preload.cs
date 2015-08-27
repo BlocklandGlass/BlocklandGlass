@@ -21,3 +21,4 @@ GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid?", "bool", "",
 GlassPreferences::registerPref("System_BlocklandGlass", "How cool?", "slider", "0 9000", 6);
 GlassPreferences::registerPref("System_BlocklandGlass", "Multiplying factor", "int", "0 15", 1);
 GlassPreferences::registerPref("System_BlocklandGlass", "Cool kid club?", "text", "100", "kkk");
+GlassPreferences::registerPref("System_BlocklandGlass", "Big space bruh", "textarea", "1000", "well look at that<br>nige");
