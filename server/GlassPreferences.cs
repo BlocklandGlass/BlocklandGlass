@@ -144,6 +144,9 @@ function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, 
     case "int":
       echo("int with range " @ getWord(%parm, 0) @ " to " @ getWord(%parm, 1));
       %valid = true;
+
+    case "textarea":
+      %valid = true;
   }
 
   if(!%valid) {

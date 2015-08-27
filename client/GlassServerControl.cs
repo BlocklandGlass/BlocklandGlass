@@ -54,12 +54,22 @@ function GlassServerControl::renderPrefs() {
           %swatch = GlassServerControl::createText();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
+
+        case "textarea":
+          %swatch = GlassServerControl::createTextArea();
+          %swatch.text.setText(%pref.title);
+          %swatch.ctrl.setValue(%pref.value);
       }
 
       %swatch.position = 0 SPC %currentY;
       GlassServerControl_PrefScroll.add(%swatch);
       %pref.swatch = %swatch;
-      %currentY += 33;
+
+      if(%pref.type !$= "textarea") {
+        %currentY += 33;
+      } else {
+        %currentY += 129;
+      }
     }
   }
 
@@ -99,6 +109,71 @@ function GlassServerControl::createHeader(%text) {
         autoResize = "1";
      };
   };
+}
+
+function GlassServerControl::createTextArea() {
+  %swatch = new GuiSwatchCtrl() {
+     profile = "GuiDefaultProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = "1 25";
+     extent = "280 128";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     color = "100 100 100 50";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GuiTextProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "10 4";
+    extent = "77 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Some checkbox";
+    maxLength = "255";
+  };
+
+  %swat2 = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "5 25";
+    extent = "270 98";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "255 255 255 200";
+  };
+
+  %swatch.ctrl = new GuiMLTextEditCtrl() {
+    profile = "GuiMLTextEditProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "5 5";
+    extent = "260 93";
+    minExtent = "260 93";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lineSpacing = "2";
+    allowColorChars = "0";
+    maxChars = "-1";
+    maxBitmapHeight = "-1";
+    selectable = "1";
+    autoResize = "1";
+  };
+
+  %swatch.add(%swatch.text);
+  %swatch.add(%swat2);
+  %swat2.add(%swatch.ctrl);
+  return %swatch;
 }
 
 function GlassServerControl::createCheckbox() {
