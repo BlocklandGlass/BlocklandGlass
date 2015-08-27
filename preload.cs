@@ -5,6 +5,7 @@ export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
 
 echo("\nLoading Preferences");
 exec("./server/GlassPreferences.cs");
+GlassPreferences::loadPrefs(false);
 
 //It appears that Blockland disables all packages before executing add-ons
 //Clearly that is a problem when it comes to preloading

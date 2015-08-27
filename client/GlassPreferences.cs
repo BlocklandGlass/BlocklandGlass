@@ -35,7 +35,7 @@ function clientcmdGlassPref(%idx, %title, %addon, %type, %parm, %value) {
     GlassPrefs.addons = trim(GlassPrefs.addons SPC %addon);
   }
 
-  GlassPrefs.addonItem[GlassPrefs.addonCount[%addon]+0] = %obj;
+  GlassPrefs.addonItem[%addon SPC GlassPrefs.addonCount[%addon]+0] = %obj;
   GlassPrefs.addonCount[%addon]++;
 }
 

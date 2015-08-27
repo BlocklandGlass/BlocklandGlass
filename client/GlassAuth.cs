@@ -75,11 +75,13 @@ function GlassAuthTCP::onDone(%this) {
 			}
 		}
 
-		if(GlassAuth.heartbeat $= "") {
-			GlassAuth.heartbeat = GlassAuth.heartbeat();
-		}
-	} else {
 
+	} else {
+		echo("BLG auth error - " @ %error);
+	}
+
+	if(GlassAuth.heartbeat $= "") {
+		GlassAuth.heartbeat = GlassAuth.heartbeat();
 	}
 }
 

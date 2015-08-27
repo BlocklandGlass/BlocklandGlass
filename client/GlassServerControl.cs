@@ -32,7 +32,7 @@ function GlassServerControl::renderPrefs() {
     %currentY += 25;
 
     for(%j = 0; %j < GlassPrefs.addonCount[%addon]; %j++) {
-      %pref = GlassPrefs.addonItem[%j];
+      %pref = GlassPrefs.addonItem[%addon SPC %j];
 
       switch$(%pref.type) {
         case "bool":
@@ -61,10 +61,10 @@ function GlassServerControl::renderPrefs() {
       %pref.swatch = %swatch;
       %currentY += 33;
     }
-
   }
 
-  GlassServerControl_PrefScroll.setVisible(true);
+  GlassServerControl_PrefScroll.extent = getWord(GlassServerControl_PrefScroll.extent, 0) SPC %currentY;
+  GlassServerControl_PrefScroll.getGroup().setVisible(true);
 }
 
 function GlassServerControl::createHeader(%text) {
