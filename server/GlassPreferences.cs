@@ -10,7 +10,7 @@ function removeItemFromList(%list, %item) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
     %id = getWord(trim(%list), %i);
     if(%id !$= %item) {
-      %newList = %newList SPC %item;
+      %newList = %newList SPC %id;
     }
   }
 
@@ -19,6 +19,21 @@ function removeItemFromList(%list, %item) {
 
 function addItemToList(%list, %item) {
   return trim(%list SPC %item);
+}
+
+function removeItemFromArray(%list, %item) {
+  for(%i = 0; %i < getFieldCount(%list); %i++) {
+    %id = getField(trim(%list), %i);
+    if(%id !$= %item) {
+      %newList = %newList TAB %id;
+    }
+  }
+
+  return trim(%newList);
+}
+
+function addItemToArray(%list, %item) {
+  return trim(%list TAB %item);
 }
 
 function GlassPreferences::addAutoAdmin(%blid, %super) {
@@ -147,24 +162,30 @@ function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, 
     }
   }
 
-  if($Glass::savedValue[%addon TAB %title] !$= "") {
-    %pref.value = $Glass::savedValue[%addon TAB %title];
+  if($Glass::PrefSavedValue[%addon TAB %title] !$= "") {
+    %pref.value = $Glass::PrefSavedValue[%addon TAB %title];
   } else {
-    %pref.value = %def;
+    %pref.value = %default;
   }
 
   GlassPrefGroup.add(%pref);
+
   %pref.idx = GlassPrefGroup.idx++;
   GlassPrefGroup.idx[%pref.idx] = %pref;
+  GlassPrefGroup.name[%addon TAB %title] = %pref;
+
+  $Glass::PrefNamesCache = removeItemFromArray($Glass::PrefNamesCache, expandEscape(%addon TAB %title));
+  $Glass::PrefNamesCache = addItemToArray($Glass::PrefNamesCache, expandEscape(%addon TAB %title));
+  $Glass::PrefSavedValue[%addon TAB %title] = %pref.value;
 }
 
-function GlassPreferences::loadPrefs() {
+function GlassPreferences::loadPrefs(%doCallback) {
   if($GameModeArg $= "") {
-    %file = "config/BLG/server/prefs.cs";
+    %file = "config/BLG/server/prefs.dat";
   } else {
     %str = getsubstr($GameModeArg, strpos($GameModeArg, "/")+1, strlen($GameModeArg));
     %addon = getsubstr(%str, 0, strpos(%str, "/"));
-    %file = "config/BLG/server/gamemodePrefs/" @ %addon @ ".cs";
+    %file = "config/BLG/server/gamemodePrefs/" @ %addon @ ".dat";
   }
 
   for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
@@ -179,10 +200,46 @@ function GlassPreferences::loadPrefs() {
     //addon title value
     %addon = getField(%line, 0);
     %title = getField(%line, 1);
-    %value = getField(%line, 2);
+    %value = collapseEscape(getField(%line, 2));
 
-    $Glass::savedValue[%addon TAB %title] = %value;
+    $Glass::PrefSavedValue[%addon TAB %title] = %value;
   }
+  $Glass::PrefNamesCache = removeItemFromArray($Glass::PrefNamesCache, expandEscape(%addon TAB %title));
+  $Glass::PrefNamesCache = addItemToArray($Glass::PrefNamesCache, expandEscape(%addon TAB %title));
+  %fo.close();
+  %fo.delete();
+}
+
+function GlassPreferences::savePrefs() {
+  if($GameModeArg $= "") {
+    %file = "config/BLG/server/prefs.dat";
+  } else {
+    %str = getsubstr($GameModeArg, strpos($GameModeArg, "/")+1, strlen($GameModeArg));
+    %addon = getsubstr(%str, 0, strpos(%str, "/"));
+    %file = "config/BLG/server/gamemodePrefs/" @ %addon @ ".dat";
+  }
+
+
+  %fo = new FileObject();
+  %fo.openForWrite(%file);
+
+  for(%i = 0; %i < getFieldCount($Glass::PrefNamesCache); %i++) {
+    %dat = collapseEscape(getField($Glass::PrefNamesCache, %i));
+    %addon = getField(%dat, 0);
+    %title = getField(%dat, 1);
+
+    if(isObject(GlassPrefGroup.name[%addon TAB %title])) {
+      echo("is object!");
+      %val = GlassPrefGroup.name[%addon TAB %title].getValue();
+    } else {
+      echo("no object");
+      %val = $Glass::PrefSavedValue[%addon TAB %title];
+    }
+    echo(%val);
+
+    %fo.writeLine(%addon TAB %title TAB expandEscape(%val));
+  }
+
   %fo.close();
   %fo.delete();
 }
@@ -263,8 +320,10 @@ package GlassPreferences {
     GlassPreferences::registerPref(%mod, %name, %type, %parm, %default, %callback);
     return %ret;
   }
+
+  function onExit() {
+    GlassPreferences::savePrefs();
+    parent::onExit();
+  }
 };
 activatePackage(GlassPreferences);
-
-//TESTING WOOT!
-GlassPreferences::loadPrefs();
