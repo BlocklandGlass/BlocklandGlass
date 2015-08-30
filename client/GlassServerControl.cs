@@ -21,7 +21,7 @@ function GlassServerControl::savePrefs() {
 
 function GlassServerControl::renderPrefs() {
   GlassServerControl_PrefScroll.clear();
-  %currentY = 1;
+  %currentY = 0;
   for(%i = 0; %i < getWordCount(GlassPrefs.addons); %i++) {
     %addon = getWord(GlassPrefs.addons, %i);
 
@@ -75,6 +75,7 @@ function GlassServerControl::renderPrefs() {
 
   GlassServerControl_PrefScroll.extent = getWord(GlassServerControl_PrefScroll.extent, 0) SPC %currentY;
   GlassServerControl_PrefScroll.getGroup().setVisible(true);
+  GlassServerControl_PrefScroll.setVisible(true);
 }
 
 function GlassServerControl::createHeader(%text) {

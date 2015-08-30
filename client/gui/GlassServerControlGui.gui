@@ -187,7 +187,7 @@ new GuiControl(GlassServerControlGui) {
                profile = "GuiDefaultProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "0 0";
+               position = "1 0";
                extent = "290 235";
                minExtent = "290 235";
                enabled = "1";

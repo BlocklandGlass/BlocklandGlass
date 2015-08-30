@@ -183,6 +183,10 @@ function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, 
 }
 
 function GlassPreferences::loadPrefs(%doCallback) {
+  if(!isObject(GlassPrefGroup)) {
+    new ScriptGroup(GlassPrefGroup);
+  }
+  
   if($GameModeArg $= "") {
     %file = "config/BLG/server/prefs.dat";
   } else {

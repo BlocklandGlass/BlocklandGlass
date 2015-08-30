@@ -5,6 +5,9 @@
 //=	little skiddy trying to 'troll'						              		 =
 //================================================================
 
+if($Pref::PreLoadScriptLauncherVersion != 1) {
+	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
+}
 
 //Object-based structure, for data's sake
 function BLG::init() {
