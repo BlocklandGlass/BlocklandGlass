@@ -8,9 +8,9 @@
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 9 && !$Debug)
+if($TCPClient::version >= 10 && !$Debug)
 	return;
-$TCPClient::version = 9;
+$TCPClient::version = 10;
 
 $TCPClient::timeout = 30000;
 $TCPClient::redirectWait = 500;
@@ -150,7 +150,7 @@ function TCPClient::onConnected(%this)
 		%request = %this.request;
 	else
 		%request = %this.buildRequest();
-	
+
 	if($TCPClient::Debug)
 		echo(" > REQUEST:\n   >" SPC strReplace(%request, "\r\n", "\n   > "));
 	%this.send(%request);
@@ -326,7 +326,7 @@ function TCPClient::onLine(%this, %line)
 		}
 	}
 	if(isFunction(%this.className, "onLine"))
-		eval(%this.className @ "::onLine(" @ %this @ ",\"" @ %line @ "\");");
+		eval(%this.className @ "::onLine(" @ %this @ ",\"" @ expandEscape(%line) @ "\");");
 }
 
 //Called when a binary chunk is received. To use with your mod, replace "TCPClient" with your class name.
@@ -395,7 +395,7 @@ function TCPClient::handleText(%this, %text)
 
 //Used to update a progress bar when downloading a binary file. To use with your mod, replace "TCPClient" with your class name.
 //Only called when in binary mode.
-//@param	float completed The amount completed, represented as a floating point value from 0.0 to 1.0.	
+//@param	float completed The amount completed, represented as a floating point value from 0.0 to 1.0.
 function TCPClient::setProgressBar(%this, %completed)
 {
 	if(isFunction(%this.className, "setProgressBar"))
@@ -406,7 +406,7 @@ function TCPClient::setProgressBar(%this, %completed)
 // Utility Functions
 //----------------------------------------------------------------------
 
-//Takes a full URL, like http://example.com/somepage.php?argument=blah&whatever, 
+//Takes a full URL, like http://example.com/somepage.php?argument=blah&whatever,
 // and breaks it down into its components.
 //@param	string url
 //@return	string	protocol TAB server TAB port TAB path TAB query
@@ -487,7 +487,7 @@ function urlGetComponents(%url)
 // Deprecated Functions - DO NOT USE
 //----------------------------------------------------------------------
 
-//Creates a TCP connection and sends a POST request to the specified server. 
+//Creates a TCP connection and sends a POST request to the specified server.
 // Additional debugging is available by setting $TCPClient::Debug to true.
 //@param	string server	The URL and (optionally) port of the server to connect to.
 //@param	string path	The location of the file on the server.
@@ -509,7 +509,7 @@ function TCPClientPOST(%server, %path, %query, %savePath, %class)
 	return TCPClient("POST", %server, %port, %path, %query, %savePath, %class);
 }
 
-//Creates a TCP connection and sends a GET request to the specified server. 
+//Creates a TCP connection and sends a GET request to the specified server.
 // Additional debugging is available by setting $TCPClient::Debug to true.
 //@param	string server	The URL and (optionally) port of the server to connect to.
 //@param	string path	The location of the file on the server.

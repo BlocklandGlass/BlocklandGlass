@@ -22,7 +22,7 @@ function BLG::init() {
 
 function BLG::exec() {
 	BLG::init();
-	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
+	echo(" ===  Blockland Glass v" @ BLG.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
 

@@ -1,3 +1,20 @@
+function GlassServerControl::init() {
+  new ScriptObject(GlassServerControl) {
+
+  };
+}
+
+function GlassServerControl::setTab(%tab) {
+  for(%i = 0; %i < 2; %i++) {
+    %ctrl = "GlassServerControlGui_Pane" @ %i+1;
+    if(%i+1 == %tab) {
+      %ctrl.setVisible(true);
+    } else {
+      %ctrl.setVisible(false);
+    }
+  }
+}
+
 function GlassServerControl::updatePrefs() {
   for(%i = 0; %i < GlassPrefs.getCount(); %i++) {
     %pref = GlassPrefs.getObject(%i);
@@ -16,6 +33,34 @@ function GlassServerControl::savePrefs() {
 
       commandToServer('GlassUpdatePref', %pref.idx, %pref.swatch.ctrl.getValue());
     }
+  }
+}
+
+function GlassServerControl::valueUpdate(%obj) {
+  echo("Update! " @ %obj.ctrl.getValue());
+  %pref = %obj.pref;
+  %type = %pref.type;
+  %parm = %pref.parm;
+
+  if(%type $= "int") {
+    if(%parm !$= "") {
+      %min = getWord(%parm, 0);
+      %max = getWord(%parm, 1);
+
+      if(%obj.ctrl.getValue() < %min) {
+        %obj.ctrl.setValue(%min);
+      } else if(%obj.ctrl.getValue() > %max) {
+        %obj.ctrl.setValue(%max);
+      }
+    }
+  } else if(%type $= "text" || %type $= "textarea") {
+    if(%parm !$= "") {
+      if(strlen(%obj.ctrl.getValue()) > %parm) {
+        %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
+      }
+    }
+  } else {
+
   }
 }
 
@@ -49,6 +94,7 @@ function GlassServerControl::renderPrefs() {
           %swatch = GlassServerControl::createSlider();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
+          %swatch.ctrl.range = %pref.parm;
 
         case "text":
           %swatch = GlassServerControl::createText();
@@ -61,9 +107,12 @@ function GlassServerControl::renderPrefs() {
           %swatch.ctrl.setValue(%pref.value);
       }
 
+      %swatch.ctrl.command = "GlassServerControl::valueUpdate(" @ %swatch.getId() @ ");";
       %swatch.position = 0 SPC %currentY;
       GlassServerControl_PrefScroll.add(%swatch);
+
       %pref.swatch = %swatch;
+      %swatch.pref = %pref;
 
       if(%pref.type !$= "textarea") {
         %currentY += 33;
@@ -129,7 +178,7 @@ function GlassServerControl::createTextArea() {
   %swatch.text = new GuiTextCtrl() {
     profile = "GuiTextProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "10 4";
     extent = "77 18";
     minExtent = "8 2";
@@ -372,4 +421,62 @@ function GlassServerControl::createText() {
   %swatch.add(%swatch.text);
   %swatch.add(%swatch.ctrl);
   return %swatch;
+}
+
+function GlassServerControl::onSelect(%this) {
+  %list = GlassServerControlGui_AdminList;
+  %row = %list.getValue();
+
+  %status = getField(%row, 2);
+  %blid = getField(%row, 1);
+
+  if(%status $= "S") {
+    GlassServerControlGui_PromoteBtn.mcolor = "220 170 170 255";
+    GlassServerControlGui_PromoteBtn.setText("Demote");
+  } else if(%status $= "A") {
+    GlassServerControlGui_PromoteBtn.mcolor = "170 220 170 255";
+    GlassServerControlGui_PromoteBtn.setText("Promote");
+  } else {
+    GlassServerControlGui_PromoteBtn.mcolor = "255 200 200 255";
+    GlassServerControlGui_PromoteBtn.setText("fuck");
+  }
+}
+
+function GlassServerControl::promoteSelected() {
+  %list = GlassServerControlGui_AdminList;
+  %row = %list.getValue();
+
+  %status = getField(%row, 2);
+  %blid = getField(%row, 1);
+
+  %action = GlassServerControlGui_PromoteBtn.text;
+
+  if(%action $= "fuck") {
+    messageBoxOk("You Win!", "I don't know who you are.<br><br>I don't know what you did.<br><br>But you found me.");
+  } else if(%action $= "Promote") {
+    commandToServer('MessageSent', "nigga i'm promoting");
+  } else if(%action $= "Demote") {
+    commandToServer('MessageSent', "nigga i'm demoting");
+  }
+}
+
+function clientCmdGlassServerControlEnable(%tog) {
+  GlassServerControl.enabled = %tog;
+  if(!%tog) {
+    if(GlassServerControlGui.isAwake()) {
+      canvas.popDialog(GlassServerControlGui);
+    }
+  }
+}
+
+function clientCmdGlassAdminListing(%data, %append) {
+  if(!%append) {
+    GlassServerControlGui_AdminList.clear();
+  }
+
+  for(%i = 0; %i < getLineCount(%data); %i++) {
+    GlassServerControlGui_AdminList.addRow(GlassServerControlGui_AdminList.getCount(), getLine(%data, %i));
+  }
+
+  GlassServerControlGui_AdminList.sort(1, true);
 }
