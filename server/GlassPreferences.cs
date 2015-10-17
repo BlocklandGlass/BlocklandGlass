@@ -78,6 +78,36 @@ function GlassPreferences::addAutoAdmin(%blid, %super) {
   }
 }
 
+function GlassPreferences::sendAdminData(%client) {
+  %buffer = "";
+  for(%i = 0; %i < getWordCount($Pref::Server::AutoSuperAdminList); %i++) {
+    %id = getWord($Pref::Server::AutoSuperAdminList, %i);
+    %client = findClientByBL_ID(%id);
+    if(isObject(%client)) {
+      %name = %client.name;
+    } else {
+      %name = "BLID_" @ %blid;
+    }
+
+    %buffer = %buffer @ %name TAB %id TAB "S\n";
+  }
+  if(%buffer !$= "") commandToClient(%client, 'GlassAdminListing', trim(%buffer));
+
+  %buffer = "";
+  for(%i = 0; %i < getWordCount($Pref::Server::AutoAdminList); %i++) {
+    %id = getWord($Pref::Server::AutoAdminList, %i);
+    %client = findClientByBL_ID(%id);
+    if(isObject(%client)) {
+      %name = %client.name;
+    } else {
+      %name = "BLID_" @ %blid;
+    }
+
+    %buffer = %buffer @ %name TAB %id TAB "A\n";
+  }
+  if(%buffer !$= "") commandToClient(%client, 'GlassAdminListing', trim(%buffer), true);
+}
+
 function GlassPreferences::removeAutoAdmin(%blid) {
   $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
   $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
@@ -186,7 +216,7 @@ function GlassPreferences::loadPrefs(%doCallback) {
   if(!isObject(GlassPrefGroup)) {
     new ScriptGroup(GlassPrefGroup);
   }
-  
+
   if($GameModeArg $= "") {
     %file = "config/BLG/server/prefs.dat";
   } else {
@@ -300,6 +330,11 @@ package GlassPreferences {
     echo(" + glass shit");
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', BLG.version);
+
+    if(%ret) {
+      commandToClient(%client, 'GlassServerControlEnable', true);
+      GlassPreferences::sendAdminData(%client);
+    }
     return %ret;
   }
 

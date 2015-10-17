@@ -40,6 +40,7 @@ function BLG::exec() {
 	exec("./client/gui/GlassServerControlGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
+	exec("./common/GlassFontManager.cs");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
@@ -50,10 +51,13 @@ function BLG::exec() {
 	exec("./client/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
+	GlassFontManager::init();
+	
 	GlassAuth::init();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
 	GlassUpdaterSupport::verifyInstall();
+	GlassServerControl::init();
 
 	GlassModManager::init();
 

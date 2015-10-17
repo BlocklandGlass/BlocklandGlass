@@ -6,7 +6,9 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCount++;
 
 function openGlassSettings() {
-  canvas.pushDialog(GlassServerControlGui);
+  if(GlassServerControl.enabled) {
+    canvas.pushDialog(GlassServerControlGui);
+  }
 }
 
 function clientcmdGlassPref(%idx, %title, %addon, %type, %parm, %value) {

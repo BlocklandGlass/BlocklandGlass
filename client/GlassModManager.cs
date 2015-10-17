@@ -173,7 +173,7 @@ function GlassModManager_keybind(%down) {
 }
 
 function GlassModManager::changeKeybind(%this) {
-  GlassModManagerGui_KeybindText.setText("<font:Arial Bold:16><just:center><color:ffffff>Press any key ...");
+  GlassModManagerGui_KeybindText.setText("<font:Quicksand:16><just:center><color:ffffff>Press any key ...");
   GlassModManagerGui_KeybindOverlay.setVisible(true);
   %remapper = new GuiInputCtrl(GlassModManager_Remapper);
   GlassModManagerGui.add(%remapper);
@@ -312,7 +312,7 @@ function GlassModManager::renderActivity() {
           lineSpacing = "2";
           allowColorChars = "0";
           maxChars = "-1";
-          text = "<font:Arial:16>" @ %event.text;
+          text = "<font:Quicksand:16>" @ %event.text;
           //text = "<font:impact:16>Slap<font:arial:16> was given moderator approval by <font:impact:16>Greek2me";
           maxBitmapHeight = "-1";
           selectable = "1";
