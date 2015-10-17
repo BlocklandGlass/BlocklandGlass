@@ -13,7 +13,7 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.1.0-alpha.0+nightly.8.22.15";
+		version = "1.1.0-alpha.0.1+securitypatch.1";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
@@ -52,7 +52,7 @@ function BLG::exec() {
 
 	echo(" ===                   Starting it up                   ===");
 	GlassFontManager::init();
-	
+
 	GlassAuth::init();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
