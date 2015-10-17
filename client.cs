@@ -40,7 +40,7 @@ function BLG::exec() {
 	exec("./client/gui/GlassServerControlGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
-	exec("./common/GlassFontManager.cs");
+	exec("./client/GlassFontManager.cs");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
