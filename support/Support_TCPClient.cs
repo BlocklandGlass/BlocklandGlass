@@ -1,8 +1,8 @@
 //----------------------------------------------------------------------
 // Title:   Support_TCPClient
 // Author:  Greek2me
-// Version: 9
-// Updated: June 14, 2015
+// Version: 10
+// Updated: October 18, 2015
 //----------------------------------------------------------------------
 // Include this code in your own scripts as an *individual file*
 // called "Support_TCPClient.cs". Do not modify this code.
@@ -14,7 +14,7 @@ $TCPClient::version = 10;
 
 $TCPClient::timeout = 30000;
 $TCPClient::redirectWait = 500;
-$TCPClient::retryConnectionWait = 5000;
+$TCPClient::retryConnectionWait = 2000;
 $TCPClient::retryConnectionCount = 1;
 
 $TCPClient::Error::none = 0;
@@ -27,7 +27,7 @@ $TCPClient::Error::invalidUrlFormat = 6;
 $TCPClient::Error::connectionTimedOut = 7;
 
 $TCPClient::Debug = false;
-$TCPClient::PrintErrors = true;
+$TCPClient::PrintErrors = false;
 
 //Creates a connection to the server at the specified URL.
 //@param	string url	The URL to connect to. For example, http://mods.greek2me.us/example.php?param=test&whatever.
@@ -390,7 +390,7 @@ function TCPClient::handleText(%this, %text)
 {
 	%text = expandEscape(%text);
 	if(isFunction(%this.className, "handleText"))
-		eval(%this.className @ "::handleText(" @ %this @ ",\"" @ %text @ "\");");
+		eval(%this.className @ "::handleText(" @ %this @ ",\"" @ expandEscape(%text) @ "\");");
 }
 
 //Used to update a progress bar when downloading a binary file. To use with your mod, replace "TCPClient" with your class name.
