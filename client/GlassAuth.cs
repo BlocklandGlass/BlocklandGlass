@@ -17,7 +17,7 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
-	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ GlassAuth.sid @ "&request=checkauth&name=" @ $Pref::Player::NetName @ "&version=" @ BLG.version;
+	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=checkauth&name=" @ urlenc($Pref::Player::NetName) @ "&version=" @ urlenc(BLG.version);
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -28,7 +28,7 @@ function GlassAuth::check(%this) {
 //note to self: change the object names, this is rough backwards-compatible code
 
 function BLG_Verify::accept(%this) {
-	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ GlassAuth.sid @ "&request=verify&action=confirm";
+	%url = "http://" @ BLG.address @ "/api/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=confirm";
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -48,31 +48,38 @@ function BLG_Verify::decline(%this) {
 }
 
 function GlassAuthTCP::onDone(%this) {
-	//echo(%this.buffer);
+	if($Glass::Debug)
+		echo(%this.buffer);
+
 	if(!%error) {
 		%object = parseJSON(%this.buffer);
-		GlassAuth.sid = %object.get("sid");
-		//echo("Setting SID: " @ %object.get("sid"));
-		if(%object.get("status") $= "error") {
-			error("error authenticating: " @ %object.get("error"));
-		}
-
-		if(%object.get("status") $= "success") {
-			if(%object.get("action") $= "verify") {
-				echo("Opening auth dialog");
-				%name = %object.get("actiondata").get("name");
-				%blid = %object.get("actiondata").get("blid");
-				BLG_Verify_Username.setText(%name);
-				BLG_Verify_BLID.setText(%blid);
-				canvas.pushDialog(BLG_VerifyAccount);
-			} else {
-				echo("BLG auth success");
+		if(getJSONType(%object) $= "hash") {
+			GlassAuth.sid = %object.get("sid");
+			//echo("Setting SID: " @ %object.get("sid"));
+			if(%object.get("status") $= "error") {
+				error("error authenticating: " @ %object.get("error"));
 			}
 
-			//echo(%object.get("hasGlassAccount"));
-			if(%object.get("hasGlassAccount")) {
-				GlassAuth.hasAccount = true;
+			if(%object.get("status") $= "success") {
+				if(%object.get("action") $= "verify") {
+					echo("Opening auth dialog");
+					%name = %object.get("actiondata").get("name");
+					%blid = %object.get("actiondata").get("blid");
+					BLG_Verify_Username.setText(%name);
+					BLG_Verify_BLID.setText(%blid);
+					canvas.pushDialog(BLG_VerifyAccount);
+				} else {
+					echo("BLG auth success");
+				}
+
+				//echo(%object.get("hasGlassAccount"));
+				if(%object.get("hasGlassAccount")) {
+					GlassAuth.hasAccount = true;
+				}
 			}
+		} else {
+			warn("Error authenticating with Glass\nIf this continues, please submit a bug report");
+			//TODO Send error report, probably feature of 1.1
 		}
 
 		if(GlassAuth.heartbeat $= "") {
