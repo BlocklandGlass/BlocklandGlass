@@ -202,7 +202,6 @@ function GlassUpdaterSupport::removeFromQueue(%glassObj) {
     return;
   }
   %obj.glassSwatch.delete();
-  %obj.delete();
   %glassObj.delete();
   GlassUpdaterSupport::resize();
 }
@@ -311,23 +310,29 @@ if($BLG::MM::UseUpdaterDefault $= "") {
 
 package GlassUpdaterSupportPackage {
   function updaterInterfacePushItem(%item) {
-    if($BLG::MM::UseUpdaterDefault)
-      parent::updaterInterfacePushItem(%item);
-    else
+    if(!$BLG::MM::UseUpdaterDefault)
       GlassUpdaterSupport::pushItem(%item);
+
+    parent::updaterInterfacePushItem(%item);
   }
 
   function updaterInterfaceDisplay(%refreshing) {
     //not called!
-    if($BLG::MM::UseUpdaterDefault)
-      parent::updaterInterfaceDisplay(%refreshing);
-    else
+    if(!$BLG::MM::UseUpdaterDefault)
       GlassUpdaterSupport::pushGlassUpdater(false);
+
+    parent::updaterInterfaceDisplay(%refreshing);
+  }
+
+  function canvas::pushDialog(%cvs, %dlg) {
+    if(%dlg !$= "UpdaterDlg" || $BLG::MM::UseUpdaterDefault) {
+      parent::pushDialog(%cvs, %dlg);
+    }
   }
 
   function UpdaterDownloadTCP::setProgressBar(%this, %value) {
     if(!$BLG::MM::UseUpdaterDefault) {
-      %queueObj = updater.queue.currentDownload;
+      %queueObj = updater.fileDownloader.currentDownload;
       GlassUpdaterSupport::updateProgressBar(%queueObj, %value);
     }
 
@@ -335,7 +340,7 @@ package GlassUpdaterSupportPackage {
   }
 
   function doSupportUpdaterInstallNotify() {
-    return;
+    return parent::doSupportUpdaterInstallNotify();
   }
 };
 activatePackage(GlassUpdaterSupportPackage);

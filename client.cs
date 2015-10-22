@@ -9,7 +9,7 @@
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.0.2";
+		version = "1.0.3";
 		//address = "192.168.1.2";
 		//netAddress = "192.168.1.2";
 		address = "api.blocklandglass.com";
@@ -24,6 +24,7 @@ function BLG::init() {
 function BLG::exec() {
 	BLG::init();
 	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
+	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
 
