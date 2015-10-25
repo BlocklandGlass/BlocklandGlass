@@ -482,9 +482,9 @@ function clientCmdGlassAdminListing(%data, %append) {
 }
 
 package GlassServerControl {
-  function disconnectCleanup() {
+  function disconnectCleanup(%a) {
     GlassServerControl.enabled = false;
-    parent::disconnectCleanup();
+    parent::disconnectCleanup(%a);
   }
 };
 activatePackage(GlassServerControl);
