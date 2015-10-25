@@ -6,6 +6,6 @@ install:
   # TODO: Replace with version on Hackage once ParseTS has an alpha out
   - git clone https://github.com/BlocklandGlass/ParseTS.git parsets && cd parsets && cabal install --jobs && cd ..
 script:
-  - parsets .
+  - parsets lint .
 notifications:
   webhooks: https://webhooks.gitter.im/e/3f5dda8eb78aa8cc9b00
