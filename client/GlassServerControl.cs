@@ -480,3 +480,11 @@ function clientCmdGlassAdminListing(%data, %append) {
 
   GlassServerControlGui_AdminList.sort(1, true);
 }
+
+package GlassServerControl {
+  function disconnectCleanup() {
+    GlassServerControl.enabled = false;
+    parent::disconnectCleanup();
+  }
+};
+activatePackage(GlassServerControl);

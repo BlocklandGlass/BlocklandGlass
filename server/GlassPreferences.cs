@@ -119,16 +119,14 @@ function GlassPreferences::removeAutoAdmin(%blid) {
     %name = "BLID_" @ %blid;
   }
 
-  $Pref::Server::AutoSuperAdminList = addItemToList($Pref::Server::AutoSuperAdminList, %blid);
   messageAll('MsgAdminForce','\c2%1 has been demoted (Manual)',%name);
   if(isObject(%client)) {
-    %client.isAdmin = true;
-    %client.isSuperAdmin = true;
-  }
+    %client.isAdmin = false;
+    %client.isSuperAdmin = false;
 
-  if(isObject(%client)) {
     %client.sendPlayerListUpdate();
-    commandtoclient(%client,'setAdminLevel',0);
+    commandtoclient(%client, 'setAdminLevel', 0);
+    commandToClient(%client, 'GlassServerControlEnable', false);
   }
 }
 
@@ -142,7 +140,8 @@ function GlassPreferences::removeAutoAdmin(%blid) {
 //%parm - none, min max, len, min max
 //%default - default
 //%callback - update callback
-function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, %callback) {
+//%tooltip/desc - a description of the preference
+function GlassPreferences::registerPref(%addon, %title, %type, %parm, %default, %callbac, %tooltip) {
   if(!isObject(GlassPrefGroup)) {
     new ScriptGroup(GlassPrefGroup);
   }
@@ -357,6 +356,20 @@ package GlassPreferences {
     if(%type $= "string") {
       %type = "text";
       %parm = getWord(%vartype, 1);
+    }
+
+    if(%type $= "bool") {
+      %type = "bool";
+      %parm = "";
+    }
+
+    if(%type $= "int") {
+      %type = "int";
+      %parm = getWord(%vartype, 1) SPC getWord(%vartype, 2);
+    }
+
+    if(%type $= "list") {
+      warn("(Glass) Unhandled - RTB List");
     }
 
     GlassPreferences::registerPref(%mod, %name, %type, %parm, %default, %callback);
