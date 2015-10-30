@@ -26,6 +26,8 @@ function BLG::init() {
 }
 
 function BLG::exec() {
+	exec("config/BLG/client/mm.cs");
+
 	BLG::init();
 	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
 	exec("./support/jettison.cs");
@@ -46,9 +48,10 @@ function BLG::exec() {
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
+	exec("./common/GlassResourceManager.cs");
+
 	exec("./client/GlassAuth.cs");
 	exec("./client/GlassModManager.cs");
-	exec("./client/GlassPreferences.cs");
 	exec("./client/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
@@ -64,7 +67,6 @@ function BLG::exec() {
 
 	echo(" ===            Drunkenly staggering forward            ===");
 
-	exec("config/BLG/client/mm.cs");
 
 	//tests
 	if($BLG::MM::Colorset $= "") {
@@ -106,6 +108,7 @@ package GlassPrefs {
 
 	function MM_AuthBar::blinkSuccess(%this) {
 		Glass::doWelcomeMessage();
+		GlassResourceManager.prompt();
 		parent::blinkSuccess(%this);
 	}
 };

@@ -12,26 +12,6 @@ function GlassUpdaterSupport::pushItem(%item) {
   GlassUpdaterSupport::pushGlassUpdater(false);
 }
 
-function GlassUpdaterSupport::verifyInstall() {
-  if(!isObject(updater)) {
-    if(!isfile("Add-Ons/Support_Updater.zip")) {
-      echo("Not found! Downloading Support_Updater!");
-      %url = "http://mods.greek2me.us/storage/Support_Updater.zip";
-    	%method = "GET";
-    	%downloadPath = "Add-Ons/Support_Updater.zip";
-    	%className = "GlassUpdaterSupportTCP";
-
-    	connectToURL(%url, %method, %downloadPath, %className);
-
-    	messageBoxOK("Blockland Glass", "Blockland Glass required:\n\nDownloading Support_Updater.");
-    } else {
-      echo("Support_Updater not loaded, but will.");
-    }
-  } else {
-    echo("Support_Updater already loaded and active.");
-  }
-}
-
 function GlassUpdaterSupport::pushGlassUpdater(%force) {
   if(GlassUpdatesGui.getObject(0).getValue() !$= "Add-On Updates" && GlassUpdatesGui.isAwake() && !%force) {
 		echo("\c2Add-On Updates is currently open, setting the close button to open RTB Support and redrawing");
@@ -251,62 +231,20 @@ function GlassUpdaterSupport::updateProgressBar(%queueObj, %float) {
   %swatch.getObject(0).setValue(%float);
 }
 
-function GlassUpdaterSupportTCP::onDone(%this, %error) {
-  if(%error) {
-    messageBoxOK("Uh oh", "There was an error downloading Support_Updater. If the problem persists, please contact Scout31/Jincux");
-  } else {
-    messageBoxOK("Please Restart", "Please restart Blockland", "quit();");
-  }
-}
-
-
-//function updaterDlg::clickQueueItemSkip(%this, %queueObj)
-//{
-//	%this.removeAddOnSwatch(%queueObj.guiSwatch);
-//	%queueObj.delete();
-//
-//	if(updater.queue.getCount() < 1)
-//		canvas.popDialog(%this);
-//}
-
-//function updaterDlg::clickUpdate(%this)
-//{
-//	updaterDlgBackButton.setText(" << HIDE");
-//	updaterDlgUpdateButton.setActive(0);
-
-//	updater.doUpdates();
-//}
-
-//function updaterDlg::clickQueueItem(%this, %queueObj)
-//{
-//	%count = updaterDlgAddOnSwatch.getCount();
-//	for(%i = 0; %i < %count; %i ++)
-//		updaterDlgAddOnSwatch.getObject(%i).setColor("0 0 0 110");
-//	%queueObj.guiSwatch.setColor("255 255 255 110");
-//
-//	%this.viewItem = %queueObj;
-//
-//	%info = "<color:ffffff><h1>" @ %queueObj.name @ "</h1>"
-//		NL "<ul><li><b>Version:</b>" SPC %queueObj.updateVersion @ "</li>"
-//		NL "<b>Restart Required?</b>" SPC (%queueObj.updateRestartRequired ? "Yes" : "No") @ "</li>"
-//		NL "<b>Repository:</b>" SPC %queueObj.repository.url @ "</li></ul>";
-//	if(strLen(%queueObj.updateDescription))
-//		%info = %info NL "\n<h2>Description:</h2>" @ %queueObj.updateDescription;
-//	%info = parseCustomTML(%info, %text, "default");
-//	updaterDlgInfoText.setText(%info);
-//
-//	%this.viewChangeLog(%queueObj);
-//}
-
 if($BLG::MM::UseUpdaterDefault $= "") {
   $BLG::MM::UseUpdaterDefault = false; //use BLG skinned
 }
 
-//updaterInterfacePushItem(%item) //Called when an item is added to the display.
-//updaterInterfacePopItem(%item) //Called when an item is removed from the display.
-//updaterInterfaceSelectItem(%item) //Called when the updater selects an item to display in detail (changelog, etc).
-//updaterInterfaceOnQueueEmpty() //Called when the queue is empty.
-//updaterInterfaceDisplay(%refreshing) //Called when updates are ready to be displayed to the user.
+GlassModManagerGui_Prefs_Updater.setValue($BLG::MM::UseUpdaterDefault);
+
+function GlassUpdaterSupport::updateSetting() {
+  %i = $BLG::MM::UseUpdaterDefault = GlassModManagerGui_Prefs_Updater.getValue();
+  if(%i) {
+    echo("Using default Support_Updater dialogs");
+  } else {
+    echo("Using Glass updater interface");
+  }
+}
 
 package GlassUpdaterSupportPackage {
   function updaterInterfacePushItem(%item) {

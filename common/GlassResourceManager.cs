@@ -38,15 +38,19 @@ function GlassResourceManager::prompt(%this) {
   }
 
   if(%download) {
-    //if dedicated, skip prompt and go straight to download
-
-    //open a gui
+    if($Server::Dedicated) {
+      echo("Downloading Glass Dependencies");
+      GlassResourceManager::acceptPrompt();
+    } else {
+      //canvas.pushDialog(GlassResourcesGui);
+    }
   } else {
-    echo("All resources found");
+    echo("All dependencies found");
   }
 }
 
-function GlassResourceManager::acceptPrompt(%this) { //the user doesn't quite have a choice with this one, as it's required
+function GlassResourceManager::acceptPrompt() { //the user doesn't quite have a choice with this one, as it's required
+  %this = GlassResourceManager;
   for(%i = 0; %i < %this.resources.getCount(); %i++) {
     %res = %this.resources.getObject(%i);
     if(!%res.downloaded) {
@@ -71,10 +75,12 @@ function GlassResourceManager::check(%this) {
 }
 
 function GlassResourceTCP::setProgressBar(%this, %completed) {
-  if(isObject(%this.resource.progressBar)) {
-    //create progressbar
-  } else {
-    %this.resource.progressBar.setValue(%completed);
+  if(!$Server::Dedicated) {
+    if(!isobject(%this.resource.progressBar)) {
+      //create progressbar
+    } else {
+      %this.resource.progressBar.setValue(%completed);
+    }
   }
 }
 
@@ -88,8 +94,12 @@ function GlassResourceTCP::onDone(%this, %error) {
   if(%this.resource.restart) {
     GlassResourceManager.restart = true;
   } else {
-    //check client/server
-    exec("Add-Ons/" @ getsubstr(%this.resource.filename, 0, strlen(%this.resource.filename)-3) @ "/client.cs");
+    if($Server::Dedicated) {
+      %f = "server.cs";
+    } else {
+      %f = "client.cs";
+    }
+    exec("Add-Ons/" @ getsubstr(%this.resource.filename, 0, strlen(%this.resource.filename)-4) @ "/" @ %f);
   }
 }
 
