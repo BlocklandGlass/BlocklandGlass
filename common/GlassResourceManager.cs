@@ -70,7 +70,7 @@ function GlassResourceManager::check(%this) {
   }
 }
 
-function GlassResourceTCP::setProgressBar(%this, %completed)
+function GlassResourceTCP::setProgressBar(%this, %completed) {
   if(isObject(%this.resource.progressBar)) {
     //create progressbar
   } else {
@@ -80,7 +80,6 @@ function GlassResourceTCP::setProgressBar(%this, %completed)
 
 function GlassResourceTCP::onDone(%this, %error) {
   echo("Downloaded " @ %this.resource.name @ " as " @ %this.resource.filename);
-
 
   if(isFunction(%this.resource.getClassName(), "onDone")) {
     %this.resource.onDone();

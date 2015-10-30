@@ -1,10 +1,22 @@
-function GlassServerControl::init() {
+function GlassServerControlC::init() {
   new ScriptObject(GlassServerControl) {
 
   };
 }
 
-function GlassServerControl::setTab(%tab) {
+$remapDivision[$remapCount] = "Blockland Glass";
+   $remapName[$remapCount] = "Server Settings";
+   $remapCmd[$remapCount] = "openGlassSettings";
+   $remapCount++;
+
+function openGlassSettings() {
+  if(GlassServerControl.enabled) {
+    canvas.pushDialog(GlassServerControlGui);
+  }
+}
+
+
+function GlassServerControlC::setTab(%tab) {
   for(%i = 0; %i < 2; %i++) {
     %ctrl = "GlassServerControlGui_Pane" @ %i+1;
     if(%i+1 == %tab) {
@@ -15,7 +27,7 @@ function GlassServerControl::setTab(%tab) {
   }
 }
 
-function GlassServerControl::updatePrefs() {
+function GlassServerControlC::updatePrefs() {
   for(%i = 0; %i < GlassPrefs.getCount(); %i++) {
     %pref = GlassPrefs.getObject(%i);
 
@@ -23,7 +35,7 @@ function GlassServerControl::updatePrefs() {
   }
 }
 
-function GlassServerControl::savePrefs() {
+function GlassServerControlC::savePrefs() {
   commandToServer('GlassUpdateSend');
   for(%i = 0; %i < GlassPrefs.getCount(); %i++) {
     %pref = GlassPrefs.getObject(%i);
@@ -36,7 +48,7 @@ function GlassServerControl::savePrefs() {
   }
 }
 
-function GlassServerControl::valueUpdate(%obj) {
+function GlassServerControlC::valueUpdate(%obj) {
   echo("Update! " @ %obj.ctrl.getValue());
   %pref = %obj.pref;
   %type = %pref.type;
@@ -64,14 +76,14 @@ function GlassServerControl::valueUpdate(%obj) {
   }
 }
 
-function GlassServerControl::renderPrefs() {
+function GlassServerControlC::renderPrefs() {
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
   for(%i = 0; %i < getWordCount(GlassPrefs.addons); %i++) {
     %addon = getWord(GlassPrefs.addons, %i);
 
     //create header
-    %header = GlassServerControl::createHeader(%addon);
+    %header = GlassServerControlC::createHeader(%addon);
     %header.position = 0 SPC %currentY;
     GlassServerControl_PrefScroll.add(%header);
     %currentY += 25;
@@ -81,33 +93,33 @@ function GlassServerControl::renderPrefs() {
 
       switch$(%pref.type) {
         case "bool":
-          %swatch = GlassServerControl::createCheckbox();
+          %swatch = GlassServerControlC::createCheckbox();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
 
         case "int":
-          %swatch = GlassServerControl::createInt();
+          %swatch = GlassServerControlC::createInt();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
 
         case "slider":
-          %swatch = GlassServerControl::createSlider();
+          %swatch = GlassServerControlC::createSlider();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
           %swatch.ctrl.range = %pref.parm;
 
         case "text":
-          %swatch = GlassServerControl::createText();
+          %swatch = GlassServerControlC::createText();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
 
         case "textarea":
-          %swatch = GlassServerControl::createTextArea();
+          %swatch = GlassServerControlC::createTextArea();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
       }
 
-      %swatch.ctrl.command = "GlassServerControl::valueUpdate(" @ %swatch.getId() @ ");";
+      %swatch.ctrl.command = "GlassServerControlC::valueUpdate(" @ %swatch.getId() @ ");";
       %swatch.position = 0 SPC %currentY;
       GlassServerControl_PrefScroll.add(%swatch);
 
@@ -127,7 +139,7 @@ function GlassServerControl::renderPrefs() {
   GlassServerControl_PrefScroll.setVisible(true);
 }
 
-function GlassServerControl::createHeader(%text) {
+function GlassServerControlC::createHeader(%text) {
   return new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -161,7 +173,7 @@ function GlassServerControl::createHeader(%text) {
   };
 }
 
-function GlassServerControl::createTextArea() {
+function GlassServerControlC::createTextArea() {
   %swatch = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -226,7 +238,7 @@ function GlassServerControl::createTextArea() {
   return %swatch;
 }
 
-function GlassServerControl::createCheckbox() {
+function GlassServerControlC::createCheckbox() {
   %swatch = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -274,7 +286,7 @@ function GlassServerControl::createCheckbox() {
   return %swatch;
 }
 
-function GlassServerControl::createInt() {
+function GlassServerControlC::createInt() {
   %swatch = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -324,7 +336,7 @@ function GlassServerControl::createInt() {
   return %swatch;
 }
 
-function GlassServerControl::createSlider() {
+function GlassServerControlC::createSlider() {
   %swatch = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -373,7 +385,7 @@ function GlassServerControl::createSlider() {
   return %swatch;
 }
 
-function GlassServerControl::createText() {
+function GlassServerControlC::createText() {
   %swatch = new GuiSwatchCtrl() {
      profile = "GuiDefaultProfile";
      horizSizing = "right";
@@ -423,7 +435,7 @@ function GlassServerControl::createText() {
   return %swatch;
 }
 
-function GlassServerControl::onSelect(%this) {
+function GlassServerControlC::onSelect(%this) {
   %list = GlassServerControlGui_AdminList;
   %row = %list.getValue();
 
@@ -442,7 +454,7 @@ function GlassServerControl::onSelect(%this) {
   }
 }
 
-function GlassServerControl::promoteSelected() {
+function GlassServerControlC::promoteSelected() {
   %list = GlassServerControlGui_AdminList;
   %row = %list.getValue();
 
@@ -461,7 +473,7 @@ function GlassServerControl::promoteSelected() {
 }
 
 function clientCmdGlassServerControlEnable(%tog) {
-  GlassServerControl.enabled = %tog;
+  GlassServerControlC.enabled = %tog;
   if(!%tog) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
@@ -481,9 +493,9 @@ function clientCmdGlassAdminListing(%data, %append) {
   GlassServerControlGui_AdminList.sort(1, true);
 }
 
-package GlassServerControl {
+package GlassServerControlC {
   function disconnectCleanup(%a) {
-    GlassServerControl.enabled = false;
+    GlassServerControlC.enabled = false;
     parent::disconnectCleanup(%a);
   }
 };
