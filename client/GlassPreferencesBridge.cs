@@ -2,124 +2,63 @@
 // Bridge Blockland Preferences
 //================================
 
-$BLPrefs::Version = "0.0.0-alpha+glassbridge";
+$BLPrefs::Version = "0.0.0-alpha+glassbridge.1";
 
-function clientCmdAddCategory(%category, %icon) {
-	if($BLPrefs::Client::Exists[%category]) {
-		return;
-	}
-
-	$BLPrefs::Client::Exists[%category] = true;
-	%color = (($BLPrefs::CategoryRows % 2) ? "220 235 255" : "230 245 255") SPC "255";
-
-	%row = new GuiSwatchCtrl(BLPrefCategoryRow) {
-		profile = "GuiDefaultProfile";
-		horizSizing = "right";
-		vertSizing = "bottom";
-		position = "0" SPC $BLPrefs::CategoryRows*20;
-		extent = "142 20";
-		minExtent = "8 2";
-		enabled = "1";
-		visible = "1";
-		clipToParent = "1";
-		color = %color;
-		originalColor = %color;
-		category = %category;
-
-		new GuiBitmapCtrl() {
-			profile = "GuiDefaultProfile";
-			horizSizing = "right";
-			vertSizing = "bottom";
-			position = "4 1";
-			extent = "16 16";
-			minExtent = "8 2";
-			enabled = "1";
-			visible = "1";
-			clipToParent = "1";
-			bitmap = "Add-Ons/Client_BlocklandPreferences/icons/" @ getIconOverride(%category, %icon) @ ".png";
-			wrap = "0";
-			lockAspectRatio = "1";
-			alignLeft = "0";
-			alignTop = "0";
-			overflowImage = "0";
-			keepCached = "0";
-			mColor = "255 255 255 255";
-			mMultiply = "0";
-		};
-	};
-
-	%text = new GuiTextCtrl() {
-		profile = "BLPrefTextProfile";
-		horizSizing = "right";
-		vertSizing = "bottom";
-		position = "24 1";
-		extent = "44 18";
-		minExtent = "8 2";
-		enabled = "1";
-		visible = "1";
-		clipToParent = "1";
-		text = %category;
-		maxLength = "255";
-	};
-	%row.textObj = %text;
-	%row.add(%text);
-
-	%button = new GuiBitmapButtonCtrl(BLPrefCategorySwitchButton) {
-		profile = "GuiDefaultProfile";
-		horizSizing = "right";
-		vertSizing = "bottom";
-		position = "0 0";
-		extent = "140 20";
-		minExtent = "8 2";
-		enabled = "1";
-		visible = "1";
-		clipToParent = "1";
-		command = "requestBLPrefCategory(\"" @ %category @ "\");";
-		groupNum = "-1";
-		buttonType = "PushButton";
-		bitmap = "base/client/ui/btnBlank";
-		lockAspectRatio = "0";
-		alignLeft = "0";
-		alignTop = "0";
-		overflowImage = "0";
-		mKeepCached = "0";
-		mColor = "255 255 255 255";
-		text = "";
-	};
-	%row.add(%button);
-	%button.setValue("");
-
-	BLPrefCategoryList.add(%row);
-
-	$BLPrefs::CategoryRows++;
+if(!isObject(GlassPrefGroup)) {
+	new ScriptGroup(GlassPrefGroup);
 }
 
-function requestBLPrefCategory(%category) {
-	BLPrefTitle.setValue(%category);
-	$BLPrefs::LastRowPos = 20;
-	$BLPrefs::PrefRows = 0;
-	BLPrefCategoryList.setRowActive(%category);
-	BLPrefPrefList.clearPrefRows();
-	commandToServer('getBLPrefCategory', %category);
+function GlassPrefGroup::requestPrefs(%this) {
+	if(!%this.currentCategory) {
+		for(%i = 0; %i < %this.getCount(); %i++) {
+			%cat = %this.getObject(%i);
+			if(!%cat.downloadedPrefs) {
+				%this.currentCategory = %cat;
+				commandToServer('getBLPrefCategory', %cat.name);
+			}
+		}
+	}
+}
+
+function clientCmdAddCategory(%category, %icon) {
+	%obj = new ScriptGroup() {
+		class = "GlassPrefCategory";
+
+		name = %category;
+		icon = %icon;
+
+		downloadedPrefs = false;
+	};
+	GlassPrefGroup.add(%obj);
+	GlassPrefGroup.requestPrefs();
 }
 
 function clientCmdReceivePref(%title, %type, %variable, %value, %params, %legacy) {
-	if(%legacy) {
-		BLPrefTitle.setValue(BLPrefTitle.getValue() SPC "(Legacy)");
-	}
+	%obj = new ScriptObject() {
+		class = "GlassPrefInfo";
 
-	switch$(%type) {
-		case "number" or "string":
-			BLPrefPrefList.addTextInput(%title, %variable, %value, %params);
+		title = %title;
+		type = %type;
+		variable = %variable;
+		value = %value;
+		params = %params;
 
-		case "boolean":
-			BLPrefPrefList.addCheckboxInput(%title, %variable, %value);
-	}
+		legacy = %legacy;
+	};
+	GlassPrefGroup.currentCategory.add(%obj);
 }
 
-package BLPrefClientPackage {
+function clientCmdfinishReceivePref() {
+	if($Glass::Debug)
+		echo("Downloaded category " @ GlassPrefGroup.currentCategory.name);
+	GlassPrefGroup.currentCategory.downloadedPrefs = true;
+	GlassPrefGroup.currentCategory = "";
+	GlassPrefGroup.requestPrefs();
+}
+
+package GlassPrefPackage {
 	function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-		Parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, $BLPrefs::Version, %i, %j, %k, %l, %m, %n, %o, %p);
+		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Prefs" TAB $BLPrefs::Version NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
 	}
 };
-activatePackage(BLPrefClientPackage);
+activatePackage(GlassPrefPackage);

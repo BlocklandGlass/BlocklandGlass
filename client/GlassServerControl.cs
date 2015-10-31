@@ -10,7 +10,7 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCount++;
 
 function openGlassSettings() {
-  if(GlassServerControl.enabled) {
+  if(GlassServerControlC.enabled) {
     canvas.pushDialog(GlassServerControlGui);
   }
 }
@@ -76,28 +76,104 @@ function GlassServerControlC::valueUpdate(%obj) {
   }
 }
 
+function GlassServerControlC::renderPrefCategories() {
+  GlassServerControlGui_Prefs_Categories.clear();
+  %odd = false;
+  %y = 0;
+  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %odd = !%odd;
+    if(%odd) {
+      %color = "220 250 220 255";
+    } else {
+      %color = "220 230 220 255";
+    }
+    %cat = GlassPrefGroup.getObject(%i);
+
+    %swat = new GuiSwatchCtrl() {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = 0 SPC %y;
+       extent = "125 24";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       color = %color;
+
+       new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "4 4";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %cat.icon;
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+          overflowImage = "0";
+          keepCached = "0";
+          mColor = "255 255 255 255";
+          mMultiply = "0";
+       };
+       new GuiTextCtrl() {
+          profile = "GuiTextProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "24 3";
+          extent = "38 18";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          text = %cat.name;
+          maxLength = "255";
+       };
+       new GuiMouseEventCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "0 0";
+          extent = "125 24";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lockMouse = "0";
+       };
+    };
+    GlassServerControlGui_Prefs_Categories.add(%swat);
+    %y += 24;
+  }
+}
+
 function GlassServerControlC::renderPrefs() {
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
-  for(%i = 0; %i < getWordCount(GlassPrefs.addons); %i++) {
-    %addon = getWord(GlassPrefs.addons, %i);
+  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %category = GlassPrefGroup.getObject(%i);
 
     //create header
-    %header = GlassServerControlC::createHeader(%addon);
+    %header = GlassServerControlC::createHeader(%category.name);
     %header.position = 0 SPC %currentY;
     GlassServerControl_PrefScroll.add(%header);
     %currentY += 25;
 
-    for(%j = 0; %j < GlassPrefs.addonCount[%addon]; %j++) {
-      %pref = GlassPrefs.addonItem[%addon SPC %j];
-
+    for(%j = 0; %j < %category.getCount(); %j++) {
+      %pref = %category.getObject(%j);
+      %swatch = "";
       switch$(%pref.type) {
-        case "bool":
+        case "boolean":
           %swatch = GlassServerControlC::createCheckbox();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
 
-        case "int":
+        case "number":
           %swatch = GlassServerControlC::createInt();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
@@ -108,7 +184,7 @@ function GlassServerControlC::renderPrefs() {
           %swatch.ctrl.setValue(%pref.value);
           %swatch.ctrl.range = %pref.parm;
 
-        case "text":
+        case "string":
           %swatch = GlassServerControlC::createText();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
@@ -117,6 +193,11 @@ function GlassServerControlC::renderPrefs() {
           %swatch = GlassServerControlC::createTextArea();
           %swatch.text.setText(%pref.title);
           %swatch.ctrl.setValue(%pref.value);
+      }
+
+      if(!isObject(%swatch)) {
+        warn("Failed to make pref of type \"" @ %pref.type @ "\"");
+        continue;
       }
 
       %swatch.ctrl.command = "GlassServerControlC::valueUpdate(" @ %swatch.getId() @ ");";
@@ -145,7 +226,7 @@ function GlassServerControlC::createHeader(%text) {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 1";
-     extent = "280 24";
+     extent = "325 24";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -157,8 +238,8 @@ function GlassServerControlC::createHeader(%text) {
         horizSizing = "center";
         vertSizing = "center";
         position = "0 4";
-        extent = "280 16";
-        minExtent = "280 2";
+        extent = "325 16";
+        minExtent = "325 2";
         enabled = "1";
         visible = "1";
         clipToParent = "1";
@@ -179,7 +260,7 @@ function GlassServerControlC::createTextArea() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "280 128";
+     extent = "325 128";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -244,7 +325,7 @@ function GlassServerControlC::createCheckbox() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "280 32";
+     extent = "325 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -292,7 +373,7 @@ function GlassServerControlC::createInt() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "280 32";
+     extent = "325 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -342,7 +423,7 @@ function GlassServerControlC::createSlider() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "280 32";
+     extent = "325 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -391,7 +472,7 @@ function GlassServerControlC::createText() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "280 32";
+     extent = "325 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -499,4 +580,4 @@ package GlassServerControlC {
     parent::disconnectCleanup(%a);
   }
 };
-activatePackage(GlassServerControl);
+activatePackage(GlassServerControlC);

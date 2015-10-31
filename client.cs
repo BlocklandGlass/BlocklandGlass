@@ -52,6 +52,7 @@ function BLG::exec() {
 
 	exec("./client/GlassAuth.cs");
 	exec("./client/GlassModManager.cs");
+	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");

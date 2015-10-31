@@ -144,21 +144,12 @@ package GlassServerControlS {
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', BLG.version);
 
-    if(%ret) {
+    if(%client.isAdmin) {
+      echo(%client.netname @ " is admin");
       commandToClient(%client, 'GlassServerControlEnable', true);
       GlassServerControlS::sendAdminData(%client);
     }
     return %ret;
-  }
-
-  function serverCmdGlassHandshake(%client, %version) {
-    parent::serverCmdGlassHandshake(%client, %version);
-    echo(%client.name @ " - blg version " @ %version);
-
-    if(%client.isAdmin || %client.isSuperAdmin || %client.isHost) {
-      %client.sendGlassPrefs();
-      //send permissions, auto admin lists?
-    }
   }
 };
 activatePackage(GlassServerControlS);
