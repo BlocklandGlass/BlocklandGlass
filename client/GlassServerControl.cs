@@ -187,7 +187,7 @@ function GlassServerControlC::renderPrefs() {
         case "string":
           %swatch = GlassServerControlC::createText();
           %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(%pref.value);
+          %swatch.ctrl.setValue(expandEscape(%pref.value));
 
         case "textarea":
           %swatch = GlassServerControlC::createTextArea();
@@ -343,7 +343,7 @@ function GlassServerControlC::createCheckbox() {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "Some checkbox";
+    text = "";
     maxLength = "255";
   };
 
@@ -351,7 +351,7 @@ function GlassServerControlC::createCheckbox() {
     profile = "GuiCheckBoxProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "257 8";
+    position = "303 8";
     extent = "16 16";
     minExtent = "8 2";
     enabled = "1";
@@ -359,7 +359,7 @@ function GlassServerControlC::createCheckbox() {
     clipToParent = "1";
     groupNum = "-1";
     buttonType = "ToggleButton";
-    text = "";
+    text = " ";
   };
 
   %swatch.add(%swatch.text);
@@ -400,7 +400,7 @@ function GlassServerControlC::createInt() {
     horizSizing = "right";
     vertSizing = "center";
     position = "245 7";
-    extent = "30 18";
+    extent = "70 18";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -450,7 +450,7 @@ function GlassServerControlC::createSlider() {
     horizSizing = "right";
     vertSizing = "center";
     position = "175 6";
-    extent = "100 20";
+    extent = "140 20";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -499,7 +499,7 @@ function GlassServerControlC::createText() {
     horizSizing = "right";
     vertSizing = "center";
     position = "175 7";
-    extent = "100 18";
+    extent = "140 18";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
