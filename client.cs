@@ -62,7 +62,7 @@ function BLG::exec() {
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
 	GlassUpdaterSupport::verifyInstall();
-	GlassServerControl::init();
+	GlassServerControlC::init();
 
 	GlassModManager::init();
 

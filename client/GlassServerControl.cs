@@ -1,5 +1,5 @@
 function GlassServerControlC::init() {
-  new ScriptObject(GlassServerControl) {
+  new ScriptObject(GlassServerControlC) {
 
   };
 }

@@ -143,7 +143,7 @@ package GlassServerControlS {
     echo(" + glass shit");
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', BLG.version);
-
+    echo(" +- admin return: " @ %ret);
     if(%client.isAdmin) {
       echo(%client.netname @ " is admin");
       commandToClient(%client, 'GlassServerControlEnable', true);

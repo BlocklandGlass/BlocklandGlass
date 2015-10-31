@@ -9,7 +9,7 @@ export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
 package GlassPreload {
   function deactivateServerPackages() {
 		parent::deactivateServerPackages();
-		activatePackage(GlassPreferences);
+		activatePackage(GlassServerControlS);
 	}
 };
 activatePackage(GlassPreload);

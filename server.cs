@@ -32,7 +32,7 @@ function BLG::exec() {
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 
-	exec("./server/GlassPreferences.cs");
+	exec("./server/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
 

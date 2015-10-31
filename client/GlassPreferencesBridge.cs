@@ -15,8 +15,20 @@ function GlassPrefGroup::requestPrefs(%this) {
 			if(!%cat.downloadedPrefs) {
 				%this.currentCategory = %cat;
 				commandToServer('getBLPrefCategory', %cat.name);
+				return;
 			}
 		}
+		GlassServerControlC::renderPrefCategories();
+		GlassServerControlC::renderPrefs();
+	}
+}
+
+function clientCmdhasPrefSystem(%version, %permission) {
+	if($Glass::Debug)
+		echo("Server has pref system! (" @ %version @")");
+
+	if(%permission) {
+		commandToServer('GetBLPrefCategories');
 	}
 }
 
