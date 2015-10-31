@@ -90,128 +90,169 @@ function GlassServerControlC::renderPrefCategories() {
     %cat = GlassPrefGroup.getObject(%i);
 
     %swat = new GuiSwatchCtrl() {
-       profile = "GuiDefaultProfile";
-       horizSizing = "right";
-       vertSizing = "bottom";
-       position = 0 SPC %y;
-       extent = "125 24";
-       minExtent = "8 2";
-       enabled = "1";
-       visible = "1";
-       clipToParent = "1";
-       color = %color;
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = 0 SPC %y;
+      extent = "125 24";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = %color;
+      ocolor = %color;
+      rcolor = %color;
 
-       new GuiBitmapCtrl() {
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "bottom";
-          position = "4 4";
-          extent = "16 16";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %cat.icon;
-          wrap = "0";
-          lockAspectRatio = "0";
-          alignLeft = "0";
-          alignTop = "0";
-          overflowImage = "0";
-          keepCached = "0";
-          mColor = "255 255 255 255";
-          mMultiply = "0";
-       };
-       new GuiTextCtrl() {
-          profile = "GuiTextProfile";
-          horizSizing = "right";
-          vertSizing = "bottom";
-          position = "24 3";
-          extent = "38 18";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          text = %cat.name;
-          maxLength = "255";
-       };
-       new GuiMouseEventCtrl() {
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "bottom";
-          position = "0 0";
-          extent = "125 24";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          lockMouse = "0";
-       };
+      new GuiBitmapCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "4 4";
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %cat.icon;
+        wrap = "0";
+        lockAspectRatio = "0";
+        alignLeft = "0";
+        alignTop = "0";
+        overflowImage = "0";
+        keepCached = "0";
+        mColor = "255 255 255 255";
+        mMultiply = "0";
+      };
+      new GuiTextCtrl() {
+        profile = "GuiTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "24 3";
+        extent = "38 18";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        text = %cat.name;
+        maxLength = "255";
+      };
     };
+    %swat.mouse = new GuiMouseEventCtrl(GlassServerControlGui_CatMouseCtrl) {
+      category = %cat;
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "0 0";
+      extent = "125 24";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lockMouse = "0";
+    };
+
+    %cat.swatch = %swat;
+    %swat.add(%swat.mouse);
+
     GlassServerControlGui_Prefs_Categories.add(%swat);
+
     %y += 24;
   }
+
+  if(%y > 233) {
+    echo(%y);
+    GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC %y;
+  } else {
+    GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC 233;
+  }
+  echo(GlassServerControlGui_Prefs_Categories.extent);
+  GlassServerControlGui_Prefs_Categories.getGroup().scrollToTop();
+  GlassServerControlGui_Prefs_Categories.setVisible(true);
+}
+
+function GlassServerControlGui_CatMouseCtrl::onMouseEnter(%this) {
+  %swatch = %this.getGroup();
+  %swatch.color = "255 255 255 255";
+}
+
+function GlassServerControlGui_CatMouseCtrl::onMouseLeave(%this) {
+  %swatch = %this.getGroup();
+  %swatch.color = %swatch.ocolor;
+}
+
+function GlassServerControlGui_CatMouseCtrl::onMouseDown(%this, %down) {
+  for(%i = 0; %i < GlassServerControlGui_Prefs_Categories.getCount(); %i++) {
+    %s = GlassServerControlGui_Prefs_Categories.getObject(%i);
+    %s.color = %s.ocolor = %s.rcolor;
+  }
+
+  %swatch = %this.getGroup();
+  %swatch.color = %swatch.ocolor = "170 200 255 255";
+
+  GlassServerControlC::renderPrefCategory(%this.category);
 }
 
 function GlassServerControlC::renderPrefs() {
+  GlassServerControlC::renderPrefCategory(GlassPrefGroup.getObject(0));
+}
+
+function GlassServerControlC::renderPrefCategory(%category) {
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
-  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
-    %category = GlassPrefGroup.getObject(%i);
 
-    //create header
-    %header = GlassServerControlC::createHeader(%category.name);
-    %header.position = 0 SPC %currentY;
-    GlassServerControl_PrefScroll.add(%header);
-    %currentY += 25;
+  //create header
+  %header = GlassServerControlC::createHeader(%category.name);
+  %header.position = 0 SPC %currentY;
+  GlassServerControl_PrefScroll.add(%header);
+  %currentY += 25;
 
-    for(%j = 0; %j < %category.getCount(); %j++) {
-      %pref = %category.getObject(%j);
-      %swatch = "";
-      switch$(%pref.type) {
-        case "boolean":
-          %swatch = GlassServerControlC::createCheckbox();
-          %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(%pref.value);
+  for(%j = 0; %j < %category.getCount(); %j++) {
+    %pref = %category.getObject(%j);
+    %swatch = "";
+    switch$(%pref.type) {
+      case "boolean":
+        %swatch = GlassServerControlC::createCheckbox();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(%pref.value);
 
-        case "number":
-          %swatch = GlassServerControlC::createInt();
-          %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(%pref.value);
+      case "number":
+        %swatch = GlassServerControlC::createInt();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(%pref.value);
 
-        case "slider":
-          %swatch = GlassServerControlC::createSlider();
-          %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(%pref.value);
-          %swatch.ctrl.range = %pref.parm;
+      case "slider":
+        %swatch = GlassServerControlC::createSlider();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(%pref.value);
+        %swatch.ctrl.range = %pref.parm;
 
-        case "string":
-          %swatch = GlassServerControlC::createText();
-          %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(expandEscape(%pref.value));
+      case "string":
+        %swatch = GlassServerControlC::createText();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(expandEscape(%pref.value));
 
-        case "textarea":
-          %swatch = GlassServerControlC::createTextArea();
-          %swatch.text.setText(%pref.title);
-          %swatch.ctrl.setValue(%pref.value);
-      }
+      case "textarea":
+        %swatch = GlassServerControlC::createTextArea();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(%pref.value);
+    }
 
-      if(!isObject(%swatch)) {
-        warn("Failed to make pref of type \"" @ %pref.type @ "\"");
-        continue;
-      }
+    if(!isObject(%swatch)) {
+      warn("Failed to make pref of type \"" @ %pref.type @ "\"");
+      continue;
+    }
 
-      %swatch.ctrl.command = "GlassServerControlC::valueUpdate(" @ %swatch.getId() @ ");";
-      %swatch.position = 0 SPC %currentY;
-      GlassServerControl_PrefScroll.add(%swatch);
+    %swatch.ctrl.command = "GlassServerControlC::valueUpdate(" @ %swatch.getId() @ ");";
+    %swatch.position = 0 SPC %currentY;
+    GlassServerControl_PrefScroll.add(%swatch);
 
-      %pref.swatch = %swatch;
-      %swatch.pref = %pref;
+    %pref.swatch = %swatch;
+    %swatch.pref = %pref;
 
-      if(%pref.type !$= "textarea") {
-        %currentY += 33;
-      } else {
-        %currentY += 129;
-      }
+    if(%pref.type !$= "textarea") {
+      %currentY += 33;
+    } else {
+      %currentY += 129;
     }
   }
 
@@ -574,10 +615,24 @@ function clientCmdGlassAdminListing(%data, %append) {
   GlassServerControlGui_AdminList.sort(1, true);
 }
 
+function GlassPrefGroup::cleanup() {
+  GlassServerControlC.enabled = false;
+  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %cat = GlassPrefGroup.getObject(%i);
+    %cat.deleteAll();
+  }
+  GlassPrefGroup.deleteAll();
+}
+
 package GlassServerControlC {
+  function disconnect(%a) {
+    GlassPrefGroup::cleanup();
+    parent::disconnect(%a);
+  }
+
   function disconnectCleanup(%a) {
-    GlassServerControlC.enabled = false;
-    parent::disconnectCleanup(%a);
+    GlassPrefGroup::cleanup();
+    return parent::disconnectCleanup(%a);
   }
 };
 activatePackage(GlassServerControlC);
