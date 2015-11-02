@@ -8,6 +8,19 @@ if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);
 }
 
+function GlassPrefGroup::sendPrefs(%this)
+	for(%i = 0; %i < %this.getCount(); %i++) {
+		%cate = %this.getObject(%i);
+		for(%j = 0; %j < %cate.getCount(); %j++) {
+			%pref = %cate.getObject(%j);
+			if(%pref.actualvalue !$= %pref.value) {
+				commandToServer('updateBLPref', %pref.variable, %pref.value);
+				%pref.actualvalue = %pref.value;
+			}
+		}
+	}
+}
+
 function GlassPrefGroup::requestPrefs(%this) {
 	if(!%this.currentCategory) {
 		for(%i = 0; %i < %this.getCount(); %i++) {
@@ -20,6 +33,33 @@ function GlassPrefGroup::requestPrefs(%this) {
 		}
 		GlassServerControlC::renderPrefCategories();
 		GlassServerControlC::renderPrefs();
+	}
+}
+
+function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way to do this
+	for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+		%group = GlassPrefGroup.getObject(%i);
+		for(%j = 0; %j < %group.getCount(); %j++) {
+			%pso = %group.getObject(%j);
+			if(%pso.variable $= %var) {
+				return %pso;
+			}
+		}
+	}
+
+	return false;
+}
+
+function clientCmdupdateBLPref(%varname, %value) {
+	if(%pso = GlassPrefGroup::findByVariable(%varname)) {
+		%pso.realvalue = %value;
+		%pso.value = %value;
+
+		// TODO something about updating the gui
+
+		if(isobject(%pso.swatch.ctrl)) {
+			%pso.swatch.ctrl.setValue(%pso.value);
+		}
 	}
 }
 
@@ -53,6 +93,7 @@ function clientCmdReceivePref(%title, %type, %variable, %value, %params, %legacy
 		type = %type;
 		variable = %variable;
 		value = %value;
+		actualvalue = %value;
 		params = %params;
 
 		legacy = %legacy;
