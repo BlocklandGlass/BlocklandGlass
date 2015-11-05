@@ -12,7 +12,7 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 //Object-based structure, for data's sake
 function BLG::init() {
 	new ScriptObject(BLG) {
-		version = "1.1.0-alpha.0.1+securitypatch.1";
+		version = "1.1.0-alpha.1";
 		address = "api.blocklandglass.com";
 		netAddress = "blocklandglass.com";
 
