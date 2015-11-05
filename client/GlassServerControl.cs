@@ -27,42 +27,39 @@ function GlassServerControlC::setTab(%tab) {
   }
 }
 
-function GlassServerControlC::updatePrefs() {
-  for(%i = 0; %i < GlassPrefs.getCount(); %i++) {
-    %pref = GlassPrefs.getObject(%i);
-
-    %pref.swatch.ctrl.setValue(%pref.value);
-  }
-}
-
-function GlassServerControlC::savePrefs() {
-  commandToServer('GlassUpdateSend');
-  for(%i = 0; %i < GlassPrefs.getCount(); %i++) {
-    %pref = GlassPrefs.getObject(%i);
-
-    if(%pref.swatch.ctrl.getValue() !$= %pref.value) {
-      echo(%pref.title @ " was updated to " @ %pref.swatch.ctrl.getValue());
-
-      commandToServer('GlassUpdatePref', %pref.idx, %pref.swatch.ctrl.getValue());
-    }
-  }
-}
-
 function GlassServerControlC::valueUpdate(%obj) {
-  echo("Update! " @ %obj.ctrl.getValue());
   %pref = %obj.pref;
   %type = %pref.type;
-  %parm = %pref.parm;
+  %parm = %pref.params;
 
-  if(%type $= "int") {
+  if(%type $= "number") {
     if(%parm !$= "") {
+      %val = %obj.ctrl.getValue();
+
       %min = getWord(%parm, 0);
       %max = getWord(%parm, 1);
+      %decimal = getWord(%parm, 2);
 
-      if(%obj.ctrl.getValue() < %min) {
-        %obj.ctrl.setValue(%min);
-      } else if(%obj.ctrl.getValue() > %max) {
-        %obj.ctrl.setValue(%max);
+      if(%val !$= "") {
+        if(%val < %min) {
+          %obj.ctrl.setValue(%min);
+        } else if(%val > %max) {
+          %obj.ctrl.setValue(%max);
+        }
+
+        if(%decimal !$= "") {
+          if(strpos(%val, ".") != -1) {
+            if(strlen(%val) - strpos(%val, ".") > %decimal) {
+              %newval = getSubStr(%val, 0, strpos(%val, ".")+%decimal+1);
+              %obj.ctrl.setValue(%newval);
+            }
+
+            if(%decimal == 0) {
+              %newval = getSubStr(%val, 0, strpos(%val, "."));
+              %obj.ctrl.setValue(%newval);
+            }
+          }
+        }
       }
     }
   } else if(%type $= "text" || %type $= "textarea") {
@@ -74,6 +71,8 @@ function GlassServerControlC::valueUpdate(%obj) {
   } else {
 
   }
+
+  %pref.value = %obj.ctrl.getValue();
 }
 
 function GlassServerControlC::renderPrefCategories() {
@@ -588,9 +587,9 @@ function GlassServerControlC::promoteSelected() {
   if(%action $= "fuck") {
     messageBoxOk("You Win!", "I don't know who you are.<br><br>I don't know what you did.<br><br>But you found me.");
   } else if(%action $= "Promote") {
-    commandToServer('MessageSent', "nigga i'm promoting");
+    //commandToServer('GlassPromote', %blid);
   } else if(%action $= "Demote") {
-    commandToServer('MessageSent', "nigga i'm demoting");
+    //commandToServer('GlassDemote', %blid);
   }
 }
 

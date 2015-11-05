@@ -8,16 +8,24 @@ if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);
 }
 
-function GlassPrefGroup::sendPrefs(%this)
+function GlassPrefGroup::sendPrefs(%this) {
 	for(%i = 0; %i < %this.getCount(); %i++) {
 		%cate = %this.getObject(%i);
 		for(%j = 0; %j < %cate.getCount(); %j++) {
 			%pref = %cate.getObject(%j);
 			if(%pref.actualvalue !$= %pref.value) {
+				%up = true;
+				echo("Updating " @ %pref.variable);
 				commandToServer('updateBLPref', %pref.variable, %pref.value);
 				%pref.actualvalue = %pref.value;
 			}
 		}
+	}
+
+	if(%up) {
+		messageBoxOk("Settings Updated", "The server settings were updated");
+	} else {
+		messageBoxOk("No Changes!", "There was nothing to update!");
 	}
 }
 

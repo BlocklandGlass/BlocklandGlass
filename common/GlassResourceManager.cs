@@ -43,6 +43,8 @@ function GlassResourceManager::prompt(%this) {
       GlassResourceManager::acceptPrompt();
     } else {
       //canvas.pushDialog(GlassResourcesGui);
+      // TODO temporary
+      GlassResourceManager::acceptPrompt();
     }
   } else {
     echo("All dependencies found");
@@ -85,23 +87,27 @@ function GlassResourceTCP::setProgressBar(%this, %completed) {
 }
 
 function GlassResourceTCP::onDone(%this, %error) {
-  echo("Downloaded " @ %this.resource.name @ " as " @ %this.resource.filename);
+  if(!%error) {
+    echo("Downloaded " @ %this.resource.name @ " as " @ %this.resource.filename);
 
-  if(isFunction(%this.resource.getClassName(), "onDone")) {
-    %this.resource.onDone();
-  }
-
-  if(%this.resource.restart) {
-    GlassResourceManager.restart = true;
-  } else {
-    if($Server::Dedicated) {
-      %f = "server.cs";
-    } else {
-      %f = "client.cs";
+    if(isFunction(%this.resource.getClassName(), "onDone")) {
+      %this.resource.onDone();
     }
-    exec("Add-Ons/" @ getsubstr(%this.resource.filename, 0, strlen(%this.resource.filename)-4) @ "/" @ %f);
+
+    if(%this.resource.restart) {
+      GlassResourceManager.restart = true;
+    } else {
+      if($Server::Dedicated) {
+        %f = "server.cs";
+      } else {
+        %f = "client.cs";
+      }
+      exec("Add-Ons/" @ getsubstr(%this.resource.filename, 0, strlen(%this.resource.filename)-4) @ "/" @ %f);
+    }
+  } else {
+    echo("Error: " @ %error);
   }
 }
 
 GlassResourceManager::addResource("Updater", "Support_Updater.zip", "http://mods.greek2me.us/storage/Support_Updater.zip", true);
-GlassResourceManager::addResource("Preferences", "Support_Preferences.zip", "http://mods.greek2me.us/storage/Support_Updater.zip", false);
+GlassResourceManager::addResource("Preferences", "Support_Preferences.zip", "http://api.blocklandglass.com/download.php?branch=3&aid=193", false);
