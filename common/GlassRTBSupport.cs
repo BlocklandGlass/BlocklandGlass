@@ -28,25 +28,35 @@ function GlassRTBSupport::scanFiles(%this) {
 
 		%idArray[%idArrayLen] = %rtbId;
 		%idArrayLen++;
+
 		echo(" \c1+ Found \c4\"" @ getsubstr(%file, 8, strlen(%file)-20) @ "\"");
 	}
 
-	if(BLG.enableCLI)
+	if($Server::Dedicated)
 		echo("\c1Use \c5GlassRTBSupport::doUpdates(); \c1to download the latests versions");
 
-	%rtbIdStr = "";
-	for(%i = 0; %i < %idArrayLen; %i++) {
-		if(%i > 0) {
-			%rtbIdStr = %rtbIdStr @ "-";
+	//4k string limit, so... send 25 at a time
+	%remaining = %idArrayLen;
+	for(%j = 0; %j < %idArrayLen/25; %j++) {
+		%rtbIdStr = "";
+		for(%i = 0; %i < 25; %i++) {
+			%remaining--;
+			if(%i > 0) {
+				%rtbIdStr = %rtbIdStr @ "-";
+			}
+			%rtbIdStr = %rtbIdStr @ %idArray[(%j*25) + %i];
 		}
-		%rtbIdStr = %rtbIdStr @ %idArray[%i];
-	}
 
-	%url = "http://" @ BLG.netAddress @ "/api/rtbConversion.php?mods=" @ %rtbIdStr;
-	%method = "GET";
-	%downloadPath = "";
-	%className = "GlassRTBSupportTCP";
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+		%url = "http://" @ BLG.netAddress @ "/api/rtbConversion.php?mods=" @ %rtbIdStr;
+		%method = "GET";
+		%downloadPath = "";
+		%className = "GlassRTBSupportTCP";
+		%tcp = connectToURL(%url, %method, %downloadPath, %className);
+
+		if(%remaining < 0) {
+			%tcp.last = true;
+		}
+	}
 }
 
 function GlassRTBSupport::doUpdates(%visual) {
@@ -189,7 +199,7 @@ function GlassRTBSupportTCP::onDone(%this, %error) {
 				//echo("Porting \"" @ %addonData.filename @ "\" from RTB to Glass");
 			}
 		}
-		if(GlassRTBSupport.files.getCount() > 0) {
+		if(GlassRTBSupport.files.getCount() > 0 && %this.last) {
 			GlassRTBSupport::openGui();
 		}
 	}
