@@ -81,6 +81,8 @@ function BLG::exec() {
 
 	%bind = $BLG::MM::Keybind;
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+
+	exec("./feedback.cs");
 }
 
 function Glass::doWelcomeMessage() {
@@ -108,6 +110,7 @@ package GlassPrefs {
 
 	function MM_AuthBar::blinkSuccess(%this) {
 		Glass::doWelcomeMessage();
+		Glass::openFeedbackPrompt();
 		GlassResourceManager.prompt();
 		parent::blinkSuccess(%this);
 	}

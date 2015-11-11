@@ -59,14 +59,18 @@ function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way
 }
 
 function clientCmdupdateBLPref(%varname, %value) {
+	echo("Updating " @ %varname @ " to " @ %value);
 	if(%pso = GlassPrefGroup::findByVariable(%varname)) {
 		%pso.realvalue = %value;
 		%pso.value = %value;
 
 		// TODO something about updating the gui
-
 		if(isobject(%pso.swatch.ctrl)) {
-			%pso.swatch.ctrl.setValue(%pso.value);
+			if(%pso.type !$= "list") {
+				%pso.swatch.ctrl.setValue(%pso.value);
+			} else {
+				%pso.swatch.ctrl.setSelected(%pso.value);
+			}
 		}
 	}
 }

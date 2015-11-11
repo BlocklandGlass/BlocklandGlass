@@ -68,11 +68,13 @@ function GlassServerControlC::valueUpdate(%obj) {
         %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
       }
     }
-  } else {
-
   }
 
-  %pref.value = %obj.ctrl.getValue();
+  if(%type $= "list") {
+    %pref.value = %obj.ctrl.getSelected();
+  } else {
+    %pref.value = %obj.ctrl.getValue();
+  }
 }
 
 function GlassServerControlC::renderPrefCategories() {
@@ -158,11 +160,11 @@ function GlassServerControlC::renderPrefCategories() {
     %y += 24;
   }
 
-  if(%y > 233) {
+  if(%y > 203) {
     echo(%y);
     GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC %y;
   } else {
-    GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC 233;
+    GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC 203;
   }
   echo(GlassServerControlGui_Prefs_Categories.extent);
   GlassServerControlGui_Prefs_Categories.getGroup().scrollToTop();
@@ -234,6 +236,17 @@ function GlassServerControlC::renderPrefCategory(%category) {
         %swatch = GlassServerControlC::createTextArea();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
+
+      case "list":
+        %swatch = GlassServerControlC::createList();
+        %swatch.text.setText(%pref.title);
+        %options = strreplace(%pref.params, "|", "\t");
+        for(%k = 0; %k < getFieldCount(%options); %k++) {
+          %fields = strreplace(expandEscape(getField(%options, %k)), "**", "\t");
+          %swatch.ctrl.add(getField(%fields, 0), getField(%fields, 1));
+        }
+        %swatch.ctrl.add();
+        %swatch.ctrl.setSelected(%pref.value);
     }
 
     if(!isObject(%swatch)) {
@@ -356,6 +369,53 @@ function GlassServerControlC::createTextArea() {
   %swatch.add(%swatch.text);
   %swatch.add(%swat2);
   %swat2.add(%swatch.ctrl);
+  return %swatch;
+}
+
+function GlassServerControlC::createList() {
+  %swatch = new GuiSwatchCtrl() {
+     profile = "GuiDefaultProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = "1 25";
+     extent = "325 32";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     color = "100 100 100 50";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GuiTextProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "10 7";
+    extent = "77 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "";
+    maxLength = "255";
+  };
+
+  %swatch.ctrl = new GuiPopUpMenuCtrl() {
+    profile = "GuiPopUpMenuProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "215 6";
+    extent = "100 20";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    maxLength = "255";
+    maxPopupHeight = "200";
+  };
+
+  %swatch.add(%swatch.text);
+  %swatch.add(%swatch.ctrl);
   return %swatch;
 }
 
@@ -596,17 +656,29 @@ function GlassServerControlC::promoteSelected() {
       commandToServer('GlassSetAdmin', %blid, 1);
     }
   } else if(%action $= "Demote") {
-    commandToServer('GlassSetAdmin', %blid, 0); 
+    commandToServer('GlassSetAdmin', %blid, 0);
   }
 }
 
-function clientCmdGlassServerControlEnable(%tog) {
-  GlassServerControlC.enabled = %tog;
-  if(!%tog) {
+function clientCmdGlassServerControlEnable(%overall, %prefs) {
+  GlassServerControlC.enabled = %overall;
+  if(!%overall) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
     }
   }
+
+  for(%i = 0; %i < GlassServerControlGui_Pane2.getCount(); %i++) {
+    GlassServerControlGui_Pane2.getObject(%i).setVisible(%prefs);
+  }
+  GlassServerControlGui_AllowPrefs.setVisible(!%prefs);
+}
+
+function clientCmdBLPAllowedUse(%prefs) {
+  for(%i = 0; %i < GlassServerControlGui_Pane2.getCount(); %i++) {
+    GlassServerControlGui_Pane2.getObject(%i).setVisible(%prefs);
+  }
+  GlassServerControlGui_AllowPrefs.setVisible(!%prefs);
 }
 
 function clientCmdGlassAdminListing(%data, %append) {

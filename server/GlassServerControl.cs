@@ -211,13 +211,10 @@ function serverCmdGlassUpdateSend(%client) {
 
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
-    echo(" + glass shit");
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', BLG.version);
-    echo(" +- admin return: " @ %ret);
     if(%client.isAdmin) {
-      echo(%client.netname @ " is admin");
-      commandToClient(%client, 'GlassServerControlEnable', true);
+      commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
     }
     return %ret;
