@@ -6,6 +6,27 @@ $Glass::Modules::Prefs = true;
 // Admin
 //====================================
 
+function registerGlassPrefs() {
+	%cat = "Blockland Glass"; //on the glass client, this will be loaded in to it's own page (settings)
+	%icon = "server";
+
+	%promotesa = registerBlocklandPref(%cat, "Who can manage super-admins?", "list", "$Pref::Glass::SAPromoteLevel", $Pref::Glass::SAPromoteLevel, "Host**3|Super Admin**2", "", %icon, 0);
+	%promotea = registerBlocklandPref(%cat, "Who can manage admins?", "list", "$Pref::Glass::APromoteLevel", $Pref::Glass::APromoteLevel, "Host**3|Super Admin**2|Admin**1", "", %icon, 0);
+
+  %promotea.announce = %promotesa.announce = false;
+}
+registerGlassPrefs();
+
+function GameConnection::checkPermissionLevel(%this, %perm) {
+  if(%perm == 3) {
+    return %this.isHost;
+  } else if(%perm == 2) {
+    return (%this.isHost || %this.isSuperAdmin);
+  } else if(%perm == 1) {
+    return (%this.isHost || %this.isSuperAdmin || %this.isAdmin);
+  }
+}
+
 function removeItemFromList(%list, %item) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
     %id = getWord(trim(%list), %i);
@@ -34,6 +55,56 @@ function removeItemFromArray(%list, %item) {
 
 function addItemToArray(%list, %item) {
   return trim(%list TAB %item);
+}
+
+function getAdminLevelFromBLID(%blid) {
+  for(%i = 0; %i < getWordCount($Pref::Server::AutoSuperAdminList); %i++) {
+    %id = getWord($Pref::Server::AutoSuperAdminList, %i);
+    if(%id == %blid) {
+      return 2;
+    }
+  }
+
+  for(%i = 0; %i < getWordCount($Pref::Server::AutoAdminList); %i++) {
+    %id = getWord($Pref::Server::AutoAdminList, %i);
+    if(%id == %blid) {
+      return 1;
+    }
+  }
+
+  return false;
+}
+
+function serverCmdGlassSetAdmin(%client, %blid, %level) {
+  if(%blid == getNumKeyId()) {
+    return; //host
+  }
+
+  if(%level > 0) {
+    %sa = %level-1;
+    if(%sa) {
+      if(%client.checkPermissionLevel($Pref::Glass::SAPromoteLevel)) {
+        GlassServerControlS::addAutoAdmin(%blid, 1);
+      }
+    } else {
+      if(%client.checkPermissionLevel($Pref::Glass::APromoteLevel)) {
+        GlassServerControlS::addAutoAdmin(%blid, 0);
+      }
+    }
+  } else {
+    %theirlevel = getAdminLevelFromBLID(%blid);
+    if(%theirlevel == 2) {
+      if(%client.checkPermissionLevel($Pref::Glass::SAPromoteLevel)) {
+        GlassServerControlS::removeAutoAdmin(%blid);
+      }
+    } else if(%theirlevel == 1) {
+      if(%client.checkPermissionLevel($Pref::Glass::APromoteLevel)) {
+        GlassServerControlS::removeAutoAdmin(%blid);
+      }
+    } else {
+      GlassServerControlS::removeAutoAdmin(%blid);
+    }
+  }
 }
 
 function GlassServerControlS::addAutoAdmin(%blid, %super) {

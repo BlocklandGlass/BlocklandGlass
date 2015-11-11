@@ -587,9 +587,16 @@ function GlassServerControlC::promoteSelected() {
   if(%action $= "fuck") {
     messageBoxOk("You Win!", "I don't know who you are.<br><br>I don't know what you did.<br><br>But you found me.");
   } else if(%action $= "Promote") {
-    //commandToServer('GlassPromote', %blid);
+    if(%status $= "S")
+      return;
+
+    if(%status $= "A") {
+      commandToServer('GlassSetAdmin', %blid, 2);
+    } else if(%status $= ""){
+      commandToServer('GlassSetAdmin', %blid, 1);
+    }
   } else if(%action $= "Demote") {
-    //commandToServer('GlassDemote', %blid);
+    commandToServer('GlassSetAdmin', %blid, 0); 
   }
 }
 
