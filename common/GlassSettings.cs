@@ -14,7 +14,7 @@ function GlassSettings::init(%context) {
       GlassSettings.register("server", "SC::AEditRank", 2);
     }
 
-    GlassSettings.loadData(%context);;
+    GlassSettings.loadData(%context);
 }
 
 function GlassSettings::register(%this, %context, %name, %defaultValue, %callback) {
