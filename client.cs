@@ -65,14 +65,8 @@ function BLG::exec() {
 	GlassServerControlC::init();
 
 	GlassModManager::init();
-
-<<<<<<< HEAD
-	echo(" ===            Drunkenly staggering forward            ===");
-
-=======
 	echo(" ===                Loading Preferences                 ===");
 	exec("config/BLG/client/mm.cs");
->>>>>>> master
 
 	//tests
 	if($BLG::MM::Colorset $= "") {
