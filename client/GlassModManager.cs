@@ -179,7 +179,7 @@ function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui.add(%remapper);
   %remapper.makeFirstResponder(1);
 
-  %bind = $BLG::MM::Keybind;
+  %bind = GlassSettings.get("MM::Keybind");
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   //swatch
 }
@@ -200,13 +200,13 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   //clearSwatch
   GlassModManagerGui_KeybindOverlay.setVisible(false);
 
-  %bind = $BLG::MM::Keybind;
+  %bind = GlassSettings.get("MM::Keybind");
 
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   GlobalActionMap.bind(%device, %key, "GlassModManager_keybind");
   GlassModManager_Remapper.delete();
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
-  $BLG::MM::Keybind = %device TAB %key;
+  GlassSettings.update("MM::Keybind", %device TAB %key);
 }
 
 //====================================
@@ -214,7 +214,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 //====================================
 
 function GlassModManager::pullActivityFeed(%this) {
-  %url = "http://" @ BLG.address @ "/api/activity.php";
+  %url = "http://" @ Glass.address @ "/api/activity.php";
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManagerTCP";
@@ -374,7 +374,7 @@ function GlassModManagerTCP::handleText(%this, %line) {
 //====================================
 
 function GlassModManager::loadBoards() {
-  %url = "http://" @ BLG.address @ "/api/mm.php?request=boards";
+  %url = "http://" @ Glass.address @ "/api/mm.php?request=boards";
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManagerBoardsTCP";
@@ -604,7 +604,7 @@ function GlassModManager::loadBoard(%this, %id) {
     gotoWebPage("http://blocklandglass.com/rtb/");
     return;
   }
-  %url = "http://" @ BLG.address @ "/api/mm.php?request=board&board=" @ %id;
+  %url = "http://" @ Glass.address @ "/api/mm.php?request=board&board=" @ %id;
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManagerBoardTCP";

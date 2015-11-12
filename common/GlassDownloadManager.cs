@@ -24,7 +24,7 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 
 	%fileData = %this.getObject(0);
 
-	%url = "http://" @ BLG.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.branch @ "&ingame=1";
+	%url = "http://" @ Glass.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.branch @ "&ingame=1";
 	%method = "GET";
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";

@@ -9,7 +9,7 @@ function GlassModManager_AddonPage::init() {
 function GlassModManager_AddonPage::loadAddon(%this, %id) {
   GlassModManager::setLoading(true);
   GlassModManager.historyAdd("addon", %id);
-  %url = "http://" @ BLG.address @ "/api/mm.php?request=addon&id=" @ %id;
+  %url = "http://" @ Glass.address @ "/api/mm.php?request=addon&id=" @ %id;
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManager_AddonPageTCP";
@@ -44,7 +44,7 @@ function GlassModManager_AddonPage::submitComment() {
 
   GlassModManagerGui_AddonPage_NewComment.setText("");
 
-  %url = "http://" @ BLG.address @ "/api/mm.php?sid=" @ GlassAuth.sid @ "&request=submitcomment&id=" @ GlassModManager_AddonPage.aid @ "&comment=" @ urlEnc(%comment);
+  %url = "http://" @ Glass.address @ "/api/mm.php?sid=" @ GlassAuth.sid @ "&request=submitcomment&id=" @ GlassModManager_AddonPage.aid @ "&comment=" @ urlEnc(%comment);
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManager_AddonPageTCP";
@@ -433,7 +433,7 @@ function GlassModManager_AddonPage::fetchComments(%this, %page) {
   if(%page $= "" || %page < 0) {
     %page = 0;
   }
-  %url = "http://" @ BLG.address @ "/api/mm.php?request=comments&aid=" @ %this.aid @ "&page=" @ %page;
+  %url = "http://" @ Glass.address @ "/api/mm.php?request=comments&aid=" @ %this.aid @ "&page=" @ %page;
   %method = "GET";
   %downloadPath = "";
   %className = "GlassModManager_AddonPage_CommentsTCP";

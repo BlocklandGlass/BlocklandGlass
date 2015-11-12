@@ -47,7 +47,7 @@ function GlassRTBSupport::scanFiles(%this) {
 			%rtbIdStr = %rtbIdStr @ %idArray[(%j*25) + %i];
 		}
 
-		%url = "http://" @ BLG.netAddress @ "/api/rtbConversion.php?mods=" @ %rtbIdStr;
+		%url = "http://" @ Glass.netAddress @ "/api/rtbConversion.php?mods=" @ %rtbIdStr;
 		%method = "GET";
 		%downloadPath = "";
 		%className = "GlassRTBSupportTCP";

@@ -10,26 +10,15 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }
 
-//Object-based structure, for data's sake
-function BLG::init() {
-	new ScriptObject(BLG) {
-		version = "1.1.0-alpha.1";
-		//address = "192.168.1.2";
-		//netAddress = "192.168.1.2";
-		address = "api.blocklandglass.com";
-		netAddress = "blocklandglass.com";
+exec("./core.cs");
 
-		enableCLI = true;
-	};
+function Glass::exec() {
 
-	//GlobalActionMap.bind("keyboard", ,"RTB_toggleOverlay");
-}
+	echo(" ===                Loading Preferences                 ===");
+	exec("./common/GlassSettings.cs");
+	GlassSettings::init("client");
 
-function BLG::exec() {
-	exec("config/BLG/client/mm.cs");
-
-	BLG::init();
-	echo(" === Blockland Glass v" @ BLG.version @ " suiting up. ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
@@ -65,16 +54,10 @@ function BLG::exec() {
 	GlassServerControlC::init();
 
 	GlassModManager::init();
-	echo(" ===                Loading Preferences                 ===");
-	exec("config/BLG/client/mm.cs");
 
 	//tests
 	if($BLG::MM::Colorset $= "") {
 		$BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt";
-	}
-
-	if($BLG::MM::Keybind $= "") {
-		$BLG::MM::Keybind = "keyboard\tctrl m";
 	}
 
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField($BLG::MM::Keybind, 1)));
@@ -97,10 +80,10 @@ function Glass::welcomeMessageSeen() {
 function clientCmdGlassHandshake(%ver) {
   ServerConnection.hasGlass = true;
   ServerConnection._glassVersion = %ver;
-	commandToServer('GlassHandshake', BLG.version);
+	commandToServer('GlassHandshake', Glass.version);
 }
 
-BLG::exec();
+Glass::init();
 
 package GlassPrefs {
 	function onExit() {

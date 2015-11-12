@@ -9,20 +9,14 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }
 
-//Object-based structure, for data's sake
-function BLG::init() {
-	new ScriptObject(BLG) {
-		version = "1.1.0-alpha.1";
-		address = "api.blocklandglass.com";
-		netAddress = "blocklandglass.com";
+exec("./core.cs");
 
-		enableCLI = true;
-	};
-}
+function Glass::exec() {
+	echo(" ===                Loading Preferences                 ===");
+	exec("./common/GlassSettings.cs");
+	GlassSettings::init("server");
 
-function BLG::exec() {
-	BLG::init();
-	echo(" ===  Blockland Glass v" @ BLG.version @ " suiting up.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
 
@@ -50,4 +44,4 @@ function BLG::reload() {
   exec("./server/GlassPreferences.cs");
 }
 
-BLG::exec();
+Glass::init();

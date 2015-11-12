@@ -7,7 +7,7 @@ function GlassSettings::init(%context) {
     echo("Loading " @ %context @ " prefs");
 
     if(%context $= "client") {
-      GlassSettings.register("client", "MM::Keybind", "ctrl m");
+      GlassSettings.register("client", "MM::Keybind", "keyboard\tctrl m");
       GlassSettings.register("client", "MM::UseDefault", false);
     } else if(%context $= "server") {
       GlassSettings.register("server", "SC::SAEditRank", 3);
@@ -78,6 +78,10 @@ function GlassSettings::update(%name, %value) {
   if(%obj.callback !$= "") {
     eval(%obj.callback @ "(\"" @ expandEscape(%name) @ "\",\"" @ %value @ "\");");
   }
+}
+
+function GlassSettings::get(%name) {
+  return GlassSettings.obj[%name].value;
 }
 
 package GlassSettingsPackage {
