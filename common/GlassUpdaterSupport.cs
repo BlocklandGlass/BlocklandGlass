@@ -231,14 +231,11 @@ function GlassUpdaterSupport::updateProgressBar(%queueObj, %float) {
   %swatch.getObject(0).setValue(%float);
 }
 
-if($BLG::MM::UseUpdaterDefault $= "") {
-  $BLG::MM::UseUpdaterDefault = false; //use BLG skinned
-}
-
-GlassModManagerGui_Prefs_Updater.setValue($BLG::MM::UseUpdaterDefault);
+GlassModManagerGui_Prefs_Updater.setValue(GlassSettings.get("MM::UseDefault"));
 
 function GlassUpdaterSupport::updateSetting() {
-  %i = $BLG::MM::UseUpdaterDefault = GlassModManagerGui_Prefs_Updater.getValue();
+  %i = GlassModManagerGui_Prefs_Updater.getValue();
+  GlassSettings.update("MM::UseDefault", %i);
   if(%i) {
     echo("Using default Support_Updater dialogs");
   } else {
@@ -248,7 +245,7 @@ function GlassUpdaterSupport::updateSetting() {
 
 package GlassUpdaterSupportPackage {
   function updaterInterfacePushItem(%item) {
-    if(!$BLG::MM::UseUpdaterDefault)
+    if(!GlassSettings.get("MM::UseDefault"))
       GlassUpdaterSupport::pushItem(%item);
 
     parent::updaterInterfacePushItem(%item);
@@ -256,20 +253,20 @@ package GlassUpdaterSupportPackage {
 
   function updaterInterfaceDisplay(%refreshing) {
     //not called!
-    if(!$BLG::MM::UseUpdaterDefault)
+    if(!GlassSettings.get("MM::UseDefault"))
       GlassUpdaterSupport::pushGlassUpdater(false);
 
     parent::updaterInterfaceDisplay(%refreshing);
   }
 
   function canvas::pushDialog(%cvs, %dlg) {
-    if(%dlg !$= "UpdaterDlg" || $BLG::MM::UseUpdaterDefault) {
+    if(%dlg !$= "UpdaterDlg" || GlassSettings.get("MM::UseDefault")) {
       parent::pushDialog(%cvs, %dlg);
     }
   }
 
   function UpdaterDownloadTCP::setProgressBar(%this, %value) {
-    if(!$BLG::MM::UseUpdaterDefault) {
+    if(!GlassSettings.get("MM::UseDefault")) {
       %queueObj = updater.fileDownloader.currentDownload;
       GlassUpdaterSupport::updateProgressBar(%queueObj, %value);
     }
