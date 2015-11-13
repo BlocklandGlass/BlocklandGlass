@@ -44,7 +44,7 @@ function GlassResourceManager::prompt(%this) {
     } else {
       //canvas.pushDialog(GlassResourcesGui);
       // TODO temporary
-      GlassResourceManager::acceptPrompt();
+      messageBoxOk("Glass Resources", "Blockland Glass relies on a few standardized add-ons to work.<br><br>Closing this dialog will begin their download.", "GlassResourceManager::acceptPrompt();");
     }
   } else {
     echo("All dependencies found");

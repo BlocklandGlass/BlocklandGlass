@@ -616,6 +616,12 @@ function GlassServerControlC::createText() {
   return %swatch;
 }
 
+function GlassServerControlC::populatePlayerList(%this) {
+  %list = GlassServerControlGui_PlayerList;
+
+  %list.addrow("Name\t9789\t-", 0);
+}
+
 function GlassServerControlC::onSelect(%this) {
   %list = GlassServerControlGui_AdminList;
   %row = %list.getValue();
@@ -631,7 +637,8 @@ function GlassServerControlC::onSelect(%this) {
     GlassServerControlGui_PromoteBtn.setText("Promote");
   } else {
     GlassServerControlGui_PromoteBtn.mcolor = "255 200 200 255";
-    GlassServerControlGui_PromoteBtn.setText("fuck");
+    GlassServerControlGui_PromoteBtn.setText("error");
+    GlassServerControlGui_PromoteBtn.enabled = false;
   }
 }
 
@@ -644,11 +651,10 @@ function GlassServerControlC::promoteSelected() {
 
   %action = GlassServerControlGui_PromoteBtn.text;
 
-  if(%action $= "fuck") {
-    messageBoxOk("You Win!", "I don't know who you are.<br><br>I don't know what you did.<br><br>But you found me.");
-  } else if(%action $= "Promote") {
-    if(%status $= "S")
-      return;
+  if(%action $= "Promote") {
+    if(%status $= "S") {
+      return; //we should be demoting?
+    }
 
     if(%status $= "A") {
       commandToServer('GlassSetAdmin', %blid, 2);
@@ -657,6 +663,8 @@ function GlassServerControlC::promoteSelected() {
     }
   } else if(%action $= "Demote") {
     commandToServer('GlassSetAdmin', %blid, 0);
+  } else {
+    error("Dont know how to handle this.");
   }
 }
 
