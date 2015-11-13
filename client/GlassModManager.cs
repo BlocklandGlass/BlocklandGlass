@@ -384,8 +384,7 @@ function GlassModManager::loadBoards() {
 
 function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount, %sub) {
   if(%id >= 0) {
-    GlassSettings.cachePut("MM::BoardCache::Image[" @ %id @ "]", %image);
-    $BLG::MM::BoardCache::Image[%id] = %image;
+    GlassSettings.cachePut("MM::BoardImage[" @ %id @ "]", %image);
   }
   if(!isObject(GlassModManagerBoards)) {
     new ScriptGroup(GlassModManagerBoards);
@@ -1148,7 +1147,7 @@ function GlassModManager::populateColorsets() {
   GlassModManagerGui_MyColorsets.clear();
   %currentY = 5;
   for(%i = 0; %i < %this.colorsets; %i++) {
-    if($BLG::MM::Colorset $= %this.colorsetFile[%i]) {
+    if(GlassSettings.get("MM::Colorset") $= %this.colorsetFile[%i]) {
       %color = "153 204 119 255";
     } else {
       %color = "204 119 119 255";
@@ -1240,10 +1239,9 @@ function GlassModManager_MyColorsets::init() {
 }
 
 function GlassModManager_MyColorsets::def() {
-  GlassModManager_MyColorsets.renderColorset($BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt");
+  GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
   filecopy("config/server/colorset.txt", "config/server/colorset.old");
-  filecopy_hack($BLG::MM::Colorset, "config/server/colorset.txt");
-  export("$BLG::MM::*", "config/BLG/client/mm.cs");
+  filecopy_hack(GlassSettings.get("MM::Colorset"), "config/server/colorset.txt");
   GlassModManager::populateColorsets();
 }
 
@@ -1252,13 +1250,12 @@ function GlassModManager_MyColorsets::apply() {
     return;
   }
 
-  $BLG::MM::Colorset = GlassModManager_MyColorsets.colorsetFile[GlassModManager_MyColorsets.selected];
+  GlassSettings.update("MM::Colorset", GlassModManager_MyColorsets.colorsetFile[GlassModManager_MyColorsets.selected]);
   GlassModManager::populateColorsets();
   GlassModManager_MyColorsets.selected = "";
   //do file stuff
   filecopy("config/server/colorset.txt", "config/server/colorset.old");
-  filecopy_hack($BLG::MM::Colorset, "config/server/colorset.txt");
-  export("$BLG::MM::*", "config/BLG/client/mm.cs");
+  filecopy_hack(GlassSettings.get("MM::Colorset"), "config/server/colorset.txt");
 }
 
 //filecopy doesnt like zips

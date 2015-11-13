@@ -73,7 +73,6 @@ function Glass::doWelcomeMessage() {
 
 function Glass::welcomeMessageSeen() {
 	GlassSettings.cachePut("MM::WelcomeMessage", true);
-	export("$BLG::MM::*", "config/BLG/client/mm.cs");
 }
 
 function clientCmdGlassHandshake(%ver) {
@@ -86,7 +85,6 @@ Glass::init();
 
 package GlassPrefs {
 	function onExit() {
-		export("$BLG::MM::*", "config/BLG/client/mm.cs");
 		parent::onExit();
 	}
 
