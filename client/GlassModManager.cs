@@ -384,6 +384,7 @@ function GlassModManager::loadBoards() {
 
 function GlassModManager::addBoard(%this, %id, %image, %title, %fileCount, %sub) {
   if(%id >= 0) {
+    GlassSettings.cachePut("MM::BoardCache::Image[" @ %id @ "]", %image);
     $BLG::MM::BoardCache::Image[%id] = %image;
   }
   if(!isObject(GlassModManagerBoards)) {

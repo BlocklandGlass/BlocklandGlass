@@ -662,7 +662,7 @@ function GlassModManager_AddonPage::renderDependencies(%this) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ $BLG::MM::BoardCache::Image[%this.depBoard[%i]] @ ".png><font:arial bold:14> " @ %this.depName[%i];
+        text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ GlassSettings.cacheFetch("MM::BoardImage[" @ %this.depBoard[%i] @ "]") @ ".png><font:arial bold:14> " @ %this.depName[%i];
         maxBitmapHeight = "-1";
         selectable = "1";
         autoResize = "1";

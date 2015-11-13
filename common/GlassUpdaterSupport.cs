@@ -60,8 +60,8 @@ function GlassUpdaterSupport::buildSwatch(%queueObj, %initY) {
     %text = "<font:arial bold:16>" @ %title @ " <font:arial:14>" @ %name;
 
     %boardId = %glassDat.get("board");
-    if($BLG::MM::BoardCache::Image[%boardId] !$= "") {
-      %boardImage = $BLG::MM::BoardCache::Image[%boardId];
+    if(GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]") !$= "") {
+      %boardImage = GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]");
       %textX = 28;
     }
   } else {

@@ -18,6 +18,10 @@ function Glass::exec() {
 	exec("./common/GlassSettings.cs");
 	GlassSettings::init("client");
 
+  if(isFile("config/BLG/client/mm.cs")) {
+    exec("./runonce/settingConversion.cs");
+  }
+
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
@@ -55,25 +59,20 @@ function Glass::exec() {
 
 	GlassModManager::init();
 
-	//tests
-	if($BLG::MM::Colorset $= "") {
-		$BLG::MM::Colorset = "Add-Ons/System_BlocklandGlass/colorset_default.txt";
-	}
+  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
 
-  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField($BLG::MM::Keybind, 1)));
-
-	%bind = $BLG::MM::Keybind;
+	%bind = GlassSettings.get("MM::Keybind");
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
 
 	exec("./feedback.cs");
 }
 
 function Glass::doWelcomeMessage() {
-	if(!$BLG::MM::WelcomeMessage) messageBoxOk("Welcome to Blockland Glass", "<font:arial bold:20>Welcome to Blockland Glass<font:arial: 14><br><br>Thank you very much for downloading Blockland Glass!<br><br>To get started, press <font:arial bold:14>CTRL M<font:arial:14>!", "Glass::welcomeMessageSeen();");
+	if(!GlassSettings.cacheFetch("MM::WelcomeMessage")) messageBoxOk("Welcome to Blockland Glass", "<font:arial bold:20>Welcome to Blockland Glass<font:arial: 14><br><br>Thank you very much for downloading Blockland Glass!<br><br>To get started, press <font:arial bold:14>CTRL M<font:arial:14>!", "Glass::welcomeMessageSeen();");
 }
 
 function Glass::welcomeMessageSeen() {
-	$BLG::MM::WelcomeMessage = true;
+	GlassSettings.cachePut("MM::WelcomeMessage", true);
 	export("$BLG::MM::*", "config/BLG/client/mm.cs");
 }
 

@@ -9,6 +9,7 @@ function GlassSettings::init(%context) {
     if(%context $= "client") {
       GlassSettings.register("client", "MM::Keybind", "keyboard\tctrl m");
       GlassSettings.register("client", "MM::UseDefault", false);
+      GlassSettings.register("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
     } else if(%context $= "server") {
       GlassSettings.register("server", "SC::SAEditRank", 3);
       GlassSettings.register("server", "SC::AEditRank", 2);
@@ -39,7 +40,29 @@ function GlassSettings::loadData(%this, %context) {
     %line = %fo.readLine();
     %this.loadSetting(getField(%line, 0), getField(%line, 1));
   }
+
   %fo.close();
+
+  if(!%this.cacheLoaded) {
+    %fo.openForRead("cache/glass.dat");
+    while(!%fo.isEOF()) {
+      %line = %fo.readLine();
+      %name = getField(%line, 0);
+      %created = getField(%line, 1);
+      %ttl = getField(%line, 2);
+      %value = collapseEscape(getField(%line, 3));
+
+      if(%created+%ttl < getRealTime() && %ttl != 0) {
+        if($Glass::Debug)
+          warn("Cached value [" @ %name @ "] has expired! [ " @ %created @ " | " @ %ttl @ " ]");
+      } else {
+        %this.cacheCreate(%name, %value, %ttl, %created);
+      }
+    }
+
+    %this.cacheLoaded = true;
+  }
+
   %fo.delete();
 
   %this.loaded[%context] = true;
@@ -48,16 +71,24 @@ function GlassSettings::loadData(%this, %context) {
 function GlassSettings::saveData(%this, %context) {
   %fo = new FileObject();
   %fo.openForWrite("config/" @ %context @ "/glass.conf");
+  %fo2 = new FileObject();
+  %fo2.openForWrite("cache/glass.dat");
 
   for(%i = 0; %i < %this.getCount(); %i++) {
     %setting = %this.getObject(%i);
     if(%setting.context $= %context) {
-      %fo.writeLine(%setting.name SPC expandEscape(%setting.value));
+      %fo.writeLine(%setting.name TAB expandEscape(%setting.value));
+    }
+
+    if(%setting.class $= "GlassCache") {
+      %fo2.writeLine(%setting.name TAB %setting.created TAB %setting.ttl TAB expandEscape(%setting.value));
     }
   }
 
   %fo.close();
+  %fo2.close();
   %fo.delete();
+  %fo2.delete();
 }
 
 function GlassSettings::loadSetting(%this, %name, %value) {
@@ -82,6 +113,34 @@ function GlassSettings::update(%name, %value) {
 
 function GlassSettings::get(%name) {
   return GlassSettings.obj[%name].value;
+}
+
+function GlassSettings::cacheCreate(%this, %name, %value, %ttl, %time) {
+  %obj = new ScriptObject() {
+    class = "GlassCache";
+    value = %value;
+
+    created = %time;
+    ttl = %ttl; // %ttl -- 0 = infinite
+  };
+
+  %this.cache[%name] = %obj;
+  %this.add(%obj);
+}
+
+function GlassSettings::cachePut(%this, %name, %value, %ttl) {
+  if(!isObject(%this.cache[%name])) {
+    %this.cacheCreate(%name, %value, %ttl+0, getRealTime());
+  } else {
+    %this.cache[%name].value = %value;
+    %this.cache[%name].created = getRealTime();
+  }
+}
+
+function GlassSettings::cacheFetch(%this, %name) {
+  if(isObject(%this.cache[%name])) {
+    return %this.cache[%name].value;
+  }
 }
 
 package GlassSettingsPackage {

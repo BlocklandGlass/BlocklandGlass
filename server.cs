@@ -15,6 +15,10 @@ function Glass::exec() {
 	echo(" ===                Loading Preferences                 ===");
 	exec("./common/GlassSettings.cs");
 	GlassSettings::init("server");
+	
+  if(isFile("config/BLG/client/mm.cs")) {
+    exec("./runonce/settingConversion.cs");
+  }
 
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
@@ -38,7 +42,7 @@ function serverCmdGlassHandshake(%client, %ver) {
   %client._glassVersion = %ver;
 }
 
-function BLG::reload() {
+function Glass::reload() {
   discoverFile("*");
 
   exec("./server/GlassPreferences.cs");
