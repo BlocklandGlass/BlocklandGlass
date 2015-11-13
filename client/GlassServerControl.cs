@@ -622,49 +622,73 @@ function GlassServerControlC::populatePlayerList(%this) {
   %list.addrow("Name\t9789\t-", 0);
 }
 
-function GlassServerControlC::onSelect(%this) {
-  %list = GlassServerControlGui_AdminList;
+function GlassServerControlC::onSelect(%list) {
+  if(%list == 1) {
+    %list = GlassServerControlGui_AdminList;
+    %otherlist = GlassServerControlGui_PlayerList;
+  } else if(%list == 2) {
+    %list = GlassServerControlGui_PlayerList;
+    %otherlist = GlassServerControlGui_AdminList;
+  }
   %row = %list.getValue();
+  %otherlist.setSelectedRow(-1);
 
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
-
-  if(%status $= "S") {
-    GlassServerControlGui_PromoteBtn.mcolor = "220 170 170 255";
-    GlassServerControlGui_PromoteBtn.setText("Demote");
-  } else if(%status $= "A") {
-    GlassServerControlGui_PromoteBtn.mcolor = "170 220 170 255";
-    GlassServerControlGui_PromoteBtn.setText("Promote");
-  } else {
-    GlassServerControlGui_PromoteBtn.mcolor = "255 200 200 255";
-    GlassServerControlGui_PromoteBtn.setText("error");
-    GlassServerControlGui_PromoteBtn.enabled = false;
-  }
 }
 
 function GlassServerControlC::promoteSelected() {
+  %list = GlassServerControlGui_PlayerList;
+  %row = %list.getValue();
+
+  %status = getField(%row, 2);
+  %blid = getField(%row, 1);
+
+  if(%status $= "S" || %status $= "H") {
+    messageBoxOk("Can't promote!", "This user can't become any higher in rank!");
+    return;
+  }
+
+  if(%status $= "A") {
+    commandToServer('GlassSetAdmin', %blid, 2);
+  } else {
+    commandToServer('GlassSetAdmin', %blid, 1);
+  }
+}
+
+function GlassServerControlC::demoteSelected() {
   %list = GlassServerControlGui_AdminList;
   %row = %list.getValue();
 
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
 
-  %action = GlassServerControlGui_PromoteBtn.text;
+  if(%status $= "H") {
+    messageBoxOk("Can't demote!", "That's a host!");
+    return;
+  }
 
-  if(%action $= "Promote") {
-    if(%status $= "S") {
-      return; //we should be demoting?
-    }
+  if(%blid == getNumKeyId()) {
+    messageBoxOk("Can't demote!", "That's you.");
+    return;
+  }
 
-    if(%status $= "A") {
-      commandToServer('GlassSetAdmin', %blid, 2);
-    } else if(%status $= ""){
-      commandToServer('GlassSetAdmin', %blid, 1);
-    }
-  } else if(%action $= "Demote") {
+  if(%status $= "S") {
+    commandToServer('GlassSetAdmin', %blid, 1);
+  } else if(%status $= "A") {
     commandToServer('GlassSetAdmin', %blid, 0);
-  } else {
-    error("Dont know how to handle this.");
+  }
+}
+
+function GlassServerControlGui::onWake(%this) {
+  GlassServerControlGui_PlayerList.clear();
+  for(%i = 0; %i < NPL_List.rowCount(); %i++) {
+    %row = NPL_List.getRowText(%i);
+    %admin = getField(%row, 0);
+    %name = getField(%row, 1);
+    %blid = getField(%row, 3);
+
+    GlassServerControlGui_PlayerList.addRow(%i, %name TAB %blid TAB %admin);
   }
 }
 
@@ -694,11 +718,13 @@ function clientCmdGlassAdminListing(%data, %append) {
     GlassServerControlGui_AdminList.clear();
   }
 
-  for(%i = 0; %i < getLineCount(%data); %i++) {
-    GlassServerControlGui_AdminList.addRow(GlassServerControlGui_AdminList.getCount(), getLine(%data, %i));
-  }
+  if(%data !$= "") {
+    for(%i = 0; %i < getLineCount(%data); %i++) {
+      GlassServerControlGui_AdminList.addRow(GlassServerControlGui_AdminList.getCount(), getLine(%data, %i));
+    }
 
-  GlassServerControlGui_AdminList.sort(1, true);
+    GlassServerControlGui_AdminList.sort(1, true);
+  }
 }
 
 function GlassPrefGroup::cleanup() {
@@ -711,6 +737,11 @@ function GlassPrefGroup::cleanup() {
 }
 
 package GlassServerControlC {
+  function NewPlayerListGui::update(%this, %a, %b, %c, %d, %e, %f) {
+    parent::update(%this, %a, %b, %c, %d, %e, %f);
+    GlassServerControlGui.onWake();
+  }
+
   function disconnect(%a) {
     GlassPrefGroup::cleanup();
     parent::disconnect(%a);

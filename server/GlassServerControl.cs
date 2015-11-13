@@ -105,6 +105,13 @@ function serverCmdGlassSetAdmin(%client, %blid, %level) {
       GlassServerControlS::removeAutoAdmin(%blid);
     }
   }
+
+  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+    %cl = ClientGroup.getObject(%i);
+    if(%cl.isAdmin) {
+      GlassServerControlS::sendAdminData(%cl);
+    }
+  }
 }
 
 function GlassServerControlS::addAutoAdmin(%blid, %super) {
@@ -146,10 +153,11 @@ function GlassServerControlS::addAutoAdmin(%blid, %super) {
     } else {
       commandtoclient(%client,'setAdminLevel', 1);
     }
+    commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
   }
 }
 
-function GlassServerControlS::sendAdminData(%client) {
+function GlassServerControlS::sendAdminData(%cl) {
   %buffer = "";
   for(%i = 0; %i < getWordCount($Pref::Server::AutoSuperAdminList); %i++) {
     %id = getWord($Pref::Server::AutoSuperAdminList, %i);
@@ -162,7 +170,7 @@ function GlassServerControlS::sendAdminData(%client) {
 
     %buffer = %buffer @ %name TAB %id TAB "S\n";
   }
-  if(%buffer !$= "") commandToClient(%client, 'GlassAdminListing', trim(%buffer));
+  commandToClient(%cl, 'GlassAdminListing', trim(%buffer));
 
   %buffer = "";
   for(%i = 0; %i < getWordCount($Pref::Server::AutoAdminList); %i++) {
@@ -176,7 +184,7 @@ function GlassServerControlS::sendAdminData(%client) {
 
     %buffer = %buffer @ %name TAB %id TAB "A\n";
   }
-  if(%buffer !$= "") commandToClient(%client, 'GlassAdminListing', trim(%buffer), true);
+  if(%buffer !$= "") commandToClient(%cl, 'GlassAdminListing', trim(%buffer), true);
 }
 
 function GlassServerControlS::removeAutoAdmin(%blid) {

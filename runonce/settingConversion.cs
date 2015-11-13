@@ -7,6 +7,6 @@ if(isFile("config/BLG/client/mm.cs")) {
   GlassSettings.update("MM::Colorset", $BLG::MM::Colorset);
 
 
-  // TODO cache
-  // fileDelete("config/BLG/client/mm.cs");
+  fileCopy("config/BLG/client/mm.cs", "config/BLG/client/mm.cs.old");
+  fileDelete("config/BLG/client/mm.cs");
 }

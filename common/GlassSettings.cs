@@ -1,24 +1,23 @@
-function GlassSettings::init(%context) {
-  if(isObject(GlassSettings))
-    return;
-
-    new ScriptGroup(GlassSettings);
-
-    echo("Loading " @ %context @ " prefs");
-
-    if(%context $= "client") {
-      GlassSettings.register("client", "MM::Keybind", "keyboard\tctrl m");
-      GlassSettings.register("client", "MM::UseDefault", false);
-      GlassSettings.register("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
-    } else if(%context $= "server") {
-      GlassSettings.register("server", "SC::SAEditRank", 3);
-      GlassSettings.register("server", "SC::AEditRank", 2);
-    }
-
-    GlassSettings.loadData(%context);
+if(!isObject(GlassSettings)) {
+  new ScriptGroup(GlassSettings);
 }
 
-function GlassSettings::register(%this, %context, %name, %defaultValue, %callback) {
+function GlassSettings::init(%context) {
+  echo("Loading " @ %context @ " prefs");
+
+  if(%context $= "client") {
+    GlassSettings.registerSetting("client", "MM::Keybind", "keyboard\tctrl m");
+    GlassSettings.registerSetting("client", "MM::UseDefault", false);
+    GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
+  } else if(%context $= "server") {
+    GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
+    GlassSettings.registerSetting("server", "SC::AEditRank", 2);
+  }
+
+  GlassSettings.loadData(%context);
+}
+
+function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %callback) {
   %obj = new ScriptObject() {
     class = "GlassSetting";
 
@@ -28,23 +27,27 @@ function GlassSettings::register(%this, %context, %name, %defaultValue, %callbac
 
     context = %context;
   };
-
   %this.obj[%name] = %obj;
   %this.add(%obj);
+  %this.schedule(0, "add", %obj);
 }
 
 function GlassSettings::loadData(%this, %context) {
   %fo = new FileObject();
-  %fo.openForRead("config/" @ %context @ "/glass.conf");
-  while(!%fo.isEOF()) {
-    %line = %fo.readLine();
-    %this.loadSetting(getField(%line, 0), getField(%line, 1));
+  if(isFile("config/" @ %context @ "/glass.conf")) {
+    %fo.openForRead("config/" @ %context @ "/glass.conf");
+    while(!%fo.isEOF()) {
+      %line = %fo.readLine();
+      echo("original data: " @ getField(%line, 1));
+      echo("collapsed data: " @ collapseEscape(getField(%line, 1)));
+      %this.loadSetting(getField(%line, 0), collapseEscape(getField(%line, 1)));
+    }
   }
 
   %fo.close();
 
-  if(!%this.cacheLoaded) {
-    %fo.openForRead("cache/glass.dat");
+  if(!%this.cacheLoaded && isFile("config/cache/glass.dat")) {
+    %fo.openForRead("config/cache/glass.dat");
     while(!%fo.isEOF()) {
       %line = %fo.readLine();
       %name = getField(%line, 0);
@@ -72,7 +75,7 @@ function GlassSettings::saveData(%this, %context) {
   %fo = new FileObject();
   %fo.openForWrite("config/" @ %context @ "/glass.conf");
   %fo2 = new FileObject();
-  %fo2.openForWrite("cache/glass.dat");
+  %fo2.openForWrite("config/cache/glass.dat");
 
   for(%i = 0; %i < %this.getCount(); %i++) {
     %setting = %this.getObject(%i);
@@ -103,7 +106,7 @@ function GlassSettings::loadSetting(%this, %name, %value) {
   }
 }
 
-function GlassSettings::update(%name, %value) {
+function GlassSettings::update(%this, %name, %value) {
   %obj = GlassSettings.obj[%name];
   %obj.value = %value;
   if(%obj.callback !$= "") {
@@ -111,14 +114,16 @@ function GlassSettings::update(%name, %value) {
   }
 }
 
-function GlassSettings::get(%name) {
-  return GlassSettings.obj[%name].value;
+function GlassSettings::get(%this, %name) {
+  return %this.obj[%name].value;
 }
 
 function GlassSettings::cacheCreate(%this, %name, %value, %ttl, %time) {
   %obj = new ScriptObject() {
     class = "GlassCache";
     value = %value;
+
+    name = %name;
 
     created = %time;
     ttl = %ttl; // %ttl -- 0 = infinite
