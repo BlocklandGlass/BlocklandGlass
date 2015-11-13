@@ -30,7 +30,7 @@ function Glass::exec() {
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");
 	exec("./client/gui/GlassUpdatesGui.gui");
-	exec("./BLG_VerifyAccount.gui"); //need to rename/move
+	exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
 	exec("./client/gui/GlassModManagerGui.gui");
 	exec("./client/gui/GlassModManagerImage.gui");
 	exec("./client/gui/GlassServerControlGui.gui");

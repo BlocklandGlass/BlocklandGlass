@@ -34,7 +34,7 @@ function BLG_Verify::accept(%this) {
 	%className = "GlassAuthTCP";
 
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-	canvas.popDialog(BLG_VerifyAccount);
+	canvas.popDialog(GlassVerifyAccountGui);
 }
 
 function BLG_Verify::decline(%this) {
@@ -44,7 +44,7 @@ function BLG_Verify::decline(%this) {
 	%className = "GlassAuthTCP";
 
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-	canvas.popDialog(BLG_VerifyAccount);
+	canvas.popDialog(GlassVerifyAccountGui);
 }
 
 function GlassAuthTCP::onDone(%this) {
@@ -67,7 +67,7 @@ function GlassAuthTCP::onDone(%this) {
 					%blid = %object.get("actiondata").get("blid");
 					BLG_Verify_Username.setText(%name);
 					BLG_Verify_BLID.setText(%blid);
-					canvas.pushDialog(BLG_VerifyAccount);
+					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
 					echo("BLG auth success");
 				}
