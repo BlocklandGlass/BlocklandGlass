@@ -12,9 +12,11 @@ function registerGlassPrefs() {
 
 	%promotesa = registerBlocklandPref(%cat, "Who can manage super-admins?", "list", "$Pref::Glass::SAPromoteLevel", GlassSettings.get("SC::SAEditRank"), "Host**3|Super Admin**2", "updateGlassPref", %icon, 0);
 	%promotea = registerBlocklandPref(%cat, "Who can manage admins?", "list", "$Pref::Glass::APromoteLevel", GlassSettings.get("SC::AEditRank"), "Host**3|Super Admin**2|Admin**1", "updateGlassPref", %icon, 0);
-	%promotea = registerBlocklandPref(%cat, "Required Client Add-Ons", "string", "$Pref::Glass::ClientAddons", GlassSettings.get("SC::RequiredClients"), "updateGlassPref", "", %icon, 0);
+	%required = registerBlocklandPref(%cat, "Required Client Add-Ons", "string", "$Pref::Glass::ClientAddons", GlassSettings.get("SC::RequiredClients"), "", "updateGlassPref", "", %icon, 0);
 
-  %promotea.announce = %promotesa.announce = false;
+  //registerBlocklandPref(%cat, "Colorset (restart)", "string", "$Pref::Glass::Colorset", GlassSettings.get("SC::RequiredClients"), "updateGlassPref", "", %icon, 0);
+
+  %required.announce = false;
 }
 registerGlassPrefs();
 
@@ -25,21 +27,28 @@ function updateGlassPref(%value, %client, %pso) {
     GlassSettings.update("SC::AEditRank", %value);
   } else if(%pso.title $= "Required Client Add-Ons") {
     GlassSettings.update("SC::RequiredClients", %value);
-
     %value = strreplace(%value, ",", "\t");
+    messageAll('MsgAdminForce', "\c6 + \c3" @ %client.netname @ "\c6 has updated the required mods.");
     for(%i = 0; %i < getFieldCount(%value); %i++) {
       %mid = trim(getField(%value, %i));
+      messageAll('', "\c6 ++ Required: \c3" @ GlassSettings.cacheFetch("AddonName_" @ %mid));
     }
+
   }
+}
+
+function serverCmdglassNameCacheAdd(%client, %id, %name) {
+  if(%client.isSuperAdmin)
+    GlassSettings.cachePut("AddonName_" @ %id, %name);
 }
 
 function GameConnection::checkPermissionLevel(%this, %perm) {
   if(%perm == 3) {
-    return %this.isHost;
+    return %this.bl_id == getNumKeyId();
   } else if(%perm == 2) {
-    return (%this.isHost || %this.isSuperAdmin);
+    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin);
   } else if(%perm == 1) {
-    return (%this.isHost || %this.isSuperAdmin || %this.isAdmin);
+    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin);
   }
 }
 
@@ -181,10 +190,14 @@ function GlassServerControlS::sendAdminData(%cl) {
     if(isObject(%client)) {
       %name = %client.name;
     } else {
-      %name = "BLID_" @ %blid;
+      %name = "BLID_" @ %id;
     }
 
-    %buffer = %buffer @ %name TAB %id TAB "S\n";
+    if(%id != getNumKeyId()) {
+      %buffer = %buffer @ %name TAB %id TAB "S\n";
+    } else {
+      %buffer = %buffer @ %name TAB %id TAB "H\n";
+    }
   }
   commandToClient(%cl, 'GlassAdminListing', trim(%buffer));
 
@@ -195,7 +208,7 @@ function GlassServerControlS::sendAdminData(%cl) {
     if(isObject(%client)) {
       %name = %client.name;
     } else {
-      %name = "BLID_" @ %blid;
+      %name = "BLID_" @ %id;
     }
 
     %buffer = %buffer @ %name TAB %id TAB "A\n";
@@ -225,6 +238,23 @@ function GlassServerControlS::removeAutoAdmin(%blid) {
   }
 }
 
+
+
+function GlassServerControlS::sendUpdateInfo(%this, %client) {
+  %count = updater.fileDownloader.queue.getCount();
+	for(%i = 0; %i < %count; %i ++) {
+		%item = updater.fileDownloader.queue.getObject(%i);
+		%name = %item.name;
+		%version = %item.updateVersion;
+
+		commandToClient(%client, 'GlassAddUpdate', %name, %version, (%i==0));
+	}
+
+  if(!%count) {
+    commandToClient(%client, 'GlassNoUpdates');
+  }
+}
+
 //====================================
 // Server Commands / Communication
 //====================================
@@ -249,6 +279,7 @@ package GlassServerControlS {
     if(%client.isAdmin) {
       commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
+      GlassServerControlS::sendUpdateInfo(%client);
     }
     return %ret;
   }
@@ -262,12 +293,12 @@ package GlassServerControlS {
         %version = getField(%line, 0);
         %clients = strreplace(getField(%line, 1), " ", "\t"); //addons in the client mods category
 
-        %required = GlassSettings.get("SC::RequiredClients");
+        %required = strreplace(GlassSettings.get("SC::RequiredClients"), ",", "\t");
         if(%required !$= "") {
           %missingStr = "";
 
           for(%i = 0; %i < getFieldCount(%required); %i++) {
-            %mid = getField(%required, %i);
+            %mid = trim(getField(%required, %i));
             if(containsField(%mid, %clients)) {
               %this._glassHasClient[%mid] = true;
             } else {

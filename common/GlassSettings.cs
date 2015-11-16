@@ -146,6 +146,8 @@ function GlassSettings::cachePut(%this, %name, %value, %ttl) {
 function GlassSettings::cacheFetch(%this, %name) {
   if(isObject(%this.cache[%name])) {
     return %this.cache[%name].value;
+  } else {
+    return "";
   }
 }
 

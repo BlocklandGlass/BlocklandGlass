@@ -15,9 +15,133 @@ function openGlassSettings() {
   }
 }
 
+function clientCmdGlassNoUpdates() {
+  GlassServerControlGui_UpdatesMsg.position = "0 107";
+  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand-bold:20>No Server Updates Available");
+
+  %group = GlassServerControlGui_UpdatesMsg.getGroup();
+  for(%i = 0; %i < %group.getCount(); %i++) {
+    %group.getObject(%i).setVisible(false);
+  }
+
+  GlassServerControlGui_UpdatesMsg.setVisible(true);
+}
+
+function clientCmdGlassAddUpdate(%name, %version, %clear) {
+  if(%clear) {
+    %group = GlassServerControlGui_UpdatesMsg.getGroup();
+    for(%i = 0; %i < %group.getCount(); %i++) {
+      %group.getObject(%i).setVisible(true);
+    }
+
+    //clear
+  }
+
+  GlassServerControlGui_UpdatesMsg.position = "0 5";
+  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand:16>Server Updates Available");
+
+  //add
+}
+
+function GlassServerControlC::populateClientsPopUp(%this) {
+  %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
+  %requiredMods = strreplace(%pref.value, ",", "\t");
+
+  GlassServerControlGui_RequiredClientsPopUp.clear();
+  %pattern = "Add-ons/*/glass.json";
+	echo("\c1Looking for client Add-Ons");
+  %files = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+		%json = loadJSON(%file);
+    if(%json.get("formatVersion") == 1) {
+      if(%json.get("board") == 9) {
+
+        GlassSettings.cachePut("AddonName_" @ %json.get("id"), %json.get("title"));
+
+        if(containsField(%json.get("id"), %requiredMods)) {
+          continue;
+        }
+
+        %fileId[%files] = %json.get("id");
+        %fileTitle[%files] = %json.get("title");
+        %file[%files] = %file;
+        GlassServerControlGui_RequiredClientsPopUp.add(%fileTitle[%files], %fileId[%files]);
+
+        %files++;
+      }
+    }
+	}
+
+  if(%files == 0) {
+    GlassServerControlGui_RequiredClientsPopUp.enabled = false;
+    GlassServerControlGui_RequiredClientsPopUp.setText("None Available");
+  } else {
+    GlassServerControlGui_RequiredClientsPopUp.enabled = true;
+    GlassServerControlGui_RequiredClientsPopUp.setText("Select...");
+  }
+
+  GlassServerControlGui_RequiredClientsList.clear();
+  for(%i = 0; %i < getFieldCount(%requiredMods); %i++) {
+    %mid = getField(%requiredMods, %i);
+    %name = GlassSettings.cacheFetch("AddonName_" @ %mid);
+    if(%name $= "") {
+      echo("no name");
+      GlassServerControlGui_RequiredClientsList.addRow(%mid, "modID_" @ %mid);
+    } else {
+      echo("name! " @ %name);
+      GlassServerControlGui_RequiredClientsList.addRow(%mid, %name);
+    }
+  }
+}
+
+function containsField(%needle, %haystack) {
+  for(%i = 0; %i < getFieldCount(%haystack); %i++) {
+    if(getField(%haystack, %i) $= %needle) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function GlassServerControlC::addRequiredClient() {
+  %append = GlassServerControlGui_RequiredClientsPopUp.getSelected();
+
+  if(%append) {
+    %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
+    commandToServer('glassNameCacheAdd', %append, GlassServerControlGui_RequiredClientsPopUp.getValue());
+    commandToServer('updateBLPref', %pref.variable, %append @ "," @ %pref.value);
+    %pref.actualvalue = %pref.value = %append @ "," @ %pref.value;
+
+    GlassServerControlGui_RequiredClientsList.addRow(%append, GlassServerControlGui_RequiredClientsPopUp.getValue() TAB %append);
+  }
+  GlassServerControlC::populateClientsPopUp();
+}
+
+function GlassServerControlC::removeRequiredClient() {
+  %id = GlassServerControlGui_RequiredClientsList.getSelectedId();
+  if(%id == -1)
+    return;
+  %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
+
+  %newValue = "";
+  %value = strreplace(%pref.value, ",", "\t");
+  for(%i = 0; %i < getFieldCount(%value); %i++) {
+    %mid = trim(getField(%value, %i));
+    if(%mid != %id) {
+      %newValue = %mid @ "," @ %newValue;
+    }
+  }
+
+  commandToServer('updateBLPref', %pref.variable, %newValue);
+  %pref.actualvalue = %pref.value = %newValue;
+
+  GlassServerControlGui_RequiredClientsList.removeRowById(%id);
+  GlassServerControlC::populateClientsPopUp();
+}
+
 
 function GlassServerControlC::setTab(%tab) {
-  for(%i = 0; %i < 2; %i++) {
+  for(%i = 0; %i < 3; %i++) {
     %ctrl = "GlassServerControlGui_Pane" @ %i+1;
     if(%i+1 == %tab) {
       %ctrl.setVisible(true);
@@ -82,13 +206,19 @@ function GlassServerControlC::renderPrefCategories() {
   %odd = false;
   %y = 0;
   for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %cat = GlassPrefGroup.getObject(%i);
+
+    if(%cat.name $= "Blockland Glass") {
+      GlassServerControlC::renderGlassSettings(%cat);
+      continue;
+    }
+
     %odd = !%odd;
     if(%odd) {
       %color = "220 250 220 255";
     } else {
       %color = "220 230 220 255";
     }
-    %cat = GlassPrefGroup.getObject(%i);
 
     %swat = new GuiSwatchCtrl() {
       profile = "GuiDefaultProfile";
