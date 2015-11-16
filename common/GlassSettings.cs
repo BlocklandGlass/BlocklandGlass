@@ -12,6 +12,7 @@ function GlassSettings::init(%context) {
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);
+    GlassSettings.registerSetting("server", "SC::RequiredClients", 2);
   }
 
   GlassSettings.loadData(%context);

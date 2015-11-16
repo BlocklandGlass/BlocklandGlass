@@ -10,12 +10,28 @@ function registerGlassPrefs() {
 	%cat = "Blockland Glass"; //on the glass client, this will be loaded in to it's own page (settings)
 	%icon = "server";
 
-	%promotesa = registerBlocklandPref(%cat, "Who can manage super-admins?", "list", "$Pref::Glass::SAPromoteLevel", $Pref::Glass::SAPromoteLevel, "Host**3|Super Admin**2", "", %icon, 0);
-	%promotea = registerBlocklandPref(%cat, "Who can manage admins?", "list", "$Pref::Glass::APromoteLevel", $Pref::Glass::APromoteLevel, "Host**3|Super Admin**2|Admin**1", "", %icon, 0);
+	%promotesa = registerBlocklandPref(%cat, "Who can manage super-admins?", "list", "$Pref::Glass::SAPromoteLevel", GlassSettings.get("SC::SAEditRank"), "Host**3|Super Admin**2", "updateGlassPref", %icon, 0);
+	%promotea = registerBlocklandPref(%cat, "Who can manage admins?", "list", "$Pref::Glass::APromoteLevel", GlassSettings.get("SC::AEditRank"), "Host**3|Super Admin**2|Admin**1", "updateGlassPref", %icon, 0);
+	%promotea = registerBlocklandPref(%cat, "Required Client Add-Ons", "string", "$Pref::Glass::ClientAddons", GlassSettings.get("SC::RequiredClients"), "updateGlassPref", "", %icon, 0);
 
   %promotea.announce = %promotesa.announce = false;
 }
 registerGlassPrefs();
+
+function updateGlassPref(%value, %client, %pso) {
+  if(%pso.title $= "Who can manage super-admins?") {
+    GlassSettings.update("SC::SAEditRank", %value);
+  } else if(%pso.title $= "Who can manage admins?") {
+    GlassSettings.update("SC::AEditRank", %value);
+  } else if(%pso.title $= "Required Client Add-Ons") {
+    GlassSettings.update("SC::RequiredClients", %value);
+
+    %value = strreplace(%value, ",", "\t");
+    for(%i = 0; %i < getFieldCount(%value); %i++) {
+      %mid = trim(getField(%value, %i));
+    }
+  }
+}
 
 function GameConnection::checkPermissionLevel(%this, %perm) {
   if(%perm == 3) {
@@ -213,6 +229,15 @@ function GlassServerControlS::removeAutoAdmin(%blid) {
 // Server Commands / Communication
 //====================================
 
+function containsField(%needle, %haystack) {
+  for(%i = 0; %i < getFieldCount(%haystack); %i++) {
+    if(getField(%haystack, %i) $= %needle) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function serverCmdGlassUpdateSend(%client) {
   messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
 }
@@ -227,5 +252,44 @@ package GlassServerControlS {
     }
     return %ret;
   }
+
+	function GameConnection::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p) {
+    %ret = parent::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p);
+		for(%i = 0; %i < getLineCount(%us); %i++) { //being respectful of other mods, not hogging a whole argument
+			%line = getLine(%us, %i);
+			if(getField(%line, 0) $= "Glass") {
+        %this.hasGlass = true;
+        %version = getField(%line, 0);
+        %clients = strreplace(getField(%line, 1), " ", "\t"); //addons in the client mods category
+
+        %required = GlassSettings.get("SC::RequiredClients");
+        if(%required !$= "") {
+          %missingStr = "";
+
+          for(%i = 0; %i < getFieldCount(%required); %i++) {
+            %mid = getField(%required, %i);
+            if(containsField(%mid, %clients)) {
+              %this._glassHasClient[%mid] = true;
+            } else {
+              %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">Mod ID " @ %mid @ "</a><br>";
+            }
+          }
+
+          if(%missingStr !$= "") {
+            echo(" +- missing client mods");
+            %this.schedule(0, "delete", "Missing Blockland Glass Mods<br><br>" @ %missingStr);
+          }
+        }
+				break;
+			}
+		}
+
+    %required = GlassSettings.get("SC::RequiredClients");
+    if(%required !$= "" && !%this.hasGlass) { //non-glass clients
+      %this.schedule(0, "delete", "This server uses Blockland Glass to manage client add-ons<br><br><a:blocklandglass.com/dl.php>You can download Blockland Glass here</a>");
+    }
+
+    return %ret;
+	}
 };
 activatePackage(GlassServerControlS);

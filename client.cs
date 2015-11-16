@@ -42,6 +42,7 @@ function Glass::exec() {
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
+	exec("./client/GlassClientManager.cs");
 
 	exec("./client/GlassAuth.cs");
 	exec("./client/GlassModManager.cs");

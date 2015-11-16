@@ -742,6 +742,10 @@ package GlassServerControlC {
     GlassServerControlGui.onWake();
   }
 
+  function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
+		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+	}
+
   function disconnect(%a) {
     GlassPrefGroup::cleanup();
     parent::disconnect(%a);
