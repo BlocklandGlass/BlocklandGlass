@@ -152,193 +152,6 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "255 255 255 255";
-
-                  new GuiSwatchCtrl() {
-                     profile = "GuiDefaultProfile";
-                     horizSizing = "right";
-                     vertSizing = "bottom";
-                     position = "0 0";
-                     extent = "125 24";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     color = "220 250 220 255";
-                        rcolor = "220 250 220 255";
-                        mouse = "13645";
-                        ocolor = "220 250 220 255";
-
-                     new GuiBitmapCtrl() {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "4 4";
-                        extent = "16 16";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        bitmap = "~/System_BlocklandGlass/image/icon/server_edit";
-                        wrap = "0";
-                        lockAspectRatio = "0";
-                        alignLeft = "0";
-                        alignTop = "0";
-                        overflowImage = "0";
-                        keepCached = "0";
-                        mColor = "255 255 255 255";
-                        mMultiply = "0";
-                     };
-                     new GuiTextCtrl() {
-                        profile = "GuiTextProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "24 3";
-                        extent = "33 18";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        text = "Server";
-                        maxLength = "255";
-                     };
-                     new GuiMouseEventCtrl(GlassServerControlGui_CatMouseCtrl) {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "0 0";
-                        extent = "125 24";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        lockMouse = "0";
-                           category = "13615";
-                     };
-                  };
-                  new GuiSwatchCtrl() {
-                     profile = "GuiDefaultProfile";
-                     horizSizing = "right";
-                     vertSizing = "bottom";
-                     position = "0 24";
-                     extent = "125 24";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     color = "220 230 220 255";
-                        rcolor = "220 230 220 255";
-                        mouse = "13649";
-                        ocolor = "220 230 220 255";
-
-                     new GuiBitmapCtrl() {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "4 4";
-                        extent = "16 16";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        bitmap = "~/System_BlocklandGlass/image/icon/cog";
-                        wrap = "0";
-                        lockAspectRatio = "0";
-                        alignLeft = "0";
-                        alignTop = "0";
-                        overflowImage = "0";
-                        keepCached = "0";
-                        mColor = "255 255 255 255";
-                        mMultiply = "0";
-                     };
-                     new GuiTextCtrl() {
-                        profile = "GuiTextProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "24 3";
-                        extent = "39 18";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        text = "BLPrefs";
-                        maxLength = "255";
-                     };
-                     new GuiMouseEventCtrl(GlassServerControlGui_CatMouseCtrl) {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "0 0";
-                        extent = "125 24";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        lockMouse = "0";
-                           category = "13616";
-                     };
-                  };
-                  new GuiSwatchCtrl() {
-                     profile = "GuiDefaultProfile";
-                     horizSizing = "right";
-                     vertSizing = "bottom";
-                     position = "0 48";
-                     extent = "125 24";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     color = "220 250 220 255";
-                        rcolor = "220 250 220 255";
-                        mouse = "13653";
-                        ocolor = "220 250 220 255";
-
-                     new GuiBitmapCtrl() {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "4 4";
-                        extent = "16 16";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        bitmap = "~/System_BlocklandGlass/image/icon/bricks";
-                        wrap = "0";
-                        lockAspectRatio = "0";
-                        alignLeft = "0";
-                        alignTop = "0";
-                        overflowImage = "0";
-                        keepCached = "0";
-                        mColor = "255 255 255 255";
-                        mMultiply = "0";
-                     };
-                     new GuiTextCtrl() {
-                        profile = "GuiTextProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "24 3";
-                        extent = "55 18";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        text = "Admin Chat";
-                        maxLength = "255";
-                     };
-                     new GuiMouseEventCtrl(GlassServerControlGui_CatMouseCtrl) {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "0 0";
-                        extent = "125 24";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        lockMouse = "0";
-                           category = "13618";
-                     };
-                  };
                };
             };
             new GuiBitmapButtonCtrl() {
@@ -393,578 +206,6 @@ new GuiControl(GlassServerControlGui) {
                visible = "1";
                clipToParent = "1";
                color = "0 24 144 3";
-
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "325 24";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 255";
-
-                  new GuiMLTextCtrl() {
-                     profile = "GuiMLTextProfile";
-                     horizSizing = "center";
-                     vertSizing = "center";
-                     position = "0 4";
-                     extent = "325 16";
-                     minExtent = "325 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     lineSpacing = "2";
-                     allowColorChars = "0";
-                     maxChars = "-1";
-                     text = "<just:center><font:arial bold:16>Server";
-                     maxBitmapHeight = "-1";
-                     selectable = "1";
-                     autoResize = "1";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 25";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13657";
-                     ctrl = "13658";
-                     pref = "13619";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "63 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "175 7";
-                     extent = "140 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13656);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 58";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13660";
-                     ctrl = "13661";
-                     pref = "13620";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "91 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "175 7";
-                     extent = "140 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13659);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 91";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13663";
-                     ctrl = "13664";
-                     pref = "13621";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "83 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "245 7";
-                     extent = "70 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13662);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 124";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13666";
-                     ctrl = "13667";
-                     pref = "13625";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "19 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "245 7";
-                     extent = "70 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13665);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 157";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13669";
-                     ctrl = "13670";
-                     pref = "13626";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "93 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     maxLength = "255";
-                  };
-                  new GuiCheckBoxCtrl() {
-                     profile = "GuiCheckBoxProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "303 8";
-                     extent = "16 16";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13668);";
-                     text = " ";
-                     groupNum = "-1";
-                     buttonType = "ToggleButton";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 190";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13672";
-                     ctrl = "13673";
-                     pref = "13627";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "52 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "175 7";
-                     extent = "140 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13671);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 223";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13675";
-                     ctrl = "13676";
-                     pref = "13628";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "107 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     maxLength = "255";
-                  };
-                  new GuiCheckBoxCtrl() {
-                     profile = "GuiCheckBoxProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "303 8";
-                     extent = "16 16";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13674);";
-                     text = " ";
-                     groupNum = "-1";
-                     buttonType = "ToggleButton";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 256";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13678";
-                     ctrl = "13679";
-                     pref = "13629";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "77 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "245 7";
-                     extent = "70 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13677);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 289";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13681";
-                     ctrl = "13682";
-                     pref = "13630";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "116 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "245 7";
-                     extent = "70 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13680);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 322";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13684";
-                     ctrl = "13685";
-                     pref = "13631";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "112 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     maxLength = "255";
-                  };
-                  new GuiCheckBoxCtrl() {
-                     profile = "GuiCheckBoxProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "303 8";
-                     extent = "16 16";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13683);";
-                     text = " ";
-                     groupNum = "-1";
-                     buttonType = "ToggleButton";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 355";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13687";
-                     ctrl = "13688";
-                     pref = "13632";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "82 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     text = "Some checkbox";
-                     maxLength = "255";
-                  };
-                  new GuiTextEditCtrl() {
-                     profile = "GuiTextEditProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "245 7";
-                     extent = "70 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13686);";
-                     maxLength = "255";
-                     historySize = "0";
-                     password = "0";
-                     tabComplete = "0";
-                     sinkAllKeyEvents = "0";
-                  };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 388";
-                  extent = "325 32";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "100 100 100 50";
-                     text = "13690";
-                     ctrl = "13691";
-                     pref = "13633";
-
-                  new GuiTextCtrl() {
-                     profile = "GuiTextProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "10 7";
-                     extent = "190 18";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     maxLength = "255";
-                  };
-                  new GuiCheckBoxCtrl() {
-                     profile = "GuiCheckBoxProfile";
-                     horizSizing = "right";
-                     vertSizing = "center";
-                     position = "303 8";
-                     extent = "16 16";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(13689);";
-                     text = " ";
-                     groupNum = "-1";
-                     buttonType = "ToggleButton";
-                  };
-               };
             };
          };
          new GuiMLTextCtrl(GlassServerControlGui_AllowPrefs) {
@@ -1080,7 +321,7 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "163 16";
+               extent = "163 2";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1151,27 +392,6 @@ new GuiControl(GlassServerControlGui) {
                enabled = "1";
                visible = "1";
                clipToParent = "1";
-               text = "Quick Upload";
-               groupNum = "-1";
-               buttonType = "PushButton";
-               bitmap = "base/client/ui/button1";
-               lockAspectRatio = "0";
-               alignLeft = "0";
-               alignTop = "0";
-               overflowImage = "0";
-               mKeepCached = "0";
-               mColor = "255 255 200 255";
-            };
-            new GuiBitmapButtonCtrl() {
-               profile = "BlockButtonProfile";
-               horizSizing = "center";
-               vertSizing = "bottom";
-               position = "12 40";
-               extent = "110 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
                command = "GlassServerControlGui_RequiredClientsDlg.setVisible(1);GlassServerControlC.populateClientsPopUp();";
                text = "Required Clients";
                groupNum = "-1";
@@ -1197,12 +417,12 @@ new GuiControl(GlassServerControlGui) {
             clipToParent = "1";
             color = "190 230 190 255";
 
-            new GuiMLTextCtrl() {
+            new GuiMLTextCtrl(GlassServerControlGui_UpdatesMsg) {
                profile = "GuiMLTextProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "0 5";
-               extent = "335 16";
+               position = "0 107";
+               extent = "335 20";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1215,7 +435,7 @@ new GuiControl(GlassServerControlGui) {
                selectable = "1";
                autoResize = "1";
             };
-            new GuiScrollCtrl() {
+            new GuiScrollCtrl(GlassServerControlGui_UpdateScroll) {
                profile = "GlassScrollProfile";
                horizSizing = "right";
                vertSizing = "bottom";
@@ -1223,7 +443,7 @@ new GuiControl(GlassServerControlGui) {
                extent = "315 180";
                minExtent = "8 2";
                enabled = "1";
-               visible = "1";
+               visible = "0";
                clipToParent = "1";
                willFirstRespond = "0";
                hScrollBar = "alwaysOff";
@@ -1232,67 +452,205 @@ new GuiControl(GlassServerControlGui) {
                childMargin = "0 0";
                rowHeight = "40";
                columnWidth = "30";
+                  height = "211";
 
-               new GuiSwatchCtrl() {
+               new GuiSwatchCtrl(GlassServerControlGui_UpdateSwatch) {
                   profile = "GuiDefaultProfile";
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "1 1";
-                  extent = "306 34";
+                  extent = "306 246";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
                   clipToParent = "1";
-                  color = "255 255 255 255";
+                  color = "0 0 0 0";
 
-                  new GuiMLTextCtrl() {
-                     profile = "GuiMLTextProfile";
-                     horizSizing = "center";
-                     vertSizing = "center";
-                     position = "13 8";
-                     extent = "280 17";
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 1";
+                     extent = "306 34";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     lineSpacing = "2";
-                     allowColorChars = "0";
-                     maxChars = "-1";
-                     text = "<font:quicksand-bold:18>Admin Chat <font:quicksand:18>v1.0.1";
-                     maxBitmapHeight = "-1";
-                     selectable = "1";
-                     autoResize = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v27";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
                   };
-               };
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "1 36";
-                  extent = "305 34";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "255 255 255 255";
-
-                  new GuiMLTextCtrl() {
-                     profile = "GuiMLTextProfile";
-                     horizSizing = "center";
-                     vertSizing = "center";
-                     position = "12 8";
-                     extent = "280 17";
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 36";
+                     extent = "306 34";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     lineSpacing = "2";
-                     allowColorChars = "0";
-                     maxChars = "-1";
-                     text = "<font:quicksand-bold:18>Blockland Glass <font:quicksand:18>v1.1.0";
-                     maxBitmapHeight = "-1";
-                     selectable = "1";
-                     autoResize = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v28";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 71";
+                     extent = "306 34";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v29";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 106";
+                     extent = "306 34";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v30";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 141";
+                     extent = "306 34";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v31";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "0 176";
+                     extent = "306 34";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "255 255 255 255";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "center";
+                        vertSizing = "center";
+                        position = "13 8";
+                        extent = "280 17";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v32";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
                   };
                };
             };
@@ -1304,7 +662,7 @@ new GuiControl(GlassServerControlGui) {
                extent = "110 20";
                minExtent = "8 2";
                enabled = "1";
-               visible = "1";
+               visible = "0";
                clipToParent = "1";
                command = "commandToServer(\'doUpdates\');";
                text = "Update";
@@ -1328,7 +686,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "317 145";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          text = "Required Client Add-Ons";
          maxLength = "255";
@@ -1401,7 +759,7 @@ new GuiControl(GlassServerControlGui) {
             position = "20 30";
             extent = "127 22";
             minExtent = "8 2";
-            enabled = "1";
+            enabled = "0";
             visible = "1";
             clipToParent = "1";
             maxLength = "255";

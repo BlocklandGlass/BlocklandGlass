@@ -11,11 +11,11 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 
 exec("./core.cs");
 
-function Glass::exec() {
+function Glass::execServer() {
 	echo(" ===                Loading Preferences                 ===");
 	exec("./common/GlassSettings.cs");
 	GlassSettings::init("server");
-	
+
   if(isFile("config/BLG/client/mm.cs")) {
     exec("./runonce/settingConversion.cs");
   }
@@ -29,12 +29,13 @@ function Glass::exec() {
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
+	exec("./common/GlassResourceManager.cs");
 
 	exec("./server/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
-
+	GlassServerControlS::init();
 }
 
 function serverCmdGlassHandshake(%client, %ver) {
@@ -48,4 +49,8 @@ function Glass::reload() {
   exec("./server/GlassPreferences.cs");
 }
 
-Glass::init();
+if($Server::isDedicated) {
+	Glass::init("dedicated");
+} else {
+	Glass::init("server");
+}

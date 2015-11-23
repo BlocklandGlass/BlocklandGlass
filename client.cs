@@ -12,7 +12,7 @@ if($Pref::PreLoadScriptLauncherVersion != 1) {
 
 exec("./core.cs");
 
-function Glass::exec() {
+function Glass::execClient() {
 
 	echo(" ===                Loading Preferences                 ===");
 	exec("./common/GlassSettings.cs");
@@ -83,7 +83,7 @@ function clientCmdGlassHandshake(%ver) {
 	commandToServer('GlassHandshake', Glass.version);
 }
 
-Glass::init();
+Glass::init("client");
 
 package GlassPrefs {
 	function onExit() {

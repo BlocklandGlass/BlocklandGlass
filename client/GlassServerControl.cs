@@ -34,13 +34,56 @@ function clientCmdGlassAddUpdate(%name, %version, %clear) {
       %group.getObject(%i).setVisible(true);
     }
 
-    //clear
+    GlassServerControlGui_UpdateSwatch.clear();
+    GlassServerControlGui_UpdateScroll.height = 1;
   }
 
   GlassServerControlGui_UpdatesMsg.position = "0 5";
   GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand:16>Server Updates Available");
 
-  //add
+  %h = GlassServerControlGui_UpdateScroll.height;
+  GlassServerControlGui_UpdateScroll.height += 35;
+
+  %swatch = new GuiSwatchCtrl() {
+     profile = "GuiDefaultProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = 0 SPC %h+0;
+     extent = "306 34";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     color = "255 255 255 255";
+
+     new GuiMLTextCtrl() {
+        profile = "GuiMLTextProfile";
+        horizSizing = "center";
+        vertSizing = "center";
+        position = "13 8";
+        extent = "280 17";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lineSpacing = "2";
+        allowColorChars = "0";
+        maxChars = "-1";
+        text = "<font:quicksand-bold:18>" @ trim(%name) @ " <font:quicksand:18>v" @ trim(%version);
+        maxBitmapHeight = "-1";
+        selectable = "1";
+        autoResize = "1";
+     };
+  };
+
+  GlassServerControlGui_UpdateSwatch.add(%swatch);
+  GlassServerControlGui_UpdateSwatch.setVisible(true);
+
+  if(GlassServerControlGui_UpdateScroll.height+35 > 178) {
+    GlassServerControlGui_UpdateSwatch.extent = 306 SPC GlassServerControlGui_UpdateScroll.height+35;
+  } else {
+    GlassServerControlGui_UpdateSwatch.extent = 306 SPC 178;
+  }
 }
 
 function GlassServerControlC::populateClientsPopUp(%this) {

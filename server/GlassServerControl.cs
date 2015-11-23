@@ -240,7 +240,7 @@ function GlassServerControlS::removeAutoAdmin(%blid) {
 
 
 
-function GlassServerControlS::sendUpdateInfo(%this, %client) {
+function GlassServerControlS::sendUpdateInfo(%client) {
   %count = updater.fileDownloader.queue.getCount();
 	for(%i = 0; %i < %count; %i ++) {
 		%item = updater.fileDownloader.queue.getObject(%i);
