@@ -36,6 +36,9 @@ function Glass::execServer() {
 	echo(" ===                   Starting it up                   ===");
 
 	GlassServerControlS::init();
+
+	if($Server::Dedicated)
+		GlassResourceManager.prompt();
 }
 
 function serverCmdGlassHandshake(%client, %ver) {
