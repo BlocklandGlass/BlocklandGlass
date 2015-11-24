@@ -9,15 +9,19 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCmd[$remapCount] = "openGlassSettings";
    $remapCount++;
 
-function openGlassSettings() {
-  if(GlassServerControlC.enabled) {
-    canvas.pushDialog(GlassServerControlGui);
+function openGlassSettings(%down) {
+  if(!%down) {
+    if(GlassServerControlGui.isAwake()) {
+      canvas.popDialog(GlassServerControlGui);
+    } else if(GlassServerControlC.enabled) {
+      canvas.pushDialog(GlassServerControlGui);
+    }
   }
 }
 
 function clientCmdGlassNoUpdates() {
   GlassServerControlGui_UpdatesMsg.position = "0 107";
-  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand-bold:20>No Server Updates Available");
+  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand-bold:16>No Server Updates Available");
 
   %group = GlassServerControlGui_UpdatesMsg.getGroup();
   for(%i = 0; %i < %group.getCount(); %i++) {
