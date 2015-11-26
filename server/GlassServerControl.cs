@@ -316,8 +316,13 @@ package GlassServerControlS {
 		}
 
     %required = GlassSettings.get("SC::RequiredClients");
-    if(%required !$= "" && !%this.hasGlass) { //non-glass clients
-      %this.schedule(0, "delete", "This server uses Blockland Glass to manage client add-ons<br><br><a:blocklandglass.com/dl.php>You can download Blockland Glass here</a>");
+    if(trim(%required) !$= "" && !%this.hasGlass) { //non-glass clients
+      echo(" +- missing client mods AND missing glass");
+      for(%i = 0; %i < getFieldCount(%required); %i++) {
+        %mid = trim(getField(%required, %i));
+        %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">Mod ID " @ %mid @ "</a><br>";
+      }
+      %this.schedule(0, "delete", "The server host has specified that certain client add-ons are required for this server. You can use <a:blocklandglass.com/dl.php>Blockland Glass</a> to automatically download them for you, or alternatively download them yourself:<br><br>" @ %missingStr);
     }
 
     return %ret;
