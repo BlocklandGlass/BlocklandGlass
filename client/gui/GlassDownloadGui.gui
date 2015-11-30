@@ -1,5 +1,5 @@
 //--- OBJECT WRITE BEGIN ---
-new GuiControl(GlassUpdatesGui) {
+new GuiControl(GlassDownloadGui) {
    profile = "GuiDefaultProfile";
    horizSizing = "right";
    vertSizing = "bottom";
@@ -20,7 +20,7 @@ new GuiControl(GlassUpdatesGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      text = "Updates";
+      text = "Downloads";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
@@ -30,7 +30,7 @@ new GuiControl(GlassUpdatesGui) {
       canMaximize = "0";
       minSize = "50 50";
 
-      new GuiScrollCtrl(GlassUpdatesGui_Scroll) {
+      new GuiScrollCtrl(GlassDownloadGui_Scroll) {
          profile = "GlassScrollProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -60,7 +60,7 @@ new GuiControl(GlassUpdatesGui) {
          clipToParent = "1";
          color = "170 170 170 255";
 
-         new GuiBitmapButtonCtrl(GlassUpdatesGui_Decline) {
+         new GuiBitmapButtonCtrl(GlassDownloadGui_Decline) {
             profile = "BlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -70,8 +70,8 @@ new GuiControl(GlassUpdatesGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassUpdaterSupport::close();";
-            text = "Close";
+            command = "GlassDownloadGui.onDecline();";
+            text = "Decline";
             groupNum = "-1";
             buttonType = "PushButton";
             bitmap = "base/client/ui/button1";
@@ -82,7 +82,7 @@ new GuiControl(GlassUpdatesGui) {
             mKeepCached = "0";
             mColor = "220 170 170 255";
          };
-         new GuiBitmapButtonCtrl(GlassUpdatesGui_Accept) {
+         new GuiBitmapButtonCtrl(GlassDownloadGui_Accept) {
             profile = "BlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -92,8 +92,8 @@ new GuiControl(GlassUpdatesGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassUpdaterSupport::doUpdates();";
-            text = "Update";
+            command = "GlassDownloadGui.onAccept();";
+            text = "Download";
             groupNum = "-1";
             buttonType = "PushButton";
             bitmap = "base/client/ui/button1";
@@ -122,7 +122,7 @@ new GuiControl(GlassUpdatesGui) {
             rowHeight = "40";
             columnWidth = "30";
 
-            new GuiMLTextCtrl(GlassUpdatesGui_Changelog) {
+            new GuiMLTextCtrl(GlassDownloadGui_Text) {
                profile = "GuiMLTextProfile";
                horizSizing = "right";
                vertSizing = "bottom";

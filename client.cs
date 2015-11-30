@@ -29,7 +29,7 @@ function Glass::execClient() {
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");
-	exec("./client/gui/GlassUpdatesGui.gui");
+	exec("./client/gui/GlassDownloadGui.gui");
 	exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
 	exec("./client/gui/GlassModManagerGui.gui");
 	exec("./client/gui/GlassModManagerImage.gui");
@@ -42,16 +42,19 @@ function Glass::execClient() {
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
+
 	exec("./client/GlassClientManager.cs");
 
 	exec("./client/GlassAuth.cs");
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
+	exec("./client/GlassDownloadInterface.cs");
 
 	echo(" ===                   Starting it up                   ===");
 	GlassFontManager::init();
 
+	GlassDownloadInterface::init();
 	GlassAuth::init();
 	GlassDownloadManager::init();
 	GlassRTBSupport::init();
