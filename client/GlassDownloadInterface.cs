@@ -31,6 +31,7 @@ function GlassDownloadGui::onDecline(%this) {
         %ctx.delete();
         GlassDownloadGui.loadContext(GlassDownloadInterface.getObject(0));
       } else {
+        %ctx.delete();
         canvas.popDialog(GlassDownloadGui);
       }
     }
@@ -44,6 +45,7 @@ function GlassDownloadGui::onDone(%this) {
   for(%i = 0; %i < %ctx.callbacks; %i++) {
     eval(%ctx.callback[%i] @ "(2);");
   }
+
   if(GlassDownloadInterface.getCount() > 1) {
     %ctx.delete();
     GlassDownloadGui.loadContext(GlassDownloadInterface.getObject(0));
@@ -58,7 +60,7 @@ function GlassDownloadGui::loadContext(%this, %ctx) {
 
   GlassDownloadInterface.currentContext = %ctx;
 
-	%currentY = 0;
+	%currentY = 1;
 	GlassDownloadGui_Scroll.clear();
 	for(%i = 0; %i < %ctx.getCount(); %i++) {
 		%obj = %ctx.getObject(%i);
@@ -83,7 +85,7 @@ function GlassDownloadGui::buildSwatch(%obj) {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "0 0";
+    position = "1 1";
     extent = "280 30";
     minExtent = "8 2";
     enabled = "1";

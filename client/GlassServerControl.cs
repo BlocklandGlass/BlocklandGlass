@@ -101,7 +101,7 @@ function GlassServerControlC::populateClientsPopUp(%this) {
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
 		%json = loadJSON(%file);
     if(%json.get("formatVersion") == 1) {
-      if(%json.get("board") == 9) {
+      if(isfile(getsubstr(%file, 0, strlen(%file)-10) @ "client.cs")) {
 
         GlassSettings.cachePut("AddonName_" @ %json.get("id"), %json.get("title"));
 

@@ -302,7 +302,7 @@ package GlassServerControlS {
             if(containsField(%mid, %clients)) {
               %this._glassHasClient[%mid] = true;
             } else {
-              %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">Mod ID " @ %mid @ "</a><br>";
+              %missingStr = %mid TAB GlassSettings.cacheFetch("AddonName_" @ %mid) @  "<br>";
             }
           }
 
@@ -320,7 +320,7 @@ package GlassServerControlS {
       echo(" +- missing client mods AND missing glass");
       for(%i = 0; %i < getFieldCount(%required); %i++) {
         %mid = trim(getField(%required, %i));
-        %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">Mod ID " @ %mid @ "</a><br>";
+        %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">" @ GlassSettings.cacheFetch("AddonName_" @ %mid) @ "</a><br>";
       }
       %this.schedule(0, "delete", "The server host has specified that certain client add-ons are required for this server. You can use <a:blocklandglass.com/dl.php>Blockland Glass</a> to automatically download them for you, or alternatively download them yourself:<br><br>" @ %missingStr);
     }

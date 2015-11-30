@@ -60,6 +60,7 @@ function Glass::execClient() {
 	GlassRTBSupport::init();
 	GlassUpdaterSupport::verifyInstall();
 	GlassServerControlC::init();
+	GlassClientManager::init();
 
 	GlassModManager::init();
 
