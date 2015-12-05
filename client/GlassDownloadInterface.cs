@@ -106,6 +106,9 @@ function GlassDownloadGui::buildSwatch(%obj) {
     text = "<font:quicksand-bold:16>" @ %obj.text;
   };
 
+  %gui.text = %text;
+  %gui.add(%text);
+
   if(%obj.image !$= "") {
     %img = new GuiBitmapCtrl() {
       profile = "GuiDefaultProfile";
@@ -131,10 +134,44 @@ function GlassDownloadGui::buildSwatch(%obj) {
     %gui.add(%img);
   }
 
-  %gui.text = %text;
-  %gui.add(%text);
+  if(%obj.callback !$= "") {
+    %mouse = new GuiMouseEventCtrl(GlassDownloadGui_Mouse) {
+      downloadObj = %obj;
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "0 0";
+      extent = "280 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lockMouse = "0";
+    };
+    %gui.mouse = %mouse;
+    %gui.add(%mouse);
+  }
 
   return %gui;
+}
+
+function GlassDownloadGui_Mouse::onMouseEnter(%this) {
+  %gs = %this.getGroup();
+  %gs.color = vectorAdd(%gs.color, "50 30 50") SPC 255;
+}
+
+function GlassDownloadGui_Mouse::onMouseLeave(%this) {
+  %gs = %this.getGroup();
+  %gs.color = vectorAdd(%gs.color, "-50 -30 -50") SPC 255;
+}
+
+function GlassDownloadGui_Mouse::onMouseDown(%this, %a, %b, %c) {
+  eval(%this.downloadObj.callback @ "(%this.downloadObj,0);");
+
+}
+
+function GlassDownloadGui_Mouse::onRightMouseDown(%this) {
+  eval(%this.downloadObj.callback @ "(%this.downloadObj,1);");
 }
 
 //================================================================
@@ -171,6 +208,7 @@ function GlassDownloadInterfaceContext::addDownload(%this, %text, %image, %callb
     text = %text;
     image = %image;
     callback = %callback;
+    ctx = %this;
   };
   %this.add(%obj);
   return %obj;
@@ -200,6 +238,23 @@ function GlassDownloadInterfaceObject::setProgress(%this, %value) {
   }
 
   %swatch.progress.setValue(%value);
+
+  if(%value == 1) {
+    %this.done = true;
+    for(%i = 0; %i < %this.ctx.getCount(); %i++) {
+      if(!%this.ctx.getObject(%i).done)
+        return;
+    }
+
+    GlassDownloadGui.onDone();
+  }
+}
+
+function GlassDownloadInterfaceObject::cancelDownload(%this) {
+  if(%this.ctx == GlassDownloadInterface.currentContext) {
+    GlassDownloadGui.schedule(0, loadContext, %this.ctx);
+  }
+  %this.delete();
 }
 
 function testcontext() {

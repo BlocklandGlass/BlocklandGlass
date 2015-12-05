@@ -285,6 +285,7 @@ package GlassServerControlS {
   }
 
 	function GameConnection::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p) {
+    echo(%a TAB %b TAB %c TAB %d TAB %e TAB %f TAB %g TAB %us TAB %i TAB %j TAB %k TAB %l TAB %m TAB %n TAB %o TAB %p);
     %ret = parent::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p);
 		for(%i = 0; %i < getLineCount(%us); %i++) { //being respectful of other mods, not hogging a whole argument
 			%line = getLine(%us, %i);
@@ -308,7 +309,9 @@ package GlassServerControlS {
 
           if(%missingStr !$= "") {
             echo(" +- missing client mods");
-            %this.schedule(0, "delete", "Missing Blockland Glass Mods<br><br>" @ %missingStr);
+            if(!%this.isLocalConnection()) {
+              %this.schedule(0, "delete", "Missing Blockland Glass Mods<br><br>" @ %missingStr);
+            }
           }
         }
 				break;
@@ -322,7 +325,9 @@ package GlassServerControlS {
         %mid = trim(getField(%required, %i));
         %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">" @ GlassSettings.cacheFetch("AddonName_" @ %mid) @ "</a><br>";
       }
-      %this.schedule(0, "delete", "The server host has specified that certain client add-ons are required for this server. You can use <a:blocklandglass.com/dl.php>Blockland Glass</a> to automatically download them for you, or alternatively download them yourself:<br><br>" @ %missingStr);
+      if(!%this.isLocalConnection()) {
+        %this.schedule(0, "delete", "The server host has specified that certain client add-ons are required for this server. You can use <a:blocklandglass.com/dl.php>Blockland Glass</a> to automatically download them for you, or alternatively download them yourself:<br><br>" @ %missingStr);
+      }
     }
 
     return %ret;
