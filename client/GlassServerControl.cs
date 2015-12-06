@@ -101,6 +101,12 @@ function GlassServerControlC::populateClientsPopUp(%this) {
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
 		%json = loadJSON(%file);
     if(%json.get("formatVersion") == 1) {
+
+      if(strpos(getsubstr(%file, 8, strlen(%file)-19), "/") != -1) {
+        echo(getsubstr(%file, 8, strlen(%file)-19));
+        continue;
+      }
+
       if(isfile(getsubstr(%file, 0, strlen(%file)-10) @ "client.cs")) {
 
         GlassSettings.cachePut("AddonName_" @ %json.get("id"), %json.get("title"));
@@ -132,10 +138,8 @@ function GlassServerControlC::populateClientsPopUp(%this) {
     %mid = getField(%requiredMods, %i);
     %name = GlassSettings.cacheFetch("AddonName_" @ %mid);
     if(%name $= "") {
-      echo("no name");
       GlassServerControlGui_RequiredClientsList.addRow(%mid, "modID_" @ %mid);
     } else {
-      echo("name! " @ %name);
       GlassServerControlGui_RequiredClientsList.addRow(%mid, %name);
     }
   }
@@ -155,6 +159,7 @@ function GlassServerControlC::addRequiredClient() {
 
   if(%append) {
     %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
+    echo(%append @ "," @ %pref.value);
     commandToServer('glassNameCacheAdd', %append, GlassServerControlGui_RequiredClientsPopUp.getValue());
     commandToServer('updateBLPref', %pref.variable, %append @ "," @ %pref.value);
     %pref.actualvalue = %pref.value = %append @ "," @ %pref.value;
@@ -233,7 +238,7 @@ function GlassServerControlC::valueUpdate(%obj) {
         }
       }
     }
-  } else if(%type $= "text" || %type $= "textarea") {
+  } else if(%type $= "text" || %type $= "textarea" || %type $= "password") {
     if(%parm !$= "") {
       if(strlen(%obj.ctrl.getValue()) > %parm) {
         %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
@@ -405,6 +410,11 @@ function GlassServerControlC::renderPrefCategory(%category) {
         %swatch.ctrl.range = %pref.parm;
 
       case "string":
+        %swatch = GlassServerControlC::createText();
+        %swatch.text.setText(%pref.title);
+        %swatch.ctrl.setValue(expandEscape(%pref.value));
+
+      case "password":
         %swatch = GlassServerControlC::createText();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));

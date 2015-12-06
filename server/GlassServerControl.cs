@@ -184,6 +184,7 @@ function GlassServerControlS::addAutoAdmin(%blid, %super) {
 
 function GlassServerControlS::sendAdminData(%cl) {
   %buffer = "";
+  $Pref::Server::AutoSuperAdminList = trim($Pref::Server::AutoSuperAdminList);
   for(%i = 0; %i < getWordCount($Pref::Server::AutoSuperAdminList); %i++) {
     %id = getWord($Pref::Server::AutoSuperAdminList, %i);
     %client = findClientByBL_ID(%id);
@@ -202,6 +203,7 @@ function GlassServerControlS::sendAdminData(%cl) {
   commandToClient(%cl, 'GlassAdminListing', trim(%buffer));
 
   %buffer = "";
+  $Pref::Server::AutoAdminList = trim($Pref::Server::AutoAdminList);
   for(%i = 0; %i < getWordCount($Pref::Server::AutoAdminList); %i++) {
     %id = getWord($Pref::Server::AutoAdminList, %i);
     %client = findClientByBL_ID(%id);
