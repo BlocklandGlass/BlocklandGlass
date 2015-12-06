@@ -42,12 +42,27 @@ function GlassResourceManager::prompt(%this) {
       echo("Downloading Glass Dependencies");
       GlassResourceManager::acceptPrompt();
     } else {
-      //canvas.pushDialog(GlassResourcesGui);
-      // TODO temporary
-      messageBoxOk("Glass Resources", "Blockland Glass relies on a few standardized add-ons to work.<br><br>Closing this dialog will begin their download.", "GlassResourceManager::acceptPrompt();");
+      %ctx = GlassDownloadInterface::openContext("Required Add-Ons", "Blockland Glass relies on a few standardized add-ons to work. They'll automatically install, all you have to do is press download!");
+      %ctx.registerCallback("GlassResourceManager::downloadGui");
+      %ctx.inhibitClose(true);
+      for(%i = 0; %i < %this.resources.getCount(); %i++) {
+        %res = %this.resources.getObject(%i);
+        if(!%res.downloaded)
+          %res.dlHandler = %ctx.addDownload("<font:arial bold:16>" @ %res.name @ " <font:arial:14>" @ %res.filename);
+      }
     }
   } else {
     echo("All dependencies found");
+  }
+}
+
+function GlassResourceManager::downloadGui(%call) {
+  if(%call == 1) {
+    GlassResourceManager::acceptPrompt();
+  } else if(%code == 2) {
+    if(GlassDownloadInterface.getCount() == 1) {
+      messageBoxOk("Please Restart", "Please restart Blockland for these changes to take effect. Pressing OK will close Blockland.", "quit();");
+    }
   }
 }
 
@@ -78,11 +93,7 @@ function GlassResourceManager::check(%this) {
 
 function GlassResourceTCP::setProgressBar(%this, %completed) {
   if(!$Server::Dedicated) {
-    if(!isobject(%this.resource.progressBar)) {
-      //create progressbar
-    } else {
-      %this.resource.progressBar.setValue(%completed);
-    }
+    %this.resource.dlHandler.setProgress(%completed);
   }
 }
 

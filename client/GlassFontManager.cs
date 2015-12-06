@@ -42,6 +42,8 @@ function GlassFontManager::downloadMissing(%this) {
     }
   }
 
+  Glass.didDownloadFonts = true;
+
   if(%dl)
     echo("Downloading missing fonts (" @ %dl @ " of " @ %fonts.length @ ")");
 }
@@ -55,14 +57,46 @@ function GlassFontManager::fetchRepository(%this) {
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
-function GlassFontManager::downloadFont(%this, %font) {
-  %url = %this.url @ %font;
-	%method = "GET";
-	%downloadPath = "base/client/ui/cache/" @ %font;
-	%className = "GlassFontDownload";
+function GlassFontManager::downloadFont(%this, %font, %actual) {
+  if(%actual) {
+    %url = %this.url @ %font;
+  	%method = "GET";
+  	%downloadPath = "base/client/ui/cache/" @ %font;
+  	%className = "GlassFontDownload";
 
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-	%tcp.font = %font;
+  	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+  	%tcp.font = %font;
+  } else {
+    %this.font[%this.fonts+0] = %font;
+    %this.fonts++;
+  }
+}
+
+function GlassFontManager::prompt(%this) {
+  %ctx = GlassDownloadInterface::openContext("Fonts", "Blockland Glass needs download some visual resources.<br><br> Press Download to continue");
+  %ctx.registerCallback("GlassFontManager::downloadGui");
+  %ctx.inhibitClose(true);
+  for(%i = 0; %i < GlassFontManager.fonts; %i++) {
+    %font = GlassFontManager.font[%i];
+    GlassFontManager.dlHandler[%font] = %ctx.addDownload("<font:arial:16>" @ %font);
+  }
+}
+
+function GlassFontManager::downloadGui(%code) {
+  if(%code == 1) {
+    for(%i = 0; %i < GlassFontManager.fonts; %i++) {
+      %font = GlassFontManager.font[%i];
+      GlassFontManager.downloadFont(%font, true);
+    }
+  } else if(%code == 2) {
+    if(GlassDownloadInterface.getCount() == 1) {
+      messageBoxOk("Please Restart", "Please restart Blockland for these changes to take effect. Pressing OK will close Blockland.", "quit();");
+    }
+  }
+}
+
+function GlassFontDownload::setProgressBar(%this, %float) {
+  GlassFontManager.dlHandler[%this.font].setProgress(%float);
 }
 
 function GlassFontDownload::onDone(%this, %error) {
@@ -97,3 +131,12 @@ function GlassFontRepo::onDone(%this, %error) {
     }
   }
 }
+
+package GlassFontManager {
+  function MM_AuthBar::blinkSuccess(%this) {
+    if(GlassFontManager.fonts)
+      GlassFontManager.prompt();
+    parent::blinkSuccess(%this);
+  }
+};
+activatePackage(GlassFontManager);
