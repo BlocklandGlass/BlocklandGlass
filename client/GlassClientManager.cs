@@ -33,7 +33,7 @@ function GlassClientManager::downloadCallback(%code) {
   if(%code == 1) {
     messageBoxOk("Sorry..", "Automatic downloading is currently not available. Please visit the <a:blocklandglass.com>Blockland Glass Website</a> to download the required add-ons.");
   } else if(%code == -1) {
-
+    canvas.pushDialog(JoinServerGui);
   } else if(%code == 2) {
 
   }

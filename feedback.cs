@@ -1,9 +1,9 @@
 function Glass::openFeedbackPrompt() {
-  if(GlassSettings.cacheFetch("Feedback") !$= "alpha3") {
-    messageBoxOk("Feedback", "<font:quicksand-bold:24>Alpha 3<br><br><font:quicksand:16>Welcome to Glass Alpha 3!<br><br>New in this build is a whole new (backend) setting and cache system. This has led to some changes to the mod manager, specifically the keybind and colorset system.<br><br>Additionally, the admin management system is now functional! You can find it in the server control gui.<br><br>Please focus your testing on these, and let us know if you find anything. Also, if your previous colorset and keybind settings haven't transfered over, please notify us of that.<br><br>Thanks,<br>The Glass Team", "Glass::feedbackSeen(1);");
+  if(GlassSettings.cacheFetch("Feedback") !$= "beta1" && !GlassDownloadGui.isAwake()) {
+    messageBoxOk("Feedback", "<font:quicksand-bold:24>Welcome to Beta!<br><br><font:quicksand:16>Welcome to Glass Beta! Here's the cumulative changes since v1.0:<br><br> - Add-On dependencies now show up in the mod manager<br> - Server Control has been added<br> - Support_Preferences and Support_Updater now download automatically<br> - Servers can now require certain client mods<br><br>Thank you for taking your time to test!", "Glass::feedbackSeen(1);");
   }
 }
 
 function Glass::feedbackSeen(%iter) {
-  GlassSettings.cachePut("Feedback", "alpha3");
+  GlassSettings.cachePut("Feedback", "beta1");
 }
