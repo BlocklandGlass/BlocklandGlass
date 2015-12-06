@@ -162,7 +162,9 @@ function GlassServerControlC::addRequiredClient() {
     echo(%append @ "," @ %pref.value);
     commandToServer('glassNameCacheAdd', %append, GlassServerControlGui_RequiredClientsPopUp.getValue());
     commandToServer('updateBLPref', %pref.variable, %append @ "," @ %pref.value);
-    %pref.actualvalue = %pref.value = %append @ "," @ %pref.value;
+    %pref.value = %append @ "," @ %pref.value;
+    echo(%pref.value);
+    %pref.actualvalue = %pref.value;
 
     GlassServerControlGui_RequiredClientsList.addRow(%append, GlassServerControlGui_RequiredClientsPopUp.getValue() TAB %append);
   }
@@ -930,7 +932,7 @@ package GlassServerControlC {
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
 	}
 
   function disconnect(%a) {

@@ -293,8 +293,8 @@ package GlassServerControlS {
 			%line = getLine(%us, %i);
 			if(getField(%line, 0) $= "Glass") {
         %this.hasGlass = true;
-        %version = getField(%line, 0);
-        %clients = strreplace(getField(%line, 1), " ", "\t"); //addons in the client mods category
+        %version = getField(%line, 1);
+        %clients = strreplace(getField(%line, 2), " ", "\t"); //addons in the client mods category
 
         %required = strreplace(GlassSettings.get("SC::RequiredClients"), ",", "\t");
         if(%required !$= "") {

@@ -15,7 +15,6 @@ function GlassPrefGroup::sendPrefs(%this) {
 			%pref = %cate.getObject(%j);
 			if(%pref.actualvalue !$= %pref.value) {
 				%up = true;
-				echo("Updating " @ %pref.variable);
 				commandToServer('updateBLPref', %pref.variable, %pref.value);
 				%pref.actualvalue = %pref.value;
 			}

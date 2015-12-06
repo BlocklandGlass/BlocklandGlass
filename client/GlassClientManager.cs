@@ -29,9 +29,46 @@ function GlassClientManager::openDownloadGui() {
   %ctx.registerCallback("GlassClientManager::downloadCallback");
 }
 
+function GlassClientManager::downloadCallback(%code) {
+  if(%code == 1) {
+    messageBoxOk("Sorry..", "Automatic downloading is currently not available. Please visit the <a:blocklandglass.com>Blockland Glass Website</a> to download the required add-ons.");
+  } else if(%code == -1) {
+
+  } else if(%code == 2) {
+
+  }
+}
+
+function GlassClientManager::getClients(%this) {
+  %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
+  %requiredMods = strreplace(%pref.value, ",", "\t");
+
+  GlassServerControlGui_RequiredClientsPopUp.clear();
+  %pattern = "Add-ons/*/glass.json";
+	echo("\c1Looking for client Add-Ons");
+  %files = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+		%json = loadJSON(%file);
+    if(%json.get("formatVersion") == 1) {
+
+      if(strpos(getsubstr(%file, 8, strlen(%file)-19), "/") != -1) {
+        echo(getsubstr(%file, 8, strlen(%file)-19));
+        continue;
+      }
+
+      if(isfile(getsubstr(%file, 0, strlen(%file)-10) @ "client.cs")) {
+        %files = getsubstr(%file, 8, strlen(%file)-19) @ "," @ %files;
+      }
+    }
+	}
+
+  return %files;
+}
+
 package GlassClientManager {
   function GameConnection::onConnectionDropped(%this, %msg) {
     parent::onConnectionDropped(%this, %msg);
+    %this.dump();
     GlassClientManager::clean();
     if(strpos(%msg, "Missing Blockland Glass Mods") == 0) {
       echo(" +- Glass Mods Missing!");
