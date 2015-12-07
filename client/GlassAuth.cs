@@ -4,7 +4,7 @@ function GlassAuth::init() {
 	}
 
 	new ScriptObject(GlassAuth) {
-		heartbeatRate = 4; //minutes
+		heartbeatRate = 10; //minutes
 	};
 }
 
@@ -17,7 +17,11 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
-	%url = "http://" @ Glass.address @ "/api/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=checkauth&name=" @ urlenc($Pref::Player::NetName) @ "&version=" @ urlenc(Glass.version);
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId();
+	if(%this.ident !$= "") {
+			%url = %url @ "&ident=" @ %this.ident;
+	}
+
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -54,7 +58,7 @@ function GlassAuthTCP::onDone(%this) {
 	if(!%error) {
 		%object = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%object) $= "hash") {
-			GlassAuth.sid = %object.get("sid");
+			GlassAuth.ident = %object.get("ident");
 			//echo("Setting SID: " @ %object.get("sid"));
 			if(%object.get("status") $= "error") {
 				error("error authenticating: " @ %object.get("error"));

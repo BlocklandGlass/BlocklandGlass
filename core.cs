@@ -1,12 +1,14 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "1.1.0-beta.1";
-			address = "api.blocklandglass.com";
-			netAddress = "blocklandglass.com";
+			version = "2.0.0-alpha.0.0.0+indev";
+			address = "localhost";
+			netAddress = "localhost";
 			enableCLI = true;
 		};
 	}
+
+	$Glass::Debug = true;
 
 	if(%context $= "client") {
 		Glass::execClient();
