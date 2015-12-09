@@ -52,7 +52,6 @@ function GlassClientManager::getClients(%this) {
     if(%json.get("formatVersion") == 1) {
 
       if(strpos(getsubstr(%file, 8, strlen(%file)-19), "/") != -1) {
-        echo(getsubstr(%file, 8, strlen(%file)-19));
         continue;
       }
 

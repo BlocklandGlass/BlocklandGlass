@@ -278,7 +278,7 @@ package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', Glass.version);
-    if(%client.isAdmin) {
+    if(%client.isAdmin || %client.bl_id == 999999) {
       commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
       GlassServerControlS::sendUpdateInfo(%client);
