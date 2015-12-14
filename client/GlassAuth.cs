@@ -17,7 +17,7 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId();
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
 	if(%this.ident !$= "") {
 			%url = %url @ "&ident=" @ %this.ident;
 	}
