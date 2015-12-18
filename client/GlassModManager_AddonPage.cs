@@ -411,7 +411,6 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
         %ap.depFilename[%i] = %depObj.get("filename");
         %ap.depBoard[%i] = %depObj.get("board");
       }
-      echo("dependencies: " @ %ap.depCount);
 
       %branches = %main.get("branches");
       for(%i = 0; %i < %branches.length; %i++) {
@@ -587,7 +586,6 @@ function GlassModManagerGui_AddonPage_NewComment::onResize(%this, %thisx, %thisy
     %this.getGroup().setVisible(true);
     %this.makeFirstResponder(1);
     %this.getGroup().getGroup().scrollToBottom();
-    echo("New: " @ %x SPC %y);
   }
 }
 

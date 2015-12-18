@@ -22,7 +22,6 @@ function GlassClientManager::openDownloadGui() {
 
 	for(%i = 0; %i < GlassClientManager.getCount(); %i++) {
 		%mod = GlassClientManager.getObject(%i);
-    echo(%mod);
 		%handler = %ctx.addDownload("<font:quicksand-bold:16>" @ %mod.name @ " <font:quicksand:14>ID: " @ %mod.id);
 	}
 
@@ -52,7 +51,6 @@ function GlassClientManager::getClients(%this) {
     if(%json.get("formatVersion") == 1) {
 
       if(strpos(getsubstr(%file, 8, strlen(%file)-19), "/") != -1) {
-        echo(getsubstr(%file, 8, strlen(%file)-19));
         continue;
       }
 

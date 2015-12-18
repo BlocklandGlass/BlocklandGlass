@@ -79,6 +79,7 @@ function clientCmdhasPrefSystem(%version, %permission) {
 		echo("Server has pref system! (" @ %version @")");
 
 	if(%permission) {
+		GlassPrefGroup.requested = true;
 		commandToServer('GetBLPrefCategories');
 	}
 }

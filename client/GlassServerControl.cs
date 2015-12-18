@@ -10,6 +10,11 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCount++;
 
 function openGlassSettings(%down) {
+  if(!GlassPrefGroup.requested) {
+    GlassPrefGroup.requested = true;
+    commandToServer('GetBLPrefCategories');
+  }
+  
   if(!%down) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
@@ -379,6 +384,9 @@ function GlassServerControlC::renderPrefs() {
 function GlassServerControlC::renderPrefCategory(%category) {
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
+
+  if(!isObject(%category))
+    return;
 
   //create header
   %header = GlassServerControlC::createHeader(%category.name);

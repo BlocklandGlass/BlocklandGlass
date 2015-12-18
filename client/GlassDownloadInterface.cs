@@ -61,17 +61,36 @@ function GlassDownloadGui::loadContext(%this, %ctx) {
   GlassDownloadInterface.currentContext = %ctx;
 
 	%currentY = 1;
-	GlassDownloadGui_Scroll.clear();
+  if(isObject(GlassDownloadGui_ScrollSwatch))
+    GlassDownloadGui_ScrollSwatch.deleteAll();
+  else
+    new GuiSwatchCtrl(GlassDownloadGui_ScrollSwatch) {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "1 1";
+      extent = GlassDownloadGui_Scroll.extent;
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "0 0 0 0";
+    };
+
 	for(%i = 0; %i < %ctx.getCount(); %i++) {
 		%obj = %ctx.getObject(%i);
 
 		%swat = GlassDownloadGui::buildSwatch(%obj);
     %obj.swatch = %swat;
     %swat.position = 1 SPC %currentY;
-    GlassDownloadGui_Scroll.add(%swat);
+    GlassDownloadGui_ScrollSwatch.add(%swat);
 
 		%currentY += 31;
 	}
+
+  GlassDownloadGui_ScrollSwatch.extent = getWord(GlassDownloadGui_ScrollSwatch.extent, 0) SPC %currentY;
+  GlassDownloadGui_Scroll.clear();
+  GlassDownloadGui_Scroll.add(GlassDownloadGui_ScrollSwatch);
 }
 
 function GlassDownloadGui::buildSwatch(%obj) {
