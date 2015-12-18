@@ -287,7 +287,7 @@ package GlassServerControlS {
   }
 
 	function GameConnection::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p) {
-    echo(%a TAB %b TAB %c TAB %d TAB %e TAB %f TAB %g TAB %us TAB %i TAB %j TAB %k TAB %l TAB %m TAB %n TAB %o TAB %p);
+    //echo(%a TAB %b TAB %c TAB %d TAB %e TAB %f TAB %g TAB %us TAB %i TAB %j TAB %k TAB %l TAB %m TAB %n TAB %o TAB %p);
     %ret = parent::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p);
 		for(%i = 0; %i < getLineCount(%us); %i++) { //being respectful of other mods, not hogging a whole argument
 			%line = getLine(%us, %i);
