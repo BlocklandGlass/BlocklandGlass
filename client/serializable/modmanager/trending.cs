@@ -4,7 +4,7 @@ function GlassModManagerGui::renderHome(%trending, %recent) {
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 0";
+    extent = "505 498";
   };
 
   echo(%container);
@@ -18,6 +18,8 @@ function GlassModManagerGui::renderHome(%trending, %recent) {
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
+  GlassModManagerGui_MainDisplay.extent = %container.extent;
+  GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
 function GlassModManagerGui::renderHome_trending(%trending) {

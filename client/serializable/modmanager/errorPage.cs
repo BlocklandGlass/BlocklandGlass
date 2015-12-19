@@ -29,6 +29,15 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
 
   if($Glass::Debug) {
     %text = %text @ "<just:left><font:Lucida Console:12>" @ %buffer;
+  } else {
+    //record the event
+    %fo = new FileObject();
+    %fo.openForRead("config/client/blg/error_log/" @ getrealtime() @ ".log");
+    %fo.writeLine("Error Code: " @ %errorcode);
+    %fo.writeLine("");
+    %fo.writeLine(%buffer);
+    %fo.close();
+    %fo.delete();
   }
 
   %container.text.setValue(%text);
@@ -41,6 +50,20 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
+
+  %container.text.forceReflow();
+
+  echo(%container.text.extent);
+
+  if(getWord(%container.text.extent, 1) > 498-30) {
+    echo("long!");
+    GlassModManagerGui_MainDisplay.extent = %container.extent = getWord(%container.extent, 0) SPC getWord(%container.text.extent, 1)+60;
+  } else {
+    GlassModManagerGui_MainDisplay.extent = 505 SPC 498;
+  }
+
+
+  GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
 
