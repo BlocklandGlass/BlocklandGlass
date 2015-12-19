@@ -107,7 +107,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "470 235";
          minExtent = "8 2";
          enabled = "1";
-         visible = "0";
+         visible = "1";
          clipToParent = "1";
          color = "128 128 128 128";
 
@@ -164,9 +164,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 250 220 255";
+                        mouse = "15529";
                         ocolor = "220 250 220 255";
                         rcolor = "220 250 220 255";
-                        mouse = "14529";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -212,7 +212,7 @@ new GuiControl(GlassServerControlGui) {
                         visible = "1";
                         clipToParent = "1";
                         lockMouse = "0";
-                           category = "14503";
+                           category = "15503";
                      };
                   };
                   new GuiSwatchCtrl() {
@@ -226,9 +226,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 230 220 255";
+                        mouse = "15533";
                         ocolor = "220 230 220 255";
                         rcolor = "220 230 220 255";
-                        mouse = "14533";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -274,7 +274,7 @@ new GuiControl(GlassServerControlGui) {
                         visible = "1";
                         clipToParent = "1";
                         lockMouse = "0";
-                           category = "14504";
+                           category = "15504";
                      };
                   };
                };
@@ -374,9 +374,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14537";
-                     pref = "14506";
-                     ctrl = "14538";
+                     ctrl = "15538";
+                     text = "15537";
+                     pref = "15506";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -401,7 +401,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14536);";
+                     command = "GlassServerControlC::valueUpdate(15536);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -420,9 +420,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14540";
-                     pref = "14507";
-                     ctrl = "14541";
+                     ctrl = "15541";
+                     text = "15540";
+                     pref = "15507";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -447,7 +447,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14539);";
+                     command = "GlassServerControlC::valueUpdate(15539);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -466,9 +466,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14543";
-                     pref = "14508";
-                     ctrl = "14544";
+                     ctrl = "15544";
+                     text = "15543";
+                     pref = "15508";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -493,7 +493,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14542);";
+                     command = "GlassServerControlC::valueUpdate(15542);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -512,9 +512,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14546";
-                     pref = "14509";
-                     ctrl = "14547";
+                     ctrl = "15547";
+                     text = "15546";
+                     pref = "15509";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -539,7 +539,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14545);";
+                     command = "GlassServerControlC::valueUpdate(15545);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -558,9 +558,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14549";
-                     pref = "14510";
-                     ctrl = "14550";
+                     ctrl = "15550";
+                     text = "15549";
+                     pref = "15510";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -585,7 +585,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14548);";
+                     command = "GlassServerControlC::valueUpdate(15548);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -604,9 +604,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14552";
-                     pref = "14511";
-                     ctrl = "14553";
+                     ctrl = "15553";
+                     text = "15552";
+                     pref = "15511";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -631,7 +631,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14551);";
+                     command = "GlassServerControlC::valueUpdate(15551);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -650,9 +650,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14555";
-                     pref = "14512";
-                     ctrl = "14556";
+                     ctrl = "15556";
+                     text = "15555";
+                     pref = "15512";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -677,7 +677,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14554);";
+                     command = "GlassServerControlC::valueUpdate(15554);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -696,9 +696,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14558";
-                     pref = "14513";
-                     ctrl = "14559";
+                     ctrl = "15559";
+                     text = "15558";
+                     pref = "15513";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -722,7 +722,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14557);";
+                     command = "GlassServerControlC::valueUpdate(15557);";
                      text = " ";
                      groupNum = "-1";
                      buttonType = "ToggleButton";
@@ -739,9 +739,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14561";
-                     pref = "14514";
-                     ctrl = "14562";
+                     ctrl = "15562";
+                     text = "15561";
+                     pref = "15514";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -766,7 +766,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14560);";
+                     command = "GlassServerControlC::valueUpdate(15560);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -785,9 +785,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14564";
-                     pref = "14515";
-                     ctrl = "14565";
+                     ctrl = "15565";
+                     text = "15564";
+                     pref = "15515";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -811,7 +811,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14563);";
+                     command = "GlassServerControlC::valueUpdate(15563);";
                      text = " ";
                      groupNum = "-1";
                      buttonType = "ToggleButton";
@@ -828,9 +828,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14567";
-                     pref = "14516";
-                     ctrl = "14568";
+                     ctrl = "15568";
+                     text = "15567";
+                     pref = "15516";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -855,7 +855,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14566);";
+                     command = "GlassServerControlC::valueUpdate(15566);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -874,9 +874,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14570";
-                     pref = "14517";
-                     ctrl = "14571";
+                     ctrl = "15571";
+                     text = "15570";
+                     pref = "15517";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -901,7 +901,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14569);";
+                     command = "GlassServerControlC::valueUpdate(15569);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -920,9 +920,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14573";
-                     pref = "14518";
-                     ctrl = "14574";
+                     ctrl = "15574";
+                     text = "15573";
+                     pref = "15518";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -946,7 +946,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14572);";
+                     command = "GlassServerControlC::valueUpdate(15572);";
                      text = " ";
                      groupNum = "-1";
                      buttonType = "ToggleButton";
@@ -963,9 +963,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14576";
-                     pref = "14519";
-                     ctrl = "14577";
+                     ctrl = "15577";
+                     text = "15576";
+                     pref = "15519";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -990,7 +990,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14575);";
+                     command = "GlassServerControlC::valueUpdate(15575);";
                      maxLength = "255";
                      historySize = "0";
                      password = "0";
@@ -1009,9 +1009,9 @@ new GuiControl(GlassServerControlGui) {
                   visible = "1";
                   clipToParent = "1";
                   color = "100 100 100 50";
-                     text = "14579";
-                     pref = "14520";
-                     ctrl = "14580";
+                     ctrl = "15580";
+                     text = "15579";
+                     pref = "15520";
 
                   new GuiTextCtrl() {
                      profile = "GuiTextProfile";
@@ -1035,7 +1035,7 @@ new GuiControl(GlassServerControlGui) {
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     command = "GlassServerControlC::valueUpdate(14578);";
+                     command = "GlassServerControlC::valueUpdate(15578);";
                      text = " ";
                      groupNum = "-1";
                      buttonType = "ToggleButton";
@@ -1156,7 +1156,7 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "163 16";
+               extent = "163 2";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1201,7 +1201,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "470 235";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          color = "128 128 128 128";
 
@@ -1521,7 +1521,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "317 145";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          text = "Required Client Add-Ons";
          maxLength = "255";

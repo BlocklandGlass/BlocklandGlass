@@ -10,6 +10,11 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCount++;
 
 function openGlassSettings(%down) {
+  if(!GlassPrefGroup.requested) {
+    GlassPrefGroup.requested = true;
+    commandToServer('GetBLPrefCategories');
+  }
+  
   if(!%down) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
@@ -103,7 +108,6 @@ function GlassServerControlC::populateClientsPopUp(%this) {
     if(%json.get("formatVersion") == 1) {
 
       if(strpos(getsubstr(%file, 8, strlen(%file)-19), "/") != -1) {
-        echo(getsubstr(%file, 8, strlen(%file)-19));
         continue;
       }
 
@@ -159,11 +163,9 @@ function GlassServerControlC::addRequiredClient() {
 
   if(%append) {
     %pref = GlassPrefGroup::findByVariable("$Pref::Glass::ClientAddons");
-    echo(%append @ "," @ %pref.value);
     commandToServer('glassNameCacheAdd', %append, GlassServerControlGui_RequiredClientsPopUp.getValue());
     commandToServer('updateBLPref', %pref.variable, %append @ "," @ %pref.value);
     %pref.value = %append @ "," @ %pref.value;
-    echo(%pref.value);
     %pref.actualvalue = %pref.value;
 
     GlassServerControlGui_RequiredClientsList.addRow(%append, GlassServerControlGui_RequiredClientsPopUp.getValue() TAB %append);
@@ -345,12 +347,10 @@ function GlassServerControlC::renderPrefCategories() {
   }
 
   if(%y > 203) {
-    echo(%y);
     GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC %y;
   } else {
     GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC 203;
   }
-  echo(GlassServerControlGui_Prefs_Categories.extent);
   GlassServerControlGui_Prefs_Categories.getGroup().scrollToTop();
   GlassServerControlGui_Prefs_Categories.setVisible(true);
 }
@@ -384,6 +384,9 @@ function GlassServerControlC::renderPrefs() {
 function GlassServerControlC::renderPrefCategory(%category) {
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
+
+  if(!isObject(%category))
+    return;
 
   //create header
   %header = GlassServerControlC::createHeader(%category.name);

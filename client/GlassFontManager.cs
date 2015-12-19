@@ -73,7 +73,7 @@ function GlassFontManager::downloadFont(%this, %font, %actual) {
 }
 
 function GlassFontManager::prompt(%this) {
-  %ctx = GlassDownloadInterface::openContext("Fonts", "Blockland Glass needs download some visual resources.<br><br> Press Download to continue");
+  %ctx = GlassDownloadInterface::openContext("Fonts", "<font:arial:16>Blockland Glass needs download some visual resources.<br><br> Press Download to continue");
   %ctx.registerCallback("GlassFontManager::downloadGui");
   %ctx.inhibitClose(true);
   for(%i = 0; %i < GlassFontManager.fonts; %i++) {
@@ -92,6 +92,8 @@ function GlassFontManager::downloadGui(%code) {
     if(GlassDownloadInterface.getCount() == 1) {
       messageBoxOk("Please Restart", "Please restart Blockland for these changes to take effect. Pressing OK will close Blockland.", "quit();");
     }
+  } else if(%code == -1) {
+    messageBoxOk("Uh-oh", "These fonts are needed to run Blockland Glass!");
   }
 }
 
@@ -129,6 +131,8 @@ function GlassFontRepo::onDone(%this, %error) {
     } else {
       GlassFontManager.downloadMissing();
     }
+  } else {
+    error("Error downloading font: " @ %font);
   }
 }
 

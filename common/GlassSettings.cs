@@ -39,8 +39,6 @@ function GlassSettings::loadData(%this, %context) {
     %fo.openForRead("config/" @ %context @ "/glass.conf");
     while(!%fo.isEOF()) {
       %line = %fo.readLine();
-      echo("original data: " @ getField(%line, 1));
-      echo("collapsed data: " @ collapseEscape(getField(%line, 1)));
       %this.loadSetting(getField(%line, 0), collapseEscape(getField(%line, 1)));
     }
   }

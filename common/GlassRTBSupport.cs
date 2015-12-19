@@ -111,8 +111,10 @@ function GlassRTBSupport::updateProgressBar(%handle, %float) {
 }
 
 function GlassRTBSupportTCP::onDone(%this, %error) {
-	echo("\c4 + GlassRTBSupportTCP onDone " @ %error);
-	echo(%this.buffer);
+	if($Glass::Debug) {
+		echo("\c4 + GlassRTBSupportTCP onDone " @ %error);
+		echo(%this.buffer);
+	}
 	if(!%error) {
 		%array = parseJSON(collapseEscape(%this.buffer));
 		if(getJSONType(%array) $= "array" && %array.length) {
