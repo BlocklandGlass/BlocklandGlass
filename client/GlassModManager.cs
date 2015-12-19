@@ -39,7 +39,9 @@ function GlassModManager::setPane(%pane) {
 
   if(%pane == 2) {
     GlassModManager::setLoading(true);
-    GlassModManager.loadBoards();
+    //GlassModManager.loadBoards();
+    %pane = 1;
+    GlassModManagerGui::loadErrorPage("development");
   }
 
   if(%pane == 3) {
@@ -208,38 +210,81 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 }
 
 //====================================
+// Communications
+//====================================
+
+function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
+  if(GlassAuth.ident !$= "") {
+    for(%i = 0; %i < getLineCount(%params); %i++) {
+      %paramText = %paramText @ "&" @ urlenc(getField(%params, 0)) @ "=" @ urlenc(getField(%params, 1));
+    }
+
+    %url = "http://" @ Glass.address @ "/api/2/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
+    if($Glass::Debug) { echo(%url); }
+    %method = "GET";
+    %downloadPath = "";
+    %className = "GlassModManagerTCP";
+
+    %tcp = connectToURL(%url, %method, %downloadPath, %className);
+    %tcp.glass_call = %call;
+    %tcp.glass_params = %params;
+    %tcp.glass_uniqueReturn = %uniqueReturn;
+    return %tcp;
+  } else {
+    GlassAuth.heartbeat();
+    return false;
+  }
+}
+
+function GlassModManagerTCP::handleText(%this, %line) {
+  %this.buffer = %this.buffer NL %line;
+}
+
+function GlassModManagerTCP::onDone(%this, %error) {
+  if(!%error) {
+    %ret = parseJSON(collapseEscape(%this.buffer));
+
+    if(%ret.action $= "auth") {
+      GlassAuth.heartbeat();
+    }
+
+    if(%ret.status $= "success") {
+
+      switch$(%this.glass_call) {
+        case "home":
+          GlassModManager::processCall_Home(%this);
+      }
+
+    } else {
+      GlassModManagerGui::loadErrorPage("status_" @ %ret.status, %this.buffer);
+    }
+	} else {
+    GlassModManagerGui::loadErrorPage("tcpclient_" @ %error);
+  }
+}
+
+//====================================
 // Home
 //====================================
 
 function GlassModManager::loadHome() {
-  %url = "http://" @ Glass.address @ "/api/2/mm.php?call=home&ident=" @ GlassAuth.ident;
-  %method = "GET";
-  %downloadPath = "";
-  %className = "GlassModManagerTCP_Home";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  GlassModManager::placeCall("home");
 }
 
-function GlassModManagerTCP_Home::handleText(%this, %line) {
-  %this.buffer = %this.buffer NL %line;
-}
+function GlassModManager::processCall_Home(%tcp) {
+  %ret = parseJSON(collapseEscape(%tcp.buffer));
 
-function GlassModManagerTCP_Home::onDone(%this, %error) {
-  if(!%error) {
-    %ret = parseJSON(collapseEscape(%this.buffer));
+  %latest = %ret.get("latest");
 
-    %latest = %ret.get("latest");
+  %latestStr = "";
+  for(%i = 0; %i < %latest.length; %i++) {
+    %obj = %latest.item[%i];
+    //"Blockland Glass\tJincux\tMonday\t11\nAdmin Chat\tJincux\tSunday\t7"
+    %latestStr = %latestStr @ "\n" @ %obj.get("name") TAB %obj.get("author") TAB %obj.get("uploadDate") TAB %obj.get("id");
+  }
 
-    %latestStr = "";
-    for(%i = 0; %i < %latest.length; %i++) {
-      %obj = %latest.item[%i];
-      //"Blockland Glass\tJincux\tMonday\t11\nAdmin Chat\tJincux\tSunday\t7"
-      %latestStr = %latestStr @ "\n" @ %obj.get("name") TAB %obj.get("author") TAB %obj.get("uploadDate") TAB %obj.get("id");
-    }
-
-    %latestStr = getsubstr(%lateststr, 1, strlen(%lateststr)) @ "\n";
-    GlassModManagerGui::renderHome("", %lateststr);
-	}
+  %latestStr = getsubstr(%lateststr, 1, strlen(%lateststr)) @ "\n";
+  GlassModManagerGui::renderHome("", %lateststr);
 }
 
 //====================================

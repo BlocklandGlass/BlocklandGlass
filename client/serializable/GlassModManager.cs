@@ -17,7 +17,7 @@ function GlassModManagerGui_AddonButton::onMouseLeave(%this) {
 }
 
 function GlassModManagerGui_AddonButton::onMouseDown(%this) {
-  messageBoxOk("Load add-on", "This should load to addon id " @ %this.aid);
+  GlassModManagerGui::fetchAndRenderAddon(%this.aid);
 }
 
 function GlassModManagerGui_AddonButton::onAdd(%this) {
@@ -26,3 +26,5 @@ function GlassModManagerGui_AddonButton::onAdd(%this) {
 }
 
 exec("./modmanager/trending.cs");
+exec("./modmanager/errorPage.cs");
+exec("./modmanager/addonPage.cs");
