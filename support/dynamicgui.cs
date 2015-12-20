@@ -10,11 +10,11 @@
 
 if($DynamicGui::Version > 1)
   return;
-  
+
 $DynamicGui::Version = 1;
 
 // .setMargin (horizontal/[left], vertical/[right], [top], [bottom])
-function GuiObjectCtrl::setMargin(%this, %a, %b, %c, %d) {
+function GuiControl::setMargin(%this, %a, %b, %c, %d) {
   if(%c !$= "" && %d !$= "") {
     %left = %a;
     %right = %b;
@@ -31,7 +31,7 @@ function GuiObjectCtrl::setMargin(%this, %a, %b, %c, %d) {
 }
 
 //resizes the object to be maximum size within the margin
-function GuiObjectCtrl::setMarginResize(%this, %a, %b, %c, %d) {
+function GuiControl::setMarginResize(%this, %a, %b, %c, %d) {
   if(%c !$= "" && %d !$= "") {
     %left = %a;
     %right = %b;
@@ -53,9 +53,9 @@ function GuiObjectCtrl::setMarginResize(%this, %a, %b, %c, %d) {
   }
 
   if(%b !$= "") { //only resize if we have a margin
-    %y = getWord(%parent.extent, 0)-%top-%bottom;
+    %y = getWord(%parent.extent, 1)-%top-%bottom;
   } else {
-    %y = getWord(%this.extent, 0);
+    %y = getWord(%this.extent, 1);
   }
 
   %this.position = %top SPC %left;
@@ -63,7 +63,7 @@ function GuiObjectCtrl::setMarginResize(%this, %a, %b, %c, %d) {
 }
 
 //resizes the parent to be the size of the object+margins
-function GuiObjectCtrl::setMarginResizeParent(%this, %a, %b, %c, %d) {
+function GuiControl::setMarginResizeParent(%this, %a, %b, %c, %d) {
   if(%c !$= "" && %d !$= "") {
     %left = %a;
     %right = %b;
@@ -83,9 +83,9 @@ function GuiObjectCtrl::setMarginResizeParent(%this, %a, %b, %c, %d) {
   }
 
   if(%b !$= "") { //only resize the parent if we have a margin
-    %y = getWord(%this.extent, 0)+%top+%bottom;
+    %y = getWord(%this.extent, 1)+%top+%bottom;
   } else {
-    %y = getWord(%this.getGroup().extent, 0);
+    %y = getWord(%this.getGroup().extent, 1);
   }
 
   %this.position = %top SPC %left;
@@ -93,11 +93,31 @@ function GuiObjectCtrl::setMarginResizeParent(%this, %a, %b, %c, %d) {
 
 }
 
-function GuiObjectCtrl::forceCenter(%this) {
+function GuiControl::forceCenter(%this) {
   %parent = %this.getGroup();
 
   %x = mFloor((getWord(%parent.extent, 0)-getWord(%this.extent, 0))/2);
   %y = mFloor((getWord(%parent.extent, 1)-getWord(%this.extent, 1))/2);
 
   %this.position = %x SPC %y;
+}
+
+function GuiControl::verticalMatchChildren(%this, %min, %pad) {
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %low = getWord(vectorAdd(%this.getObject(%i).position, %this.getObject(%i).extent), 1);
+    if(%low > %lowest) {
+      %lowest = %low;
+    }
+  }
+
+  if(%lowest+%pad > %min) {
+    %this.extent = getWord(%this.extent, 0) SPC %lowest+%pad;
+  } else {
+    %this.extent = getWord(%this.extent, 0) SPC %min;
+  }
+}
+
+function GuiControl::placeBelow(%this, %other, %margin) {
+  %y = getWord(%other.position, 1)+getWord(%other.extent, 1)+%margin;
+  %this.position = getWord(%this.position, 0) SPC %y;
 }

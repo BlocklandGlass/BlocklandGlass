@@ -53,10 +53,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
 
   %container.text.forceReflow();
 
-  echo(%container.text.extent);
-
   if(getWord(%container.text.extent, 1) > 498-30) {
-    echo("long!");
     GlassModManagerGui_MainDisplay.extent = %container.extent = getWord(%container.extent, 0) SPC getWord(%container.text.extent, 1)+60;
   } else {
     GlassModManagerGui_MainDisplay.extent = 505 SPC 498;

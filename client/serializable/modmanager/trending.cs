@@ -7,8 +7,6 @@ function GlassModManagerGui::renderHome(%trending, %recent) {
     extent = "505 498";
   };
 
-  echo(%container);
-
   %trendSwat = GlassModManagerGui::renderHome_trending(trim(%trending));
   %recentSwat = GlassModManagerGui::renderHome_recent(trim(%recent));
   %container.add(%trendSwat);
@@ -73,7 +71,6 @@ function GlassModManagerGui::renderHome_trending(%trending) {
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.mouse);
     %container.add(%swatch);
-    echo("after");
     %y += 46;
   }
 
@@ -132,7 +129,6 @@ function GlassModManagerGui::renderHome_recent(%recent) {
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.mouse);
     %container.add(%swatch);
-    echo("after");
     %y += 46;
   }
 

@@ -25,6 +25,31 @@ function GlassModManagerGui_AddonButton::onAdd(%this) {
   %this.position = "0 0";
 }
 
+
+
+function GlassModManagerGui_AddonDownloadButton::onMouseEnter(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = vectoradd(%swatch.color, "20 20 20");
+}
+
+function GlassModManagerGui_AddonDownloadButton::onMouseLeave(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = %swatch.ocolor;
+}
+
+function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this) {
+  GlassModManagerGui::fetchAndRenderAddon(%this.aid);
+}
+
+function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {
+  %this.extent = %this.swatch.extent;
+  %this.position = "0 0";
+}
+
 exec("./modmanager/trending.cs");
 exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");

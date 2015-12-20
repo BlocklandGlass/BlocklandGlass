@@ -26,6 +26,7 @@ function Glass::execClient() {
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
+	exec("./support/DynamicGui.cs");
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");

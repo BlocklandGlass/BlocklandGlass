@@ -256,7 +256,22 @@ function GlassModManagerTCP::onDone(%this, %error) {
           GlassModManager::processCall_Home(%this);
 
         case "addon":
+          %obj = new ScriptObject() {
+            class = "GlassAddonData";
+
+            id = %ret.aid;
+            name = %ret.name;
+            filename = %ret.filename;
+            board = %ret.board;
+            description = %ret.description;
+
+            author = "Jincux and Nexus";
+
+            buffer = %this.buffer;
+          };
+
           GlassModManagerGui::loadErrorPage("development", %this.buffer);
+          GlassModManagerGui::renderAddon(%obj);
       }
 
     } else {
