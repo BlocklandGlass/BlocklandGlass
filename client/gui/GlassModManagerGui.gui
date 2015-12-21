@@ -4,19 +4,20 @@ new GuiControl(GlassModManagerGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "800 600";
+   extent = "640 480";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
    clipToParent = "1";
       frame = "1";
+      sch = "23049";
 
    new GuiWindowCtrl(GlassModManagerGui_Window) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
-      position = "62 7";
-      extent = "675 585";
+      position = "-18 -35";
+      extent = "675 550";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -95,7 +96,7 @@ new GuiControl(GlassModManagerGui) {
             profile = "GlassSideTabProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "5 100";
+            position = "5 170";
             extent = "125 30";
             minExtent = "8 2";
             enabled = "1";
@@ -150,7 +151,7 @@ new GuiControl(GlassModManagerGui) {
             profile = "GlassSideTabProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "5 190";
+            position = "5 225";
             extent = "125 30";
             minExtent = "8 2";
             enabled = "1";
@@ -158,6 +159,28 @@ new GuiControl(GlassModManagerGui) {
             clipToParent = "1";
             command = "GlassModManager::setPane(5);";
             text = "Options";
+            groupNum = "-1";
+            buttonType = "PushButton";
+            bitmap = "./ui/button1";
+            lockAspectRatio = "0";
+            alignLeft = "0";
+            alignTop = "0";
+            overflowImage = "0";
+            mKeepCached = "0";
+            mColor = "255 255 255 128";
+         };
+         new GuiBitmapButtonCtrl() {
+            profile = "GlassSideTabProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "5 80";
+            extent = "125 30";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassModManager::setPane(2);";
+            text = "Builds";
             groupNum = "-1";
             buttonType = "PushButton";
             bitmap = "./ui/button1";
@@ -204,7 +227,7 @@ new GuiControl(GlassModManagerGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "505 142";
+               extent = "505 96";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -216,7 +239,7 @@ new GuiControl(GlassModManagerGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "0 0";
-                  extent = "505 142";
+                  extent = "505 96";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
@@ -228,13 +251,13 @@ new GuiControl(GlassModManagerGui) {
                      horizSizing = "right";
                      vertSizing = "bottom";
                      position = "10 10";
-                     extent = "235 142";
+                     extent = "235 96";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
                      color = "0 0 0 0";
-                        text = "43283";
+                        text = "16357";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -265,15 +288,16 @@ new GuiControl(GlassModManagerGui) {
                         visible = "1";
                         clipToParent = "1";
                         color = "200 200 200 255";
-                           mouse = "43286";
-                           text = "43285";
+                           ocolor = "200 200 200 255";
+                           mouse = "16360";
+                           text = "16359";
 
                         new GuiMLTextCtrl() {
                            profile = "GuiMLTextProfile";
                            horizSizing = "right";
                            vertSizing = "bottom";
                            position = "7 7";
-                           extent = "225 30";
+                           extent = "225 28";
                            minExtent = "8 2";
                            enabled = "1";
                            visible = "1";
@@ -281,7 +305,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>1: <font:quicksand-bold:16>Blockland Glass<just:right><font:quicksand:16>738<br><just:left><font:quicksand:14>by Jincux and Nexus";
+                           text = "<font:quicksand:14>: <font:quicksand-bold:16><just:right><font:quicksand:16><br><just:left><font:quicksand:14>by ";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -297,55 +321,7 @@ new GuiControl(GlassModManagerGui) {
                            visible = "1";
                            clipToParent = "1";
                            lockMouse = "0";
-                              swatch = "43284";
-                              aid = "11";
-                        };
-                     };
-                     new GuiSwatchCtrl() {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "0 71";
-                        extent = "235 45";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        color = "200 200 200 255";
-                           mouse = "43289";
-                           text = "43288";
-
-                        new GuiMLTextCtrl() {
-                           profile = "GuiMLTextProfile";
-                           horizSizing = "right";
-                           vertSizing = "bottom";
-                           position = "7 7";
-                           extent = "225 30";
-                           minExtent = "8 2";
-                           enabled = "1";
-                           visible = "1";
-                           clipToParent = "1";
-                           lineSpacing = "2";
-                           allowColorChars = "0";
-                           maxChars = "-1";
-                           text = "<font:quicksand:14>2: <font:quicksand-bold:16>Slayer<just:right><font:quicksand:16>426<br><just:left><font:quicksand:14>by Greek2Me";
-                           maxBitmapHeight = "-1";
-                           selectable = "1";
-                           autoResize = "1";
-                        };
-                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-                           profile = "GuiDefaultProfile";
-                           horizSizing = "right";
-                           vertSizing = "bottom";
-                           position = "0 0";
-                           extent = "235 45";
-                           minExtent = "8 2";
-                           enabled = "1";
-                           visible = "1";
-                           clipToParent = "1";
-                           lockMouse = "0";
-                              swatch = "43287";
-                              aid = "9";
+                              swatch = "16358";
                         };
                      };
                   };
@@ -354,13 +330,13 @@ new GuiControl(GlassModManagerGui) {
                      horizSizing = "right";
                      vertSizing = "bottom";
                      position = "255 10";
-                     extent = "235 142";
+                     extent = "235 96";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
                      color = "0 0 0 0";
-                        text = "43291";
+                        text = "16362";
 
                      new GuiMLTextCtrl() {
                         profile = "GuiMLTextProfile";
@@ -391,8 +367,9 @@ new GuiControl(GlassModManagerGui) {
                         visible = "1";
                         clipToParent = "1";
                         color = "200 200 200 255";
-                           mouse = "43294";
-                           text = "43293";
+                           ocolor = "200 200 200 255";
+                           mouse = "16365";
+                           text = "16364";
 
                         new GuiMLTextCtrl() {
                            profile = "GuiMLTextProfile";
@@ -407,7 +384,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Blockland Glass<just:right><font:quicksand:14>Monday<br><just:left><font:quicksand:14>by Jincux";
+                           text = "<font:quicksand-bold:16>Test<just:right><font:quicksand:14>2015-12-07 19:19:38<br><just:left><font:quicksand:14>by Jincux";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -423,55 +400,8 @@ new GuiControl(GlassModManagerGui) {
                            visible = "1";
                            clipToParent = "1";
                            lockMouse = "0";
-                              swatch = "43292";
-                              aid = "11";
-                        };
-                     };
-                     new GuiSwatchCtrl() {
-                        profile = "GuiDefaultProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "0 71";
-                        extent = "235 45";
-                        minExtent = "8 2";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        color = "200 200 200 255";
-                           mouse = "43297";
-                           text = "43296";
-
-                        new GuiMLTextCtrl() {
-                           profile = "GuiMLTextProfile";
-                           horizSizing = "right";
-                           vertSizing = "bottom";
-                           position = "7 7";
-                           extent = "225 30";
-                           minExtent = "8 2";
-                           enabled = "1";
-                           visible = "1";
-                           clipToParent = "1";
-                           lineSpacing = "2";
-                           allowColorChars = "0";
-                           maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Admin Chat<just:right><font:quicksand:14>Sunday<br><just:left><font:quicksand:14>by Jincux";
-                           maxBitmapHeight = "-1";
-                           selectable = "1";
-                           autoResize = "1";
-                        };
-                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-                           profile = "GuiDefaultProfile";
-                           horizSizing = "right";
-                           vertSizing = "bottom";
-                           position = "0 0";
-                           extent = "235 45";
-                           minExtent = "8 2";
-                           enabled = "1";
-                           visible = "1";
-                           clipToParent = "1";
-                           lockMouse = "0";
-                              swatch = "43295";
-                              aid = "7";
+                              aid = "1";
+                              swatch = "16363";
                         };
                      };
                   };
@@ -13017,8 +12947,8 @@ new GuiControl(GlassModManagerGui) {
             keepCached = "0";
             mColor = "255 255 255 255";
             mMultiply = "0";
-               schedule = "34053";
                frame = "2";
+               schedule = "23164";
          };
       };
       new GuiSwatchCtrl(GlassModManagerGui_KeybindOverlay) {
@@ -13059,7 +12989,7 @@ new GuiControl(GlassModManagerGui) {
          extent = "640 25";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
 
          new GuiTextCtrl() {

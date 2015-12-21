@@ -8,13 +8,43 @@ function GlassModManager::init() {
     historyPos = -1;
   };
 
+  GlassModManager::catalogAddons();
+
   GlassModManager::setPane(1);
   GlassModManager_AddonPage::init();
   GlassModManager_MyColorsets::init();
 
 
-    GlassModManagerGui_ForwardButton.setVisible(false);
-    GlassModManagerGui_BackButton.setVisible(false);
+  GlassModManagerGui_ForwardButton.setVisible(false);
+  GlassModManagerGui_BackButton.setVisible(false);
+}
+
+function GlassModManager::setAddonStatus(%aid, %status) {
+  // status:
+  // - installed
+  // - downloading
+  // - queued
+  // - outdated
+  GlassModManager.addonStatus[%aid] = %status;
+}
+
+function GlassModManager::getAddonStatus() {
+  return GlassModManager.addonStatus[%aid];
+}
+
+function GlassModManager::catalogAddons() {
+  %pattern = "Add-ons/*/server.cs";
+  %pattern = "Add-ons/*/glass.json";
+	%idArrayLen = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+    %name = getsubstr(%file, 8, strlen(%file)-19);
+    if(strpos(%name, "/") >= 0) { //removes sub-directories
+      continue;
+    }
+
+    %json = loadJSON("Add-Ons/" @ %name @ "/glass.json");
+    GlassModManager::setAddonStatus(%json.get("id"), "installed");
+  }
 }
 
 function GlassModManager::setPaneRaw(%pane) {
