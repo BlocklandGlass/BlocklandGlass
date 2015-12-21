@@ -1,18 +1,18 @@
 //----------------------------------------------------------------------
 // Title:   Support_TCPClient
 // Author:  Greek2me
-// Version: 10
-// Updated: October 18, 2015
+// Version: 11
+// Updated: December 4, 2015
 //----------------------------------------------------------------------
 // Include this code in your own scripts as an *individual file*
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 10 && !$Debug)
+if($TCPClient::version >= 11 && !$Debug)
 	return;
-$TCPClient::version = 10;
+$TCPClient::version = 11;
 
-$TCPClient::timeout = 30000;
+$TCPClient::timeout = 20000;
 $TCPClient::redirectWait = 500;
 $TCPClient::retryConnectionWait = 2000;
 $TCPClient::retryConnectionCount = 1;
@@ -100,6 +100,8 @@ function TCPClient(%method, %server, %port, %path, %query, %savePath, %class)
 	}
 
 	%tcp.schedule(0, "connect", %server @ ":" @ %port);
+	cancel(%tcp.timeoutSchedule);
+	%tcp.timeoutSchedule = %tcp.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
 
 	return %tcp;
 }
@@ -129,7 +131,7 @@ function TCPClient::buildRequest(%this)
 	%request = %requestLine @ %host @ %ua @ %length @ %type @ "\r\n" @ %body;
 
 	if(isFunction(%this.className, "buildRequest"))
-		return eval(%this.className @ "::buildRequest(" @ %this @ ",\"" @ %request @ "\");");
+		return eval(%this.className @ "::buildRequest(%this, %request);");
 	return %request;
 }
 
@@ -139,7 +141,7 @@ function TCPClient::onConnected(%this)
 	%this.isConnected = true;
 
 	if(isFunction(%this.className, "onConnected"))
-		eval(%this.className @ "::onConnected(" @ %this @ ");");
+		eval(%this.className @ "::onConnected(%this);");
 
 	%this.httpStatus = "";
 	%this.receiveText = false;
@@ -154,6 +156,9 @@ function TCPClient::onConnected(%this)
 	if($TCPClient::Debug)
 		echo(" > REQUEST:\n   >" SPC strReplace(%request, "\r\n", "\n   > "));
 	%this.send(%request);
+
+	cancel(%this.timeoutSchedule);
+	%this.timeoutSchedule = %this.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
 }
 
 //Called when DNS has failed.
@@ -216,7 +221,7 @@ function TCPClient::onDone(%this, %error)
 		echo("\c2ERROR (TCPClient): error" SPC %error SPC "for connection to" SPC %this.server @ %desc);
 	}
 	if(isFunction(%this.className, "onDone"))
-		eval(%this.className @ "::onDone(" @ %this @ ",\"" @ %error @ "\");");
+		eval(%this.className @ "::onDone(%this, %error);");
 
 	if(%this.isConnected)
 	{
@@ -326,7 +331,7 @@ function TCPClient::onLine(%this, %line)
 		}
 	}
 	if(isFunction(%this.className, "onLine"))
-		eval(%this.className @ "::onLine(" @ %this @ ",\"" @ expandEscape(%line) @ "\");");
+		eval(%this.className @ "::onLine(%this, %line);");
 }
 
 //Called when a binary chunk is received. To use with your mod, replace "TCPClient" with your class name.
@@ -340,7 +345,7 @@ function TCPClient::onBinChunk(%this, %chunk)
 		return;
 
 	if(isFunction(%this.className, "onBinChunk"))
-		eval(%this.className @ "::onBinChunk(" @ %this @ ",\"" @ %chunk @ "\");");
+		eval(%this.className @ "::onBinChunk(%this, %chunk);");
 
 	%contentLength = %this.headerField["Content-Length"];
 	%contentLengthSet = (strLen(%contentLength) > 0);
@@ -388,9 +393,8 @@ function TCPClient::onBinChunk(%this, %chunk)
 //@param	string text The text received.
 function TCPClient::handleText(%this, %text)
 {
-	%text = expandEscape(%text);
 	if(isFunction(%this.className, "handleText"))
-		eval(%this.className @ "::handleText(" @ %this @ ",\"" @ expandEscape(%text) @ "\");");
+		eval(%this.className @ "::handleText(%this, %text);");
 }
 
 //Used to update a progress bar when downloading a binary file. To use with your mod, replace "TCPClient" with your class name.
@@ -399,7 +403,7 @@ function TCPClient::handleText(%this, %text)
 function TCPClient::setProgressBar(%this, %completed)
 {
 	if(isFunction(%this.className, "setProgressBar"))
-		eval(%this.className @ "::setProgressBar(" @ %this @ ",\"" @ %completed @ "\");");
+		eval(%this.className @ "::setProgressBar(%this, %completed);");
 }
 
 //----------------------------------------------------------------------
