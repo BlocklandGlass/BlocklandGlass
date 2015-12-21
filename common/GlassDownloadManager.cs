@@ -14,8 +14,22 @@ function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
 	%this.queue.fetchNext();
 }
 
+function GlassDownloadManager::fakeDownload(%duration) {
+	%obj = new ScriptObject(GlassDownloadTCP) {
+
+	};
+	%steps = mceil(%duration/50);
+	for(%i = 0; %i <= %steps; %i++) {
+		%obj.schedule(%i*50, setProgressBar, (%i*50)/%duration);
+	}
+	%obj.schedule(%duration+50, onDone, false);
+
+	return %obj;
+}
+
 function GlassDownloadManagerQueue::fetchNext(%this) {
 	echo("Trying next");
+	echo(%this.getCount());
 	if(%this.busy || %this.getCount() == 0)
 		return;
 
@@ -30,7 +44,8 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";
 
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+	//%tcp = connectToURL(%url, %method, %downloadPath, %className);
+	%tcp = GlassDownloadManager::fakeDownload(getRandom(2000, 5000));
 	%tcp.fileData = %fileData;
 
 	return %tcp;
@@ -51,7 +66,7 @@ function GlassDownloadTCP::onDone(%this, %error) {
 
 	GlassDownloadManagerQueue.fetchFinished();
 	if(!$Server::Dedicated)
-		GlassModManagerGui.schedule(2000, setProgress);
+		GlassModManagerGui.sch = GlassModManagerGui.schedule(2000, setProgress);
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {

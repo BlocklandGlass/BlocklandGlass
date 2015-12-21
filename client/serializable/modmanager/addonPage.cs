@@ -45,7 +45,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png>Random info<br>Multi-line shit<br>Wow cool";
+    text = "<font:quicksand:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Random info<br>Filename!<br>Wow cool";
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -98,7 +98,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     };
 
     %container.download[%branch].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonDownloadButton) {
-      aid = %aid;
+      aid = %obj.id;
       obj = %obj;
       swatch = %container.download[%branch];
     };

@@ -214,7 +214,8 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 //====================================
 
 function GlassModManager::downloadAddonFromId(%id) {
-
+  %tcp = GlassModManager::placeCall("addon", "id" TAB %id);
+  %tcp.action = "download";
 }
 
 function GlassModManager::downloadAddon(%obj) {

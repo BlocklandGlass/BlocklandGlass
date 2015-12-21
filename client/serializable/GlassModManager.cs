@@ -66,9 +66,10 @@ function GlassModManagerGui_AddonDownloadButton::onMouseLeave(%this) {
 function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
   GlassModManagerGui::doDownloadSprite(%pos, vectorAdd(GlassModManagerGui_ProgressBar.getCanvasPosition(), GlassModManagerGui_ProgressBar.getCenter()), 100);
 
-  if(isObject(%this.obj))
-    GlassModManager::downloadAddon(%this.obj);
-  else
+  //if(isObject(%this.obj))
+  //  GlassModManager::downloadAddon(%this.obj);
+  //else
+  echo(%this.aid);
     GlassModManager::downloadAddonFromId(%this.aid);
 }
 
