@@ -8,9 +8,9 @@
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 11 && !$Debug)
+if($TCPClient::version >= 11.1 && !$Debug)
 	return;
-$TCPClient::version = 11;
+$TCPClient::version = 11.1;
 
 $TCPClient::timeout = 20000;
 $TCPClient::redirectWait = 500;
@@ -306,6 +306,7 @@ function TCPClient::onLine(%this, %line)
 								%pos = strPos(%url, "/");
 								%this.server = getSubStr(%url, 0, %pos) @ ":80";
 								%this.path = getSubStr(%url, %pos, strLen(%url));
+								%this.query = "";
 							}
 
 							%this.redirected = true;
@@ -326,7 +327,8 @@ function TCPClient::onLine(%this, %line)
 			}
 			else
 			{
-				%this.setBinarySize(%this.headerField["Content-Length"]);
+				if(!%this.redirect)
+					%this.setBinarySize(%this.headerField["Content-Length"]);
 			}
 		}
 	}

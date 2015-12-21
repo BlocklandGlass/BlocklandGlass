@@ -78,6 +78,29 @@ function GlassModManagerGui::renderAddon(%obj) {
   for(%i = 0; %i < %num; %i++) {
     %x = ((505-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
 
+    %status = GlassModManager::getAddonStatus(%obj.id);
+    switch$(%status) {
+      case "installed":
+        %text = "Installed";
+        %action = "";
+
+      case "downloading":
+        %text = "Downloading..";
+        %action = "";
+
+      case "queued":
+        %text = "Queued..";
+        %action = "";
+
+      case "outdated":
+        %text = "Update";
+        %action = "update";
+
+      default:
+        %text = "Download";
+        %action = "download";
+    }
+
     %branch = %branch[%i];
     %container.download[%branch] = new GuiSwatchCtrl() {
       horizSizing = "right";
@@ -90,22 +113,25 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].info = new GuiMLTextCtrl() {
       horizSizing = "center";
       vertSizing = "center";
-      text = "<font:quicksand-bold:16><just:center>Download<br><font:quicksand:14>" @ strcap(%branch);
+      text = "<font:quicksand-bold:16><just:center>" @ %text @ "<br><font:quicksand:14>" @ strcap(%branch);
       position = "0 0";
       extent = "300 16";
       minextent = "0 0";
       autoResize = true;
     };
 
-    %container.download[%branch].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonDownloadButton) {
-      aid = %obj.id;
-      obj = %obj;
-      swatch = %container.download[%branch];
-      branch = %branch;
-    };
-
     %container.download[%branch].add(%container.download[%branch].info);
-    %container.download[%branch].add(%container.download[%branch].mouse);
+
+    if(%action !$= "") {
+      %container.download[%branch].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonDownloadButton) {
+        aid = %obj.id;
+        obj = %obj;
+        swatch = %container.download[%branch];
+        branch = %branch;
+      };
+      %container.download[%branch].add(%container.download[%branch].mouse);
+    }
+    
     %container.download[%branch].info.setMarginResize(2, 2);
     %container.download[%branch].info.forceCenter();
     %container.add(%container.download[%branch]);

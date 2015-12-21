@@ -28,7 +28,7 @@ function GlassModManager::setAddonStatus(%aid, %status) {
   GlassModManager.addonStatus[%aid] = %status;
 }
 
-function GlassModManager::getAddonStatus() {
+function GlassModManager::getAddonStatus(%aid) {
   return GlassModManager.addonStatus[%aid];
 }
 
@@ -43,6 +43,7 @@ function GlassModManager::catalogAddons() {
     }
 
     %json = loadJSON("Add-Ons/" @ %name @ "/glass.json");
+    echo(%json.get("id"));
     GlassModManager::setAddonStatus(%json.get("id"), "installed");
   }
 }
@@ -176,13 +177,15 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 // Communications
 //====================================
 
-function GlassModManager::downloadAddonFromId(%id) {
+function GlassModManager::downloadAddonFromId(%id, %branch) {
   %tcp = GlassModManager::placeCall("addon", "id" TAB %id);
   %tcp.action = "download";
 }
 
-function GlassModManager::downloadAddon(%obj) {
-  GlassDownloadManager.fetchAddon(%obj);
+function GlassModManager::downloadAddon(%obj, %branch) {
+  if(%branch $= "")
+    %branch = 1;
+  GlassDownloadManager.fetchAddon(%obj, %branch);
 }
 
 function GlassModManager::placeCall(%call, %params, %uniqueReturn) {

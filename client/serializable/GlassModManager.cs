@@ -14,6 +14,8 @@ function GlassModManagerGui::setPane(%pane) {
   //pane 5 is settings
 
   for(%a = 0; %a < 5; %a++) {
+    if(%a == 1) continue;
+
     %obj = "GlassModManagerGui_Pane" @ %a+1;
     %obj.setVisible(false);
   }
@@ -36,7 +38,7 @@ function GlassModManagerGui::loadContext(%context) {
   //for the dynamic guis
   //home, addons, build
 
-  if(%context == 1) {
+  if(%context $= "home") {
     GlassModManager.loadHome();
   }
 }

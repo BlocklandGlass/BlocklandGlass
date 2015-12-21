@@ -12,6 +12,10 @@ function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
 	echo("Fetching: " @ %addonHandler.name);
 	%this.queue.add(%addonHandler);
 	%this.queue.fetchNext();
+
+	if(%this.queue.getCount() == 1) { //we just added the first
+		GlassModManagerGui::setProgress(0, "Connecting...");
+	}
 }
 
 function GlassDownloadManager::fakeDownload(%duration) {
@@ -28,8 +32,6 @@ function GlassDownloadManager::fakeDownload(%duration) {
 }
 
 function GlassDownloadManagerQueue::fetchNext(%this) {
-	echo("Trying next");
-	echo(%this.getCount());
 	if(%this.busy || %this.getCount() == 0)
 		return;
 
@@ -39,14 +41,17 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 
 	%fileData = %this.getObject(0);
 
-	%url = "http://" @ Glass.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.download_branch @ "&ingame=1";
+	%url = "http://" @ Glass.netAddress @ "/api/2/download.php?type=addon_download&id=" @ %fileData.id @ "&branch=" @ %fileData.download_branch;
+	//%url = "http://cdn.blocklandglass.com/addons/6_1";
+	echo(%url);
 	%method = "GET";
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";
 
-	//%tcp = connectToURL(%url, %method, %downloadPath, %className);
-	%tcp = GlassDownloadManager::fakeDownload(getRandom(2000, 5000));
+	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+	//%tcp = GlassDownloadManager::fakeDownload(getRandom(2000, 5000));
 	%tcp.fileData = %fileData;
+//	%tcp.path = "/addons/6_1";
 
 	return %tcp;
 }
@@ -55,6 +60,16 @@ function GlassDownloadManagerQueue::fetchFinished(%this) {
 	%this.remove(%this.getObject(0));
 	%this.busy = false;
 	%this.fetchNext();
+}
+
+function GlassDownloadTCP::onLine(%this, %line) { // a little shortcut because AWS is touchy w/ arguments
+	if(%this.redirected && !%this.redirectCleaned) {
+		%this.query = "";
+		echo(%this.request);
+		echo("We're going to redirect!");
+
+		%this.redirectCleaned = true;
+	}
 }
 
 function GlassDownloadTCP::onDone(%this, %error) {

@@ -18,6 +18,10 @@ function GlassModManagerGui::renderHome(%trending, %recent) {
   GlassModManagerGui_MainDisplay.add(%container);
   GlassModManagerGui_MainDisplay.extent = %container.extent;
   GlassModManagerGui_MainDisplay.setVisible(true);
+
+
+  %container.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
 }
 
 function GlassModManagerGui::renderHome_trending(%trending) {
