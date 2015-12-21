@@ -6,36 +6,6 @@ function GlassModManager_AddonPage::init() {
   };
 }
 
-function GlassModManager_AddonPage::loadAddon(%this, %id) {
-  GlassModManager::setLoading(true);
-  GlassModManager.historyAdd("addon", %id);
-  %url = "http://" @ Glass.address @ "/api/mm.php?request=addon&id=" @ %id;
-  %method = "GET";
-  %downloadPath = "";
-  %className = "GlassModManager_AddonPageTCP";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
-}
-
-function GlassModManager_AddonPage::resize(%this) { //to be run for dynamic elements
-  %currentY = 10;
-  for(%i = 0; %i < GlassModManager_Boards.getCount(); %i++) {
-    %obj = GlassModManager_Boards.getObject(%i);
-    %obj.position = getWord(%obj.position, 0) SPC %currentY;
-
-    %currentY += getWord(%obj.extent, 1);
-    %currentY += 10;
-  }
-
-  if(%currentY > 499) {
-    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC %currentY;
-  } else {
-    GlassModManager_Boards.extent = getWord(GlassModManager_Boards.extent, 0) SPC 499;
-  }
-  GlassModManager_Boards.getGroup().scrollToTop();
-  GlassModManager_Boards.setVisible(true);
-}
-
 function GlassModManager_AddonPage::submitComment() {
   %comment = GlassModManagerGui_AddonPage_NewComment.getText();
   if(trim(%comment) $= "") {

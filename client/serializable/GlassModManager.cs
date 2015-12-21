@@ -6,6 +6,68 @@
 // Common Functions
 //================================
 
+function GlassModManagerGui::setPane(%pane) {
+  //somewhat an antiquated function
+  //pane 1 is all dynamic content
+  //pane 3 is "My Add-ons"
+  //pane 4 is Colorsets
+  //pane 5 is settings
+
+  for(%a = 0; %a < 5; %a++) {
+    %obj = "GlassModManagerGui_Pane" @ %a+1;
+    %obj.setVisible(false);
+  }
+
+  if(%pane == 3) {
+    GlassModManagerGui::setLoading(true);
+    GlassModManager.populateMyAddons();
+  }
+
+  if(%pane == 4) {
+    GlassModManager::populateColorsets();
+  }
+
+  %obj = "GlassModManagerGui_Pane" @ %pane;
+  %obj.setVisible(true);
+}
+
+function GlassModManagerGui::loadContext(%context) {
+  //contexts are essentially just different starting points
+  //for the dynamic guis
+  //home, addons, build
+
+  if(%context == 1) {
+    GlassModManager.loadHome();
+  }
+}
+
+function GlassModManagerGui::setLoading(%bool) {
+  if(%bool) {
+    //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
+    //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);
+
+    GlassModManagerGui_LoadingAnimation.setVisible(true);
+    GlassModManagerGui_LoadingAnimation.frame = 1;
+
+    GlassModManager.animationTick();
+  } else {
+    GlassModManagerGui_LoadingAnimation.setVisible(false);
+    cancel(GlassModManagerGui_LoadingAnimation.schedule);
+  }
+}
+
+function GlassModManagerGui::animationTick(%this) {
+  %obj = GlassModManagerGui_LoadingAnimation;
+  cancel(%obj.schedule);
+
+  %obj.frame++;
+  if(%obj.frame > 22) {
+    %obj.frame = 1;
+  }
+  GlassModManagerGui_LoadingAnimation.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %obj.frame @ ".png");
+  %obj.schedule = %this.schedule(100, "animationTick");
+}
+
 function GlassModManagerGui::setProgress(%float, %text) {
   if(%float $= "" || isObject(%float)) {
     GlassModManagerGui_Window.extent = "675 550";
@@ -79,6 +141,31 @@ function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c
 }
 
 function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {
+  %this.extent = %this.swatch.extent;
+  %this.position = "0 0";
+}
+
+
+
+function GlassModManagerGui_ScreenshotButton::onMouseEnter(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = "255 255 255";
+}
+
+function GlassModManagerGui_ScreenshotButton::onMouseLeave(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = %swatch.ocolor;
+}
+
+function GlassModManagerGui_ScreenshotButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
+  GlassModManagerGui::downloadAndDisplayScreenshot(%this.aid, %this.screenshotId); // TODO check to see if it's downloaded, if now download; render
+}
+
+function GlassModManagerGui_AddonScreenshotButton::onAdd(%this) {
   %this.extent = %this.swatch.extent;
   %this.position = "0 0";
 }

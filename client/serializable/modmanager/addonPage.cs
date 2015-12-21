@@ -45,7 +45,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Random info<br>Filename!<br>Wow cool";
+    text = "<font:quicksand:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Approved";
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
