@@ -61,6 +61,7 @@ function GlassDownloadTCP::onDone(%this, %error) {
 	if(%error) {
 		error("An error was encountered downloading file - need to handle this better");
 	} else {
+		%this.button.info.setValue("<font:quicksand-bold:16><just:center>Downloaded<br><font:quicksand:14>" @ strcap(%this.branchName));
 		echo("Successfully downloaded " @ %this.fileData.filename);
 	}
 
@@ -75,6 +76,8 @@ function GlassDownloadTCP::setProgressBar(%this, %float) {
 		if(%this.fileData.rtbImport) {
 			GlassRTBSupport::updateProgressBar(%this.fileData.downloadHandler, %float);
 		}
+
+		%this.button.info.setValue("<font:quicksand-bold:16><just:center>Downloading..<br><font:quicksand:14>" @ strcap(%this.branchName));
 
 		if(%float < 1)
 			GlassModManagerGui::setProgress(%float, "Downloading " @ %this.fileData.filename @ " (" @ GlassDownloadManagerQueue.getCount() @ " remaining)");

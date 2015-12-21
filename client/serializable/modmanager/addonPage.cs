@@ -101,6 +101,7 @@ function GlassModManagerGui::renderAddon(%obj) {
       aid = %obj.id;
       obj = %obj;
       swatch = %container.download[%branch];
+      branch = %branch;
     };
 
     %container.download[%branch].add(%container.download[%branch].info);

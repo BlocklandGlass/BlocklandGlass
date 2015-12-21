@@ -66,11 +66,16 @@ function GlassModManagerGui_AddonDownloadButton::onMouseLeave(%this) {
 function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
   GlassModManagerGui::doDownloadSprite(%pos, vectorAdd(GlassModManagerGui_ProgressBar.getCanvasPosition(), GlassModManagerGui_ProgressBar.getCenter()), 100);
 
-  //if(isObject(%this.obj))
-  //  GlassModManager::downloadAddon(%this.obj);
-  //else
-  echo(%this.aid);
-    GlassModManager::downloadAddonFromId(%this.aid);
+  %this.swatch.info.setValue("<font:quicksand-bold:16><just:center>Queued..<br><font:quicksand:14>" @ strcap(%this.branch));
+  //something about redrawing the button?
+
+  if(isObject(%this.obj))
+    %tcp = GlassModManager::downloadAddon(%this.obj);
+  else
+    %tcp = GlassModManager::downloadAddonFromId(%this.aid);
+
+  %tcp.button = %this.swatch;
+  %tcp.branchName = %this.branch;
 }
 
 function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {
