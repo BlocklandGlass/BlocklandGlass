@@ -1,763 +1,972 @@
-/// JSON type names and their respective values
-///
-///  * `"string"` - A TorqueScript string encoded as UTF-8
-///  * `"number"`
-///  * `"boolean"` - 1 (true) or 0 (false)
-///  * `"null"` - Empty string
-///  * `"object"` - Any TorqueScript object. Should implement `::toJSON()`
-///    for string serialization. Use `.class` to disambiguate.
+// anything parseJSON(string blob)
+//  Parses *blob*, a serialized JSON type, and returns a fitting TS representation.
+//
+//  This does not leak any objects internally, however the output will be an object for certain types.
+//  In this case, cleaning up (deleting the object) properly is up to the user.
+//
+//  Returns a string, number, JSONObject subclass or "" when an error occured.
+//
+//  Supported types and translations:
+//
+//   * `hash` -> `JSONHash()`
+//   * `array` -> `JSONArray()`
+//   * `string` -> native string
+//   * `number` -> number in native string
+//   * `bool` -> "1" (true) or "0" (false)
+//   * `null` -> ""
+//
+//  Example:
+//
+//      %blob = "...";
+//      %json = parseJSON(%blob);
+//
+//      if (%json $= "") {
+//        error("ERROR: Failed to parse JSON.");
+//        return;
+//      }
+//
+//      // work with %json
+//
+//      if (isJSONObject(%json)) {
+//        %json.delete(); // note: deletes any children
+//      }
 
-/// parseJSON: (text: string) -> boolean
-/// Deserialize the JSON string `text`.
-///
-/// On success, returns false, setting `$JSON::Value` and `$JSON::Type`.
-///
-/// On failure, returns true, setting `$JSON::Error` and `$JSON::Index`.
-///
-/// Example:
-///
-///     if (parseJSON(%text)) {
-///         error("JSON error (at " @ $JSON::Index @ "): " @ $JSON::Error);
-///         return;
-///     }
-///
-///     echo($JSON::Value @ ": " @ $JSON::Type);
-function parseJSON(%text) {
-  %length = strlen(%text);
-
-  if (__parseJSON(%text, 0, %length)) {
-    // Actual JSON error; pass it through.
-    return true;
-  }
-
-  // Skip any whitespace at the end
-  %index = $JSON::Index;
-
-  while (strpos(" \t\r\n", getSubStr(%text, %index, 1)) != -1) {
-    %index++;
-  }
-
-  // If we aren't at the end already, that means that %text consists of more
-  // than a single JSON value, such as `"[1, 2, 3] foo"`.
-  // Generate an error for this.
-  if (%index < %length) {
-    // Clean up the parsed value if necessary.
-    if ($JSON::Type $= "object" && isObject($JSON::Value)) {
-      $JSON::Value.delete();
-    }
-
-    $JSON::Error = "expected EOF";
-    $JSON::Index = %index;
-
-    return true;
-  }
-
-  // Everything went well!
-  return false;
+function parseJSON(%blob) {
+	return restWords(__scanJSON(%blob, 0));
 }
 
-/// stringifyJSON: (type: string, value: *) -> string
-/// Serialize an arbitrary value into a JSON string.
-///
-/// Always returns valid JSON, unless:
-///  * `type` is not a valid JSON type - returns error string
-///  * `type == "object"` but `value` does not implement `::toJSON()` -
-///    missing function console error message and empty string return
-function stringifyJSON(%type, %value) {
-  switch$ (%type) {
-    case "null":
-      return "null";
-
-    case "boolean":
-      return %value ? "true" : "false";
-
-    case "string":
-      %length = strlen(%value);
-
-      // Not using `expandEscape` here because its specifics differ from
-      // the JSON specification. Most notably, it escapes ' and does not
-      // escape backspace or linefeed to the right sequences.
-      for (%i = 0; %i < %length; %i++) {
-        %chr = getSubStr(%value, %i, 1);
-
-        switch$ (%chr) {
-          case   "\"": %out = %out @ "\\\"";
-          case   "\\": %out = %out @ "\\\\";
-          case "\x08": %out = %out @ "\\b";
-          case "\x0C": %out = %out @ "\\f";
-          case   "\n": %out = %out @ "\\n";
-          case   "\r": %out = %out @ "\\r";
-          case   "\t": %out = %out @ "\\t";
-          // TODO: review other special characters in ASCII that would be
-          // turned into Unicode escapes in a compliant implementation
-          default    : %out = %out @ %chr;
-        }
-      }
-
-      return "\"" @ %out @ "\"";
-
-    case "number":
-      // TODO: *Anything* correct here.
-      return %value;
-
-    case "object":
-      return %value.toJSON();
-
-    default:
-      // This is a "silent error", but it's better than being loud in the
-      // console every time something goes wrong. This is still invalid JSON,
-      // so any attempt to read it will fail as intended. As such, you can
-      // also check for this error by seeing if the first character is `<`.
-      return "<unknown JSON type '" @ %type @ "'>";
-  }
-}
-
-$JSONUtil::Digit["0"] = true;
-$JSONUtil::Digit["1"] = true;
-$JSONUtil::Digit["2"] = true;
-$JSONUtil::Digit["3"] = true;
-$JSONUtil::Digit["4"] = true;
-$JSONUtil::Digit["5"] = true;
-$JSONUtil::Digit["6"] = true;
-$JSONUtil::Digit["7"] = true;
-$JSONUtil::Digit["8"] = true;
-$JSONUtil::Digit["9"] = true;
-
-function __parseJSON(%text, %index, %length) {
-  // Skip any whitespace before what we're actually looking for.
-  // Set %chr in the worst way possible here so we don't have to do an extra
-  // string read and assignment after the loop.
-  while (strpos(" \t\r\n", %chr = getSubStr(%text, %index, 1)) != -1) {
-    %index++;
-  }
-
-  // This function being called means that we *need* a JSON value to be
-  // parsed. If we can't do so, explicitly fail.
-  if (%index >= %length) {
-    $JSON::Error = "unexpected EOF";
-    $JSON::Index = %index;
-
-    return true;
-  }
-
-  // Fast path: Single character prefixes.
-  //
-  // TODO: Check how fast `call()` is. If it's fast enough, we could get
-  // away with storing function names in a lookup table based on the first
-  // character and thus do away with this switch.
-  //
-  // NOTE: I don't think switches are significantly faster than if else
-  // chains in TorqueScript (if *at all*), so perhaps this should be
-  // converted to such a chain. This would open up for using a lookup table
-  // for checking the characters [\-0-9]. *Technically* this could still be
-  // done with an if statement above the switch, but at this point it's
-  // just weird. What do we even want to check first here? Probably strings.
-  switch$ (%chr) {
-    case "\"":
-      %start = %index;
-
-      while (%index++ < %length) {
-        %chr = getSubStr(%text, %index, 1);
-
-        if (%chr $= "\"") {
-          $JSON::Value = %out;
-          $JSON::Type = "string";
-          $JSON::Index = %index + 1;
-
-          return false;
-        }
-
-        if (%chr $= "\\") {
-          if (%index++ >= %length) {
-            $JSON::Error = "unfinished string escape";
-            $JSON::Index = %index - 1;
-
-            return true;
-          }
-
-          // This `%index++ - 1` is gross. I wish TS had proper
-          // unary assignment operators (in terms of what they evaluate to).
-          switch$ (getSubStr(%text, %index++ - 1, 1)) {
-            case "\"": %out = %out @ "\"";
-            case "\\": %out = %out @ "\\";
-            case  "/": %out = %out @ "/";
-            case  "b": %out = %out @ "\x08";
-            case  "f": %out = %out @ "\x0C";
-            case  "n": %out = %out @ "\n";
-            case  "r": %out = %out @ "\r";
-            case  "t": %out = %out @ "\t";
-            case  "u":
-              $JSON::Error = "TODO: unicode codepoint escape";
-              $JSON::Index = %index - 1;
-
-              return true;
-
-            default:
-              $JSON::Error = "invalid string escape";
-              $JSON::Index = %index - 1;
-
-              return true;
-          }
-
-          continue;
-        }
-
-        %out = %out @ %chr;
-      }
-
-      $JSON::Error = "unclosed string";
-      $JSON::Index = %start;
-
-      return true;
-
-    case "{":
-      //   Init (1): close -> END, item  -> Mid
-      //    Mid (2): close -> END, comma -> Expect
-      // Expect (3): item  -> Mid
-      %state = 1;
-      %start = %index;
-
-      %index++;
-
-      %object = new ScriptObject() {
-        class = "JSONObject";
-        keyCount = 0;
-      };
-
-      while (true) {
-        // Skip internal whitespace
-        while (strpos(" \t\r\n", %chr = getSubStr(%text, %index, 1)) != -1) {
-          %index++;
-        }
-
-        if (%index >= %length) {
-          %object.delete();
-
-          $JSON::Error = "unclosed object";
-          $JSON::Index = %start;
-
-          return true;
-        }
-
-        if (%chr $= "}") {
-          if (%state != 3) {
-            $JSON::Value = %object;
-            $JSON::Type = "object";
-            $JSON::Index = %index + 1;
-
-            return false;
-          } else {
-            %object.delete();
-
-            $JSON::Error = "trailing comma in object";
-            $JSON::Index = %index;
-
-            return true;
-          }
-        }
-
-        if (%chr $= ",") {
-          if (%state == 2) {
-            %state = 3;
-            %index++;
-
-            continue;
-          } else {
-            %object.delete();
-
-            $JSON::Error = %state == 3
-              ? "double comma in object"
-              : "starting comma in object";
-
-            $JSON::Index = %index;
-            return true;
-          }
-        }
-
-        // First grab the object key
-        if (%chr !$= "\"") {
-          $JSON::Error = "object keys must be strings";
-          $JSON::Index = %index;
-
-          return true;
-        }
-
-        // TODO: This only needs to check for JSON strings. Consider moving
-        // that into a specialized function.
-        if (__parseJSON(%text, %index, %length)) {
-          %object.delete();
-          return true;
-        }
-
-        if ($JSON::Type !$= "string") { // ???
-          %object.delete();
-
-          $JSON::Error = "mad world";
-          $JSON::Index = %index;
-
-          if ($JSON::Type $= "object") {
-            $JSON::Value.delete();
-          }
-
-          return true;
-        }
-
-        %key = $JSON::Value;
-        %index = $JSON::Index;
-
-        // Now look for the : separating keys and values
-        // Skip more internal whitespace
-        while (strpos(" \t\r\n", %chr = getSubStr(%text, %index, 1)) != -1) {
-          %index++;
-        }
-
-        if (%chr !$= ":") {
-          %object.delete();
-
-          $JSON::Error = "expected : after object key";
-          $JSON::Index = %index;
-
-          return true;
-        }
-
-        // Now we can grab the value
-        // Skip *even* more internal whitespace
-        while (strpos(" \t\r\n", %chr = getSubStr(%text, %index++, 1)) != -1) {}
-
-        if (__parseJSON(%text, %index, %length)) {
-          %object.delete();
-          return true;
-        }
-
-        %object.set(%key, $JSON::Type, $JSON::Value);
-
-        %index = $JSON::Index;
-        %state = 2;
-      }
-
-    case "[":
-      //   Init (1): close -> END, item  -> Mid
-      //    Mid (2): close -> END, comma -> Expect
-      // Expect (3): item  -> Mid
-      %state = 1;
-      %start = %index;
-
-      %index++;
-
-      %array = new ScriptObject() {
-        class = "JSONArray";
-        length = %arrayLength = 0;
-      };
-
-      while (true) {
-        // Skip internal whitespace
-        while (strpos(" \t\r\n", %chr = getSubStr(%text, %index, 1)) != -1) {
-          %index++;
-        }
-
-        if (%index >= %length) {
-          %array.delete();
-
-          $JSON::Error = "unclosed array";
-          $JSON::Index = %start;
-
-          return true;
-        }
-
-        if (%chr $= "]") {
-          if (%state != 3) {
-            $JSON::Value = %array;
-            $JSON::Type = "object";
-            $JSON::Index = %index + 1;
-
-            return false;
-          } else {
-            %array.delete();
-
-            $JSON::Error = "trailing comma in array";
-            $JSON::Index = %index;
-
-            return true;
-          }
-        }
-
-        if (%chr $= ",") {
-          if (%state == 2) {
-            %state = 3;
-            %index++;
-
-            continue;
-          } else {
-            %array.delete();
-
-            $JSON::Error = %state == 3
-              ? "double comma in array"
-              : "starting comma in array";
-
-            $JSON::Index = %index;
-            return true;
-          }
-        }
-
-        if (__parseJSON(%text, %index, %length)) {
-          %array.delete();
-          return true;
-        }
-
-        %index = $JSON::Index;
-        %state = 2;
-
-        %array.type[%arrayLength] = $JSON::Type;
-        %array.value[%arrayLength] = $JSON::Value;
-        %arrayLength = %array.length++;
-      }
-
-    case "-" or
-        "0" or "1" or "2" or "3" or "4" or
-        "5" or "6" or "7" or "8" or "9":
-      %start = %index;
-
-      // TODO: Specification-compliant number parsing.
-      // In general, this just means verifying that it's correct.
-      // There's a prototype of that below.
-
-      // if (%chr $= "-") {
-      //   %sign = -1;
-      //   %chr = getSubStr(%text, %index++, 1);
-      // } else {
-      //   %sign = 1;
-      // }
-      //
-      // if (%chr $= "0") {
-      //   %chr = getSubStr(%text, %index++, 1);
-      // } else if ($JSONUtil::Digit[%chr]) {
-      //   $JSON::Error = "TODO: parse decimal part";
-      //   $JSON::Index = %index;
-      //
-      //   return true;
-      // } else {
-      //   $JSON::Error = "invalid number";
-      //   $JSON::Index = %start;
-      //
-      //   return true;
-      // }
-      //
-      // if (%chr $= ".") {
-      //   $JSON::Error = "TODO: parse fractional part";
-      //   $JSON::Index = %index;
-      //
-      //   return true;
-      // }
-      //
-      // if (%chr $= "e") {
-      //   $JSON::Error = "TODO: parse exponent part";
-      //   $JSON::Index = %index;
-      //
-      //   return true;
-      // }
-
-      // In the mean time, let's just look for "generally valid characters",
-      // and `getSubStr` them. In most cases this will be enough.
-      while (strpos("0123456789.-eE+", getSubStr(%text, %index++, 1)) != -1) {}
-
-      // This is cheap.
-      $JSON::Value = getSubStr(%text, %start, %index - %start);
-      $JSON::Type = "number";
-      $JSON::Index = %index;
-
-      return false;
-  }
-
-  // Case-sensitive multi character sequences
-  if (strcmp("false", getSubStr(%text, %index, 5)) == 0) {
-    $JSON::Value = false;
-    $JSON::Type = "boolean";
-    $JSON::Index = %index + 5;
-
-    return false;
-  }
-
-  // TODO: Is it worth it to cache the 4 character prefix here?
-  // It's reused for "null", but that's only a single time.
-  if (strcmp("true", getSubStr(%text, %index, 4)) == 0) {
-    $JSON::Value = true;
-    $JSON::Type = "boolean";
-    $JSON::Index = %index + 4;
-
-    return false;
-  }
-
-  if (strcmp("null", getSubStr(%text, %index, 4)) == 0) {
-    $JSON::Value = "";
-    $JSON::Type = "null";
-    $JSON::Index = %index + 4;
-
-    return false;
-  }
-
-  // There's nothing else this could possibly be. Give up!
-  $JSON::Error = "unknown token";
-  $JSON::Index = %index;
-
-  return true;
-}
-
-// --------------------------------------------------------
-// Field access helper for JSONObject
-
-function SimObject::getField(%this, %name) {
-  switch (stripos("_abcdefghijklmnopqrstuvwxyz", getSubStr(%name, 0, 1))) {
-    case  0: return %this._[getSubStr(%name, 1, strlen(%name))];
-    case  1: return %this.a[getSubStr(%name, 1, strlen(%name))];
-    case  2: return %this.b[getSubStr(%name, 1, strlen(%name))];
-    case  3: return %this.c[getSubStr(%name, 1, strlen(%name))];
-    case  4: return %this.d[getSubStr(%name, 1, strlen(%name))];
-    case  5: return %this.e[getSubStr(%name, 1, strlen(%name))];
-    case  6: return %this.f[getSubStr(%name, 1, strlen(%name))];
-    case  7: return %this.g[getSubStr(%name, 1, strlen(%name))];
-    case  8: return %this.h[getSubStr(%name, 1, strlen(%name))];
-    case  9: return %this.i[getSubStr(%name, 1, strlen(%name))];
-    case 10: return %this.j[getSubStr(%name, 1, strlen(%name))];
-    case 11: return %this.k[getSubStr(%name, 1, strlen(%name))];
-    case 12: return %this.l[getSubStr(%name, 1, strlen(%name))];
-    case 13: return %this.m[getSubStr(%name, 1, strlen(%name))];
-    case 14: return %this.n[getSubStr(%name, 1, strlen(%name))];
-    case 15: return %this.o[getSubStr(%name, 1, strlen(%name))];
-    case 16: return %this.p[getSubStr(%name, 1, strlen(%name))];
-    case 17: return %this.q[getSubStr(%name, 1, strlen(%name))];
-    case 18: return %this.r[getSubStr(%name, 1, strlen(%name))];
-    case 19: return %this.s[getSubStr(%name, 1, strlen(%name))];
-    case 20: return %this.t[getSubStr(%name, 1, strlen(%name))];
-    case 21: return %this.u[getSubStr(%name, 1, strlen(%name))];
-    case 22: return %this.v[getSubStr(%name, 1, strlen(%name))];
-    case 23: return %this.w[getSubStr(%name, 1, strlen(%name))];
-    case 24: return %this.x[getSubStr(%name, 1, strlen(%name))];
-    case 25: return %this.y[getSubStr(%name, 1, strlen(%name))];
-    case 26: return %this.z[getSubStr(%name, 1, strlen(%name))];
-    default: return "";
-  }
-}
-
-function SimObject::setField(%this, %name, %value) {
-  switch (stripos("_abcdefghijklmnopqrstuvwxyz", getSubStr(%name, 0, 1))) {
-    case  0: return %this._[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  1: return %this.a[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  2: return %this.b[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  3: return %this.c[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  4: return %this.d[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  5: return %this.e[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  6: return %this.f[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  7: return %this.g[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  8: return %this.h[getSubStr(%name, 1, strlen(%name))] = %value;
-    case  9: return %this.i[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 10: return %this.j[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 11: return %this.k[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 12: return %this.l[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 13: return %this.m[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 14: return %this.n[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 15: return %this.o[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 16: return %this.p[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 17: return %this.q[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 18: return %this.r[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 19: return %this.s[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 20: return %this.t[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 21: return %this.u[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 22: return %this.v[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 23: return %this.w[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 24: return %this.x[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 25: return %this.y[getSubStr(%name, 1, strlen(%name))] = %value;
-    case 26: return %this.z[getSubStr(%name, 1, strlen(%name))] = %value;
-    default: return %value;
-  }
-}
-
-// --------------------------------------------------------
-// JSONObject implementation
-
-$JSONObject::IllegalName["class"] = true;
-$JSONObject::IllegalName["superClass"] = true;
-$JSONObject::IllegalName["keyCount"] = true;
-
-function JSONObject() {
-  return new ScriptObject() {
-    class = "JSONObject";
-    keyCount = 0;
-  };
-}
-
-function JSONObject::onRemove(%this) {
-  for (%i = 0; %i < %this.keyCount; %i++) {
-    %key = %this.keyName[%i];
-    %value = %this.value[%key];
-
-    if (isObject(%value) && %this.type[%key] $= "object") {
-      %value.delete();
-    }
-  }
-}
-
-function JSONObject::toJSON(%this) {
-  for (%i = 0; %i < %this.keyCount; %i++) {
-    %key = %this.keyName[%i];
-
-    if (%i) { // sacrificing DRY for performance, woo
-      %out = %out @
-        "," @ stringifyJSON("string", %key) @
-        ":" @ stringifyJSON(%this.type[%key], %this.value[%key]);
-    } else {
-      %out = %out @
-              stringifyJSON("string", %key) @
-        ":" @ stringifyJSON(%this.type[%key], %this.value[%key]);
-    }
-  }
-
-  return "{" @ %out @ "}";
-}
-
-function JSONObject::set(%this, %key, %type, %value) {
-  if (!%this.keyExists[%key]) {
-    // TODO: Review how slow this is.
-    // Being able to access keys as fields is awesome, though.
-    %this.keyLegal[%key] = !$JSONObject::IllegalName[%key] &&
-      (strlen(%key) <= 4 || getSubStr(%key, 0, 4) !$= "type"     ) &&
-      (strlen(%key) <= 5 || getSubStr(%key, 0, 5) !$= "value"    ) &&
-      (strlen(%key) <= 7 || getSubStr(%key, 0, 7) !$= "keyName"  ) &&
-      (strlen(%key) <= 8 || getSubStr(%key, 0, 8) !$= "keyLegal" ) &&
-      (strlen(%key) <= 9 || getSubStr(%key, 0, 9) !$= "keyExists");
-
-    %this.keyExists[%key] = true;
-    %this.keyName[%this.keyCount] = %key;
-    %this.keyCount++;
-  }
-
-  %this.type[%key] = %type;
-  %this.value[%key] = %value;
-
-  if (%this.keyLegal[%key]) {
-    %this.setField(%key, %value);
-  }
-}
-
-function JSONObject::remove(%this, %key) {
-	// TODO: Cache key indices for rapid key removal.
-
-	for (%i = 0; %i < %this.keyCount; %i++) {
-		if (%this.keyName[%i] $= %key) {
-			break;
+// string getJSONType(data)
+//  Analyzes *data* and returns a string description of it's JSON type.
+//
+//  Possible return values:
+//
+//   * `"null"` (when *data* is an empty string)
+//   * `"string"`
+//   * `"number"`
+//   * `"array"`
+//   * `"hash"`
+//
+//  Keep in mind:
+//
+//   * Strings containing valid JSON numbers are interpreted as numbers.
+//   * Booleans are lost in translation.
+//
+//  Example:
+//
+//      %json = parseJSON("[]");
+//      echo(getJSONType(%json)); // array
+
+function getJSONType(%data) {
+	if (%data $= "") {
+		return "null";
+	}
+
+	%length = strLen(%data);
+
+	if (expandEscape(getSubStr(%data, %length - 1, 1)) $= "\\c0") {
+		%obj = getSubStr(%data, 0, %length - 1);
+
+		if (%obj.superClass $= JSONObject) {
+			return %obj.getJSONType();
 		}
 	}
 
-	if (%i >= %this.keyCount) {
-		return false;
+	%scan = __scanJSONNumber(%data, 0);
+
+	if (%scan !$= "" && firstWord(%scan) == %length) {
+		return "number";
 	}
 
-	if (%this.keyLegal[%key]) {
-		%this.setField(%key, "");
-	}
-
-	%this.type[%key] = "";
-	%this.value[%key] = "";
-
-	%this.keyExists[%key] = "";
-	%this.keyLegal[%key] = "";
-
-	%this.keyName[%i] = %this.keyName[%this.keyCount--];
-	%this.keyName[%this.keyCount] = "";
-
-	return true;
+	return "string";
 }
 
-// --------------------------------------------------------
-// JSONArray implementation
+// bool isJSONObject(data)
+//  Correctly determines if *data* is a reference to a JSON object (hash/array) and returns true or false.
+//  Use this instead of `isObject(data)`, as this will not accidentally confuse numbers for existing objects.
 
-function JSONArray() {
-  return new ScriptObject() {
-    class = "JSONArray";
-    keyCount = 0;
-  };
+function isJSONObject(%data) {
+	%length = strLen(%data);
+
+	if (%data !$= "" && expandEscape(getSubStr(%data, %length - 1, 1)) $= "\\c0") {
+		return getSubStr(%data, 0, %length - 1).superClass $= JSONObject;
+	}
+
+	return 0;
+}
+
+// string dumpJSON(data)
+//  Recursively builds a JSON string of *data* (as parsed by `parseJSON`) and returns it.
+//
+//  Keep in mind that `dumpJSON(parseJSON(x))` is not necessarily `x`.
+//  See notes for `getJSONType` for further details.
+
+function dumpJSON(%data)
+{
+	%type = getJSONType(%data);
+	switch$(%type)
+	{
+	case "hash":
+		%str = "{";
+		for(%i = 0; %i < %data.__length; %i++)
+		{
+			%key = %data.__key[%i];
+			%val = %data.__value[%key];
+			%str = %str @ "\"" @ %key @ "\":" @ dumpJSON(%val);
+			if(%i < %data.__length - 1)
+				%str = %str @ ",";
+		}
+		return %str @ "}";
+	case "array":
+		%str = "[";
+		for(%i = 0; %i < %data.length; %i++)
+		{
+			%val = %data.item[%i];
+			%str = %str @ dumpJSON(%val);
+			if(%i < %data.length - 1)
+				%str = %str @ ",";
+		}
+		return %str @ "]";
+	case "number":
+		return %data;
+	case "string":
+		%data = expandEscape(expandEscape(%data));
+		%data = strReplace(%data, "\\\\'", "'");
+		%data = collapseEscape(%data);
+
+		return "\"" @ %data @ "\"";
+	}
+	return "null";
+}
+
+// string describeJSON(* data, [int depth])
+//  Returns a string representing *data*, using `JSONObject::describe` for JSON objects.
+
+function describeJSON(%data, %depth) {
+	if (!isJSONObject(%data)) {
+		return %data;
+	}
+
+	return %data.describe(%depth);
+}
+
+// bool saveJSON(data, string filename, [FileObject fo])
+//  Saves the given JSON object *data* into a file at *filename*.
+//  If saving and loading a lot of files, you may pass your own FileObject through *fo* rather than recreating a lot of them.
+//
+//  Returns true on a successful write, false otherwise.
+
+function saveJSON(%data, %filename, %fo)
+{
+	%success = 0;
+	%createdFO = 0;
+	if(!isObject(%fo) || %fo.getClassName() !$= "FileObject")
+	{
+		%fo = new FileObject();
+		%createdFO = 1;
+	}
+
+	%str = dumpJSON(%data);
+	if(%str !$= "null" && %str !$= "" && %fo.openForWrite(%filename))
+	{
+		%fo.writeLine(%str);
+		%fo.close();
+		%success = 1;
+	}
+	if(%createdFO)
+		%fo.delete();
+	if(!isFile(%filename))
+		%success = 0;
+	return %success;
+}
+
+// anything loadJSON(string filename, [string defaultStruct], [FileObject fo])
+//  Loads a JSON object from a given file.
+//  If the file does not exist, `defaultStruct` is parsed and returned.
+//
+//  If saving and loading a lot of files, you may pass your own FileObject through *fo* rather than recreating a lot of them.
+//  If using your own FileObject with no *defaultStruct*, please provide "" as *defaultStruct*.
+
+function loadJSON(%filename, %default, %fo)
+{
+	%createdFO = 0;
+	if(!isObject(%fo) || %fo.getClassName() !$= "FileObject")
+	{
+		%fo = new FileObject();
+		%createdFO = 1;
+	}
+
+	if(isFile(%filename) && %fo.openForRead(%filename))
+	{
+		%str = "";
+		while(!%fo.isEOF())
+		{
+			%str = %str @ %fo.readLine();
+		}
+		%fo.close();
+		%data = parseJSON(%str);
+	}
+	if(%data $= "")
+		%data = parseJSON(%default);
+	if(%createdFO)
+		%fo.delete();
+	return %data;
+}
+
+// Private functions
+
+function __scanJSON(%blob, %index, %type) {
+	%index = skipLeftSpace(%blob, %index);
+
+	if (%index >= strLen(%blob)) {
+		return "";
+	}
+
+	if (getSubStr(%blob, %index, 4) $= "null") {
+		return %index + 4 SPC "";
+	}
+
+	if (getSubStr(%blob, %index, 4) $= "true") {
+		return %index + 4 SPC 1;
+	}
+
+	if (getSubStr(%blob, %index, 5) $= "false") {
+		return %index + 5 SPC 0;
+	}
+
+	%char = getSubStr(%blob, %index, 1);
+
+	if (%char $= "\"") {
+		return __scanJSONString(%blob, %index + 1);
+	}
+
+	if (%char $= "[") {
+		return __scanJSONArray(%blob, %index + 1);
+	}
+
+	if (%char $= "{") {
+		return __scanJSONHash(%blob, %index + 1);
+	}
+
+	return __scanJSONNumber(%blob, %index);
+}
+
+function __scanJSONString(%blob, %index) {
+	%length = strLen(%blob);
+
+	for (%i = %index; %i < %length; %i++) {
+		if (getSubStr(%blob, %i, 1) $= "\"" && getSubStr(%blob, %i - 1, 1) !$= "\\") {
+			return %i + 1 SPC collapseEscape(getSubStr(%blob, %index, %i - %index));
+		}
+	}
+
+	return "";
+}
+
+function __scanJSONArray(%blob, %index) {
+	%length = strLen(%blob);
+
+	%obj = new ScriptObject() {
+		class = JSONArray;
+		superClass = JSONObject;
+	};
+
+	%first = 0;
+	%ready = 1;
+
+	while (1) {
+		%index = skipLeftSpace(%blob, %index);
+
+		if (%index >= %length) {
+			%obj.delete();
+			return "";
+		}
+
+		if (getSubStr(%blob, %index, 1) $= "]") {
+			if (%first && %ready) {
+				%obj.delete();
+				return "";
+			}
+
+			return %index + 1 SPC %obj @ "\c0";
+		}
+
+		if (getSubStr(%blob, %index, 1) $= ",") {
+			if (%ready) {
+				return "";
+			}
+
+			%ready = 1;
+			%index++;
+
+			continue;
+		}
+		else if (!%ready) {
+			return "";
+		}
+
+		%scan = __scanJSON(%blob, %index);
+
+		if (%scan $= "") {
+			%obj.delete();
+			return "";
+		}
+
+		%index = firstWord(%scan);
+		%obj.append(restWords(%scan));
+
+		%first = 1;
+		%ready = 0;
+	}
+
+	return "";
+}
+
+function __scanJSONHash(%blob, %index) {
+	%length = strLen(%blob);
+
+	%obj = new ScriptObject() {
+		class = JSONHash;
+		superClass = JSONObject;
+	};
+
+	%first = 0;
+	%ready = 1;
+
+	while (1) {
+		%index = skipLeftSpace(%blob, %index);
+
+		if (%index >= %length) {
+			%obj.delete();
+			return "";
+		}
+
+		if (getSubStr(%blob, %index, 1) $= "}") {
+			if (%first && %ready) {
+				%obj.delete();
+				return "";
+			}
+
+			return %index + 1 SPC %obj @ "\c0";
+		}
+
+		if (getSubStr(%blob, %index, 1) $= ",") {
+			if (%ready) {
+				return "";
+			}
+
+			%ready = 1;
+			%index++;
+
+			continue;
+		}
+		else if (!%ready) {
+			return "";
+		}
+
+		if (getSubStr(%blob, %index, 1) !$= "\"") {
+			%obj.delete();
+			return "";
+		}
+
+		%scan = __scanJSONString(%blob, %index + 1);
+
+		if (%scan $= "") {
+			%obj.delete();
+			return "";
+		}
+
+		%key = restWords(%scan);
+		%index = skipLeftSpace(%blob, firstWord(%scan));
+
+		if (getSubStr(%blob, %index, 1) !$= ":") {
+			%obj.delete();
+			return "";
+		}
+
+		%scan = __scanJSON(%blob, %index + 1);
+
+		if (%scan $= "") {
+			%obj.delete();
+			return "";
+		}
+
+		%obj.set(%key, restWords(%scan));
+		%index = firstWord(%scan);
+
+		%first = 1;
+		%ready = 0;
+	}
+
+	return "";
+}
+
+function __scanJSONNumber(%blob, %index) {
+	%length = strLen(%blob);
+	%i = %index;
+
+	if (getSubStr(%blob, %index, 1) $= "-") {
+		%i++;
+	}
+
+	%allowZeroFirst = 0;
+	%allowRadixFirst = 0;
+
+	%first = 0;
+	%radix = 0;
+
+	if (!%allowZeroFirst) {
+		%start = getSubStr(%blob, %i, 1);
+	}
+
+	for (%i; %i < %length; %i++) {
+		%chr = getSubStr(%blob, %i, 1);
+
+		if (%chr $= ".") {
+			if ((!%allowRadixFirst && !%first) || %radix) {
+				return "";
+			}
+			else {
+				%first = 0;
+				%radix = 1;
+			}
+		}
+		else {
+			%pos = strPos("0123456789", %chr);
+
+			if (%pos == -1) {
+				break;
+			}
+
+			if (!%first || !%radix) {
+				%first++;
+			}
+		}
+	}
+
+	if (!%first) {
+		return "";
+	}
+
+	if (!%allowZeroFirst && (%radix ? %first : %i - %index) > 1 && %start $= "0") {
+		return "";
+	}
+
+	return %i SPC getSubStr(%blob, %index, %i - %index);
+}
+
+// JSONObject JSONObject
+//  This represents a base that all other JSON objects inherit from,
+//  and thus these methods apply to all of them.
+
+//  @extends ScriptObject
+//  @abstract
+
+function JSONObject() {}
+
+// string JSONObject::getJSONType()
+//  Determines the type of the JSON object and returns a string such as "hash" or "array".
+//  Custom JSON objects that do not start with "JSON" will break this.
+
+function JSONObject::getJSONType(%this) {
+	return strLwr(getSubStr(%this.class, 4, strLen(%this.class)));
+}
+
+// string JSONObject::describe([int depth])
+//  @see describeJSON
+
+function JSONObject::describe(%this, %depth) {
+	return %this.getJSONType() @ "(" @ %this.getID() @ ")";
+}
+
+// JSONObject::addParent(->JSONObject parent)
+//  Adds a JSON object to another's list of parents, setting it as the main parent if it's the first.
+
+function JSONObject::addParent(%this, %parent) {
+	if (%this.parent $= "") {
+		%this.parent = %parent;
+	}
+
+	if (%this.parents $= "") {
+		%this.parents = %parent;
+	}
+	else {
+		%this.parents = %this.parents SPC %parent;
+	}
+}
+
+// JSONObject::removeParent(->JSONObject parent)
+//  Not implemented.
+
+function JSONObject::removeParent(%this, %parent)
+{
+}
+
+// JSONArray JSONArray
+//  A JSON list object, such as `["hello", 3.14]`.
+//
+//  Items are stored as `array.item[i]`, where `0 <= i < array.length`.
+//
+//  Iteration example:
+//
+//      for (%i = 0; %i < %array.length; %i++)
+//      {
+//        echo(%array.item[%i]);
+//      }
+//
+//  @extends JSONObject
+//  @abstract
+
+function JSONArray() {}
+
+function JSONArray::onAdd(%this) {
+	%this.length = 0;
 }
 
 function JSONArray::onRemove(%this) {
-  for (%i = 0; %i < %this.length; %i++) {
-    %value = %this.value[%i];
-
-    if (isObject(%value) && %this.type[%i] $= "object") {
-      %value.delete();
-    }
-  }
+	for (%i = 0; %i < %this.length; %i++) {
+		if (isJSONObject(%this.item[%i])) {
+			%this.item[%i].delete();
+		}
+	}
 }
 
-function JSONArray::toJSON(%this) {
-  for (%i = 0; %i < %this.length; %i++) {
-    if (%i) {
-      %out = %out @ "," @ stringifyJSON(%this.type[%i], %this.value[%i]);
-    } else {
-      %out = %out       @ stringifyJSON(%this.type[%i], %this.value[%i]);
-    }
-  }
+// number JSONArray::getLength
+//  Returns the number of items in the array.
 
-  return "[" @ %out @ "]";
+function JSONArray::getLength(%this) {
+	return %this.length;
 }
 
-function JSONArray::push(%this, %type, %value) {
-  %this.type[%this.length] = %type;
-  %this.value[%this.length] = %value;
-  %this.length++;
+// string JSONArray::describe([int depth])
+//  @see describeJSON
+
+function JSONArray::describe(%this, %depth) {
+	%string = Parent::describe(%this, %depth);
+	%string = %string @ " - " @ %this.length @ " items";
+
+	%indent = repeatString("   ", %depth++);
+
+	for (%i = 0; %i < %this.length; %i++) {
+		%string = %string NL %indent @ %i @ ": " @ describeJSON(%this.item[%i], %depth);
+	}
+
+	return %string;
 }
 
-// ...
+// anything JSONArray::get(int index, [default])
+//  Returns the item at *index*, or *default* ("" if unspecified) if it is out of range.
 
-// function testJSON(%text) {
-//   if (parseJSON(%text)) {
-//     warn("ERROR: " @ $JSON::Index @ ": " @ $JSON::Error);
-//     return;
-//   }
+function JSONArray::get(%this, %index, %default) {
+	if (%index < 0 || %index >= %this.length) {
+		return %default;
+	}
+
+	return %this.item[%index];
+}
+
+// JSONArray JSONArray::append(item)
+//  Appends *item* to the end of the array, incrementing the length.
+
+function JSONArray::append(%this, %item) {
+	if (isJSONObject(%item)) {
+		%item.addParent(%this);
+	}
+
+	%this.item[%this.length] = %item;
+	%this.length++;
+
+	return %this;
+}
+
+// JSONArray JSONArray::prepend(item)
+//  Prepends *item* to the beginning of the array, incrementing the length and shifting all items up by one.
+
+function JSONArray::prepend(%this, %item) {
+	if (isJSONObject(%item)) {
+		%item.addParent(%this);
+	}
+
+	%this.length++;
+
+	for (%i = %this.length - 1; %i > 0; %i--) {
+		%this.item[%i] = %this.item[%i - 1];
+	}
+
+	%this.item[0] = %item;
+	return %this;
+}
+
+// bool JSONArray::contains(item)
+//  Returns true if *item* is in the array, false otherwise.
+//  When checking strings, case is ignored.
+
+function JSONArray::contains(%this, %item) {
+	for (%i = 0; %i < %this.length; %i++) {
+		if (%this.item[%i] $= %item) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+// bool JSONArray::remove(item, [int max], [bool noDelete])
+//  Removes *item* from the array if it is present, returning true if it was, false otherwise.
 //
-//   echo($JSON::Type @ ": " @ $JSON::Value);
-//
-//   // Handle buffer overruns
-//   %string = " -> " @ stringifyJSON($JSON::Type, $JSON::Value);
-//   echo(getSubStr(%string, 0, 1023));
-//
-//   if ($JSON::Type $= "object") {
-//     $JSON::Value.delete();
-//   }
-// }
+//  If *item* is present multiple times, all occurences are removed (TODO: implement *max* functionality).
 
-// File I/O helpers
-function readFileJSON(%filename) {
-  %file = new FileObject();
+function JSONArray::remove(%this, %item, %max, %noDelete) {
+	if (%max $= "") {
+		%max = 1;
+	}
 
-  if (!%file.openForRead(%filename)) {
-    %file.delete();
+	%found = 0;
 
-    $JSON::Error = "failed to open file for reading";
-    $JSON::Index = "";
+	for (%i = 0; %i < %this.length; %i++) {
+		if (%this.item[%i] $= %item) {
+			if (isJSONObject(%this.item[%i])) {
+				if (!%noDelete) {
+					%this.item[%i].delete();
+				}
+				else {
+					%this.item[%i].removeParent(%this);
+				}
+			}
 
-    return true;
-  }
+			%found++;
+		}
 
-  while (!%file.isEOF()) {
-    %text = %text @ %file.readLine();
-  }
+		if (%found) {
+			%this.item[%i] = %this.item[%i + 1];
+		}
+	}
 
-  %file.close();
-  %file.delete();
+	if (%found) {
+		%this.length -= %found;
 
-  return parseJSON(%file);
+		for (%i = 0; %i < %found; %i++) {
+			%this.item[%this.length + %i] = "";
+		}
+	}
+
+	return %found;
 }
 
-function writeFileJSON(%filename, %type, %value) {
-  %file = new FileObject();
+// JSONArray JSONArray::clear([bool noDelete])
+//  Removes all items from the array.
 
-  if (!%file.openForWrite(%filename)) {
-    return "failed to open file for reading";
-  }
+function JSONArray::clear(%this, %noDelete) {
+	for (%i = 0; %i < %this.length; %i++) {
+		if (isJSONObject(%this.item[%i])) {
+			if (!%noDelete) {
+				%this.item[%i].delete();
+			}
+			else {
+				%this.item[%i].removeParent(%this);
+			}
+		}
 
-  %file.writeLine(stringifyJSON(%type, %value));
+		%this.item[%i] = "";
+	}
 
-  %file.close();
-  %file.delete();
+	%this.length = 0;
+	return %this;
+}
 
-  return "";
+// JSONHash JSONHash
+//  A JSON hash object, such as `{"hello": 3.14, "foo": "bar"}`.
+//
+//  Keys which are valid TorqueScript identifiers can be accessed as `hash.keyname` directly.
+//  All keys (including invalid TorqueScript identifiers) can be accessed using `::get`.
+//
+//  The number of keys is stored as `hash.length`, unless a `length` key is present.
+//  Use `::getLength` for consistency in this case.
+//
+//  Iteration example:
+//
+//      for (%i = 0; %i < %hash.getLength(); %i++)
+//      {
+//        %key = %hash.getKey(%i);
+//        echo(%key SPC "=" SPC %hash.get(%key));
+//      }
+//
+//  @extends JSONObject
+//  @abstract
+
+function JSONHash() {}
+
+function JSONHash::onAdd(%this) {
+	%this.__length = 0;
+	%this.length = 0;
+}
+
+function JSONHash::onRemove(%this) {
+	for (%i = 0; %i < %this.__length; %i++) {
+		%item = %this.__value[%this.__key[%i]];
+
+		if (isJSONObject(%item)) {
+			%item.delete();
+		}
+	}
+}
+
+// int JSONHash::getLength
+//  Returns the number of key->value mappings in the hash.
+//  This will work correctly even if a *length* key is present.
+
+function JSONHash::getLength(%this) {
+	return %this.__length;
+}
+
+// string JSONHash::getKey(int index)
+//  Returns the *index*th key name in the hash, "" if out of range.
+
+function JSONHash::getKey(%this, %index) {
+	if (%index < 0 || %index >= %this.__length) {
+		return %this.__key[%index];
+	}
+
+	return "";
+}
+
+// bool JSONHash::isKey(string key)
+//  Returns true if *key* is present in the hash, false otherwise.
+
+function JSONHash::isKey(%this, %key) {
+	return %this.__isKey[%key] ? 1 : 0;
+}
+
+// bool JSONHash::isValue(value)
+//  Returns true if any of the keys in the hash are set to *value*, false otherwise.
+
+function JSONHash::isValue(%this, %value) {
+	for (%i = 0; %i < %this.__length; %i++) {
+		if (%this.__value[%this.__key[%i]] $= %value) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+// string JSONHash::describe([int depth])
+//  @see describeJSON
+
+function JSONHash::describe(%this, %depth) {
+	%string = Parent::describe(%this, %depth);
+	%string = %string @ " - " @ %this.__length @ " pairs";
+
+	%indent = repeatString("   ", %depth++);
+
+	for (%i = 0; %i < %this.__length; %i++) {
+		%key = %this.__key[%i];
+		%value = %this.__value[%key];
+
+		%string = %string NL %indent @ %key @ ": " @ describeJSON(%value, %depth);
+	}
+
+	return %string;
+}
+
+// JSONHash JSONHash::set(string key, value)
+//  Sets the value of *key* to *value*,
+//  and adds *key* to the hash if it is not present.
+
+function JSONHash::set(%this, %key, %value) {
+	if (isJSONObject(%value)) {
+		%value.addParent(%this);
+	}
+
+	if (%key $= "length") {
+		%this.__usePublicLength = 0;
+	}
+
+	if (!%this.__isKey[%key]) {
+		%this.__isKey[%key] = 1;
+
+		%this.__key[%this.__length] = %key;
+		%this.__length++;
+
+		if (!%this.__isKey["length"]) {
+			%this.length = %this.__length;
+		}
+	}
+
+	%this.__value[%key] = %value;
+
+	if (%this.__isKeyNameSane[%key] $= "") {
+		%illegal = "class superClass";
+
+		if (striPos(" " @ %illegal @ " ", " " @ %key @ " ") != -1) {
+			%this.__isKeyNameSane[%key] = 0;
+		}
+		else {
+			%this.__isKeyNameSane[%key] = sanitizeIdentifier(%key);
+		}
+	}
+
+	if (%this.__isKeyNameSane[%key]) {
+		eval("%this." @ %key @ "=%value;");
+	}
+
+	return %this;
+}
+
+// anything JSONHash::setDefault(string key, value)
+//  Sets the value of *key* to *value* if the key is not present in the hash.
+//  Returns the resulting value of *key*, even if it was previously defined.
+
+function JSONHash::setDefault(%this, %key, %value) {
+	if (!%this.__isKey[%key]) {
+		%this.set(%key, %value);
+	}
+
+	return %this.__value[%key];
+}
+
+// anything JSONHash::get(string key, [default])
+//  Returns the value assigned to *key* if it is present, *default* ("" if unspecified) otherwise.
+
+function JSONHash::get(%this, %key, %default) {
+	if (!%this.__isKey[%key]) {
+		return %default;
+	}
+
+	return %this.__value[%key];
+}
+
+// bool JSONHash::remove(string key, [bool noDelete])
+//  Removes *key* and it's assigned value from the hash if present.
+//  Returns whether or not *key* was in the hash previously.
+
+function JSONHash::remove(%this, %key, %noDelete) {
+	if (!%this.__isKey[%key]) {
+		return 0;
+	}
+
+	if (isJSONObject(%this.__value[%key])) {
+		if (!%noDelete) {
+			%this.__value[%key].delete();
+		}
+		else {
+			%this.__value[%key].removeParent(%this);
+		}
+	}
+
+	%this.__isKey[%key] = "";
+	%this.__value[%key] = "";
+
+	if (%this.__isKeyNameSane[%key]) {
+		eval("%this." @ %key @ "=\"\";");
+	}
+
+	%this.__isKeyNameSane[%key] = "";
+
+	for (%i = 0; %i < %this.__length; %i++) {
+		if (%this.__key[%i] $= %key) {
+			%found++;
+		}
+
+		if (%found) {
+			%this.__key[%i] = %this.__key[%i + 1];
+		}
+	}
+
+	if (%found) {
+		%this.__length -= %found;
+
+		for (%i = 0; %i < %found; %i++) {
+			%this.__key[%this.__length + %i] = "";
+		}
+	}
+
+	return 1;
+}
+
+// JSONHash JSONHash::clear([bool noDelete])
+//  Removes all key->value mappings from the hash.
+
+function JSONHash::clear(%this, %noDelete) {
+	for (%i = 0; %i < %this.__length; %i++) {
+		%key = %this.__key[%i];
+
+		if (isJSONObject(%this.__value[%key])) {
+			if (!%noDelete) {
+				%this.__value[%key].delete();
+			}
+			else {
+				%this.__value[%key].removeParent(%this);
+			}
+		}
+
+		%this.__isKey[%key] = "";
+		%this.__value[%key] = "";
+
+		if (%this.__isKeyNameSane[%key]) {
+			eval("%this." @ %key @ "=\"\";");
+		}
+
+		%this.__isKeyNameSane[%key] = "";
+		%this.__key[%i] = "";
+
+		%this.item[%i] = "";
+	}
+
+	%this.__length = 0;
+	%this.length = 0;
+
+	return %this;
+}
+
+// skipLeftSpace
+//  @private
+
+function skipLeftSpace(%blob, %index) {
+	%length = strLen(%blob);
+
+	if (%index >= %length) {
+		return %index;
+	}
+
+	return %index + (%length - %index - strLen(ltrim(getSubStr(%blob, %index, %length))));
+}
+
+// sanitizeIdentifier
+//  @private
+
+function sanitizeIdentifier(%blob) {
+	%a = "_abcdefghijklmnopqrstuvwxyz";
+	%b = "0123456789";
+
+	%length = strLen(%blob);
+
+	for (%i = 0; %i < %length; %i++) {
+		%chr = getSubStr(%blob, %i, 1);
+
+		if (striPos(%a, %chr) == -1) {
+			if (!%i || striPos(%b, %chr) == -1) {
+				return 0;
+			}
+		}
+	}
+
+	return 1;
+}
+
+// repeatString
+//  @private
+
+function repeatString(%string, %times) {
+	for (%i = 0; %i < %times; %i++) {
+		%result = %result @ %string;
+	}
+
+	return %result;
+}
+
+// echoPointInBlob
+//  @private
+
+function echoPointInBlob(%blob, %index) {
+	echo(%blob NL repeatString(" ", %index) @ "^");
 }

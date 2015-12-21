@@ -138,7 +138,9 @@ function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c
   else
     %tcp = GlassModManager::downloadAddonFromId(%this.aid);
 
+  echo("Button! " @ %tcp.button);
   %tcp.button = %this.swatch;
+  echo("Button! " @ %tcp.button);
   %tcp.branchName = %this.branch;
 }
 

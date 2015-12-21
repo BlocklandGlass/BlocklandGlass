@@ -62,20 +62,20 @@ function GlassModManagerGui::renderAddon(%obj) {
     autoResize = true;
   };
 
-  %num = getRandom(1, 3);
-  %branch[0] = "stable";
-  %branch[1] = "unstable";
-  %branch[2] = "development";
   %branchColor["stable"] = "128 255 128 255";
   %branchColor["unstable"] = "255 255 128 255";
   %branchColor["development"] = "255 128 128 255";
 
 
+  %num = getWordCount(%obj.branches);
   %xExtent = mfloor((505-70)/3);
   %xMargin = 10;
   %totalWidth = (%xExtent*%num) + (%xMargin*(%num-1));
 
-  for(%i = 0; %i < %num; %i++) {
+  for(%i = 0; %i < getWordCount(%obj.branches); %i++) {
+    %bid = getword(%obj.branches, %i);
+    %branch = %obj.branchName[%bid];
+
     %x = ((505-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
 
     %status = GlassModManager::getAddonStatus(%obj.id);
@@ -101,7 +101,6 @@ function GlassModManagerGui::renderAddon(%obj) {
         %action = "download";
     }
 
-    %branch = %branch[%i];
     %container.download[%branch] = new GuiSwatchCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
@@ -110,7 +109,9 @@ function GlassModManagerGui::renderAddon(%obj) {
       extent = %xExtent SPC 35;
     };
 
-    %container.download[%branch].info = new GuiMLTextCtrl() {
+    %name = "GlassModManagerGui_DlButton_" @ %obj.id @ "_" @ (%i+1);
+    echo(%name);
+    %container.download[%branch].info = new GuiMLTextCtrl(%name) {
       horizSizing = "center";
       vertSizing = "center";
       text = "<font:quicksand-bold:16><just:center>" @ %text @ "<br><font:quicksand:14>" @ strcap(%branch);
@@ -119,6 +120,8 @@ function GlassModManagerGui::renderAddon(%obj) {
       minextent = "0 0";
       autoResize = true;
     };
+
+    echo("swat:" @ %container.download[%branch]);
 
     %container.download[%branch].add(%container.download[%branch].info);
 
@@ -131,7 +134,7 @@ function GlassModManagerGui::renderAddon(%obj) {
       };
       %container.download[%branch].add(%container.download[%branch].mouse);
     }
-    
+
     %container.download[%branch].info.setMarginResize(2, 2);
     %container.download[%branch].info.forceCenter();
     %container.add(%container.download[%branch]);
@@ -160,7 +163,9 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description.setMarginResize(20);
   %container.description.placeBelow(%container.info, 25);
   for(%i = 0; %i < %num; %i++) {
-    %container.download[%branch[%i]].placeBelow(%container.description, 25);
+    %bid = getword(%obj.branches, %i);
+    %branch = %obj.branchName[%bid];
+    %container.download[%branch].placeBelow(%container.description, 25);
   }
 
   %container.verticalMatchChildren(498, 10);
@@ -204,7 +209,6 @@ function GlassModManagerGui::doDownloadSprite(%origin, %destination, %maxHeight)
 
   GlassModManagerGui.add(%sprite);
   %sprite.tick();
-  echo(%sprite);
 }
 
 function GlassDownloadSprite::tick(%this) {
@@ -231,7 +235,6 @@ function GlassDownloadSprite::tick(%this) {
   %this.actualposition = %horizPos SPC %vertPos;
   %this.position = mfloor(%horizPos) SPC mfloor(%vertPos);
 
-  //echo(vectordist(%this.position, %this.destination));
   if(vectordist(%this.position, %this.destination) < 10) {
     %this.delete();
     return;

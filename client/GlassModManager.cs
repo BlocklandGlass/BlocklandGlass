@@ -33,7 +33,6 @@ function GlassModManager::getAddonStatus(%aid) {
 }
 
 function GlassModManager::catalogAddons() {
-  %pattern = "Add-ons/*/server.cs";
   %pattern = "Add-ons/*/glass.json";
 	%idArrayLen = 0;
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
@@ -43,7 +42,6 @@ function GlassModManager::catalogAddons() {
     }
 
     %json = loadJSON("Add-Ons/" @ %name @ "/glass.json");
-    echo(%json.get("id"));
     GlassModManager::setAddonStatus(%json.get("id"), "installed");
   }
 }
@@ -180,12 +178,13 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 function GlassModManager::downloadAddonFromId(%id, %branch) {
   %tcp = GlassModManager::placeCall("addon", "id" TAB %id);
   %tcp.action = "download";
+  return %tcp;
 }
 
 function GlassModManager::downloadAddon(%obj, %branch) {
   if(%branch $= "")
     %branch = 1;
-  GlassDownloadManager.fetchAddon(%obj, %branch);
+  return GlassDownloadManager.fetchAddon(%obj, %branch);
 }
 
 function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
@@ -221,6 +220,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
     %ret = parseJSON(collapseEscape(%this.buffer));
 
     if(%ret.action $= "auth") {
+      GlassAuth.ident = "";
       GlassAuth.heartbeat();
     }
 
@@ -231,6 +231,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
           GlassModManager::processCall_Home(%this);
 
         case "addon":
+          echo(%this.buffer);
           %obj = new ScriptObject() {
             class = "GlassAddonData";
 
@@ -244,6 +245,13 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
             buffer = %this.buffer;
           };
+
+          for(%i = 0; %i < %ret.branches.length; %i++) {
+            %branch = %ret.branches.item[%i];
+            %obj.branches = trim(%obj.branches SPC %branch.id);
+            %obj.branchVersion[%branch.id] = %branch.version;
+            %obj.branchName[%branch.id] = %branch.name;
+          }
 
           if(%this.action $= "render") {
             GlassModManagerGui::renderAddon(%obj);

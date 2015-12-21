@@ -16,6 +16,7 @@ function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
 	if(%this.queue.getCount() == 1) { //we just added the first
 		GlassModManagerGui::setProgress(0, "Connecting...");
 	}
+
 }
 
 function GlassDownloadManager::fakeDownload(%duration) {
@@ -74,9 +75,22 @@ function GlassDownloadTCP::onLine(%this, %line) { // a little shortcut because A
 
 function GlassDownloadTCP::onDone(%this, %error) {
 	if(%error) {
-		error("An error was encountered downloading file - need to handle this better");
+		error("An error was encountered downloading file (" @ %error @ ") - need to handle this better");
+		if(!$Server::Dedicated) {
+			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
+			%name.setValue("<font:quicksand-bold:16><just:center>Download<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
+		}
+
+		GlassModManagerGui::setProgress(1, "Error Downloading Add-On");
+		GlassModManager::setAddonStatus(%this.filedata.id, "");
 	} else {
-		%this.button.info.setValue("<font:quicksand-bold:16><just:center>Downloaded<br><font:quicksand:14>" @ strcap(%this.branchName));
+		if(!$Server::Dedicated) {
+			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
+			%name.setValue("<font:quicksand-bold:16><just:center>Downloaded<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
+		}
+
+		GlassModManager::setAddonStatus(%this.filedata.id, "installed");
+
 		echo("Successfully downloaded " @ %this.fileData.filename);
 	}
 
@@ -87,12 +101,14 @@ function GlassDownloadTCP::onDone(%this, %error) {
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
 	if(!$Server::Dedicated) {
+		GlassModManager::setAddonStatus(%this.filedata.id, "downloading");
 		cancel(GlassModManagerGui.sch);
 		if(%this.fileData.rtbImport) {
 			GlassRTBSupport::updateProgressBar(%this.fileData.downloadHandler, %float);
 		}
 
-		%this.button.info.setValue("<font:quicksand-bold:16><just:center>Downloading..<br><font:quicksand:14>" @ strcap(%this.branchName));
+		%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
+		%name.setValue("<font:quicksand-bold:16><just:center>Downloading..<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
 
 		if(%float < 1)
 			GlassModManagerGui::setProgress(%float, "Downloading " @ %this.fileData.filename @ " (" @ GlassDownloadManagerQueue.getCount() @ " remaining)");
