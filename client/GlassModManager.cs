@@ -277,6 +277,7 @@ function GlassModManager::loadHome() {
 }
 
 function GlassModManager::processCall_Home(%tcp) {
+  echo(%tcp.buffer);
   %ret = parseJSON(collapseEscape(%tcp.buffer));
 
   %latest = %ret.get("latest");
@@ -288,8 +289,18 @@ function GlassModManager::processCall_Home(%tcp) {
     %latestStr = %latestStr @ "\n" @ %obj.get("name") TAB %obj.get("author") TAB %obj.get("uploadDate") TAB %obj.get("id");
   }
 
+  %trending = %ret.get("trending");
+
+  %trendingstr = "";
+  for(%i = 0; %i < %trending.length; %i++) {
+    %obj = %trending.item[%i];
+    //"1\tBlockland Glass\tJincux and Nexus\t738\t11\n2\tSlayer\tGreek2Me\t426\t9\n"
+    %trendingStr = %trendingStr @ "\n" @ (%i+1) TAB %obj.get("name") TAB %obj.get("author") TAB %obj.get("downloads") TAB %obj.get("id");
+  }
+
   %latestStr = getsubstr(%lateststr, 1, strlen(%lateststr)) @ "\n";
-  GlassModManagerGui::renderHome("", %lateststr);
+  %trendingStr = getsubstr(%trendingstr, 1, strlen(%trendingstr)) @ "\n";
+  GlassModManagerGui::renderHome(%trendingstr, %lateststr);
 }
 
 //====================================
