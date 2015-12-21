@@ -4,19 +4,19 @@ new GuiControl(GlassModManagerGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "640 480";
+   extent = "800 600";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
    clipToParent = "1";
       frame = "1";
 
-   new GuiWindowCtrl() {
+   new GuiWindowCtrl(GlassModManagerGui_Window) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
-      position = "-18 -35";
-      extent = "675 550";
+      position = "62 7";
+      extent = "675 585";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -189,7 +189,7 @@ new GuiControl(GlassModManagerGui) {
             extent = "515 500";
             minExtent = "8 2";
             enabled = "1";
-            visible = "0";
+            visible = "1";
             clipToParent = "1";
             willFirstRespond = "0";
             hScrollBar = "alwaysOff";
@@ -204,7 +204,7 @@ new GuiControl(GlassModManagerGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "505 498";
+               extent = "505 142";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -216,30 +216,264 @@ new GuiControl(GlassModManagerGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "0 0";
-                  extent = "505 498";
+                  extent = "505 142";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
                   clipToParent = "1";
                   color = "0 0 0 0";
-                     text = "15074";
 
-                  new GuiMLTextCtrl() {
-                     profile = "GuiMLTextProfile";
-                     horizSizing = "center";
-                     vertSizing = "center";
-                     position = "102 197";
-                     extent = "300 104";
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "10 10";
+                     extent = "235 142";
                      minExtent = "8 2";
                      enabled = "1";
                      visible = "1";
                      clipToParent = "1";
-                     lineSpacing = "2";
-                     allowColorChars = "0";
-                     maxChars = "-1";
-                     maxBitmapHeight = "-1";
-                     selectable = "1";
-                     autoResize = "1";
+                     color = "0 0 0 0";
+                        text = "43283";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 0";
+                        extent = "225 20";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:20><just:center>Trending Add-Ons";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                     new GuiSwatchCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 25";
+                        extent = "235 45";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        color = "200 200 200 255";
+                           mouse = "43286";
+                           text = "43285";
+
+                        new GuiMLTextCtrl() {
+                           profile = "GuiMLTextProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "7 7";
+                           extent = "225 30";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lineSpacing = "2";
+                           allowColorChars = "0";
+                           maxChars = "-1";
+                           text = "<font:quicksand:14>1: <font:quicksand-bold:16>Blockland Glass<just:right><font:quicksand:16>738<br><just:left><font:quicksand:14>by Jincux and Nexus";
+                           maxBitmapHeight = "-1";
+                           selectable = "1";
+                           autoResize = "1";
+                        };
+                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+                           profile = "GuiDefaultProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "0 0";
+                           extent = "235 45";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lockMouse = "0";
+                              swatch = "43284";
+                              aid = "11";
+                        };
+                     };
+                     new GuiSwatchCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 71";
+                        extent = "235 45";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        color = "200 200 200 255";
+                           mouse = "43289";
+                           text = "43288";
+
+                        new GuiMLTextCtrl() {
+                           profile = "GuiMLTextProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "7 7";
+                           extent = "225 30";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lineSpacing = "2";
+                           allowColorChars = "0";
+                           maxChars = "-1";
+                           text = "<font:quicksand:14>2: <font:quicksand-bold:16>Slayer<just:right><font:quicksand:16>426<br><just:left><font:quicksand:14>by Greek2Me";
+                           maxBitmapHeight = "-1";
+                           selectable = "1";
+                           autoResize = "1";
+                        };
+                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+                           profile = "GuiDefaultProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "0 0";
+                           extent = "235 45";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lockMouse = "0";
+                              swatch = "43287";
+                              aid = "9";
+                        };
+                     };
+                  };
+                  new GuiSwatchCtrl() {
+                     profile = "GuiDefaultProfile";
+                     horizSizing = "right";
+                     vertSizing = "bottom";
+                     position = "255 10";
+                     extent = "235 142";
+                     minExtent = "8 2";
+                     enabled = "1";
+                     visible = "1";
+                     clipToParent = "1";
+                     color = "0 0 0 0";
+                        text = "43291";
+
+                     new GuiMLTextCtrl() {
+                        profile = "GuiMLTextProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 0";
+                        extent = "225 20";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        lineSpacing = "2";
+                        allowColorChars = "0";
+                        maxChars = "-1";
+                        text = "<font:quicksand-bold:20><just:center>New Add-Ons";
+                        maxBitmapHeight = "-1";
+                        selectable = "1";
+                        autoResize = "1";
+                     };
+                     new GuiSwatchCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 25";
+                        extent = "235 45";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        color = "200 200 200 255";
+                           mouse = "43294";
+                           text = "43293";
+
+                        new GuiMLTextCtrl() {
+                           profile = "GuiMLTextProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "7 7";
+                           extent = "225 30";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lineSpacing = "2";
+                           allowColorChars = "0";
+                           maxChars = "-1";
+                           text = "<font:quicksand-bold:16>Blockland Glass<just:right><font:quicksand:14>Monday<br><just:left><font:quicksand:14>by Jincux";
+                           maxBitmapHeight = "-1";
+                           selectable = "1";
+                           autoResize = "1";
+                        };
+                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+                           profile = "GuiDefaultProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "0 0";
+                           extent = "235 45";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lockMouse = "0";
+                              swatch = "43292";
+                              aid = "11";
+                        };
+                     };
+                     new GuiSwatchCtrl() {
+                        profile = "GuiDefaultProfile";
+                        horizSizing = "right";
+                        vertSizing = "bottom";
+                        position = "0 71";
+                        extent = "235 45";
+                        minExtent = "8 2";
+                        enabled = "1";
+                        visible = "1";
+                        clipToParent = "1";
+                        color = "200 200 200 255";
+                           mouse = "43297";
+                           text = "43296";
+
+                        new GuiMLTextCtrl() {
+                           profile = "GuiMLTextProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "7 7";
+                           extent = "225 30";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lineSpacing = "2";
+                           allowColorChars = "0";
+                           maxChars = "-1";
+                           text = "<font:quicksand-bold:16>Admin Chat<just:right><font:quicksand:14>Sunday<br><just:left><font:quicksand:14>by Jincux";
+                           maxBitmapHeight = "-1";
+                           selectable = "1";
+                           autoResize = "1";
+                        };
+                        new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+                           profile = "GuiDefaultProfile";
+                           horizSizing = "right";
+                           vertSizing = "bottom";
+                           position = "0 0";
+                           extent = "235 45";
+                           minExtent = "8 2";
+                           enabled = "1";
+                           visible = "1";
+                           clipToParent = "1";
+                           lockMouse = "0";
+                              swatch = "43295";
+                              aid = "7";
+                        };
+                     };
                   };
                };
             };
@@ -1766,7 +2000,7 @@ new GuiControl(GlassModManagerGui) {
             extent = "515 500";
             minExtent = "8 2";
             enabled = "1";
-            visible = "1";
+            visible = "0";
             clipToParent = "1";
             color = "0 24 96 3";
 
@@ -1840,6 +2074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Bot_Blockhead";
@@ -1939,6 +2174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Bot_Hole";
@@ -2038,6 +2274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Bot_Horse";
@@ -2137,6 +2374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Bot_Shark";
@@ -2236,6 +2474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Bot_Zombie";
@@ -2335,6 +2574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Arch";
@@ -2434,6 +2674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_BlackDragonIV";
@@ -2533,6 +2774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_BlackDragonIV_Filler";
@@ -2632,6 +2874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Checkpoint";
@@ -2731,6 +2974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Christmas_Tree";
@@ -2830,6 +3074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Doors";
@@ -2929,6 +3174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Halloween";
@@ -3028,6 +3274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Large_Cubes";
@@ -3127,6 +3374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_ModTer_4xPack";
@@ -3226,6 +3474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_ModTer_BasicPack";
@@ -3325,6 +3574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_ModTer_InvertedPack";
@@ -3424,6 +3674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Poster_8x";
@@ -3523,6 +3774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Teledoor";
@@ -3622,6 +3874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_Treasure_Chest";
@@ -3721,6 +3974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Brick_V15";
@@ -3820,6 +4074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Emote_Alarm";
@@ -3919,6 +4174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Emote_Confusion";
@@ -4018,6 +4274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Emote_Hate";
@@ -4117,6 +4374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Emote_Love";
@@ -4216,6 +4474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Event_Camera_Control";
@@ -4315,6 +4574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Event_Server";
@@ -4414,6 +4674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "GameMode_Blockheads_Ruin_Xmas";
@@ -4513,6 +4774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Gamemode_Blocktopia";
@@ -4612,6 +4874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "GameMode_Rampage";
@@ -4711,6 +4974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "GameMode_SpeedKart";
@@ -4810,6 +5074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "GameMode_Tutorial";
@@ -4909,6 +5174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Item_Key";
@@ -5008,6 +5274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Item_Skis";
@@ -5107,6 +5374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Item_Sports";
@@ -5206,6 +5474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Light_Animated";
@@ -5305,6 +5574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Light_Basic";
@@ -5404,6 +5674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Particle_Basic";
@@ -5503,6 +5774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Particle_FX_Cans";
@@ -5602,6 +5874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Particle_Grass";
@@ -5701,6 +5974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Particle_Player";
@@ -5800,6 +6074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Particle_Tools";
@@ -5899,6 +6174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Player_Fuel_Jet";
@@ -5998,6 +6274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Player_Jump_Jet";
@@ -6097,6 +6374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Player_Leap_Jet";
@@ -6196,6 +6474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Player_No_Jet";
@@ -6295,6 +6574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Player_Quake";
@@ -6394,6 +6674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_1x2f_BLPRemote";
@@ -6493,6 +6774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_1x2f_Default";
@@ -6592,6 +6874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_2x2f_Default";
@@ -6691,6 +6974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_2x2r_Default";
@@ -6790,6 +7074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_2x2r_Monitor3";
@@ -6889,6 +7174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_Letters_Default";
@@ -6988,6 +7274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_ModTer_Default";
@@ -7087,6 +7374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Print_Poster_Tutorial";
@@ -7186,6 +7474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Projectile_GravityRocket";
@@ -7285,6 +7574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Projectile_Pinball";
@@ -7384,6 +7674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Projectile_Pong";
@@ -7483,6 +7774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Projectile_Radio_Wave";
@@ -7582,6 +7874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Script_Player_Persistence";
@@ -7681,6 +7974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Script_TotalRPG";
@@ -7780,6 +8074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "ServerAdminChat";
@@ -7879,6 +8174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Server_AdminChat";
@@ -7978,6 +8274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Server_DWandPlusPlus";
@@ -8077,6 +8374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Server_Playtime";
@@ -8176,6 +8474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Server_TrustLevels";
@@ -8275,6 +8574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Server_VehicleGore";
@@ -8374,6 +8674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Sound_Beeps";
@@ -8473,6 +8774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Sound_Phone";
@@ -8572,6 +8874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Sound_Synth4";
@@ -8671,6 +8974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Support_Doors";
@@ -8770,6 +9074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Support_LegacyDoors";
@@ -8869,6 +9174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Support_Player_Persistence";
@@ -8968,6 +9274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Support_Preferences";
@@ -9067,6 +9374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "System_BAM";
@@ -9166,6 +9474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "System_oRBs";
@@ -9265,6 +9574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "System_ReturnToBlockland";
@@ -9364,6 +9674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Tool_Duplicator";
@@ -9463,6 +9774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Ball";
@@ -9562,6 +9874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Flying_Wheeled_Jeep";
@@ -9661,6 +9974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Horse";
@@ -9760,6 +10074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Jeep";
@@ -9859,6 +10174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Magic_Carpet";
@@ -9958,6 +10274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Pirate_Cannon";
@@ -10057,6 +10374,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Rowboat";
@@ -10156,6 +10474,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Vehicle_Tank";
@@ -10255,6 +10574,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Bow";
@@ -10354,6 +10674,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Gun";
@@ -10453,6 +10774,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Guns_Akimbo";
@@ -10552,6 +10874,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Horse_Ray";
@@ -10651,6 +10974,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Push_Broom";
@@ -10750,6 +11074,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Rocket_Launcher";
@@ -10849,6 +11174,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Spear";
@@ -10948,6 +11274,7 @@ new GuiControl(GlassModManagerGui) {
                         enabled = "1";
                         visible = "1";
                         clipToParent = "1";
+                        text = "Button";
                         groupNum = "-1";
                         buttonType = "ToggleButton";
                            addon = "Weapon_Sword";
@@ -12690,7 +13017,7 @@ new GuiControl(GlassModManagerGui) {
             keepCached = "0";
             mColor = "255 255 255 255";
             mMultiply = "0";
-               schedule = "2479";
+               schedule = "34053";
                frame = "2";
          };
       };
@@ -12722,6 +13049,31 @@ new GuiControl(GlassModManagerGui) {
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
+         };
+      };
+      new GuiProgressCtrl(GlassModManagerGui_ProgressBar) {
+         profile = "GuiProgressProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "20 545";
+         extent = "640 25";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+
+         new GuiTextCtrl() {
+            profile = "GuiProgressTextProfile";
+            horizSizing = "center";
+            vertSizing = "center";
+            position = "0 0";
+            extent = "640 25";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            text = "asdf";
+            maxLength = "255";
          };
       };
    };

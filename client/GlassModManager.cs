@@ -213,6 +213,14 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 // Communications
 //====================================
 
+function GlassModManager::downloadAddonFromId(%id) {
+
+}
+
+function GlassModManager::downloadAddon(%obj) {
+  GlassDownloadManager.fetchAddon(%obj);
+}
+
 function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
   if(GlassAuth.ident !$= "") {
     if(%params !$= "")
@@ -270,8 +278,11 @@ function GlassModManagerTCP::onDone(%this, %error) {
             buffer = %this.buffer;
           };
 
-          GlassModManagerGui::loadErrorPage("development", %this.buffer);
-          GlassModManagerGui::renderAddon(%obj);
+          if(%this.action $= "render") {
+            GlassModManagerGui::renderAddon(%obj);
+          } else if(%this.action $= "download") {
+            GlassModManager::downloadAddon(%obj);
+          }
       }
 
     } else {

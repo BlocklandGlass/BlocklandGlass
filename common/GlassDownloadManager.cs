@@ -7,7 +7,8 @@ function GlassDownloadManager::init() {
 }
 
 
-function GlassDownloadManager::fetchAddon(%this, %addonHandler) {
+function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
+	%addonHandler.download_branch = %branch;
 	echo("Fetching: " @ %addonHandler.name);
 	%this.queue.add(%addonHandler);
 	%this.queue.fetchNext();
@@ -24,13 +25,15 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 
 	%fileData = %this.getObject(0);
 
-	%url = "http://" @ Glass.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.branch @ "&ingame=1";
+	%url = "http://" @ Glass.netAddress @ "/api/support_updater/download.php?id=" @ %fileData.id @ "&branch=" @ %fileData.download_branch @ "&ingame=1";
 	%method = "GET";
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";
 
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 	%tcp.fileData = %fileData;
+
+	return %tcp;
 }
 
 function GlassDownloadManagerQueue::fetchFinished(%this) {
@@ -47,14 +50,20 @@ function GlassDownloadTCP::onDone(%this, %error) {
 	}
 
 	GlassDownloadManagerQueue.fetchFinished();
-	GlassModManager_ProgressBar.schedule(1000, setVisible, false);
+	if(!$Server::Dedicated)
+		GlassModManagerGui.schedule(2000, setProgress);
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
-	if(%this.fileData.rtbImport) {
-		GlassRTBSupport::updateProgressBar(%this.fileData.downloadHandler, %float);
+	if(!$Server::Dedicated) {
+		cancel(GlassModManagerGui.sch);
+		if(%this.fileData.rtbImport) {
+			GlassRTBSupport::updateProgressBar(%this.fileData.downloadHandler, %float);
+		}
+
+		if(%float < 1)
+			GlassModManagerGui::setProgress(%float, "Downloading " @ %this.fileData.filename @ " (" @ GlassDownloadManagerQueue.getCount() @ " remaining)");
+		else
+			GlassModManagerGui::setProgress(%float, "All Downloads Finished");
 	}
-	GlassModManager_ProgressBar.setVisible(true);
-	//echo("Progress: " @ %float);
-	GlassModManager_ProgressBar.setValue(%float);
 }

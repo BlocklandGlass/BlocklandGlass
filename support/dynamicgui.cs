@@ -102,6 +102,12 @@ function GuiControl::forceCenter(%this) {
   %this.position = %x SPC %y;
 }
 
+function GuiControl::getCenter(%this) {
+  %x = mFloor(getWord(%this.extent, 0)/2);
+  %y = mFloor(getWord(%this.extent, 1)/2);
+  return %x SPC %y;
+}
+
 function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   for(%i = 0; %i < %this.getCount(); %i++) {
     %low = getWord(vectorAdd(%this.getObject(%i).position, %this.getObject(%i).extent), 1);
@@ -115,6 +121,8 @@ function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   } else {
     %this.extent = getWord(%this.extent, 0) SPC %min;
   }
+
+  echo(%this.extent);
 }
 
 function GuiControl::placeBelow(%this, %other, %margin) {

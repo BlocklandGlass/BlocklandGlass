@@ -1,3 +1,5 @@
+//discoverFile("*"); exec("Add-Ons/System_BlocklandGlass/client/serializable/modmanager/addonPage.cs");
+
 function GlassModManagerGui::fetchAndRenderAddon(%modId) {
   GlassModManager::placeCall("addon", "id" TAB %modId);
 }
@@ -97,6 +99,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
     %container.download[%branch].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonDownloadButton) {
       aid = %aid;
+      obj = %obj;
       swatch = %container.download[%branch];
     };
 
@@ -133,4 +136,81 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch[%i]].placeBelow(%container.description, 25);
   }
 
+  %container.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+}
+
+function GlassModManagerGui::doDownloadSprite(%origin, %destination, %maxHeight) {
+  // writing this, it took me way too long to realize that %var^2 isn't squaring something
+  // it works, but uses quite a few shortcut kinematics
+
+  %height = getRandom(-%maxHeight/2, -%maxHeight);
+  %accel = 500;
+
+  %vertVelocity = -msqrt(-1*%accel*%height);
+
+  %vertChange = getWord(%destination, 1)-getWord(%origin, 1);
+
+  %finalVertVelocity = msqrt(mpow(%vertVelocity, 2) + (2*%accel*%vertChange));
+  %deltaVelocity = %finalVertVelocity - %vertVelocity;
+  %duration = %deltaVelocity/%accel;
+
+  %horizVelocity = (getWord(%destination, 0)-getWord(%origin, 0))/%duration;
+
+  %sprite = new GuiBitmapCtrl(GlassDownloadSprite) {
+    horizSizing = "center";
+    vertSizing = "center";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png";
+    position = %origin;
+    extent = "20 20";
+    minextent = "0 0";
+    clipToParent = true;
+
+    accel = %accel;
+    velocity = %horizVelocity SPC %vertVelocity;
+    originalVelocity = %horizVelocity SPC %vertVelocity;
+    origin = %origin;
+    destination = %destination;
+    actualposition = %origin;
+    timeElapsed = 0;
+  };
+
+  GlassModManagerGui.add(%sprite);
+  %sprite.tick();
+  echo(%sprite);
+}
+
+function GlassDownloadSprite::tick(%this) {
+  %accel = %this.accel;
+  %vertVelocity = getWord(%this.velocity, 1);
+
+  %tickLength = 10; //ms
+  %this.timeElapsed += %tickLength;
+
+  if(%this.timeElapsed > 5000) {
+    %this.delete();
+    return;
+  }
+
+  %newVelocity = %vertVelocity + ((%tickLength/1000) * %accel);
+
+  %vertPos = ((%vertVelocity+%newVelocity)/2) * (%tickLength/1000);
+  %vertPos += getWord(%this.actualposition, 1);
+
+  %horizPos = (getWord(%this.originalVelocity, 0)*(%this.timeElapsed/1000))+getWord(%this.origin, 0);
+
+  %this.velocity = getWord(%this.velocity, 0) SPC %newVelocity;
+
+  %this.actualposition = %horizPos SPC %vertPos;
+  %this.position = mfloor(%horizPos) SPC mfloor(%vertPos);
+
+  //echo(vectordist(%this.position, %this.destination));
+  if(vectordist(%this.position, %this.destination) < 10) {
+    %this.delete();
+    return;
+  }
+
+  GlassModManagerGui.pushToBack(%this);
+
+  %this.schedule(%tickLength, tick);
 }
