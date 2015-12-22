@@ -149,8 +149,13 @@ function GlassModManagerGui::renderAddon(%obj) {
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
 
+  %container.info.setMarginResize(20);
+  %container.description.setMarginResize(20);
+
   %container.info.setVisible(true);
   %container.info.forceReflow();
+  %container.description.setVisible(true);
+  %container.description.forceReflow();
 
   %container.setMarginResize(0, 0);
 
@@ -158,9 +163,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.title.setMarginResize(20);
   %container.author.setMarginResize(20);
   %container.author.placeBelow(%container.title, 1);
-  %container.info.setMarginResize(20);
   %container.info.placeBelow(%container.author, 15);
-  %container.description.setMarginResize(20);
   %container.description.placeBelow(%container.info, 25);
   for(%i = 0; %i < %num; %i++) {
     %bid = getword(%obj.branches, %i);

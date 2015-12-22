@@ -225,7 +225,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
     }
 
     if(%ret.status $= "success") {
-
+      GlassModManagerGui::setLoading(false);
       switch$(%this.glass_call) {
         case "home":
           GlassModManager::processCall_Home(%this);

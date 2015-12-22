@@ -46,7 +46,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
 
   GlassModManagerGui_MainDisplay.extent = %container.extent;
 
-  GlassModManager::setLoading(false);
+  GlassModManagerGui::setLoading(false);
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
@@ -69,3 +69,18 @@ $GlassError["development"] = "Development\tThis page is still in development!";
 $GlassError["status_"] = "No Status\tThe API failed to return a status message.";
 $GlassError["status_error"] = "API Error\tThe API encountered an error completing your request.";
 $GlassError["status_development"] = "Development\tThis page is still in development!";
+
+
+$GlassError["tcpclient_" @ $TCPClient::Error::connectionFailed] = "Failed to Connect\tThe Mod Manager couldn't connect to the Blockland Glass website!";
+$GlassError["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connection\tDNS Failed.";
+$GlassError["tcpclient_" @ $TCPClient::Error::invalidResponse] = "Invalid Response\tThe server encountered an error!";
+$GlassError["tcpclient_" @ $TCPClient::Error::connectionTimedOut] = "Timeout\tThe connection timed out.";
+
+//$TCPClient::Error::none = 0;
+//$TCPClient::Error::connectionFailed = 1;
+//$TCPClient::Error::dnsFailed = 2;
+//$TCPClient::Error::invalidResponse = 3;
+//$TCPClient::Error::invalidRedirect = 4;
+//$TCPClient::Error::invalidDownloadLocation = 5;
+//$TCPClient::Error::invalidUrlFormat = 6;
+//$TCPClient::Error::connectionTimedOut = 7;
