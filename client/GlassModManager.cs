@@ -1,5 +1,5 @@
 function GlassModManager::init() {
-  exec("./serializable/GlassModManager.cs");
+  exec("./submodules/GlassModManager.cs");
   if(isObject(GlassModManager)) {
     GlassModManager.delete();
   }

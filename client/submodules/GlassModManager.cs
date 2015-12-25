@@ -177,3 +177,4 @@ function GlassModManagerGui_AddonScreenshotButton::onAdd(%this) {
 exec("./modmanager/trending.cs");
 exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");
+exec("./modmanager/forumBrowser.cs");

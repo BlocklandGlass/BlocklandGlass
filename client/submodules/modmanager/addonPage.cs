@@ -1,4 +1,4 @@
-//discoverFile("*"); exec("Add-Ons/System_BlocklandGlass/client/serializable/modmanager/addonPage.cs");
+//discoverFile("*"); exec("Add-Ons/System_BlocklandGlass/client/submodules/modmanager/addonPage.cs");
 
 function GlassModManagerGui::fetchAndRenderAddon(%modId) {
   GlassModManager::placeCall("addon", "id" TAB %modId);
