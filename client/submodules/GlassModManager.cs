@@ -151,6 +151,35 @@ function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {
 
 
 
+function GlassModManagerGui_ForumButton::onMouseEnter(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = vectoradd(%swatch.color, "20 20 20");
+}
+
+function GlassModManagerGui_ForumButton::onMouseLeave(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = %swatch.ocolor;
+}
+
+function GlassModManagerGui_ForumButton::onMouseDown(%this) {
+  if(%this.type $= "topic") {
+    GlassForumBrowser::getAddon(%this.topic);
+  } else if(%this.type $= "board") {
+    GlassForumBrowser::getBoard(%this.board);
+  }
+}
+
+function GlassModManagerGui_ForumButton::onAdd(%this) {
+  %this.extent = %this.swatch.extent;
+  %this.position = "0 0";
+}
+
+
+
 function GlassModManagerGui_ScreenshotButton::onMouseEnter(%this) {
   %swatch = %this.swatch;
   if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;

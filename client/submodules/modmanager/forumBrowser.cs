@@ -3,7 +3,18 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
     %link = getField(%links, %i);
     %fileName = fileName(%link);
     echo(%fileName);
+    if(strpos(%link, "blocklandglass.com") >= 0 && strpos(%fileName, "addon.php?") == 0) {
+      %aid = getSubStr(%filename, strpos(%filename, "=")+1, strlen(%filename));
+      %button[%buttons+0] = "addon" TAB %aid;
+    } else if(strpos(%filename, ".zip") >= 0) {
+      %button[%buttons+0] = "url" TAB %link TAB %filename;
+    } else {
+      continue;
+    }
+    echo(%button[%buttons+0]);
+    %buttons++;
   }
+
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -21,6 +32,13 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
     minextent = "0 0";
     clipToParent = true;
   };
+
+  %container.blf.mouse = new GuiMouseEventCtrl(GlassModManagerGui_ForumButton) {
+    type = "board";
+    topic = 0;
+  };
+
+  %container.blf.add(%container.blf.mouse);
 
   %container.title = new GuiMLTextCtrl() {
     horizSizing = "right";
@@ -40,6 +58,45 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
     extent = "300 16";
     minextent = "0 0";
   };
+
+  for(%i = 0; %i < %buttons; %i++) {
+    %button = %button[%i];
+
+
+    %container.button[%i] = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "200 220 200 255";
+      position = 0 SPC 0;
+      extent = 150 SPC 35;
+    };
+
+    echo(%name);
+    %container.button[%i].info = new GuiMLTextCtrl(%name) {
+      horizSizing = "center";
+      vertSizing = "center";
+      text = "<font:quicksand-bold:16><just:center>Glass Mod<font:quicksand:14><br>ID " @ getField(%button, 1);
+      position = "0 0";
+      extent = "300 16";
+      minextent = "0 0";
+      autoResize = true;
+    };
+
+    %container.button[%i].add(%container.button[%i].info);
+
+    %container.button[%i].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+      aid = getField(%button, 1);
+      obj = %obj;
+      swatch = %container.button[%i];
+      branch = %branch;
+    };
+    %container.button[%i].add(%container.button[%i].mouse);
+
+    %container.button[%i].info.setMarginResize(2, 2);
+    %container.button[%i].info.forceCenter();
+    %container.add(%container.button[%i]);
+  }
+
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
@@ -61,6 +118,77 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
   %container.title.placeBelow(%container.blf, 10);
 
   %container.description.placeBelow(%container.title, 10);
+
+  for(%i = 0; %i < %buttons; %i++) {
+    %button = %container.button[%i];
+    %button.forceCenter();
+    if(%i) {
+      %button.placeBelow(%container.button[%i-1], 10);
+    } else {
+      %button.placeBelow(%container.description, 10);
+    }
+  }
+
+  %container.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.setVisible(true);
+}
+
+function GlassModManagerGui::renderForumBoard(%topics) {
+  %container = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "0 0 0 0";
+    position = "0 0";
+    extent = "505 498";
+  };
+
+  for(%i = 0; %i < getlinecount(%topics); %i++) {
+    %topic = getLine(%topics, %i);
+    %container.topic[%i] = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "200 200 200 255";
+      position = "0 0";
+      extent = "505 30";
+    };
+
+    %topicTitle = getSubStr(getField(%topic, 0), 0, 40);
+    if(%topicTitle !$= getField(%topic, 0))
+      %topicTitle = %topicTitle @ "...";
+
+
+    %container.topic[%i].title = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<font:quicksand-bold:16><just:left>" @ %topictitle @ "<just:right><font:quicksand:16>" @ getField(%topic, 1);
+      position = "0 0";
+      extent = "300 24";
+      minextent = "0 0";
+      autoResize = true;
+    };
+
+    %container.topic[%i].mouse = new GuiMouseEventCtrl(GlassModManagerGui_ForumButton) {
+      type = "topic";
+      topic = getField(%topic, 2);
+      swatch = %container.topic[%i];
+    };
+
+    %container.topic[%i].add(%container.topic[%i].title);
+    %container.add(%container.topic[%i]);
+    %container.topic[%i].setMarginResize(10);
+    %container.topic[%i].title.setMarginResize(10, 7);
+    %container.topic[%i].title.forceCenter();
+    %container.topic[%i].add(%container.topic[%i].mouse);
+    if(%i) {
+      %container.topic[%i].placeBelow(%container.topic[%i-1], 5);
+    } else {
+      %container.topic[%i].setMargin(10, 10);
+    }
+  }
+
+  GlassModManagerGui_MainDisplay.deleteAll();
+  GlassModManagerGui_MainDisplay.add(%container);
 
   %container.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
@@ -155,12 +283,24 @@ function GlassForumBrowser::processPostBuffer(%post, %title) {
     }
   }
 
-  %cleanText = strReplace(%cleanText, "&nbsp;", " ");
-  %cleanText = strReplace(%cleanText, "&#039;", "'");
+  %cleanText = urldec(%cleanText);
 
   echo(trim(%links));
   GlassModManagerGui::setProgress("");
   GlassModManagerGui::renderForumTopic(%title, %cleanText, %links);
+}
+
+function urldec(%str) {
+  %str = strReplace(%str, "&nbsp;", " ");
+  %str = strReplace(%str, "&#039;", "'");
+  %str = strReplace(%str, "&quot;", "\"");
+
+  %str = strReplace(%str, "&#9658;", " > ");
+  %str = strReplace(%str, "&#9608;", "[]");
+
+  %str = strReplace(%str, "&amp;", "&");
+
+  return %str;
 }
 
 function GlassForumTCP::handleText(%this, %text) {
@@ -192,7 +332,6 @@ function GlassForumTCP::handleText(%this, %text) {
             %text = getSubStr(%text, %pos+6, strlen(%text));
             continue;
           } else {
-            echo("Buffer done");
             %this.buffer = %this.buffer @ getSubStr(%text, 0, %pos);
             %this.buffering = false;
             GlassModManagerGui::setProgress(0.5, "Text received.");
@@ -213,7 +352,6 @@ function GlassForumTCP::handleText(%this, %text) {
         }
       } else {
         if((%pos = strpos(%text, "<div class=\"post\">")) == 0 && %this.buffer $= "") {
-          echo("Buffer!");
           GlassModManagerGui::setProgress(0.25, "Receiving text...");
           %this.buffering = true;
           %this.divLevel = 0;
@@ -229,6 +367,7 @@ function GlassForumTCP::handleText(%this, %text) {
 
 function GlassForumTCP::onDone(%this, %error) {
   if(%this.type $= "board") {
+    %topics = "";
     for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
       %line = trim(getLine(%this.buffer, %i));
       //echo(%line);
@@ -253,12 +392,14 @@ function GlassForumTCP::onDone(%this, %error) {
         %text = getSubStr(%line, strpos(%line, "\">")+2, strlen(%line));
         %text = getSubStr(%text, 0, strpos(%text, "</a>"));
 
-        %name = getSubStr(%line, strpos(%line, "</a> - ")+8, strlen(%line));
-        %name = getSubStr(%line, 0, strpos(%line, "<br />"));
+        %name = getSubStr(%line, strpos(%line, "</a> - ")+7, strlen(%line));
+        %name = getSubStr(%name, 0, strpos(%name, "<br />"));
 
         echo("\c4" @ %urlTopic @ " \c0links to\c2 " @ %text @ " \c0by\c4 " @ %name);
+        %topics = %topics NL urldec(%text) TAB %name TAB %urlTopic;
       }
     }
+    GlassModManagerGui::renderForumBoard(getSubStr(%topics, 1, strlen(%topics)-1));
   } else if(%this.type $= "topic") {
     if(%this.buffering) {
       GlassForumBrowser::processPostBuffer(%this.buffer, %this.title);
