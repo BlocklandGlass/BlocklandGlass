@@ -5,11 +5,11 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
     echo(%fileName);
     if(strpos(%link, "blocklandglass.com") >= 0 && strpos(%fileName, "addon.php?") == 0) {
       %aid = getSubStr(%filename, strpos(%filename, "=")+1, strlen(%filename));
-      %button[%buttons+0] = "addon" TAB %aid;
+      %button[%link] = %button[%buttons+0] = "addon" TAB %aid;
     } else if(strpos(%filename, ".zip") >= 0) {
-      %button[%buttons+0] = "url" TAB %link TAB %filename;
+      %button[%link] = %button[%buttons+0] = "zip" TAB %link TAB %filename;
     } else {
-      continue;
+      %button[%link] = %button[%buttons+0] = "link" TAB %link;
     }
     echo(%button[%buttons+0]);
     %buttons++;
@@ -35,7 +35,8 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
 
   %container.blf.mouse = new GuiMouseEventCtrl(GlassModManagerGui_ForumButton) {
     type = "board";
-    topic = 0;
+    board = 0;
+    swatch = %container.blf;
   };
 
   %container.blf.add(%container.blf.mouse);
@@ -53,53 +54,15 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:quicksand:16><just:left>" @ %text;
+    text = "<font:quicksand:16><just:left>";
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
   };
 
-  for(%i = 0; %i < %buttons; %i++) {
-    %button = %button[%i];
-
-
-    %container.button[%i] = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 220 200 255";
-      position = 0 SPC 0;
-      extent = 150 SPC 35;
-    };
-
-    echo(%name);
-    %container.button[%i].info = new GuiMLTextCtrl(%name) {
-      horizSizing = "center";
-      vertSizing = "center";
-      text = "<font:quicksand-bold:16><just:center>Glass Mod<font:quicksand:14><br>ID " @ getField(%button, 1);
-      position = "0 0";
-      extent = "300 16";
-      minextent = "0 0";
-      autoResize = true;
-    };
-
-    %container.button[%i].add(%container.button[%i].info);
-
-    %container.button[%i].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-      aid = getField(%button, 1);
-      obj = %obj;
-      swatch = %container.button[%i];
-      branch = %branch;
-    };
-    %container.button[%i].add(%container.button[%i].mouse);
-
-    %container.button[%i].info.setMarginResize(2, 2);
-    %container.button[%i].info.forceCenter();
-    %container.add(%container.button[%i]);
-  }
-
-
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
+
   %container.add(%container.blf);
   %container.add(%container.title);
   %container.add(%container.description);
@@ -110,7 +73,6 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
 
   %container.description.setMarginResize(10);
   %container.description.setVisible(true);
-  %container.description.forceReflow();
 
   %container.blf.setMargin(10, 10);
 
@@ -119,17 +81,77 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
 
   %container.description.placeBelow(%container.title, 10);
 
-  for(%i = 0; %i < %buttons; %i++) {
-    %button = %container.button[%i];
-    %button.forceCenter();
-    if(%i) {
-      %button.placeBelow(%container.button[%i-1], 10);
+  for(%j = 0; %j < getLineCount(%text); %j++) {
+    %ln = getLine(%text, %j);
+    if(getWord(%ln, 0) $= "{link") {
+      %i = %currentLink+0;
+      %currentLink++;
+      %button = %button[%i];
+
+
+      %container.button[%i] = new GuiSwatchCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        color = "200 220 200 255";
+        position = 0 SPC 0;
+        extent = 150 SPC 35;
+      };
+
+      switch$(getField(%button, 0)) {
+        case "addon":
+          %t = "<font:quicksand-bold:16><just:center>Glass Add-On<font:quicksand:14><br>ID " @ getField(%button, 1);
+
+        case "link":
+          %t = "<font:quicksand-bold:16><just:center>Url<font:quicksand:14><br>" @ getField(%button, 1);
+
+        case "zip":
+          %t = "<font:quicksand-bold:16><just:center>ZIP File<font:quicksand:14><br>" @ getField(%button, 2);
+      }
+      %container.button[%i].info = new GuiMLTextCtrl(%name) {
+        horizSizing = "center";
+        vertSizing = "center";
+        text = %t;
+        position = "0 0";
+        extent = "300 16";
+        minextent = "0 0";
+        autoResize = true;
+      };
+
+      %container.button[%i].add(%container.button[%i].info);
+      echo("button:" @ %button);
+      if(getField(%button, 0) $= "addon") {
+        %container.button[%i].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+          aid = getField(%button, 1);
+          swatch = %container.button[%i];
+        };
+      } else {
+        %container.button[%i].mouse = new GuiMouseEventCtrl(GlassModManagerGui_ForumButton) {
+          type = "external";
+          button = %button;
+          link = getField(%button, 1);
+          swatch = %container.button[%i];
+        };
+      }
+      echo(%container.button[%i].mouse);
+      %container.button[%i].add(%container.button[%i].mouse);
+
+      %container.button[%i].info.setMarginResize(2, 2);
+      %container.button[%i].info.forceCenter();
+
+      %container.description.forceReflow();
+
+      %container.add(%container.button[%i]);
+      %container.button[%i].forceCenter();
+      %container.button[%i].placeBelow(%container.description, 5);
+      %container.description.setValue(%container.description.getValue() @ "<br><br><br><br>");
     } else {
-      %button.placeBelow(%container.description, 10);
+      %container.description.setValue(%container.description.getValue() @ %ln);
     }
   }
 
-  %container.verticalMatchChildren(498, 10);
+  %container.description.forceReflow();
+
+  %container.verticalMatchChildren(10);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.setVisible(true);
 }
@@ -249,6 +271,8 @@ function GlassForumBrowser::processPostBuffer(%post, %title) {
             if(strpos(%href, "http") == 0) {
               %links = %links TAB %href;
             }
+            %cleanText = %cleanText NL "{link\t" @ %href @ "}\n";
+            echo(%href);
             break;
           }
         }

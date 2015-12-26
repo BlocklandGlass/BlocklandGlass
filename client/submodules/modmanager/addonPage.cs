@@ -173,6 +173,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
   %container.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
 }
 
 function GlassModManagerGui::doDownloadSprite(%origin, %destination, %maxHeight) {

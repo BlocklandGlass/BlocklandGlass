@@ -170,6 +170,8 @@ function GlassModManagerGui_ForumButton::onMouseDown(%this) {
     GlassForumBrowser::getAddon(%this.topic);
   } else if(%this.type $= "board") {
     GlassForumBrowser::getBoard(%this.board);
+  } else if(%this.type $= "external") {
+    messageBoxYesNo("Open Web Browser", "Pressing yes will open your web browser to the following page:<br><br>" @ %this.link, "gotoWebpage(\"" @ expandEscape(%this.link) @ "\");");
   }
 }
 
