@@ -15,7 +15,7 @@ function GlassPrefGroup::sendPrefs(%this) {
 			%pref = %cate.getObject(%j);
 			if(%pref.actualvalue !$= %pref.value) {
 				%up = true;
-				commandToServer('updateBLPref', %pref.variable, %pref.value);
+				commandToServer('UpdatePref', %pref.variable, %pref.value);
 				%pref.actualvalue = %pref.value;
 			}
 		}
@@ -34,7 +34,7 @@ function GlassPrefGroup::requestPrefs(%this) {
 			%cat = %this.getObject(%i);
 			if(!%cat.downloadedPrefs) {
 				%this.currentCategory = %cat;
-				commandToServer('getBLPrefCategory', %cat.name);
+				commandToServer('RequestCategoryPrefs', %cat.id);
 				return;
 			}
 		}
@@ -84,20 +84,25 @@ function clientCmdhasPrefSystem(%version, %permission) {
 	}
 }
 
-function clientCmdAddCategory(%category, %icon) {
+function clientCmdReceiveCategory(%id, %category, %icon, %last) {
+	echo(%id TAB %category TAB %icon);
 	%obj = new ScriptGroup() {
 		class = "GlassPrefCategory";
 
 		name = %category;
 		icon = %icon;
 
+		id = %id;
+
 		downloadedPrefs = false;
 	};
 	GlassPrefGroup.add(%obj);
+
 	GlassPrefGroup.requestPrefs();
 }
 
-function clientCmdReceivePref(%title, %type, %variable, %value, %params, %legacy) {
+function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params, %default, %returnName, %value, %last) {
+	echo("Received Pref");
 	%obj = new ScriptObject() {
 		class = "GlassPrefInfo";
 
@@ -111,14 +116,13 @@ function clientCmdReceivePref(%title, %type, %variable, %value, %params, %legacy
 		legacy = %legacy;
 	};
 	GlassPrefGroup.currentCategory.add(%obj);
-}
 
-function clientCmdfinishReceivePref() {
-	if($Glass::Debug)
-		echo("Downloaded category " @ GlassPrefGroup.currentCategory.name);
-	GlassPrefGroup.currentCategory.downloadedPrefs = true;
-	GlassPrefGroup.currentCategory = "";
-	GlassPrefGroup.requestPrefs();
+	echo(%last);
+	if(%last) {
+		GlassPrefGroup.currentCategory.downloadedPrefs = true;
+		GlassPrefGroup.currentCategory = "";
+		GlassPrefGroup.requestPrefs();
+	}
 }
 
 package GlassPrefPackage {

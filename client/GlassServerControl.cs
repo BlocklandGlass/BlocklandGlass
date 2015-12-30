@@ -12,9 +12,9 @@ $remapDivision[$remapCount] = "Blockland Glass";
 function openGlassSettings(%down) {
   if(!GlassPrefGroup.requested) {
     GlassPrefGroup.requested = true;
-    commandToServer('GetBLPrefCategories');
+    commandToServer('RequestPrefCategories');
   }
-  
+
   if(!%down) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
@@ -398,12 +398,12 @@ function GlassServerControlC::renderPrefCategory(%category) {
     %pref = %category.getObject(%j);
     %swatch = "";
     switch$(%pref.type) {
-      case "boolean":
+      case "bool":
         %swatch = GlassServerControlC::createCheckbox();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
 
-      case "number":
+      case "num":
         %swatch = GlassServerControlC::createInt();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
@@ -429,13 +429,12 @@ function GlassServerControlC::renderPrefCategory(%category) {
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
 
-      case "list":
+      case "dropdown":
         %swatch = GlassServerControlC::createList();
         %swatch.text.setText(%pref.title);
-        %options = strreplace(%pref.params, "|", "\t");
-        for(%k = 0; %k < getFieldCount(%options); %k++) {
-          %fields = strreplace(expandEscape(getField(%options, %k)), "**", "\t");
-          %swatch.ctrl.add(getField(%fields, 0), getField(%fields, 1));
+        %options = %pref.params;
+        for(%k = 0; %k < getWordCount(%options); %k += 2) {
+          %swatch.ctrl.add(strreplace(getWord(%options, %k), "_", " "), getWord(%options, %k+1));
         }
         %swatch.ctrl.add();
         %swatch.ctrl.setSelected(%pref.value);
