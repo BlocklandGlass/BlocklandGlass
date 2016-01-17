@@ -1,3 +1,29 @@
+function GlassNotificationManager::connectToNotificationServer() {
+  %server = "localhost";
+  %port = 27000;
+
+  if(isObject(GlassNotificationTCP)) {
+    error("GlassNotificationTCP exists!");
+    return;
+  }
+
+  new TCPObject(GlassNotificationTCP) {
+    debug = true;
+  };
+
+  GlassNotificationTCP.connect(%server @ ":" @ %port);
+}
+
+function GlassNotificationTCP::onConnected(%this) {
+  %this.send("auth\t" @ GlassAuth.ident @ "\r\n");
+}
+
+function GlassNotificationTCP::onLine(%this, %line) {
+  if(%this.debug) {
+    echo("\c4>\c5" @ %line);
+  }
+}
+
 function GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback) {
   new ScriptObject(GlassNotification) {
     title = %title;

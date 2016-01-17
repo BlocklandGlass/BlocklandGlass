@@ -43,6 +43,7 @@ function Glass::execClient() {
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
+	exec("./client/GlassDownloadInterface.cs");
 
 	exec("./client/GlassClientManager.cs");
 
@@ -50,7 +51,7 @@ function Glass::execClient() {
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
-	exec("./client/GlassDownloadInterface.cs");
+	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
 	GlassFontManager::init();
