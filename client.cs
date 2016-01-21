@@ -90,11 +90,8 @@ function clientCmdGlassHandshake(%ver) {
 Glass::init("client");
 
 package GlassPrefs {
-	function onExit() {
-		parent::onExit();
-	}
-
 	function MM_AuthBar::blinkSuccess(%this) {
+		echo("Prompting...");
 		Glass::doWelcomeMessage();
 		Glass::openFeedbackPrompt();
 		GlassResourceManager.prompt();

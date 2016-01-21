@@ -274,6 +274,10 @@ function serverCmdGlassUpdateSend(%client) {
   messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
 }
 
+function servercmdBLP_isAllowed(%client) {
+  commandToClient(%client, 'BLP_isAllowed', %client.BLP_isAllowedUse());
+}
+
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);

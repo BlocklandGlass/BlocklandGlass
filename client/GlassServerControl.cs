@@ -14,14 +14,20 @@ function openGlassSettings(%down) {
     GlassPrefGroup.requested = true;
     commandToServer('GetBLPrefCategories');
   }
-  
+
   if(!%down) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
     } else if(GlassServerControlC.enabled) {
       canvas.pushDialog(GlassServerControlGui);
+    } else {
+      commandToServer('BLP_isAllowed');
     }
   }
+}
+
+function clientcmdBLP_isAllowed(%tog) {
+  GlassServerControlC.enabled = %tog;
 }
 
 function clientCmdGlassNoUpdates() {
