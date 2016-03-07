@@ -41,6 +41,10 @@ function GlassModManagerGui::loadContext(%context) {
   if(%context $= "home") {
     GlassModManager.loadHome();
   }
+
+  if(%context $= "addons") {
+    GlassModManagerGui::renderBoards("Client Add-ons\t1\tSome cool client stuff\tclient\nClient Add-ons\t1\tSome cool client stuff\tclient\nClient Add-ons\t1\tSome cool client stuff\tclient");
+  }
 }
 
 function GlassModManagerGui::setLoading(%bool) {
@@ -208,4 +212,5 @@ function GlassModManagerGui_AddonScreenshotButton::onAdd(%this) {
 exec("./modmanager/trending.cs");
 exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");
+exec("./modmanager/boardsPage.cs");
 exec("./modmanager/forumBrowser.cs");
