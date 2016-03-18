@@ -856,4 +856,16 @@ function GlassModManager_MyColorsets::renderColorset(%this, %file) {
   GlassModManagerGui_ColorsetPreview.position = mFloor(%x) SPC mFloor(%y);
 }
 
-exec("./GlassModManager_AddonPage.cs");
+package GlassModManager {
+  function GuiMLTextCtrl::onURL(%this, %url) {
+    if(strpos(%url, "glass://") == 0) {
+      %link = getsubstr(%url, 8, strlen(%url)-8);
+      if(%link $= "boards") {
+        GlassModManagerGui::loadContext("addons");
+      }
+    } else {
+      return parent::onURL(%this, %url);
+    }
+  }
+};
+activatePackage(GlassModManager);
