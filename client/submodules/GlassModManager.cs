@@ -43,7 +43,7 @@ function GlassModManagerGui::loadContext(%context) {
   }
 
   if(%context $= "addons") {
-    GlassModManagerGui::renderBoards("Client Add-ons\t1\tSome cool client stuff\tclient\nClient Add-ons\t1\tSome cool client stuff\tclient\nClient Add-ons\t1\tSome cool client stuff\tclient");
+    GlassModManager.loadBoards();
   }
 }
 
@@ -205,6 +205,30 @@ function GlassModManagerGui_ScreenshotButton::onMouseDown(%this, %a, %pos, %c, %
 }
 
 function GlassModManagerGui_AddonScreenshotButton::onAdd(%this) {
+  %this.extent = %this.swatch.extent;
+  %this.position = "0 0";
+}
+
+
+function GlassModManagerGui_BoardButton::onMouseEnter(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = vectoradd(%swatch.color, "20 20 20");
+}
+
+function GlassModManagerGui_BoardButton::onMouseLeave(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
+
+  %swatch.color = %swatch.ocolor;
+}
+
+function GlassModManagerGui_BoardButton::onMouseDown(%this) {
+  %obj = GlassModManagerGui::fetchBoard(%this.bid);
+}
+
+function GlassModManagerGui_BoardButton::onAdd(%this) {
   %this.extent = %this.swatch.extent;
   %this.position = "0 0";
 }

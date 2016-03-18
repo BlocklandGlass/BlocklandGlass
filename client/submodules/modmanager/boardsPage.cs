@@ -30,6 +30,7 @@ function GlassModManagerGui::renderBoards(%boards) {
     }
 
     %container.add(%contain);
+    %contain.mouse.onAdd();
   }
 
   GlassModManagerGui_MainDisplay.deleteAll();
@@ -58,7 +59,14 @@ function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
     position = "0 0";
     extent = "225 45";
   };
+
+  %container.mouse = new GuiMouseEventCtrl(GlassModManagerGui_BoardButton) {
+    bid = %id;
+    swatch = %container;
+  };
+
   %container.add(%container.text);
+  %container.add(%container.mouse);
 
   return %container;
 }
@@ -105,10 +113,7 @@ function GlassModManagerGui::renderHome_recent(%recent) {
       extent = "225 45";
     };
 
-    %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-      aid = %aid;
-      swatch = %swatch;
-    };
+
 
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.mouse);

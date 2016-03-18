@@ -258,6 +258,18 @@ function GlassModManagerTCP::onDone(%this, %error) {
           } else if(%this.action $= "download") {
             GlassModManager::downloadAddon(%obj);
           }
+
+        case "boards":
+          %str = "";
+          for(%i = 0; %i < %ret.boards.length; %i++) {
+            %branch = %ret.boards.item[%i];
+            %name = %branch.name;
+            %id = %branch.id;
+            %bg = %branch.video;
+            %desc = %branch.description;
+            %str = %str @ %name TAB %id TAB %desc TAB %bg NL "";
+          }
+          GlassModManagerGui::renderBoards(trim(%str));
       }
 
     } else {
@@ -301,6 +313,14 @@ function GlassModManager::processCall_Home(%tcp) {
   %latestStr = getsubstr(%lateststr, 1, strlen(%lateststr)) @ "\n";
   %trendingStr = getsubstr(%trendingstr, 1, strlen(%trendingstr)) @ "\n";
   GlassModManagerGui::renderHome(%trendingstr, %lateststr);
+}
+
+//====================================
+// Boards
+//====================================
+
+function GlassModManager::loadBoards(%this) {
+  GlassModManager::placeCall("boards");
 }
 
 //====================================
