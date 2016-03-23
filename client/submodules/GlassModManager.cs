@@ -113,6 +113,7 @@ function GlassModManagerGui_AddonButton::onMouseDown(%this) {
 function GlassModManagerGui_AddonButton::onAdd(%this) {
   %this.extent = %this.swatch.extent;
   %this.position = "0 0";
+  echo(%this.getGroup());
 }
 
 
@@ -237,4 +238,5 @@ exec("./modmanager/trending.cs");
 exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");
 exec("./modmanager/boardsPage.cs");
+exec("./modmanager/boardPage.cs");
 exec("./modmanager/forumBrowser.cs");

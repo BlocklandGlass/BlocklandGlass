@@ -17,6 +17,30 @@ function GlassModManager::init() {
 
   GlassModManagerGui_ForwardButton.setVisible(false);
   GlassModManagerGui_BackButton.setVisible(false);
+
+  if(Glass.dev) {
+    GlassModManagerGui_HostButton.setVisible(true);
+    GlassModManagerGui_HostButton.setText(Glass.address);
+  } else {
+    GlassModManagerGui_HostButton.setVisible(false);
+  }
+}
+
+function GlassModManager::toggleHost() {
+  if(Glass.alt_address $= "") {
+    Glass.alt_address = "test.blocklandglass.com";
+  }
+
+  if(Glass.address $= "localhost") {
+    Glass.address = Glass.alt_address;
+  } else {
+    Glass.alt_address = Glass.address;
+    Glass.address = "localhost";
+  }
+
+  GlassAuth.ident = "";
+  GlassAuth.heartbeat();
+  GlassModManagerGui_HostButton.setText(Glass.address);
 }
 
 function GlassModManager::setAddonStatus(%aid, %status) {
@@ -270,6 +294,20 @@ function GlassModManagerTCP::onDone(%this, %error) {
             %str = %str @ %name TAB %id TAB %desc TAB %bg NL "";
           }
           GlassModManagerGui::renderBoards(trim(%str));
+
+        case "board":
+          echo(%this.buffer);
+          for(%i = 0; %i < %ret.addons.length; %i++) {
+            %addon = %ret.addons.item[%i];
+            %name = %addon.name;
+            %id = %addon.id;
+            %rating = %addon.rating;
+            %author = %addon.author;
+            %downloads = %addon.downloads;
+
+            %listing = %listing @ %id TAB %name TAB %author TAB %rating TAB %downloads NL "";
+          }
+          GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages);
       }
 
     } else {
@@ -289,7 +327,6 @@ function GlassModManager::loadHome() {
 }
 
 function GlassModManager::processCall_Home(%tcp) {
-  echo(%tcp.buffer);
   %ret = parseJSON(collapseEscape(%tcp.buffer));
 
   %latest = %ret.get("latest");

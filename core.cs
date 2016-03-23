@@ -7,6 +7,7 @@ function Glass::init(%context) {
 			address = "localhost";
 			netaddress = "localhost";
 			enableCLI = true;
+			dev = true;
 		};
 	}
 

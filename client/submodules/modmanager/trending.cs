@@ -130,9 +130,9 @@ function GlassModManagerGui::renderHome_recent(%recent) {
       swatch = %swatch;
     };
 
+    %container.add(%swatch);
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.mouse);
-    %container.add(%swatch);
     %y += 46;
   }
 
@@ -140,5 +140,3 @@ function GlassModManagerGui::renderHome_recent(%recent) {
 
   return %container;
 }
-
-GlassModManagerGui::renderHome("1\tBlockland Glass\tJincux and Nexus\t738\t11\n2\tSlayer\tGreek2Me\t426\t9\n", "Blockland Glass\tJincux\tMonday\t11\nAdmin Chat\tJincux\tSunday\t7");

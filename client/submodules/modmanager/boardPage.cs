@@ -1,5 +1,6 @@
 function GlassModManagerGui::fetchBoard(%id) {
-  //GlassModManager::placeCall("board", "id" TAB %id);
+  GlassModManager::placeCall("board", "id" TAB %id);
+  return;
   %id = 1;
   %name = "Blockland Glass";
   %author = "Jincux";
@@ -63,24 +64,28 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
 
   %back = "<a:glass://boards><< Boards</a>";
 
-  if(%page > 3) {
-    %pageText = _glassPageNav(%bid, "1") SPC "..." SPC "";
-  } else if(%page > 2) {
-    %pageText = _glassPageNav(%bid, "1") SPC "";
-  }
-
-  if(%page < 2) {
-    %pageText = %pageText @ "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
-  } if(%page+1 > %pages) {
-    %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]";
+  if(%pages == 1) {
+    %pageText = "";
   } else {
-    %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
-  }
+    if(%page > 3) {
+      %pageText = _glassPageNav(%bid, "1") SPC "..." SPC "";
+    } else if(%page > 2) {
+      %pageText = _glassPageNav(%bid, "1") SPC "";
+    }
 
-  if(%page+2 == %pages) {
-    %pageText = %pageText SPC _glassPageNav(%bid, %pages);
-  } else if(%page+2 < %pages) {
-    %pageText = %pageText SPC "..." SPC _glassPageNav(%bid, %pages);
+    if(%page < 2) {
+      %pageText = %pageText @ "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
+    } if(%page+1 > %pages) {
+      %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]";
+    } else {
+      %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
+    }
+
+    if(%page+2 == %pages) {
+      %pageText = %pageText SPC _glassPageNav(%bid, %pages);
+    } else if(%page+2 < %pages) {
+      %pageText = %pageText SPC "..." SPC _glassPageNav(%bid, %pages);
+    }
   }
 
   %swatch.text = new GuiMLTextCtrl() {
@@ -154,7 +159,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
 
   %fullStars = mfloor(%stars);
   %fracStar = mfloor((%stars - %fullStars + 0.125)*4);
-  %emptyStars = 5-mceil(%stars);
+  %emptyStars = 4-%fullStars;
   %x = 250;
   for(%i = 0; %i < %fullStars; %i++) {
     %swatch.star[%i] = new GuiBitmapCtrl() {
@@ -170,6 +175,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     %x += 20;
   }
 
+  echo("frac" @ %fracStar);
   if(%fracStar != 0) {
     if(%fracStar > 3)
       %fracStar = 3;
@@ -203,7 +209,13 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     %x += 20;
   }
 
+  %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+    aid = %id;
+    swatch = %swatch;
+  };
+
   %swatch.add(%swatch.downloads);
   %swatch.add(%swatch.title);
+  %swatch.add(%swatch.mouse);
   return %swatch;
 }
