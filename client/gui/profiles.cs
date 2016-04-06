@@ -107,20 +107,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
   hasBitmapArray = "1";
 };
 
-if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLProfile) {
-  tab = "0";
-  canKeyFocus = "0";
-  mouseOverSelected = "0";
-  modal = "1";
-  opaque = "1";
-  fillColor = "149 152 166 255";
-  fillColorHL = "171 171 171 255";
-  fillColorNA = "221 202 173 255";
-  border = "1";
-  borderThickness = "1";
-  borderColor = "0 0 0 255";
-  borderColorHL = "128 128 128 255";
-  borderColorNA = "64 64 64 255";
+if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLProfile : GuiDefaultProfile) {
   fontType = "Quicksand-Bold";
   fontSize = "18";
   fontColors[0] = "0 0 0 255";
@@ -139,15 +126,4 @@ if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLP
   fontColorSEL = "200 200 200 255";
   fontColorLink = "100 100 100 255";
   fontColorLinkHL = "200 200 200 255";
-  doFontOutline = "0";
-  fontOutlineColor = "255 255 255 255";
-  justify = "center";
-  textOffset = "20 6";
-  autoSizeWidth = "0";
-  autoSizeHeight = "0";
-  returnTab = "0";
-  numbersOnly = "0";
-  cursorColor = "0 0 0 255";
-  bitmap = "base/client/ui/blockScroll.png";
-  hasBitmapArray = "1";
 };

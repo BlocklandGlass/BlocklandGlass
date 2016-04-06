@@ -84,7 +84,7 @@ function GlassModManagerGui::renderHome_trending(%trending) {
 }
 
 function GlassModManagerGui::renderHome_recent(%recent) {
-  %container = new GuiSwatchCtrl() {
+  %contain = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "0 0 0 0";
@@ -92,14 +92,14 @@ function GlassModManagerGui::renderHome_recent(%recent) {
     extent = "235 0";
   };
 
-  %container.text = new GuiMLTextCtrl() {
+  %contain.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     text = "<font:quicksand-bold:20><just:center>New Add-Ons";
     position = "0 0";
     extent = "225 45";
   };
-  %container.add(%container.text);
+  %contain.add(%contain.text);
 
   %y = 25;
   for(%i = 0; %i < getLineCount(%recent); %i++) {
@@ -130,13 +130,13 @@ function GlassModManagerGui::renderHome_recent(%recent) {
       swatch = %swatch;
     };
 
-    %container.add(%swatch);
+    %contain.add(%swatch);
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.mouse);
     %y += 46;
   }
 
-  %container.extent = "235" SPC %y+25;
+  %contain.extent = "235" SPC %y+25;
 
-  return %container;
+  return %contain;
 }

@@ -2,6 +2,21 @@
 // Bridge Blockland Preferences
 //================================
 
+// valid pref types:
+// - playercount [min] [max] (RTB's convenience list type) #
+// - wordlist [delim] [max]
+// - datablocklist [type] [delim] [max]
+// - userlist [delim] [max]
+// - datablock [type] [hasNoneOption] #
+// - slider [min] [max] [snapTo] [stepValue] #
+// - num [min] [max] [decimalpoints] #
+// - bool #
+// - button #
+// - dropdown [item1Name] [item1Var] [item2Name] [item2Var] etc #
+// - string [charLimit] [stripML] #
+// - colorset #
+// - rgb [form] # form = hex, integer
+
 $BLPrefs::Version = "1.0.0+glassbridge.2";
 
 if(!isObject(GlassPrefGroup)) {
@@ -25,8 +40,9 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 			%pref = %cate.getObject(%j);
 			if(%pref.localValue !$= %pref.value) {
 				%up = true;
-				commandToServer('UpdatePref', %pref.variable, %pref.value);
-				%pref.actualvalue = %pref.value;
+				echo(%i SPC %j @ ": " @ %pref.variable);
+				commandToServer('UpdatePref', %pref.variable, %pref.localValue);
+				%pref.value = %pref.localValue;
 			}
 		}
 	}
@@ -43,7 +59,9 @@ function GlassPrefBridge::requestPreferences() {
 	commandToServer('RequestPrefCategories');
 }
 
-
+function GlassPrefCategory::requestPrefs(%this) {
+	commandToServer('RequestCategoryPrefs', %this.id);
+}
 
 function GlassPrefGroup::requestPrefs(%this) {
 	if(!%this.currentCategory) {
@@ -95,13 +113,14 @@ function clientCmdhasPrefSystem(%version, %permission) {
 	if($Glass::Debug)
 		echo("Server has pref system! (" @ %version @")");
 
+	GlassServerControlC.allowedPrefs = %permission;
 	if(%permission) {
-		GlassPrefGroup.requested = true;
-		commandToServer('GetBLPrefCategories');
+		GlassPrefBridge::requestPreferences();
 	}
 }
 
 function clientCmdReceiveCategory(%id, %category, %icon, %last) {
+	GlassServerControlC.receivedPrefs = true;
 	echo(%id TAB %category TAB %icon);
 	%obj = new ScriptGroup() {
 		class = "GlassPrefCategory";
@@ -114,12 +133,11 @@ function clientCmdReceiveCategory(%id, %category, %icon, %last) {
 		downloadedPrefs = false;
 	};
 	GlassPrefGroup.add(%obj);
-
-	GlassPrefGroup.requestPrefs();
+	GlassPrefGroup.cat[%id] = %obj;
+	%obj.requestPrefs();
 }
 
-function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params, %default, %returnName, %value, %last) {
-	echo("Received Pref");
+function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params, %default, %variable, %value, %last) {
 	%obj = new ScriptObject() {
 		class = "GlassPrefInfo";
 
@@ -127,18 +145,16 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 		type = %type;
 		variable = %variable;
 		value = %value;
-		actualvalue = %value;
+		localValue = %value;
 		params = %params;
+		subcategory = %subcategory;
 
 		legacy = %legacy;
 	};
-	GlassPrefGroup.currentCategory.add(%obj);
+	GlassPrefGroup.cat[%catId].add(%obj);
 
-	echo(%last);
 	if(%last) {
-		GlassPrefGroup.currentCategory.downloadedPrefs = true;
-		GlassPrefGroup.currentCategory = "";
-		GlassPrefGroup.requestPrefs();
+		GlassPrefGroup.cat[%catId].downloadedPrefs = true;
 	}
 }
 

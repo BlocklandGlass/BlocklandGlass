@@ -19,7 +19,7 @@ function openGlassSettings(%down) {
   if(!%down) {
     if(GlassServerControlGui.isAwake()) {
       canvas.popDialog(GlassServerControlGui);
-    } else if(GlassServerControlC.enabled) {
+    } else if(GlassServerControlC.allowedPrefs) {
       canvas.pushDialog(GlassServerControlGui);
     }
   }
@@ -213,7 +213,7 @@ function GlassServerControlC::valueUpdate(%obj) {
   %type = %pref.type;
   %parm = %pref.params;
 
-  if(%type $= "number") {
+  if(%type $= "num") {
     if(%parm !$= "") {
       %val = %obj.ctrl.getValue();
 
@@ -243,7 +243,7 @@ function GlassServerControlC::valueUpdate(%obj) {
         }
       }
     }
-  } else if(%type $= "text" || %type $= "textarea" || %type $= "password") {
+  } else if(%type $= "string" || %type $= "textarea") {
     if(%parm !$= "") {
       if(strlen(%obj.ctrl.getValue()) > %parm) {
         %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
@@ -251,10 +251,10 @@ function GlassServerControlC::valueUpdate(%obj) {
     }
   }
 
-  if(%type $= "list") {
-    %pref.value = %obj.ctrl.getSelected();
+  if(%type $= "dropdown" || %type $= "playercount") {
+    %pref.localvalue = %obj.ctrl.getSelected();
   } else {
-    %pref.value = %obj.ctrl.getValue();
+    %pref.localvalue = %obj.ctrl.getValue();
   }
 }
 
@@ -326,7 +326,7 @@ function GlassServerControlC::renderPrefCategories() {
       };
     };
     %swat.mouse = new GuiMouseEventCtrl(GlassServerControlGui_CatMouseCtrl) {
-      category = %cat;
+      catid = %cat.id;
       profile = "GuiDefaultProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -375,14 +375,15 @@ function GlassServerControlGui_CatMouseCtrl::onMouseDown(%this, %down) {
   %swatch = %this.getGroup();
   %swatch.color = %swatch.ocolor = "170 200 255 255";
 
-  GlassServerControlC::renderPrefCategory(%this.category);
+  GlassServerControlC::renderPrefCategory(%this.catid);
 }
 
 function GlassServerControlC::renderPrefs() {
   GlassServerControlC::renderPrefCategory(GlassPrefGroup.getObject(0));
 }
 
-function GlassServerControlC::renderPrefCategory(%category) {
+function GlassServerControlC::renderPrefCategory(%catid) {
+  %category = GlassPrefGroup.cat[%catid];
   GlassServerControl_PrefScroll.clear();
   %currentY = 0;
 
@@ -390,13 +391,21 @@ function GlassServerControlC::renderPrefCategory(%category) {
     return;
 
   //create header
-  %header = GlassServerControlC::createHeader(%category.name);
+  %subheader = %category.getObject(0).subcategory;
+  %header = GlassServerControlC::createHeader(%subheader);
   %header.position = 0 SPC %currentY;
   GlassServerControl_PrefScroll.add(%header);
-  %currentY += 25;
-
+  %currentY += 24;
+  %light = false;
   for(%j = 0; %j < %category.getCount(); %j++) {
     %pref = %category.getObject(%j);
+    if(%pref.subcategory !$= %subheader) {
+      %subheader = %pref.subcategory;
+      %header = GlassServerControlC::createHeader(%subheader);
+      GlassServerControl_PrefScroll.add(%header);
+      %header.position = 0 SPC %currentY;
+      %currentY += 24;
+    }
     %swatch = "";
     switch$(%pref.type) {
       case "bool":
@@ -420,11 +429,6 @@ function GlassServerControlC::renderPrefCategory(%category) {
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));
 
-      case "password":
-        %swatch = GlassServerControlC::createText();
-        %swatch.text.setText(%pref.title);
-        %swatch.ctrl.setValue(expandEscape(%pref.value));
-
       case "textarea":
         %swatch = GlassServerControlC::createTextArea();
         %swatch.text.setText(%pref.title);
@@ -437,9 +441,36 @@ function GlassServerControlC::renderPrefCategory(%category) {
         for(%k = 0; %k < getWordCount(%options); %k += 2) {
           %swatch.ctrl.add(strreplace(getWord(%options, %k), "_", " "), getWord(%options, %k+1));
         }
-        %swatch.ctrl.add();
         %swatch.ctrl.setSelected(%pref.value);
+
+      case "playercount":
+        %swatch = GlassServerControlC::createList();
+        %swatch.text.setText(%pref.title);
+        %options = %pref.params;
+        for(%k = 0; %k < 99; %k++) {
+          %swatch.ctrl.add(%k+1, %k+1);
+        }
+        %swatch.ctrl.setSelected(%pref.value);
+
+      case "wordlist":
+
+      case "userlist":
+
+      case "button":
+
+      case "rgb":
+
+      case "colorset":
+
+      case "datablock":
+
+      case "datablocklist":
     }
+
+    if(%light) {
+      %swatch.color = vectoradd(%swatch.color, "50 50 50") SPC 50;
+    }
+    %light = !%light;
 
     if(!isObject(%swatch)) {
       warn("Failed to make pref of type \"" @ %pref.type @ "\"");
@@ -454,7 +485,7 @@ function GlassServerControlC::renderPrefCategory(%category) {
     %swatch.pref = %pref;
 
     if(%pref.type !$= "textarea") {
-      %currentY += 33;
+      %currentY += 32;
     } else {
       %currentY += 129;
     }
@@ -476,7 +507,7 @@ function GlassServerControlC::createHeader(%text) {
      enabled = "1";
      visible = "1";
      clipToParent = "1";
-     color = "100 100 100 255";
+     color = "170 170 170 255";
 
      new GuiMLTextCtrl() {
         profile = "GuiMLTextProfile";

@@ -113,7 +113,6 @@ function GlassModManagerGui_AddonButton::onMouseDown(%this) {
 function GlassModManagerGui_AddonButton::onAdd(%this) {
   %this.extent = %this.swatch.extent;
   %this.position = "0 0";
-  echo(%this.getGroup());
 }
 
 
