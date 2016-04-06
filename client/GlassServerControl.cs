@@ -1,6 +1,8 @@
 function GlassServerControlC::init() {
   new ScriptObject(GlassServerControlC) {
-
+    requestedPrefs = false;
+    receivedPrefs = false;
+    allowedPrefs = false;
   };
 }
 
@@ -10,9 +12,8 @@ $remapDivision[$remapCount] = "Blockland Glass";
    $remapCount++;
 
 function openGlassSettings(%down) {
-  if(!GlassPrefGroup.requested) {
-    GlassPrefGroup.requested = true;
-    commandToServer('RequestPrefCategories');
+  if(!GlassServerControlC.receivedPrefs || !GlassServerControlC.requestedPrefs) {
+    GlassPrefBridge::requestPreferences();
   }
 
   if(!%down) {

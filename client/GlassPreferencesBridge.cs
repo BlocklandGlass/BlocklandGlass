@@ -2,18 +2,28 @@
 // Bridge Blockland Preferences
 //================================
 
-$BLPrefs::Version = "0.0.0-alpha+glassbridge.1";
+$BLPrefs::Version = "1.0.0+glassbridge.2";
 
 if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);
 }
 
-function GlassPrefGroup::sendPrefs(%this) {
+function GlassPrefGroup::cleanup() {
+	for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+		%cat = GlassPrefGroup.getObject(%i);
+		%cat.deleteAll();
+		%cat.delete();
+	}
+	GlassPrefGroup.delete();
+	new ScriptGroup(GlassPrefGroup);
+}
+
+function GlassPrefGroup::sendChangedPrefs(%this) {
 	for(%i = 0; %i < %this.getCount(); %i++) {
 		%cate = %this.getObject(%i);
 		for(%j = 0; %j < %cate.getCount(); %j++) {
 			%pref = %cate.getObject(%j);
-			if(%pref.actualvalue !$= %pref.value) {
+			if(%pref.localValue !$= %pref.value) {
 				%up = true;
 				commandToServer('UpdatePref', %pref.variable, %pref.value);
 				%pref.actualvalue = %pref.value;
@@ -27,6 +37,13 @@ function GlassPrefGroup::sendPrefs(%this) {
 		messageBoxOk("No Changes!", "There was nothing to update!");
 	}
 }
+
+function GlassPrefBridge::requestPreferences() {
+	GlassServerControlC.requestedPrefs = true;
+	commandToServer('RequestPrefCategories');
+}
+
+
 
 function GlassPrefGroup::requestPrefs(%this) {
 	if(!%this.currentCategory) {
@@ -60,8 +77,8 @@ function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way
 function clientCmdupdateBLPref(%varname, %value) {
 	echo("Updating " @ %varname @ " to " @ %value);
 	if(%pso = GlassPrefGroup::findByVariable(%varname)) {
-		%pso.realvalue = %value;
 		%pso.value = %value;
+		%pso.localValue = %value;
 
 		// TODO something about updating the gui
 		if(isobject(%pso.swatch.ctrl)) {
@@ -127,6 +144,7 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 
 package GlassPrefPackage {
 	function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
+		GlassPrefGroup::cleanup();
 		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Prefs" TAB $BLPrefs::Version NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
 	}
 };

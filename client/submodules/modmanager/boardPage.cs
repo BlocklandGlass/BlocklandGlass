@@ -91,6 +91,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
+    profile = "GlassModManagerMLProfile";
     text = "<color:333333><font:quicksand:16><just:left>" @ %back @ "<just:right>" @ %pageText;
     position = "0 0";
     extent = "485 45";
