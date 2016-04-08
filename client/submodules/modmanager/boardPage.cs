@@ -75,7 +75,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
 
     if(%page < 2) {
       %pageText = %pageText @ "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
-    } if(%page+1 > %pages) {
+    } else if(%page+1 > %pages) {
       %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]";
     } else {
       %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
@@ -130,13 +130,13 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     vertSizing = "bottom";
     color = "200 200 200 255";
     position = "10 10";
-    extent = "485 30";
+    extent = "485 40";
   };
 
   %swatch.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<color:333333><font:quicksand-bold:16>" @ %title @ "<font:quicksand:14> by " @ %author;
+    text = "<color:333333><font:quicksand-bold:16>" @ %title @ "<br><font:quicksand:12>by " @ %author;
     position = "10 7";
     extent = "225 45";
   };
@@ -161,13 +161,13 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
   %fullStars = mfloor(%stars);
   %fracStar = mfloor((%stars - %fullStars + 0.125)*4);
   %emptyStars = 4-%fullStars;
-  %x = 250;
+  %x = 300;
   for(%i = 0; %i < %fullStars; %i++) {
     %swatch.star[%i] = new GuiBitmapCtrl() {
-      horizSizing = "center";
-      vertSizing = "center";
+      horizSizing = "left";
+      vertSizing = "bottom";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
-      position = %x SPC "7";
+      position = %x SPC "12";
       extent = "16 16";
       minextent = "0 0";
       clipToParent = true;
@@ -182,10 +182,10 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
       %fracStar = 3;
 
     %swatch.fracstar = new GuiBitmapCtrl() {
-      horizSizing = "center";
-      vertSizing = "center";
+      horizSizing = "left";
+      vertSizing = "bottom";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_frac_" @ %fracStar @ ".png";
-      position = %x SPC "7";
+      position = %x SPC "12";
       extent = "16 16";
       minextent = "0 0";
       clipToParent = true;
@@ -198,10 +198,10 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
 
   for(%i = 0; %i < %emptyStars; %i++) {
     %swatch.emptystar[%i] = new GuiBitmapCtrl() {
-      horizSizing = "center";
-      vertSizing = "center";
+      horizSizing = "left";
+      vertSizing = "bottom";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_empty.png";
-      position = %x SPC "7";
+      position = %x SPC "12";
       extent = "16 16";
       minextent = "0 0";
       clipToParent = true;
