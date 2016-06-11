@@ -29,10 +29,9 @@ function GlassAuth::check(%this) {
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
-//note to self: change the object names, this is rough backwards-compatible code
-
-function BLG_Verify::accept(%this) {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=confirm";
+function GlassAuth::verifyAccept() {
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?ident=" @ urlenc(GlassAuth.ident) @ "&action=verify&email=" @ urlenc(GlassVerifyAccount_Input.getValue());
+	echo(%url);
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -41,14 +40,30 @@ function BLG_Verify::accept(%this) {
 	canvas.popDialog(GlassVerifyAccountGui);
 }
 
-function BLG_Verify::decline(%this) {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ GlassAuth.sid @ "&request=verify&action=reject";
+function GlassAuth::verifyDecline() {
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=reject";
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
 
 	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 	canvas.popDialog(GlassVerifyAccountGui);
+}
+
+function GlassAuth::updateInput() {
+	%val = GlassVerifyAccount_Input.getValue();
+	for(%i = 0; %i < GlassAuth.emails; %i++) {
+		if(%val $= GlassAuth.emails[%i]) {
+			GlassVerifyAccount_Accept.enabled = true;
+			GlassVerifyAccount_Accept.mcolor = "150 255 150 255";
+			GlassVerifyAccount_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/accept_button.png");
+			return;
+		}
+	}
+
+	GlassVerifyAccount_Accept.enabled = false;
+	GlassVerifyAccount_Accept.mcolor = "150 255 150 128";
+	GlassVerifyAccount_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/cancel.png");
 }
 
 function GlassAuthTCP::onDone(%this) {
@@ -67,10 +82,11 @@ function GlassAuthTCP::onDone(%this) {
 			if(%object.get("status") $= "success") {
 				if(%object.get("action") $= "verify") {
 					echo("Opening auth dialog");
-					%name = %object.get("actiondata").get("name");
-					%blid = %object.get("actiondata").get("blid");
-					BLG_Verify_Username.setText(%name);
-					BLG_Verify_BLID.setText(%blid);
+					%emails = %object.get("verify_data");
+					for(%i = 0; %i < %emails.length; %i++) {
+						GlassAuth.emails[%i] = %emails.item[%i];
+					}
+					GlassAuth.emails = %emails.length;
 					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
 					echo("BLG auth success");

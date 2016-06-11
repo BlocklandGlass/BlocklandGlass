@@ -46,6 +46,7 @@ function GlassNotificationManager::init() {
   new ScriptGroup(GlassNotificationManager) {
     offset = 0;
   };
+  GlassNotificationManager::connectToNotificationServer();
 }
 
 function GlassNotificationManager::refocus(%this) {
@@ -122,7 +123,7 @@ function GlassNotificationManager::condense(%this) {
     %note.swatch.animate();
   }
 
-  GlassNotificationManager.offset = %offset;
+  GlassNotificationManager.offset = %offset-10;
 }
 
 function GlassNotification::onAdd(%this) {
