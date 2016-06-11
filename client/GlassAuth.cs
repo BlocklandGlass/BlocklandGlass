@@ -87,9 +87,14 @@ function GlassAuthTCP::onDone(%this) {
 						GlassAuth.emails[%i] = %emails.item[%i];
 					}
 					GlassAuth.emails = %emails.length;
+
+					GlassVerifyAccount_Accept.enabled = false;
+					GlassVerifyAccount_Accept.mcolor = "150 255 150 128";
+					GlassVerifyAccount_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/cancel.png");
+					GlassVerifyAccount_Input.setText("");
 					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
-					echo("BLG auth success");
+					echo("Glass auth success");
 				}
 
 				//echo(%object.get("hasGlassAccount"));
