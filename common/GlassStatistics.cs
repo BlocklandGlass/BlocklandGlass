@@ -9,7 +9,13 @@ function GlassStatistics::reportMods() {
   }
 
   %str = getsubstr(%str, 1, strlen(%str)-1);
-  echo(%str);
+
+  %url = "http://" @ Glass.address @ "/api/2/stats.php?ident=" @ urlenc(GlassAuth.ident) @ "&sha=" @ sha1(getComputerName()) @ "&data=" @ urlEnc(%str);
+	%method = "POST";
+	%downloadPath = "";
+	%className = "GlassStatTCP";
+
+	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
 function GlassStatistics::scanFiles() {

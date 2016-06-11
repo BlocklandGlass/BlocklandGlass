@@ -1,5 +1,7 @@
-function GlassModManagerGui::fetchBoard(%id) {
-  GlassModManager::placeCall("board", "id" TAB %id);
+function GlassModManagerGui::fetchBoard(%id, %page) {
+  if(%page < 1) %page = 1;
+
+  GlassModManager::placeCall("board", "id" TAB %id NL "page" TAB %page);
   return;
   %id = 1;
   %name = "Blockland Glass";
@@ -34,7 +36,7 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
     %rating = getField(%line, 3);
     %downloads = getField(%line, 4);
 
-    %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads);
+    %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd);
     %listing.placeBelow(%container.getObject(%container.getCount()-1), 0);
     %container.add(%listing);
   }
@@ -124,11 +126,11 @@ function GlassModManagerGui::createBoardHeader(%title) {
   return %swatch;
 }
 
-function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %downloads) {
+function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %downloads, %odd) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "200 200 200 255";
+    color = %odd ? "200 200 200 255" : "190 190 190 255";
     position = "10 10";
     extent = "485 40";
   };
@@ -149,6 +151,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     }
   }
   %dlStr = getsubstr(%dlStr, 0, strlen(%dlstr)-1);
+  if(strpos(%dlStr, ",") == 0) %dlStr = getsubstr(%dlStr, 1, strlen(%dlstr));
 
   %swatch.downloads = new GuiMLTextCtrl() {
     horizSizing = "left";

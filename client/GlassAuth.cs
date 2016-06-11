@@ -32,7 +32,7 @@ function GlassAuth::check(%this) {
 //note to self: change the object names, this is rough backwards-compatible code
 
 function BLG_Verify::accept(%this) {
-	%url = "http://" @ Glass.address @ "/api/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=confirm";
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=confirm";
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -42,7 +42,7 @@ function BLG_Verify::accept(%this) {
 }
 
 function BLG_Verify::decline(%this) {
-	%url = "http://" @ Glass.address @ "/api/auth.php?sid=" @ GlassAuth.sid @ "&request=verify&action=reject";
+	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ GlassAuth.sid @ "&request=verify&action=reject";
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";

@@ -215,7 +215,8 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
   if(GlassAuth.ident !$= "") {
     if(%params !$= "")
       for(%i = 0; %i < getLineCount(%params); %i++) {
-        %paramText = %paramText @ "&" @ urlenc(getField(%params, 0)) @ "=" @ urlenc(getField(%params, 1));
+        %line = getLine(%params, %i);
+        %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
       }
 
     %url = "http://" @ Glass.address @ "/api/2/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
@@ -899,6 +900,12 @@ package GlassModManager {
       %link = getsubstr(%url, 8, strlen(%url)-8);
       if(%link $= "boards") {
         GlassModManagerGui::loadContext("addons");
+      }
+
+      if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
+        %b = getsubstr(%link, 6, strpos(%link, "&")-6);
+        %p = getsubstr(%link, 12+strlen(%b), strlen(%link)-12-strlen(%b));
+        GlassModManagerGui::fetchBoard(%b, %p);
       }
     } else {
       return parent::onURL(%this, %url);

@@ -1,14 +1,16 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "2.0.0-alpha.0.0.0+indev";
-			//address = "test.blocklandglass.com";
-			//netAddress = "test.blocklandglass.com";
-			address = "localhost";
-			netaddress = "localhost";
+			version = "2.0.0-alpha.0.0.0+prealpha";
+			address = "test.blocklandglass.com";
+			netAddress = "test.blocklandglass.com";
 			enableCLI = true;
-			dev = true;
 		};
+
+		if(getNumKeyId() == 9789) {
+			Glass.address = Glass.netaddress = "localhost";
+			Glass.dev = true;
+		}
 	}
 
 	$Glass::Debug = true;

@@ -43,6 +43,8 @@ function Glass::execClient() {
 	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
+	exec("./common/GlassStatistics.cs");
+
 	exec("./client/GlassDownloadInterface.cs");
 
 	exec("./client/GlassClientManager.cs");
@@ -63,8 +65,10 @@ function Glass::execClient() {
 	GlassUpdaterSupport::verifyInstall();
 	GlassServerControlC::init();
 	GlassClientManager::init();
+	GlassNotificationManager::init();
 
 	GlassModManager::init();
+	GlassStatistics::reportMods();
 
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
 
@@ -100,6 +104,7 @@ package GlassPrefs {
 		Glass::doWelcomeMessage();
 		Glass::openFeedbackPrompt();
 		GlassResourceManager.prompt();
+		GlassNotificationManager::newNotification("Mod Manager", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)) @ "<color:000000> to open the mod manager!", "module", 1, "canvas.pushDialog(GlassModManagerGui);");
 		parent::blinkSuccess(%this);
 	}
 };
