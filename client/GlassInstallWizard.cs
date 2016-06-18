@@ -70,7 +70,7 @@ function GlassInstallWizard::populateStep(%step) {
 }
 
 function GlassInstallWizard::installUpdater() {
-  %url = ""; //TODO get permalink
+  %url = "http://mods.greek2me.us/storage/Support_Updater.zip";
   %method = "GET";
   %downloadPath = "Add-Ons/Support_Updater.zip";
   %className = "GlassInstallWizardTCP";
@@ -80,7 +80,7 @@ function GlassInstallWizard::installUpdater() {
 }
 
 function GlassInstallWizard::installPreferences() {
-  %url = ""; //TODO get permalink
+  %url = "http://test.blocklandglass.com/addons/download.php?id=193&beta=0";
   %method = "GET";
   %downloadPath = "Add-Ons/Support_Preferences.zip";
   %className = "GlassInstallWizardTCP";
