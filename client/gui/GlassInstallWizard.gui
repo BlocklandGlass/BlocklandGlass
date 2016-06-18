@@ -1,0 +1,108 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(MainMenuGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "relative";
+      vertSizing = "relative";
+      position = "0 0";
+      extent = "640 480";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "230 230 230 255";
+
+      new GuiMLTextCtrl() {
+         profile = "GuiMLTextProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "20 20";
+         extent = "575 48";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         text = "<font:Impact:48>Blockland Glass Installer";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+      new GuiWindowCtrl(GlassInstallWizard_window) {
+         profile = "GlassWindowProfile";
+         horizSizing = "center";
+         vertSizing = "center";
+         position = "150 90";
+         extent = "340 300";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         text = "Step 1/3 (Fonts)";
+         maxLength = "255";
+         resizeWidth = "1";
+         resizeHeight = "1";
+         canMove = "1";
+         canClose = "0";
+         canMinimize = "0";
+         canMaximize = "0";
+         minSize = "50 50";
+
+         new GuiSwatchCtrl(GlassInstallWizard_step1) {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "10 35";
+            extent = "320 255";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            color = "0 0 0 0";
+
+            new GuiMLTextCtrl(GlassInstallWizard_step1_text) {
+               profile = "GuiMLTextProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "0 0";
+               extent = "315 28";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               lineSpacing = "2";
+               allowColorChars = "0";
+               maxChars = "-1";
+               text = "It\'s been detected that your fonts folder is <color:ff0000>read-only. <color:000000>";
+               maxBitmapHeight = "-1";
+               selectable = "1";
+               autoResize = "1";
+            };
+            new GuiProgressCtrl(GlassInstallWizard_step1_progress) {
+               profile = "GuiProgressProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "15 160";
+               extent = "290 24";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+            };
+         };
+      };
+   };
+};
+//--- OBJECT WRITE END ---

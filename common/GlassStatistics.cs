@@ -24,7 +24,7 @@ function GlassStatistics::scanFiles() {
   }
   new ScriptGroup(GlassAddons);
 	%pattern = "Add-ons/*/glass.json";
-	echo("\c1Looking for Glass Add-Ons");
+	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-19);
 		%fo = new FileObject();
@@ -64,13 +64,21 @@ function GlassStatistics::scanFiles() {
       %go.version = %versionData.get("version");
       %go.channel = %versionData.get("channel");
     } else {
-      echo("\c2Missing version.json!");
+      //warn("\c2Missing version.json!");
       %go.delete();
       continue;
     }
 
     GlassAddons.add(%go);
 
-		echo(" \c1+ Found \c4\"" @ %name @ "\" \c1(" @ %go.id @ ")");
+		//echo(" \c1+ Found \c4\"" @ %name @ "\" \c1(" @ %go.id @ ")");
 	}
 }
+
+package GlassStatistics {
+  function GlassAuth::heartbeat(%this) {
+    parent::heartbeat(%this);
+  	GlassStatistics::reportMods();
+  }
+};
+activatePackage(GlassStatistics);

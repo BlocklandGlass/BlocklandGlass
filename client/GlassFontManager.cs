@@ -15,11 +15,11 @@ function GlassFontManager::init() {
   //GlassFontManager.loadData();
 }
 
-function GlassFontManager::downloadAll(%this) {
+function GlassFontManager::downloadAll(%this, %act) {
   %fonts = %this.fontsAvailable;
   for(%i = 0; %i < %fonts.length; %i++) {
     %font = %fonts.item[%i];
-    %this.downloadFont(%font);
+    %this.downloadFont(%font, %act);
   }
 }
 
@@ -98,7 +98,8 @@ function GlassFontManager::downloadGui(%code) {
 }
 
 function GlassFontDownload::setProgressBar(%this, %float) {
-  GlassFontManager.dlHandler[%this.font].setProgress(%float);
+  if(isObject(GlassFontManager.dlHandler[%this.font]))
+    GlassFontManager.dlHandler[%this.font].setProgress(%float);
 }
 
 function GlassFontDownload::onDone(%this, %error) {

@@ -36,6 +36,14 @@ function Glass::execClient() {
 	exec("./client/gui/GlassModManagerImage.gui");
 	exec("./client/gui/GlassServerControlGui.gui");
 
+	echo("");
+	exec("./client/GlassInstallWizard.cs");
+	if(!GlassInstallWizard::hasRun()) {
+		echo(" ===              Launching Install Wizard              ===");
+		GlassInstallWizard::run();
+		return;
+	}
+
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./client/GlassFontManager.cs");
 	exec("./common/GlassFileData.cs");
@@ -68,7 +76,6 @@ function Glass::execClient() {
 	GlassNotificationManager::init();
 
 	GlassModManager::init();
-	GlassStatistics::reportMods();
 
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
 
