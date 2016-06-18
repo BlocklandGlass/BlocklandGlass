@@ -20,10 +20,14 @@ function GlassInstallWizard::run() {
     %mm.delete();
   }
 
+  GlassInstallWizard_step1.setVisible(0);
+  GlassInstallWizard_step2.setVisible(0);
+  GlassInstallWizard_step3.setVisible(0);
+
   exec("Add-Ons/System_BlocklandGlass/client/GlassFontManager.cs");
   GlassFontManager::init();
 
-  GlassInstallWizard::populateStep(1);
+  schedule(0, 0, eval, "GlassInstallWizard::populateStep(1);");
 }
 
 function GlassInstallWizard_window::onWake(%this) {
@@ -43,26 +47,46 @@ function GlassInstallWizard::populateStep(%step) {
 
   switch(%step) {
     case 1:
-      GlassInstallWizard_step1_continue.setVisible(0);
-      GlassInstallWizard_step1_progress.setValue(1);
-      if(isReadOnly("base/client/ui/cache")) {
-        GlassInstallWizard_step1_text.setText("It\'s been detected that your fonts folder is <color:ff0000>read-only. <color:000000>Because of this, we can't automatically install the required fonts for you.<br><br>We have two options:<br>1: Make the folder writeable<br><br>2: Manually Install Fonts");
+      if(!GlassFontManager::hasFonts()) {
+        GlassInstallWizard_step1_continue.setVisible(0);
+        GlassInstallWizard_step1_progress.setValue(0);
+        if(isReadOnly("base/client/ui/cache")) {
+          GlassInstallWizard_step1_text.setText("It\'s been detected that your fonts folder is <color:ff0000>read-only. <color:000000>Because of this, we can't automatically install the required fonts for you.<br><br>We have two options:<br>1: <a:" @ Glass.netaddress @ "/help/readonly.php>Make the folder writeable</a><br><br>2: <a:" @ Glass.netaddress @ "/help/fonts.php>Manually Install Fonts</a><br><br>After you've done either of those, restart Blockland.");
+          GlassInstallWizard_step1_progress.setVisible(false);
+          GlassInstallWizard_step1_continue.command = "quit();";
+          GlassInstallWizard_step1_text.setText("Quit");
+        } else {
+          GlassInstallWizard_step1_text.setText("Blockland Glass requires some custom fonts to run correctly. They're automatically installing now...");
+          GlassInstallWizard_step1_progress.downloaded = GlassInstallWizard_step1_progress.fin = 0;
+          GlassInstallWizard_step1_progress.length = GlassFontManager.fontsAvailable.length;
+          GlassFontManager.downloadAll(1);
+        }
       } else {
-        GlassInstallWizard_step1_text.setText("Blockland Glass requires some custom fonts to run correctly. They're automatically installing now...");
-        GlassInstallWizard_step1_progress.downloaded = GlassInstallWizard_step1_progress.fin = 0;
-        GlassInstallWizard_step1_progress.length = GlassFontManager.fontsAvailable.length;
-        GlassFontManager.downloadAll(1);
+        GlassInstallWizard_step1_text.setText("We would be downloading the needed fonts for you, but it looks like you already have all the fonts that you'll need! Proceed to the next step.");
+        GlassInstallWizard_step1_progress.setVisible(0);
+        GlassInstallWizard_step1_continue.setVisible(1);
       }
 
     case 2:
+      GlassSettings.cachePut("FontsRunOnce", 1);
+      GlassInstallWizard_step2_progress.setValue(0);
       if(isFile("Add-Ons/Support_Updater.zip") || isFile("Add-Ons/Support_Updater/client.cs")) {
-        GlassInstallWizard_step2_text.setText("We'd ask you to install Support_Updater, but it looks like you already have it! You can go ahead to the next step");
+        GlassInstallWizard_step2_text.setText("We'd ask you to install Support_Updater, but it looks like you already have it! You can go ahead to the next step.");
+
+        GlassInstallWizard_step2_continue.setVisible(1);
+        GlassInstallWizard_step2_progress.setVisible(0);
       } else {
+        GlassInstallWizard_step2_continue.setVisible(0);
+        GlassInstallWizard_step2_progress.setVisible(1);
+
         GlassInstallWizard_step2_text.setText("Support_Updater is a great utility to keep your add-ons up to date, whether they're Glass add-ons or not. We'll go ahead and download that for you. When the download is finished, press continue.");
         GlassInstallWizard::installUpdater();
       }
 
     case 3:
+      GlassInstallWizard_step3_text.setText("Something about prefs");
+      GlassInstallWizard_step3_finish.setVisible(0);
+      GlassInstallWizard_step3_progress.setValue(0);
       //to avoid mismatched versions, we can just go ahead and force this one to reinstall
       //alternatively, do a SHA check?
       GlassInstallWizard::installPreferences();
@@ -80,7 +104,7 @@ function GlassInstallWizard::installUpdater() {
 }
 
 function GlassInstallWizard::installPreferences() {
-  %url = "http://test.blocklandglass.com/addons/download.php?id=193&beta=0";
+  %url = "http://cdn.blocklandglass.com/addons/Support_Preferences.zip";
   %method = "GET";
   %downloadPath = "Add-Ons/Support_Preferences.zip";
   %className = "GlassInstallWizardTCP";
@@ -99,7 +123,7 @@ function GlassInstallWizardTCP::setProgressBar(%this, %float) {
 
 function GlassInstallWizardTCP::onDone(%this, %error) {
   if(%error) {
-    error("Need to handle this better - TCP error " @ %error);
+    messageBoxOk("Download Error", "There was an error with your download. You'll need to restart the installer", "quit();");
     return;
   }
 
@@ -114,6 +138,7 @@ function GlassInstallWizardTCP::onDone(%this, %error) {
 
 function GlassInstallWizard::finished() {
   GlassSettings.cachePut("InstallerRun", "1");
+  messageBoxOk("Reset", "Blockland will now shutdown. You'll need to start it back up again.", "quit();");
 }
 
 package GlassInstallWizard {

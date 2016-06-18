@@ -102,6 +102,10 @@ function clientCmdGlassHandshake(%ver) {
 
 Glass::init("client");
 
+function strcap(%str) {
+	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
+}
+
 package GlassPrefs {
 	function onExit() {
 		parent::onExit();
@@ -111,7 +115,6 @@ package GlassPrefs {
 		Glass::doWelcomeMessage();
 		Glass::openFeedbackPrompt();
 		GlassResourceManager.prompt();
-		GlassNotificationManager::newNotification("Mod Manager", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)) @ "<color:000000> to open the mod manager!", "module", 1, "canvas.pushDialog(GlassModManagerGui);");
 		parent::blinkSuccess(%this);
 	}
 };

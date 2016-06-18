@@ -126,6 +126,11 @@ function GlassNotificationManager::condense(%this) {
   GlassNotificationManager.offset = %offset-10;
 }
 
+function GlassNotification::dismiss(%this) {
+  %this.swatch.action = "out";
+  %this.swatch.sch = %this.swatch.schedule(0, animate);
+}
+
 function GlassNotification::onAdd(%this) {
   GlassNotificationManager.index[%this.index] = %this;
   %swatch = new GuiSwatchCtrl(GlassNotificationSwatch) {
@@ -149,8 +154,8 @@ function GlassNotification::onAdd(%this) {
   };
 
   %swatch.text = new GuiMLTextCtrl() {
-    horizSizing = "center";
-    vertSizing = "center";
+    horizSizing = "right";
+    vertSizing = "bottom";
     text = "<font:quicksand-bold:15><just:left>" @ %this.title @ "<br><font:quicksand:13>" @ %this.text;
     position = "28 5";
     extent = "172 12";
@@ -294,6 +299,16 @@ package GlassNotificationManager {
     parent::setContent(%this,%content);
 
     GlassNotificationManager.refocus();
+
+    if(%content.getName() $= "LoadingGui") {
+      if(isObject(Glass.mmNotification)) {
+        Glass.mmNotification.dismiss();
+      }
+    } else if(%content.getName() $= "MainMenuGui") {
+      if(!isObject(Glass.mmNotification)) {
+        Glass.mmNotification = GlassNotificationManager::newNotification("Mod Manager", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)) @ "<color:000000> to open the mod manager!", "module", 1, "canvas.pushDialog(GlassModManagerGui);");
+      }
+    }
   }
 
   function Canvas::pushDialog(%this,%dialog) {

@@ -31,6 +31,7 @@ function GlassResourceManager::addResource(%name, %filename, %url, %restart) {
 }
 
 function GlassResourceManager::prompt(%this) {
+  return;
   for(%i = 0; %i < %this.resources.getCount(); %i++) {
     if(!%this.resources.getObject(%i).downloaded) {
       %download = true;

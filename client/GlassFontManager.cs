@@ -7,12 +7,31 @@ function GlassFontManager::init() {
     url = "http://test.blocklandglass.com/api/fonts/";
   };
 
-  GlassFontManager.fetchRepository();
+
+  %fonts = loadJSON("Add-Ons/System_BlocklandGlass/client/fonts.json");
+  GlassFontManager.fontsAvailable = %fonts;
+  //GlassFontManager.fetchRepository();
 
   //if(!isfile("config/client/BLG/font.dat")) {
   //  GlassFontManager.downloadAll();
   //}
   //GlassFontManager.loadData();
+}
+
+function GlassFontManager::hasFonts() {
+  if(GlassSettings.cacheFetch("FontsRunOnce") != 1) {
+    return false;
+  }
+
+  %fonts = GlassFontManager.fontsAvailable;
+  for(%i = 0; %i < %fonts.length; %i++) {
+    %font = %fonts.item[%i];
+    if(!isFile("base/client/ui/cache/" @ %font)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function GlassFontManager::downloadAll(%this, %act) {
@@ -46,15 +65,6 @@ function GlassFontManager::downloadMissing(%this) {
 
   if(%dl)
     echo("Downloading missing fonts (" @ %dl @ " of " @ %fonts.length @ ")");
-}
-
-function GlassFontManager::fetchRepository(%this) {
-  %url = %this.url;
-	%method = "GET";
-	%downloadPath = "";
-	%className = "GlassFontRepo";
-
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
 function GlassFontManager::downloadFont(%this, %font, %actual) {
@@ -110,30 +120,8 @@ function GlassFontDownload::onDone(%this, %error) {
     %fo.close();
     %fo.delete();
     GlassFontManager.font[%this.font] = true;
-  }
-}
-
-function GlassFontRepo::handleText(%this, %line) {
-  %this.buffer = %this.buffer NL %line;
-}
-
-function GlassFontRepo::onDone(%this, %error) {
-  //echo(%this.buffer);
-  if(!%error) {
-    %fonts = parseJSON(%this.buffer);
-    for(%i = 0; %i < %fonts.length; %i++) {
-      %font = %fonts.item[%i];
-    }
-    GlassFontManager.fontsAvailable = %fonts;
-
-    if(!isfile("config/client/BLG/fonts.dat")) {
-      echo("Downloading all fonts (" @ %fonts.length @ " total)");
-      GlassFontManager.downloadAll();
-    } else {
-      GlassFontManager.downloadMissing();
-    }
   } else {
-    error("Error downloading font: " @ %font);
+    messageBoxOk("Error", "Error downloading font \"" @ %this.font @ "\": " @ %error);
   }
 }
 
