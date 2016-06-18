@@ -1,21 +1,30 @@
 //----------------------------------------------------------------------
 // Title:   Support_TCPClient
 // Author:  Greek2me
-// Version: 11
-// Updated: December 4, 2015
+// Version: 13
+// Updated: April 26, 2016
 //----------------------------------------------------------------------
 // Include this code in your own scripts as an *individual file*
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 11.1 && !$Debug)
+if($TCPClient::version >= 13.1 && !$Debug)
 	return;
-$TCPClient::version = 11.1;
+$TCPClient::version = 13.1;
 
-$TCPClient::timeout = 20000;
-$TCPClient::redirectWait = 500;
-$TCPClient::retryConnectionWait = 2000;
-$TCPClient::retryConnectionCount = 1;
+if(!isObject($TCPClient::DefaultOptions))
+{
+	$TCPClient::DefaultOptions = new ScriptObject(TCPClientDefaults)
+	{
+		class = TCPClientOptions;
+		connectionTimeout = 20000;
+		connectionRetryWait = 2000;
+		connectionRetryCount = 1;
+		redirectWait = 500;
+		debug = false;
+		printErrors = true;
+	};
+}
 
 $TCPClient::Error::none = 0;
 $TCPClient::Error::connectionFailed = 1;
@@ -26,17 +35,15 @@ $TCPClient::Error::invalidDownloadLocation = 5;
 $TCPClient::Error::invalidUrlFormat = 6;
 $TCPClient::Error::connectionTimedOut = 7;
 
-$TCPClient::Debug = false;
-$TCPClient::PrintErrors = false;
-
 //Creates a connection to the server at the specified URL.
 //@param	string url	The URL to connect to. For example, http://mods.greek2me.us/example.php?param=test&whatever.
 //@param	string method	The HTTP method to use. (GET, POST, PUT, etc.) Defaults to GET if blank. Be sure to urlEnc() parameters.
 //@param	string savePath	The local filepath to save binary files to. Text files will only download in binary mode if this is set.
 //@param	string class	The name of a class which can be used to change/extend functionality.
+//@param	TCPClientOptions options	An object containing TCPClient options specific to this connection.
 //@see	TCPClient
 //@return	TCPObject	The TCP object that is performing the connection.
-function connectToURL(%url, %method, %savePath, %class)
+function connectToURL(%url, %method, %savePath, %class, %options)
 {
 	if(!strLen(%method))
 		%method = "GET";
@@ -50,11 +57,11 @@ function connectToURL(%url, %method, %savePath, %class)
 
 	if(%protocol $= "HTTPS")
 	{
-		warn("WARN: Blockland cannot handle HTTPS links. Trying HTTP port 80 instead.");
+		error("ERROR: Blockland cannot handle HTTPS links. Trying HTTP port 80 instead.");
 		%port = 80;
 	}
 
-	return TCPClient(%method, %server, %port, %path, %query, %savePath, %class);
+	return TCPClient(%method, %server, %port, %path, %query, %savePath, %class, %options);
 }
 
 //Creates a TCP connection to the specified server. If desired, a custom request can be specified immediately after function call using %tcp.request.
@@ -65,17 +72,21 @@ function connectToURL(%url, %method, %savePath, %class)
 //@param	string query	The parameters to be sent with the request. Be sure to use urlEnc() on the parameters. Must be formatted like this: myArg=value&testarg=stuff&whatever=1
 //@param	string savePath	The local filepath to save binary files to. Text files will only download in binary mode if this is set.
 //@param	string class	The name of a class which can be used to change/extend functionality.
+//@param	TCPClientOptions options	An object containing TCPClient options specific to this connection.
 //@return	TCPObject	The TCP object that is performing the connection.
-function TCPClient(%method, %server, %port, %path, %query, %savePath, %class)
+function TCPClient(%method, %server, %port, %path, %query, %savePath, %class, %options)
 {
 	if(!strLen(%path))
 		%path = "/";
 	if(!strLen(%port))
 		%port = 80;
+	if(!isObject(%options))
+		%options = $TCPClient::DefaultOptions;
 
 	%tcp = new TCPObject(TCPClient)
 	{
 		className = %class;
+		options = %options;
 
 		protocol = "HTTP/1.0";
 		method = %method;
@@ -101,7 +112,8 @@ function TCPClient(%method, %server, %port, %path, %query, %savePath, %class)
 
 	%tcp.schedule(0, "connect", %server @ ":" @ %port);
 	cancel(%tcp.timeoutSchedule);
-	%tcp.timeoutSchedule = %tcp.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
+	%tcp.timeoutSchedule = %tcp.schedule(%options.connectionTimeout,
+		"onDone", $TCPClient::Error::connectionTimedOut);
 
 	return %tcp;
 }
@@ -153,12 +165,12 @@ function TCPClient::onConnected(%this)
 	else
 		%request = %this.buildRequest();
 
-	if($TCPClient::Debug)
+	if(%this.options.debug)
 		echo(" > REQUEST:\n   >" SPC strReplace(%request, "\r\n", "\n   > "));
 	%this.send(%request);
 
 	cancel(%this.timeoutSchedule);
-	%this.timeoutSchedule = %this.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
+	%this.timeoutSchedule = %this.schedule(%this.options.connectionTimeout, "onDone", $TCPClient::Error::connectionTimedOut);
 }
 
 //Called when DNS has failed.
@@ -172,18 +184,18 @@ function TCPClient::onDNSFailed(%this)
 //@private
 function TCPClient::onConnectFailed(%this)
 {
-	if(%this.retryConnectionCount < $TCPClient::retryConnectionCount)
+	if(%this.retryConnectionCount < %this.options.connectionRetryCount)
 	{
 		%this.retryConnectionCount ++;
-		if($TCPClient::PrintErrors)
+		if(%this.options.printErrors)
 		{
 			warn("WARN (TCPClient): Connection to server" SPC %this.server SPC "failed." SPC
-				"Retrying in" SPC $TCPClient::retryConnectionWait @ "ms" SPC
-				"(retry" SPC %this.retryConnectionCount SPC "of" SPC $TCPClient::retryConnectionCount @ ")");
+				"Retrying in" SPC %this.options.connectionRetryWait @ "ms" SPC
+				"(retry" SPC %this.retryConnectionCount SPC "of" SPC %this.options.connectionRetryCount @ ")");
 		}
 		cancel(%this.retrySchedule);
 		%this.retrySchedule = %this.schedule(
-			$TCPClient::retryConnectionWait,
+			%this.options.connectionRetryWait,
 			"connect", %this.server @ ":" @ %this.port);
 	}
 	else
@@ -204,7 +216,7 @@ function TCPClient::onDisconnect(%this)
 //@return	int	The error message, related to $TCPClient::Error::[none|connectionFailed|dnsFailed|invalidResponse|connectionTimedOut|invalidRedirect|invalidDownloadLocation|invalidUrlFormat]
 function TCPClient::onDone(%this, %error)
 {
-	if(%error && $TCPClient::PrintErrors)
+	if(%error && %this.options.printErrors)
 	{
 		switch(%error)
 		{
@@ -243,10 +255,10 @@ function TCPClient::onDone(%this, %error)
 //@private
 function TCPClient::onLine(%this, %line)
 {
-	if($TCPClient::Debug)
+	if(%this.options.debug)
 		echo(" > " @ %line);
 	cancel(%this.timeoutSchedule);
-	%this.timeoutSchedule = %this.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
+	%this.timeoutSchedule = %this.schedule(%this.options.connectionTimeout, "onDone", $TCPClient::Error::connectionTimedOut);
 	if(%this.receiveText)
 	{
 		%this.handleText(%line);
@@ -301,16 +313,17 @@ function TCPClient::onLine(%this, %line)
 							}
 							else
 							{
-								%pos = strPos(%value, "://");
-								%url = getSubStr(%value, %pos + 3, strLen(%value));
-								%pos = strPos(%url, "/");
-								%this.server = getSubStr(%url, 0, %pos) @ ":80";
-								%this.path = getSubStr(%url, %pos, strLen(%url));
-								%this.query = "";
+								%url = urlGetComponents(%value);
+								%this.server = getField(%url, 1);
+								%this.port = getField(%url, 2);
+								%this.path = getField(%url, 3);
+								%this.query = getField(%url, 4);
 							}
 
 							%this.redirected = true;
-							%this.retrySchedule = %this.scheduleNoQuota($TCPClient::redirectWait, "connect", %this.server);
+							%this.retrySchedule = %this.scheduleNoQuota(
+								%this.options.redirectWait, "connect",
+								%this.server @ ":" @ %this.port);
 
 							return;
 						}
@@ -325,10 +338,9 @@ function TCPClient::onLine(%this, %line)
 			{
 				%this.receiveText = true;
 			}
-			else
+			else if(!%this.redirect)
 			{
-				if(!%this.redirect)
-					%this.setBinarySize(%this.headerField["Content-Length"]);
+				%this.setBinarySize(%this.headerField["Content-Length"]);
 			}
 		}
 	}
@@ -351,7 +363,7 @@ function TCPClient::onBinChunk(%this, %chunk)
 
 	%contentLength = %this.headerField["Content-Length"];
 	%contentLengthSet = (strLen(%contentLength) > 0);
-	if($TCPClient::Debug)
+	if(%this.options.debug)
 		echo(" > " @ %chunk @ "/" @ %contentLength SPC "bytes");
 
 	if(%contentLengthSet)
@@ -370,7 +382,7 @@ function TCPClient::onBinChunk(%this, %chunk)
 			%done = false;
 		}
 		cancel(%this.timeoutSchedule);
-		%this.timeoutSchedule = %this.schedule($TCPClient::timeout, "onDone", $TCPClient::Error::connectionTimedOut);
+		%this.timeoutSchedule = %this.schedule(%this.options.connectionTimeout, "onDone", $TCPClient::Error::connectionTimedOut);
 	}
 
 	if(%save)
@@ -482,9 +494,11 @@ function urlGetComponents(%url)
 		%path = getSubStr(%path, 0, %pos);
 	}
 
+	//removed by Jincux, June 18th
+
 	//append "/" to path if needed
-	if(getSubStr(%path, strLen(%path) - 1, 1) !$= "/" && strPos(%path, ".") == -1)
-		%path = %path @ "/";
+	//if(getSubStr(%path, strLen(%path) - 1, 1) !$= "/" && strPos(%path, ".") == -1)
+	//	%path = %path @ "/";
 
 	return %protocol TAB %server TAB %port TAB %path TAB %query;
 }
@@ -494,7 +508,7 @@ function urlGetComponents(%url)
 //----------------------------------------------------------------------
 
 //Creates a TCP connection and sends a POST request to the specified server.
-// Additional debugging is available by setting $TCPClient::Debug to true.
+// Additional debugging is available by setting %this.options.debug to true.
 //@param	string server	The URL and (optionally) port of the server to connect to.
 //@param	string path	The location of the file on the server.
 //@param	string query	The parameters to be sent with the POST request. Be sure to use urlEnc() on the parameters. Must be formatted like this: myArg=value&testarg=stuff&whatever=1
@@ -516,7 +530,7 @@ function TCPClientPOST(%server, %path, %query, %savePath, %class)
 }
 
 //Creates a TCP connection and sends a GET request to the specified server.
-// Additional debugging is available by setting $TCPClient::Debug to true.
+// Additional debugging is available by setting %this.options.debug to true.
 //@param	string server	The URL and (optionally) port of the server to connect to.
 //@param	string path	The location of the file on the server.
 //@param	string query	The parameters to be sent with the GET request. Be sure to use urlEnc() on the parameters. Must be formatted like this: myArg=value&testarg=stuff&whatever=1
