@@ -53,15 +53,70 @@ function GlassInstallWizard::populateStep(%step) {
         GlassInstallWizard_step1_progress.length = GlassFontManager.fontsAvailable.length;
         GlassFontManager.downloadAll(1);
       }
+
+    case 2:
+      if(isFile("Add-Ons/Support_Updater.zip") || isFile("Add-Ons/Support_Updater/client.cs")) {
+        GlassInstallWizard_step2_text.setText("We'd ask you to install Support_Updater, but it looks like you already have it! You can go ahead to the next step");
+      } else {
+        GlassInstallWizard_step2_text.setText("Support_Updater is a great utility to keep your add-ons up to date, whether they're Glass add-ons or not. We'll go ahead and download that for you. When the download is finished, press continue.");
+        GlassInstallWizard::installUpdater();
+      }
+
+    case 3:
+      //to avoid mismatched versions, we can just go ahead and force this one to reinstall
+      //alternatively, do a SHA check?
+      GlassInstallWizard::installPreferences();
   }
 }
 
-package GlassInstallWizard {
-  function canavs::pushDialog(%this, %dlg) {
-    warn("push dialog: " @ %dlg.getName());
-    parent::pushDialog(%this, %dlg);
+function GlassInstallWizard::installUpdater() {
+  %url = ""; //TODO get permalink
+  %method = "GET";
+  %downloadPath = "Add-Ons/Support_Updater.zip";
+  %className = "GlassInstallWizardTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp.context = "updater";
+}
+
+function GlassInstallWizard::installPreferences() {
+  %url = ""; //TODO get permalink
+  %method = "GET";
+  %downloadPath = "Add-Ons/Support_Preferences.zip";
+  %className = "GlassInstallWizardTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp.context = "prefs";
+}
+
+function GlassInstallWizardTCP::setProgressBar(%this, %float) {
+  if(%this.context $= "updater") {
+    GlassInstallWizard_step2_progress.setValue(%float);
+  } else if(%this.context $= "prefs") {
+    GlassInstallWizard_step3_progress.setValue(%float);
+  }
+}
+
+function GlassInstallWizardTCP::onDone(%this, %error) {
+  if(%error) {
+    error("Need to handle this better - TCP error " @ %error);
+    return;
   }
 
+  if(%this.context $= "updater") {
+    GlassInstallWizard_step2_progress.setValue(1);
+    GlassInstallWizard_step2_continue.setVisible(true);
+  } else if(%this.context $= "prefs") {
+    GlassInstallWizard_step3_progress.setValue(1);
+    GlassInstallWizard_step3_finish.setVisible(true);
+  }
+}
+
+function GlassInstallWizard::finished() {
+  GlassSettings.cachePut("InstallerRun", "1");
+}
+
+package GlassInstallWizard {
   function GlassFontDownload::setProgressBar(%this, %float) {
     parent::setProgressBar(%this, %float);
     GlassInstallWizard_step1_progress.downloaded -= %this.prev;
