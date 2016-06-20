@@ -77,7 +77,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
   borderColorHL = "128 128 128 255";
   borderColorNA = "64 64 64 255";
   fontType = "verdana bold";
-  fontSize = "18";
+  fontSize = "15";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";
   fontColors[2] = "0 0 0 255";

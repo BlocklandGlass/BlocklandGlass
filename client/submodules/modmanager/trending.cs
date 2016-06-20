@@ -1,4 +1,4 @@
-function GlassModManagerGui::renderHome(%trending, %recent) {
+function GlassModManagerGui::renderHome(%data) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -7,136 +7,81 @@ function GlassModManagerGui::renderHome(%trending, %recent) {
     extent = "505 498";
   };
 
-  %trendSwat = GlassModManagerGui::renderHome_trending(trim(%trending));
-  %recentSwat = GlassModManagerGui::renderHome_recent(trim(%recent));
-  %container.add(%trendSwat);
-  %container.add(%recentSwat);
-
-  %container.extent = getWord(%container.extent, 0) SPC getWord(%trendSwat.extent, 1);
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
   GlassModManagerGui_MainDisplay.extent = %container.extent;
   GlassModManagerGui_MainDisplay.setVisible(true);
 
+  for(%i = 0; %i < %data.length; %i++) {
+    %dlg = %data.item[%i];
+
+    %body = GlassModManagerGui::createNewUploadsDialog(%dlg.uploads, %dlg.updates);
+
+    %container.add(%body);
+
+    %body.setVisible(1);
+
+    %body.text.setVisible(1);
+    %body.text.forceReflow();
+
+    %body.verticalMatchChildren(0, 10);
+  }
 
   %container.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
 }
 
-function GlassModManagerGui::renderHome_trending(%trending) {
-  %container = new GuiSwatchCtrl() {
+function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
+  %body = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "0 0 0 0";
+    color = "255 255 255 255";
     position = "10 10";
-    extent = "235 0";
+    extent = "485 10";
   };
 
-  %container.text = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:center>Trending Add-Ons";
-    position = "0 0";
-    extent = "225 45";
-  };
-  %container.add(%container.text);
+  %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you!<br><br>";
 
-  %y = 25;
-  for(%i = 0; %i < getLineCount(%trending); %i++) {
-    %info = getLine(%trending, %i);
-    %position = getField(%info, 0);
-    %name = getField(%info, 1);
-    %author = getField(%info, 2);
-    %dls = getField(%info, 3);
-    %aid = getField(%info, 4);
+  for(%i = 0; %i < %uploads.length; %i++) {
+    %u = %uploads.item[%i];
+    %name = %u.name;
+    %id = %u.id;
+    %author = %u.author;
 
-    %swatch = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 255";
-      position = 0 SPC (0+%y);
-      extent = "235 45";
-    };
+    %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> by <font:verdana bold:13>" @ %author @ "<br>";
 
-    %swatch.text = new GuiMLTextCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      text = "<font:verdana:14>" @ %position @ ": <font:verdana bold:16>" @ %name @ "<just:right><font:verdana:16>" @ %dls @ "<br><just:left><font:verdana:14>by " @ %author;
-      position = "7 7";
-      extent = "225 45";
-    };
-
-    %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-      aid = %aid;
-      swatch = %swatch;
-    };
-
-    %swatch.add(%swatch.text);
-    %swatch.add(%swatch.mouse);
-    %container.add(%swatch);
-    %y += 46;
   }
 
-  %container.extent = "235" SPC %y+25;
+  if(%updates.length > 0) {
+    %text = %text @ "<br><font:verdana:13>On top of that, there's been a few recent updates<br><br>";
 
-  return %container;
-}
+    for(%i = 0; %i < %updates.length; %i++) {
+      %u = %uploads.item[%i];
+      %name = %u.name;
+      %id = %u.id;
+      %version = %u.version;
 
-function GlassModManagerGui::renderHome_recent(%recent) {
-  %contain = new GuiSwatchCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "0 0 0 0";
-    position = "255 10";
-    extent = "235 0";
-  };
+      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> to version <font:verdana bold:13>" @ %version @ "<br>";
 
-  %contain.text = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:center>New Add-Ons";
-    position = "0 0";
-    extent = "225 45";
-  };
-  %contain.add(%contain.text);
-
-  %y = 25;
-  for(%i = 0; %i < getLineCount(%recent); %i++) {
-    %info = getLine(%recent, %i);
-    %name = getField(%info, 0);
-    %author = getField(%info, 1);
-    %date = getField(%info, 2);
-    %aid = getField(%info, 3);
-
-    %swatch = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 255";
-      position = 0 SPC (0+%y);
-      extent = "235 45";
-    };
-
-    %swatch.text = new GuiMLTextCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      text = "<font:verdana bold:16>" @ %name @ "<just:right><font:verdana:14>" @ %date @ "<br><just:left><font:verdana:14>by " @ %author;
-      position = "7 7";
-      extent = "225 45";
-    };
-
-    %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-      aid = %aid;
-      swatch = %swatch;
-    };
-
-    %contain.add(%swatch);
-    %swatch.add(%swatch.text);
-    %swatch.add(%swatch.mouse);
-    %y += 46;
+    }
   }
 
-  %contain.extent = "235" SPC %y+25;
+  %text = %text @ "<br><br><font:verdana:10><just:right>6/20/2016 2:30pm";
 
-  return %contain;
+  %textml = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    profile = "GlassModManagerMLProfile";
+    text = %text;
+    position = "10 10";
+    extent = "465 0";
+    minextent = "0 0";
+    autoResize = true;
+  };
+
+  %body.add(%textml);
+  %body.text = %textml;
+
+  return %body;
 }

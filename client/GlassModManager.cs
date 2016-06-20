@@ -253,7 +253,8 @@ function GlassModManagerTCP::onDone(%this, %error) {
       GlassModManagerGui::setLoading(false);
       switch$(%this.glass_call) {
         case "home":
-          GlassModManager::processCall_Home(%this);
+          echo(%this.buffer);
+          GlassModManagerGui::renderHome(%ret.data);
 
         case "addon":
           echo(%this.buffer);
