@@ -38,14 +38,18 @@ function GlassStatistics::scanFiles() {
 		%fo.close();
 		%fo.delete();
 
-    %glassObj = parseJSON(%buffer);
+    if(!jettisonParse(%buffer)) {
+      %glassObj = $JSON::Value;
 
-    %go = new ScriptObject(GlassAddonData) {
-      id = %glassObj.get("id");
-      board = %glassObj.get("board");
-      filename = %glassObj.get("filename");
-      title = %glassObj.get("title");
-    };
+      %go = new ScriptObject(GlassAddonData) {
+        id = %glassObj.get("id");
+        board = %glassObj.get("board");
+        filename = %glassObj.get("filename");
+        title = %glassObj.get("title");
+      };
+    } else {
+      error("Parse error");
+    }
 
     if(isfile("Add-Ons/" @ %name @ "/version.json")) {
       %fo = new FileObject();
@@ -59,7 +63,8 @@ function GlassStatistics::scanFiles() {
   		%fo.close();
   		%fo.delete();
 
-      %versionData = parseJSON(%buffer);
+      jettisonParse(%buffer);
+      %versionData = $JSON::Value;
 
       %go.version = %versionData.get("version");
       %go.channel = %versionData.get("channel");

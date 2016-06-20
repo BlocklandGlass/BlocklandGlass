@@ -43,7 +43,7 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
       %fo.close();
       %fo.delete();
 
-      %glassDat = parseJSON(%buffer);
+      %glassDat = jettisonParse(%buffer);
 
       %title = %glassDat.get("title");
       %text = "<font:verdana bold:16>" @ %title @ " <font:verdana:14>" @ %name;

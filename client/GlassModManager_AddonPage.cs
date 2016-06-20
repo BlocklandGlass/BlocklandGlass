@@ -347,7 +347,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
       %obj.setBitmap("config/BLG/tmp/screenshots/" @ %this.screenshot @ "_thumb.png"); //redraw
     }
   } else if(!%error) {
-		%main = parseJSON(collapseEscape(%this.buffer));
+		%main = jettisonParse(collapseEscape(%this.buffer));
 		if(getJSONType(%main) $= "hash") {
       %ap = GlassModManager_AddonPage;
 
@@ -365,7 +365,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
       %ssArray = %main.get("screenshots");
       %ap.ss = %ssArray.length;
       for(%i = 0; %i < %ssArray.length; %i++) {
-        %screenObj = %ssArray.item[%i];
+        %screenObj = %ssArray.value[%i];
         %ap.screenshotUrl[%screenObj.id] = %screenObj.get("url");
         %ap.thumbnailUrl[%screenObj.id] = %screenObj.get("thumbnail");
         %ap.extent[%screenObj.id] = %screenObj.get("extent");
@@ -375,7 +375,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
       %depArray = %main.get("dependencies");
       %ap.depCount = %depArray.length;
       for(%i = 0; %i < %depArray.length; %i++) {
-        %depObj = %depArray.item[%i];
+        %depObj = %depArray.value[%i];
         %ap.depName[%i] = %depObj.get("name");
         %ap.depId[%i] = %depObj.get("id");
         %ap.depFilename[%i] = %depObj.get("filename");
@@ -384,7 +384,7 @@ function GlassModManager_AddonPageTCP::onDone(%this, %error) {
 
       %branches = %main.get("branches");
       for(%i = 0; %i < %branches.length; %i++) {
-        %branchObj = %branches.item[%i];
+        %branchObj = %branches.value[%i];
         %ap.branch[%branchObj.get("id")] = GlassFileData::create(%ap.name, %ap.aid, %branchObj.get("id"), %ap.filename);
       }
 
@@ -416,14 +416,14 @@ function GlassModManager_AddonPage_CommentsTCP::handleText(%this, %line) {
 
 function GlassModManager_AddonPage_CommentsTCP::onDone(%this, %error) {
   if(!%error) {
-		%main = parseJSON(collapseEscape(%this.buffer));
+		%main = jettisonParse(collapseEscape(%this.buffer));
 		if(getJSONType(%main) $= "array") {
       if(isObject(GlassModManager_AddonPage_CommentGroup)) {
         GlassModManager_AddonPage_CommentGroup.delete();
       }
       new ScriptGroup(GlassModManager_AddonPage_CommentGroup);
       for(%i = 0; %i < %main.length; %i++) {
-        %com = %main.item[%i];
+        %com = %main.value[%i];
         %obj = new ScriptObject() {
           authorName = %com.get("author");
           authorblid = %com.get("authorblid");

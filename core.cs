@@ -21,3 +21,7 @@ function Glass::init(%context) {
 		Glass::execServer();
 	}
 }
+
+function JettisonObject::get(%this, %key) {
+	return %this.value[%key];
+}

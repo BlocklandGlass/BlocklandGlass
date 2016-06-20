@@ -1,16 +1,16 @@
 //----------------------------------------------------------------------
 // Title:   Support_TCPClient
 // Author:  Greek2me
-// Version: 13
-// Updated: April 26, 2016
+// Version: 14
+// Updated: June 19, 2016
 //----------------------------------------------------------------------
 // Include this code in your own scripts as an *individual file*
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 13.1 && !$Debug)
+if($TCPClient::version >= 14 && !$Debug)
 	return;
-$TCPClient::version = 13.1;
+$TCPClient::version = 14;
 
 if(!isObject($TCPClient::DefaultOptions))
 {
@@ -101,13 +101,13 @@ function TCPClient(%method, %server, %port, %path, %query, %savePath, %class, %o
 
 	if(!strLen(%server))
 	{
-		%tcp.onDone($TCPClient::Error::invalidUrlFormat);
-		return 0;
+		%tcp.schedule(0, "onDone", $TCPClient::Error::invalidUrlFormat);
+		return %tcp;
 	}
 	else if(strLen(%savePath) && !isWriteableFileName(%savePath))
 	{
-		%tcp.onDone($TCPClient::Error::invalidDownloadLocation);
-		return 0;
+		%tcp.schedule(0, "onDone", $TCPClient::Error::invalidDownloadLocation);
+		return %tcp;
 	}
 
 	%tcp.schedule(0, "connect", %server @ ":" @ %port);
@@ -493,12 +493,10 @@ function urlGetComponents(%url)
 		%query = getSubStr(%path, %pos + 1, strLen(%path));
 		%path = getSubStr(%path, 0, %pos);
 	}
-
-	//removed by Jincux, June 18th
-
-	//append "/" to path if needed
-	//if(getSubStr(%path, strLen(%path) - 1, 1) !$= "/" && strPos(%path, ".") == -1)
-	//	%path = %path @ "/";
+	else
+	{
+		%query = "";
+	}
 
 	return %protocol TAB %server TAB %port TAB %path TAB %query;
 }

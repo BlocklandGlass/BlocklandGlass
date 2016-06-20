@@ -116,10 +116,10 @@ function GlassRTBSupportTCP::onDone(%this, %error) {
 		echo(%this.buffer);
 	}
 	if(!%error) {
-		%array = parseJSON(collapseEscape(%this.buffer));
+		%array = jettisonParse(collapseEscape(%this.buffer));
 		if(getJSONType(%array) $= "array" && %array.length) {
 			for(%i = 0; %i < %array.length; %i++) {
-				%obj = %array.item[%i];
+				%obj = %array.value[%i];
 				%addonObj = %obj.get("addonData");
 				%addonData = GlassFileData::create(%addonObj.get("name"),
 						%addonObj.get("id"),

@@ -25,7 +25,7 @@ function GlassFontManager::hasFonts() {
 
   %fonts = GlassFontManager.fontsAvailable;
   for(%i = 0; %i < %fonts.length; %i++) {
-    %font = %fonts.item[%i];
+    %font = %fonts.value[%i];
     if(!isFile("base/client/ui/cache/" @ %font)) {
       return false;
     }
@@ -37,7 +37,7 @@ function GlassFontManager::hasFonts() {
 function GlassFontManager::downloadAll(%this, %act) {
   %fonts = %this.fontsAvailable;
   for(%i = 0; %i < %fonts.length; %i++) {
-    %font = %fonts.item[%i];
+    %font = %fonts.value[%i];
     %this.downloadFont(%font, %act);
   }
 }
@@ -54,7 +54,7 @@ function GlassFontManager::downloadMissing(%this) {
 
   %fonts = %this.fontsAvailable;
   for(%i = 0; %i < %fonts.length; %i++) {
-    %font = %fonts.item[%i];
+    %font = %fonts.value[%i];
     if(!%this.font[%font] || !isfile("base/client/ui/cache/" @ %font)) {
       %dl++;
       %this.downloadFont(%font);

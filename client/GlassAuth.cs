@@ -71,8 +71,9 @@ function GlassAuthTCP::onDone(%this) {
 		echo(%this.buffer);
 
 	if(!%error) {
-		%object = parseJSON(collapseEscape(%this.buffer));
-		if(getJSONType(%object) $= "hash") {
+		jettisonParse(collapseEscape(%this.buffer));
+		%object = $JSON::Value;
+		if($JSON::Type $= "object") {
 			GlassAuth.ident = %object.get("ident");
 			//echo("Setting SID: " @ %object.get("sid"));
 			if(%object.get("status") $= "error") {
@@ -84,7 +85,7 @@ function GlassAuthTCP::onDone(%this) {
 					echo("Opening auth dialog");
 					%emails = %object.get("verify_data");
 					for(%i = 0; %i < %emails.length; %i++) {
-						GlassAuth.emails[%i] = %emails.item[%i];
+						GlassAuth.emails[%i] = %emails.value[%i];
 					}
 					GlassAuth.emails = %emails.length;
 

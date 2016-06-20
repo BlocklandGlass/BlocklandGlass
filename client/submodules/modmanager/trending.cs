@@ -14,7 +14,7 @@ function GlassModManagerGui::renderHome(%data) {
   GlassModManagerGui_MainDisplay.setVisible(true);
 
   for(%i = 0; %i < %data.length; %i++) {
-    %dlg = %data.item[%i];
+    %dlg = %data.value[%i];
 
     %body = GlassModManagerGui::createNewUploadsDialog(%dlg.uploads, %dlg.updates);
 
@@ -44,7 +44,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
   %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you!<br><br>";
 
   for(%i = 0; %i < %uploads.length; %i++) {
-    %u = %uploads.item[%i];
+    %u = %uploads.value[%i];
     %name = %u.name;
     %id = %u.id;
     %author = %u.author;
@@ -57,7 +57,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     %text = %text @ "<br><font:verdana:13>On top of that, there's been a few recent updates<br><br>";
 
     for(%i = 0; %i < %updates.length; %i++) {
-      %u = %uploads.item[%i];
+      %u = %uploads.value[%i];
       %name = %u.name;
       %id = %u.id;
       %version = %u.version;

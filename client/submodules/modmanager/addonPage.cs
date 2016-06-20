@@ -17,9 +17,9 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "0 0 0 0";
-    position = "0 0";
-    extent = "505 498";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "485 498";
   };
 
   %container.title = new GuiMLTextCtrl() {
@@ -157,7 +157,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description.setVisible(true);
   %container.description.forceReflow();
 
-  %container.setMarginResize(0, 0);
+  %container.setMarginResize(10, 10);
 
   %container.title.setMargin(20, 20);
   %container.title.setMarginResize(20);

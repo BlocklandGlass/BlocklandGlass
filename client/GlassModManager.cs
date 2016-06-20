@@ -242,7 +242,8 @@ function GlassModManagerTCP::handleText(%this, %line) {
 
 function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
-    %ret = parseJSON(collapseEscape(%this.buffer));
+    jettisonParse(collapseEscape(%this.buffer));
+    %ret = $JSON::Value;
 
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";
@@ -273,7 +274,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
           };
 
           for(%i = 0; %i < %ret.branches.length; %i++) {
-            %branch = %ret.branches.item[%i];
+            %branch = %ret.branches.value[%i];
             %obj.branches = trim(%obj.branches SPC %branch.id);
             %obj.branchVersion[%branch.id] = %branch.version;
             %obj.branchName[%branch.id] = %branch.name;
@@ -288,7 +289,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
         case "boards":
           %str = "";
           for(%i = 0; %i < %ret.boards.length; %i++) {
-            %branch = %ret.boards.item[%i];
+            %branch = %ret.boards.value[%i];
             %name = %branch.name;
             %id = %branch.id;
             %bg = %branch.video;
@@ -300,7 +301,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
         case "board":
           echo(%this.buffer);
           for(%i = 0; %i < %ret.addons.length; %i++) {
-            %addon = %ret.addons.item[%i];
+            %addon = %ret.addons.value[%i];
             %name = %addon.name;
             %id = %addon.id;
             %rating = %addon.rating;
@@ -329,13 +330,13 @@ function GlassModManager::loadHome() {
 }
 
 function GlassModManager::processCall_Home(%tcp) {
-  %ret = parseJSON(collapseEscape(%tcp.buffer));
+  %ret = jettisonParse(collapseEscape(%tcp.buffer));
 
   %latest = %ret.get("latest");
 
   %latestStr = "";
   for(%i = 0; %i < %latest.length; %i++) {
-    %obj = %latest.item[%i];
+    %obj = %latest.value[%i];
     //"Blockland Glass\tJincux\tMonday\t11\nAdmin Chat\tJincux\tSunday\t7"
     %latestStr = %latestStr @ "\n" @ %obj.get("name") TAB %obj.get("author") TAB %obj.get("uploadDate") TAB %obj.get("id");
   }
@@ -344,7 +345,7 @@ function GlassModManager::processCall_Home(%tcp) {
 
   %trendingstr = "";
   for(%i = 0; %i < %trending.length; %i++) {
-    %obj = %trending.item[%i];
+    %obj = %trending.value[%i];
     //"1\tBlockland Glass\tJincux and Nexus\t738\t11\n2\tSlayer\tGreek2Me\t426\t9\n"
     %trendingStr = %trendingStr @ "\n" @ (%i+1) TAB %obj.get("name") TAB %obj.get("author") TAB %obj.get("downloads") TAB %obj.get("id");
   }
@@ -517,7 +518,7 @@ function GlassModManager::populateMyAddons(%this) {
       }
       %fo.close();
       %fo.delete();
-      %so.glassdata = parseJSON(collapseEscape(%buffer));
+      %so.glassdata = jettisonParse(collapseEscape(%buffer));
     }
     GlassModManager_MyAddons.add(%so);
 	}
