@@ -46,7 +46,7 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
       %glassDat = parseJSON(%buffer);
 
       %title = %glassDat.get("title");
-      %text = "<font:quicksand-bold:16>" @ %title @ " <font:quicksand:14>" @ %name;
+      %text = "<font:verdana bold:16>" @ %title @ " <font:verdana:14>" @ %name;
 
       %boardId = %glassDat.get("board");
       if(GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]") !$= "") {

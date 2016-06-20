@@ -22,7 +22,7 @@ function GlassClientManager::openDownloadGui() {
 
 	for(%i = 0; %i < GlassClientManager.getCount(); %i++) {
 		%mod = GlassClientManager.getObject(%i);
-		%handler = %ctx.addDownload("<font:quicksand-bold:16>" @ %mod.name @ " <font:quicksand:14>ID: " @ %mod.id);
+		%handler = %ctx.addDownload("<font:verdana bold:16>" @ %mod.name @ " <font:verdana:14>ID: " @ %mod.id);
 	}
 
   %ctx.registerCallback("GlassClientManager::downloadCallback");

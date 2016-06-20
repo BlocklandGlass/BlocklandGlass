@@ -78,7 +78,7 @@ function GlassDownloadTCP::onDone(%this, %error) {
 		error("An error was encountered downloading file (" @ %error @ ") - need to handle this better");
 		if(!$Server::Dedicated) {
 			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-			%name.setValue("<font:quicksand-bold:16><just:center>Download<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
+			%name.setValue("<font:verdana bold:16><just:center>Download<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 		}
 
 		GlassModManagerGui::setProgress(1, "Error Downloading Add-On");
@@ -86,7 +86,7 @@ function GlassDownloadTCP::onDone(%this, %error) {
 	} else {
 		if(!$Server::Dedicated) {
 			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-			%name.setValue("<font:quicksand-bold:16><just:center>Downloaded<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
+			%name.setValue("<font:verdana bold:16><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 		}
 
 		GlassModManager::setAddonStatus(%this.filedata.id, "installed");
@@ -108,7 +108,7 @@ function GlassDownloadTCP::setProgressBar(%this, %float) {
 		}
 
 		%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-		%name.setValue("<font:quicksand-bold:16><just:center>Downloading..<br><font:quicksand:14>" @ strcap(%name.getGroup().mouse.branch));
+		%name.setValue("<font:verdana bold:16><just:center>Downloading..<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 
 		if(%float < 1)
 			GlassModManagerGui::setProgress(%float, "Downloading " @ %this.fileData.filename @ " (" @ GlassDownloadManagerQueue.getCount() @ " remaining)");

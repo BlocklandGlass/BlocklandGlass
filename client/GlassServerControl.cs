@@ -27,7 +27,7 @@ function openGlassSettings(%down) {
 
 function clientCmdGlassNoUpdates() {
   GlassServerControlGui_UpdatesMsg.position = "0 107";
-  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand-bold:16>No Server Updates Available");
+  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:verdana bold:16>No Server Updates Available");
 
   %group = GlassServerControlGui_UpdatesMsg.getGroup();
   for(%i = 0; %i < %group.getCount(); %i++) {
@@ -49,7 +49,7 @@ function clientCmdGlassAddUpdate(%name, %version, %clear) {
   }
 
   GlassServerControlGui_UpdatesMsg.position = "0 5";
-  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:quicksand:16>Server Updates Available");
+  GlassServerControlGui_UpdatesMsg.setText("<just:center><font:verdana:16>Server Updates Available");
 
   %h = GlassServerControlGui_UpdateScroll.height;
   GlassServerControlGui_UpdateScroll.height += 35;
@@ -79,7 +79,7 @@ function clientCmdGlassAddUpdate(%name, %version, %clear) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = "<font:quicksand-bold:18>" @ trim(%name) @ " <font:quicksand:18>v" @ trim(%version);
+        text = "<font:verdana bold:18>" @ trim(%name) @ " <font:verdana:18>v" @ trim(%version);
         maxBitmapHeight = "-1";
         selectable = "1";
         autoResize = "1";

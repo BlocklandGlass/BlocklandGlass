@@ -1018,7 +1018,7 @@ new GuiControl(GlassServerControlGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<just:center><font:quicksand-bold:16>You aren\'t allowed to use preferences!";
+            text = "<just:center><font:verdana bold:16>You aren\'t allowed to use preferences!";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -1227,7 +1227,7 @@ new GuiControl(GlassServerControlGui) {
                lineSpacing = "2";
                allowColorChars = "0";
                maxChars = "-1";
-               text = "<just:center><font:quicksand:16>Server Updates Available";
+               text = "<just:center><font:verdana:16>Server Updates Available";
                maxBitmapHeight = "-1";
                selectable = "1";
                autoResize = "1";
@@ -1288,7 +1288,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v27";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v27";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1319,7 +1319,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v28";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v28";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1350,7 +1350,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v29";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v29";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1381,7 +1381,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v30";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v30";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1412,7 +1412,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v31";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v31";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1443,7 +1443,7 @@ new GuiControl(GlassServerControlGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:18>dick <font:quicksand:18>v32";
+                        text = "<font:verdana bold:18>dick <font:verdana:18>v32";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1509,7 +1509,7 @@ new GuiControl(GlassServerControlGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:quicksand:12>* add-on must be installed on your client and must be a valid Blockland Glass add-on";
+            text = "<font:verdana:12>* add-on must be installed on your client and must be a valid Blockland Glass add-on";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";

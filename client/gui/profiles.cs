@@ -29,7 +29,7 @@ if(!isObject(GlassWindowProfile)) new GuiControlProfile(GlassWindowProfile) {
   borderColor = "0 0 0 255";
   borderColorHL = "128 128 128 255";
   borderColorNA = "64 64 64 255";
-  fontType = "Quicksand-Bold";
+  fontType = "verdana bold";
   fontSize = "18";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";
@@ -76,7 +76,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
   borderColor = "0 0 0 255";
   borderColorHL = "128 128 128 255";
   borderColorNA = "64 64 64 255";
-  fontType = "Quicksand-Bold";
+  fontType = "verdana bold";
   fontSize = "18";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";
@@ -108,7 +108,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
 };
 
 if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLProfile : GuiDefaultProfile) {
-  fontType = "Quicksand-Bold";
+  fontType = "verdana bold";
   fontSize = "18";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";

@@ -36,7 +36,7 @@ function GlassModManagerGui::renderHome_trending(%trending) {
   %container.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:quicksand-bold:20><just:center>Trending Add-Ons";
+    text = "<font:verdana bold:20><just:center>Trending Add-Ons";
     position = "0 0";
     extent = "225 45";
   };
@@ -62,7 +62,7 @@ function GlassModManagerGui::renderHome_trending(%trending) {
     %swatch.text = new GuiMLTextCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      text = "<font:quicksand:14>" @ %position @ ": <font:quicksand-bold:16>" @ %name @ "<just:right><font:quicksand:16>" @ %dls @ "<br><just:left><font:quicksand:14>by " @ %author;
+      text = "<font:verdana:14>" @ %position @ ": <font:verdana bold:16>" @ %name @ "<just:right><font:verdana:16>" @ %dls @ "<br><just:left><font:verdana:14>by " @ %author;
       position = "7 7";
       extent = "225 45";
     };
@@ -95,7 +95,7 @@ function GlassModManagerGui::renderHome_recent(%recent) {
   %contain.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:quicksand-bold:20><just:center>New Add-Ons";
+    text = "<font:verdana bold:20><just:center>New Add-Ons";
     position = "0 0";
     extent = "225 45";
   };
@@ -120,7 +120,7 @@ function GlassModManagerGui::renderHome_recent(%recent) {
     %swatch.text = new GuiMLTextCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      text = "<font:quicksand-bold:16>" @ %name @ "<just:right><font:quicksand:14>" @ %date @ "<br><just:left><font:quicksand:14>by " @ %author;
+      text = "<font:verdana bold:16>" @ %name @ "<just:right><font:verdana:14>" @ %date @ "<br><just:left><font:verdana:14>by " @ %author;
       position = "7 7";
       extent = "225 45";
     };

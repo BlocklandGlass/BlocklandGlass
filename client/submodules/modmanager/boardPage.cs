@@ -94,7 +94,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
-    text = "<color:333333><font:quicksand:16><just:left>" @ %back @ "<just:right>" @ %pageText;
+    text = "<color:333333><font:verdana:16><just:left>" @ %back @ "<just:right>" @ %pageText;
     position = "0 0";
     extent = "485 45";
   };
@@ -115,7 +115,7 @@ function GlassModManagerGui::createBoardHeader(%title) {
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<color:ffffff><font:quicksand-bold:20><just:center>" @ %title;
+    text = "<color:ffffff><font:verdana bold:20><just:center>" @ %title;
     position = "0 0";
     extent = "225 45";
   };
@@ -138,7 +138,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
   %swatch.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<color:333333><font:quicksand-bold:16>" @ %title @ "<br><font:quicksand:12>by " @ %author;
+    text = "<color:333333><font:verdana bold:16>" @ %title @ "<br><font:verdana:12>by " @ %author;
     position = "10 7";
     extent = "225 45";
   };
@@ -156,7 +156,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
   %swatch.downloads = new GuiMLTextCtrl() {
     horizSizing = "left";
     vertSizing = "bottom";
-    text = "<color:333333><font:quicksand:16><just:right>" @ %dlstr;
+    text = "<color:333333><font:verdana:16><just:right>" @ %dlstr;
     position = "375 7";
     extent = "100 45";
   };

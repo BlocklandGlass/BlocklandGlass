@@ -25,7 +25,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.title = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand-bold:24><just:left>" @ %obj.name;
+    text = "<font:verdana bold:24><just:left>" @ %obj.name;
     position = "102 30";
     extent = "300 24";
     minextent = "0 0";
@@ -35,7 +35,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.author = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand:16><just:left>by " @ %obj.author;
+    text = "<font:verdana:16><just:left>by " @ %obj.author;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -45,7 +45,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Approved";
+    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Approved";
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -55,7 +55,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "center";
     vertSizing = "center";
-    text = "<font:quicksand:16><just:left>" @ %obj.description;
+    text = "<font:verdana:16><just:left>" @ %obj.description;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -114,7 +114,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].info = new GuiMLTextCtrl(%name) {
       horizSizing = "center";
       vertSizing = "center";
-      text = "<font:quicksand-bold:16><just:center>" @ %text @ "<br><font:quicksand:14>" @ strcap(%branch);
+      text = "<font:verdana bold:16><just:center>" @ %text @ "<br><font:verdana:14>" @ strcap(%branch);
       position = "0 0";
       extent = "300 16";
       minextent = "0 0";

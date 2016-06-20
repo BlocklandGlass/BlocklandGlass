@@ -272,7 +272,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:20><just:center>Trending Add-Ons";
+                        text = "<font:verdana bold:20><just:center>Trending Add-Ons";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -305,7 +305,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>1: <font:quicksand-bold:16>Blockland Glass<just:right><font:quicksand:16>63<br><just:left><font:quicksand:14>by Jincux";
+                           text = "<font:verdana:14>1: <font:verdana bold:16>Blockland Glass<just:right><font:verdana:16>63<br><just:left><font:verdana:14>by Jincux";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -353,7 +353,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>2: <font:quicksand-bold:16>Pictionary<just:right><font:quicksand:16>11<br><just:left><font:quicksand:14>by TheBlackParrot";
+                           text = "<font:verdana:14>2: <font:verdana bold:16>Pictionary<just:right><font:verdana:16>11<br><just:left><font:verdana:14>by TheBlackParrot";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -400,7 +400,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>3: <font:quicksand-bold:16>Admin Chat<just:right><font:quicksand:16>7<br><just:left><font:quicksand:14>by Jincux";
+                           text = "<font:verdana:14>3: <font:verdana bold:16>Admin Chat<just:right><font:verdana:16>7<br><just:left><font:verdana:14>by Jincux";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -447,7 +447,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>4: <font:quicksand-bold:16>Extra Default Pack 1<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by Lukas75";
+                           text = "<font:verdana:14>4: <font:verdana bold:16>Extra Default Pack 1<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by Lukas75";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -494,7 +494,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>5: <font:quicksand-bold:16>Roblox Smiley<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by Lukas75";
+                           text = "<font:verdana:14>5: <font:verdana bold:16>Roblox Smiley<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by Lukas75";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -541,7 +541,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>6: <font:quicksand-bold:16>Laptop<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by MrQueeba";
+                           text = "<font:verdana:14>6: <font:verdana bold:16>Laptop<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by MrQueeba";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -589,7 +589,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>7: <font:quicksand-bold:16>setTransform Event<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by Dglider";
+                           text = "<font:verdana:14>7: <font:verdana bold:16>setTransform Event<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by Dglider";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -637,7 +637,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>8: <font:quicksand-bold:16>Defibrillator<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by jes00";
+                           text = "<font:verdana:14>8: <font:verdana bold:16>Defibrillator<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by jes00";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -684,7 +684,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>9: <font:quicksand-bold:16>1x1 Warning prints<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by Halmet";
+                           text = "<font:verdana:14>9: <font:verdana bold:16>1x1 Warning prints<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by Halmet";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -731,7 +731,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand:14>10: <font:quicksand-bold:16>Colorset Perfection<just:right><font:quicksand:16>0<br><just:left><font:quicksand:14>by Sentry";
+                           text = "<font:verdana:14>10: <font:verdana bold:16>Colorset Perfection<just:right><font:verdana:16>0<br><just:left><font:verdana:14>by Sentry";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -778,7 +778,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:quicksand-bold:20><just:center>New Add-Ons";
+                        text = "<font:verdana bold:20><just:center>New Add-Ons";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -810,7 +810,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Roblox Smiley<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Lukas75";
+                           text = "<font:verdana bold:16>Roblox Smiley<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Lukas75";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -858,7 +858,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Extra Default Pack 1<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Lukas75";
+                           text = "<font:verdana bold:16>Extra Default Pack 1<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Lukas75";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -905,7 +905,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Pictionary<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by TheBlackParrot";
+                           text = "<font:verdana bold:16>Pictionary<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by TheBlackParrot";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -952,7 +952,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Peggy Footsteps<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Peggworth";
+                           text = "<font:verdana bold:16>Peggy Footsteps<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Peggworth";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -999,7 +999,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>RGB Colorset<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by rggbnnnnn";
+                           text = "<font:verdana bold:16>RGB Colorset<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by rggbnnnnn";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -1047,7 +1047,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Colorset Perfection<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Sentry";
+                           text = "<font:verdana bold:16>Colorset Perfection<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Sentry";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -1094,7 +1094,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>1x1 Warning prints<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Halmet";
+                           text = "<font:verdana bold:16>1x1 Warning prints<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Halmet";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -1142,7 +1142,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Defibrillator<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by jes00";
+                           text = "<font:verdana bold:16>Defibrillator<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by jes00";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -1189,7 +1189,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>setTransform Event<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by Dglider";
+                           text = "<font:verdana bold:16>setTransform Event<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by Dglider";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";
@@ -1236,7 +1236,7 @@ new GuiControl(GlassModManagerGui) {
                            lineSpacing = "2";
                            allowColorChars = "0";
                            maxChars = "-1";
-                           text = "<font:quicksand-bold:16>Laptop<just:right><font:quicksand:14>Tue, 2:02 pm<br><just:left><font:quicksand:14>by MrQueeba";
+                           text = "<font:verdana bold:16>Laptop<just:right><font:verdana:14>Tue, 2:02 pm<br><just:left><font:verdana:14>by MrQueeba";
                            maxBitmapHeight = "-1";
                            selectable = "1";
                            autoResize = "1";

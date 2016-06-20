@@ -56,7 +56,7 @@ function GlassDownloadGui::onDone(%this) {
 
 function GlassDownloadGui::loadContext(%this, %ctx) {
   %this.getObject(0).setText(%ctx.title);
-  GlassDownloadGui_Text.setValue("<font:quicksand:16>" @ %ctx.text);
+  GlassDownloadGui_Text.setValue("<font:verdana:16>" @ %ctx.text);
 
   GlassDownloadInterface.currentContext = %ctx;
 
@@ -122,7 +122,7 @@ function GlassDownloadGui::buildSwatch(%obj) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "<font:quicksand-bold:16>" @ %obj.text;
+    text = "<font:verdana bold:16>" @ %obj.text;
   };
 
   %gui.text = %text;

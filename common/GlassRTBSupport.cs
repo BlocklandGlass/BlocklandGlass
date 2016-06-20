@@ -82,7 +82,7 @@ function GlassRTBSupport::openGui() {
 
 	for(%i = 0; %i < GlassRTBSupportFiles.getCount(); %i++) {
 		%file = GlassRTBSupportFiles.getObject(%i);
-		%handler = %rtb.addDownload("<font:quicksand-bold:16>" @ %file.name @ " <font:quicksand:14>" @ %file.filename, "bricks", "");
+		%handler = %rtb.addDownload("<font:verdana bold:16>" @ %file.name @ " <font:verdana:14>" @ %file.filename, "bricks", "");
 		%file.downloadHandler = %handler;
 		if(GlassRTBSupportFiles.getCount()-1 == %i) {
 			%handler.last = true;

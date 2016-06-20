@@ -159,7 +159,7 @@ function GlassModManager_keybind(%down) {
 }
 
 function GlassModManager::changeKeybind(%this) {
-  GlassModManagerGui_KeybindText.setText("<font:Quicksand:16><just:center><color:ffffff>Press any key ...");
+  GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:ffffff>Press any key ...");
   GlassModManagerGui_KeybindOverlay.setVisible(true);
   %remapper = new GuiInputCtrl(GlassModManager_Remapper);
   GlassModManagerGui.add(%remapper);

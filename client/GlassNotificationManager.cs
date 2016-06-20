@@ -156,7 +156,7 @@ function GlassNotification::onAdd(%this) {
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:quicksand-bold:15><just:left>" @ %this.title @ "<br><font:quicksand:13>" @ %this.text;
+    text = "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
     position = "28 5";
     extent = "172 12";
     minextent = "0 0";

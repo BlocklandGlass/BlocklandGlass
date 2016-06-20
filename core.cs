@@ -1,14 +1,14 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "2.0.0-alpha.2";
+			version = "2.0.0-alpha.2.1";
 			address = "test.blocklandglass.com";
 			netAddress = "test.blocklandglass.com";
 			enableCLI = true;
 		};
 
 		if($Pref::Player::NetName $= "Jincux") {
-			Glass.address = Glass.netaddress = "localhost";
+			//Glass.address = Glass.netaddress = "localhost";
 			Glass.dev = true;
 		}
 	}

@@ -54,7 +54,7 @@ function GlassInstallWizard::populateStep(%step) {
           GlassInstallWizard_step1_text.setText("It\'s been detected that your fonts folder is <color:ff0000>read-only. <color:000000>Because of this, we can't automatically install the required fonts for you.<br><br>We have two options:<br>1: <a:" @ Glass.netaddress @ "/help/readonly.php>Make the folder writeable</a><br><br>2: <a:" @ Glass.netaddress @ "/help/fonts.php>Manually Install Fonts</a><br><br>After you've done either of those, restart Blockland.");
           GlassInstallWizard_step1_progress.setVisible(false);
           GlassInstallWizard_step1_continue.command = "quit();";
-          GlassInstallWizard_step1_text.setText("Quit");
+          GlassInstallWizard_step1_continue.setText("Quit");
         } else {
           GlassInstallWizard_step1_text.setText("Blockland Glass requires some custom fonts to run correctly. They're automatically installing now...");
           GlassInstallWizard_step1_progress.downloaded = GlassInstallWizard_step1_progress.fin = 0;
@@ -84,7 +84,7 @@ function GlassInstallWizard::populateStep(%step) {
       }
 
     case 3:
-      GlassInstallWizard_step3_text.setText("Something about prefs");
+      GlassInstallWizard_step3_text.setText("Now we're going to download Support_Preferences, an underlying preference system that will utilize both your RTB and oRBs preferences. After that, you're all set!");
       GlassInstallWizard_step3_finish.setVisible(0);
       GlassInstallWizard_step3_progress.setValue(0);
       //to avoid mismatched versions, we can just go ahead and force this one to reinstall
@@ -142,6 +142,14 @@ function GlassInstallWizard::finished() {
 }
 
 package GlassInstallWizard {
+  function canvas::pushDialog(%this, %dlg) {
+    if(%dlg.getName() !$= "messageBoxOkDlg" && %dlg.getName() !$= "consoleDlg" && Glass.runInstallWizard) {
+      return;
+    }
+
+    parent::pushDialog(%this, %dlg);
+  }
+
   function GlassFontDownload::setProgressBar(%this, %float) {
     parent::setProgressBar(%this, %float);
     GlassInstallWizard_step1_progress.downloaded -= %this.prev;

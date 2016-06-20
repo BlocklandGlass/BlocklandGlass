@@ -44,7 +44,7 @@ new GuiControl(GlassVerifyAccountGui) {
          lineSpacing = "2";
          allowColorChars = "0";
          maxChars = "-1";
-         text = "<font:quicksand:14>Hey there, it looks like you made a Blockland Glass account. We want to make sure this is you!<br><br>To verify your account, please type your email address below";
+         text = "<font:verdana:14>Hey there, it looks like you made a Blockland Glass account. We want to make sure this is you!<br><br>To verify your account, please type your email address below";
          maxBitmapHeight = "-1";
          selectable = "1";
          autoResize = "1";

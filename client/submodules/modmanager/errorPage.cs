@@ -16,11 +16,11 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
     autoResize = true;
   };
 
-  %text = "<just:center><font:quicksand-bold:20><color:ff0000>Error!<br><color:000000>";
+  %text = "<just:center><font:verdana bold:20><color:ff0000>Error!<br><color:000000>";
   if($GlassError[%errorcode] !$= "") {
     %text = %text @ getField($GlassError[%errorcode], 0);
     %text = %text @ "<br><br>";
-    %text = %text @ "<font:quicksand-bold:16>" @ getField($GlassError[%errorcode], 1);
+    %text = %text @ "<font:verdana bold:16>" @ getField($GlassError[%errorcode], 1);
   } else {
     %text = %text @ "Code: " @ %errorcode;
   }
