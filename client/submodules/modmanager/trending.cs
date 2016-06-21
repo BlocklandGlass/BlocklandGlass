@@ -28,7 +28,7 @@ function GlassModManagerGui::renderHome(%data) {
     %body.verticalMatchChildren(0, 10);
   }
 
-  %container.verticalMatchChildren(498, 10);
+  %container.verticalMatchChildren(498, 0);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
 }
 
@@ -57,7 +57,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     %text = %text @ "<br><font:verdana:13>On top of that, there's been a few recent updates<br><br>";
 
     for(%i = 0; %i < %updates.length; %i++) {
-      %u = %uploads.value[%i];
+      %u = %updates.value[%i];
       %name = %u.name;
       %id = %u.id;
       %version = %u.version;
@@ -67,7 +67,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     }
   }
 
-  %text = %text @ "<br><br><font:verdana:10><just:right>6/20/2016 2:30pm";
+  %text = %text @ "<br><br>- ModBot<br><font:verdana:10><just:right>6/20/2016 2:30pm";
 
   %textml = new GuiMLTextCtrl() {
     horizSizing = "right";
@@ -80,7 +80,29 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     autoResize = true;
   };
 
+  %modbot = new GuiBitmapCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "365 10";
+    extent = "107 200";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/modbot";
+    wrap = "0";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    keepCached = "0";
+    mColor = "100 100 100 100";
+    mMultiply = "1";
+  };
+
   %body.add(%textml);
+  %body.add(%modbot);
   %body.text = %textml;
 
   return %body;
