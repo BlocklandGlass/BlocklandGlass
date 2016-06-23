@@ -76,7 +76,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     %bid = getword(%obj.branches, %i);
     %branch = %obj.branchName[%bid];
 
-    %x = ((505-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
+    %x = ((485-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
 
     %status = GlassModManager::getAddonStatus(%obj.id);
     switch$(%status) {
@@ -171,7 +171,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].placeBelow(%container.description, 25);
   }
 
-  %container.verticalMatchChildren(10, 10);
+  %container.verticalMatchChildren(0, 10);
 
   //================================
   // comments
