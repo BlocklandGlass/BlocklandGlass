@@ -10,13 +10,9 @@ function GlassModManager::init() {
 
   GlassModManager::catalogAddons();
 
-  GlassModManager::setPane(1);
-  GlassModManager_AddonPage::init();
+  GlassModManagerGui::setPane(1);
+
   GlassModManager_MyColorsets::init();
-
-
-  GlassModManagerGui_ForwardButton.setVisible(false);
-  GlassModManagerGui_BackButton.setVisible(false);
 
   if(Glass.dev) {
     GlassModManagerGui_HostButton.setVisible(true);
@@ -65,7 +61,8 @@ function GlassModManager::catalogAddons() {
       continue;
     }
 
-    %json = loadJSON("Add-Ons/" @ %name @ "/glass.json");
+    jettisonReadFile("Add-Ons/" @ %name @ "/glass.json");
+    %json = $JSON::Value;
     GlassModManager::setAddonStatus(%json.get("id"), "installed");
   }
 }
@@ -242,7 +239,7 @@ function GlassModManagerTCP::handleText(%this, %line) {
 
 function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
-    jettisonParse(collapseEscape(%this.buffer));
+    jettisonParse(%this.buffer);
     %ret = $JSON::Value;
 
     if(%ret.action $= "auth") {
@@ -311,6 +308,10 @@ function GlassModManagerTCP::onDone(%this, %error) {
             %listing = %listing @ %id TAB %name TAB %author TAB %rating TAB %downloads NL "";
           }
           GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages);
+
+        case "comments":
+          echo(%this.buffer);
+          GlassModManagerGui::renderAddonComments(%ret.comments);
       }
 
     } else {
@@ -327,32 +328,6 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
 function GlassModManager::loadHome() {
   GlassModManager::placeCall("home");
-}
-
-function GlassModManager::processCall_Home(%tcp) {
-  %ret = jettisonParse(collapseEscape(%tcp.buffer));
-
-  %latest = %ret.get("latest");
-
-  %latestStr = "";
-  for(%i = 0; %i < %latest.length; %i++) {
-    %obj = %latest.value[%i];
-    //"Blockland Glass\tJincux\tMonday\t11\nAdmin Chat\tJincux\tSunday\t7"
-    %latestStr = %latestStr @ "\n" @ %obj.get("name") TAB %obj.get("author") TAB %obj.get("uploadDate") TAB %obj.get("id");
-  }
-
-  %trending = %ret.get("trending");
-
-  %trendingstr = "";
-  for(%i = 0; %i < %trending.length; %i++) {
-    %obj = %trending.value[%i];
-    //"1\tBlockland Glass\tJincux and Nexus\t738\t11\n2\tSlayer\tGreek2Me\t426\t9\n"
-    %trendingStr = %trendingStr @ "\n" @ (%i+1) TAB %obj.get("name") TAB %obj.get("author") TAB %obj.get("downloads") TAB %obj.get("id");
-  }
-
-  %latestStr = getsubstr(%lateststr, 1, strlen(%lateststr)) @ "\n";
-  %trendingStr = getsubstr(%trendingstr, 1, strlen(%trendingstr)) @ "\n";
-  GlassModManagerGui::renderHome(%trendingstr, %lateststr);
 }
 
 //====================================
@@ -518,7 +493,8 @@ function GlassModManager::populateMyAddons(%this) {
       }
       %fo.close();
       %fo.delete();
-      %so.glassdata = jettisonParse(collapseEscape(%buffer));
+      jettisonParse(collapseEscape(%buffer));
+      %so.glassdata = $JSON::Value;
     }
     GlassModManager_MyAddons.add(%so);
 	}

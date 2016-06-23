@@ -116,7 +116,8 @@ function GlassRTBSupportTCP::onDone(%this, %error) {
 		echo(%this.buffer);
 	}
 	if(!%error) {
-		%array = jettisonParse(collapseEscape(%this.buffer));
+		jettisonParse(collapseEscape(%this.buffer));
+		%array = $JSON::Value;
 		if(getJSONType(%array) $= "array" && %array.length) {
 			for(%i = 0; %i < %array.length; %i++) {
 				%obj = %array.value[%i];

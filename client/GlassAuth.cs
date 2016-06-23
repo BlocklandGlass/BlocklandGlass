@@ -66,6 +66,13 @@ function GlassAuth::updateInput() {
 	GlassVerifyAccount_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/cancel.png");
 }
 
+function GlassAuth::onAuthSuccess(%this) {
+	if(!%this.firstAuth)
+  	GlassModManagerGui::loadContext("home");
+
+	%this.firstAuth = true;
+}
+
 function GlassAuthTCP::onDone(%this) {
 	if($Glass::Debug)
 		echo(%this.buffer);
@@ -96,6 +103,7 @@ function GlassAuthTCP::onDone(%this) {
 					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
 					echo("Glass auth success");
+					GlassAuth.onAuthSuccess();
 				}
 
 				//echo(%object.get("hasGlassAccount"));

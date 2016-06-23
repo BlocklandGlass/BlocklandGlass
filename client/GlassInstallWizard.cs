@@ -39,14 +39,14 @@ function GlassInstallWizard::populateStep(%step) {
   %o = "GlassInstallWizard_step" @ %step;
   %o.setVisible(1);
 
-  %title[1] = "Fonts";
-  %title[2] = "Updater";
-  %title[3] = "Preferences";
+  //%title[1] = "Fonts";
+  %title[1] = "Updater";
+  %title[2] = "Preferences";
 
-  GlassInstallWizard_window.setText("Step " @ %step @ "/3 (" @ %title[%step] @ ")");
+  GlassInstallWizard_window.setText("Step " @ %step @ "/2 (" @ %title[%step] @ ")");
 
   switch(%step) {
-    case 1:
+    case 0:
       if(!GlassFontManager::hasFonts()) {
         GlassInstallWizard_step1_continue.setVisible(0);
         GlassInstallWizard_step1_progress.setValue(0);
@@ -67,7 +67,7 @@ function GlassInstallWizard::populateStep(%step) {
         GlassInstallWizard_step1_continue.setVisible(1);
       }
 
-    case 2:
+    case 1:
       GlassSettings.cachePut("FontsRunOnce", 1);
       GlassInstallWizard_step2_progress.setValue(0);
       if(isFile("Add-Ons/Support_Updater.zip") || isFile("Add-Ons/Support_Updater/client.cs")) {
@@ -83,7 +83,7 @@ function GlassInstallWizard::populateStep(%step) {
         GlassInstallWizard::installUpdater();
       }
 
-    case 3:
+    case 2:
       GlassInstallWizard_step3_text.setText("Now we're going to download Support_Preferences, an underlying preference system that will utilize both your RTB and oRBs preferences. After that, you're all set!");
       GlassInstallWizard_step3_finish.setVisible(0);
       GlassInstallWizard_step3_progress.setValue(0);
