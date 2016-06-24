@@ -7,12 +7,32 @@ function GlassModManagerGui::renderBoards(%boards) {
     extent = "505 498";
   };
 
-  %xMargin = 10;
-  %width = mfloor((getWord(%container.extent, 0)-(3*%xMargin))/2);
+  %body = new GuiSwatchCtrl(GlassModManagerGui_AddonDisplay) {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "485 64";
+  };
+
+  %searchRes = new GuiSwatchCtrl(GlassModManagerGui_SearchResults) {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "485 64";
+    visible = false;
+  };
+
+  GlassModManagerGui_AddonDisplay.deleteAll();
 
   %ypos = 10;
 
+  %dark = 0;
+
   for(%i = 0; %i < getLineCount(%boards); %i++) {
+    %dark = !%dark;
+
     %board = getLine(%boards, %i);
     %name = getField(%board, 0);
     %id = getField(%board, 1);
@@ -20,18 +40,28 @@ function GlassModManagerGui::renderBoards(%boards) {
     %img = getField(%desc, 3);
 
     %contain = GlassModManagerGui::createBoardButton(%name, %desc, %img, %id);
-    %contain.extent = %width SPC mfloor(%width/2);
-    %contain.position = 10+(mFloor(%i/2) != %i/2 ? %width+10 : 0) SPC %yPos;
-    %contain.text.forceCenter();
-    %contain.text.position = getWord(%contain.text.position, 0) SPC 10;
+    %contain.extent = 465 SPC 35;
+    %contain.position = 10 SPC %yPos;
+    %contain.text.centerY();
 
-    if(mFloor(%i/2) != %i/2) { //even
-      %yPos += mfloor(%width/2)+10;
-    }
+    %contain.color = (%dark ? "210 210 210 255" : "220 220 220 255");
 
-    %container.add(%contain);
+    %yPos += 35;
+
+    GlassModManagerGui_AddonDisplay.add(%contain);
     %contain.mouse.onAdd();
   }
+
+  GlassModManagerGui_AddonDisplay.verticalMatchChildren(0, 10);
+
+  %search = GlassModManagerGui::createSearchBar();
+  %container.add(%search);
+  %container.add(%body);
+  %container.add(%searchRes);
+  %body.placeBelow(%search, 10);
+  %searchRes.placeBelow(%search, 10);
+
+  %container.verticalMatchChildren(498, 10);
 
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
@@ -43,6 +73,135 @@ function GlassModManagerGui::renderBoards(%boards) {
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
 }
 
+function GlassModManagerGui::createSearchBar() {
+  %container = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "485 50";
+  };
+
+  %search = new GuiTextEditCtrl(GlassModManagerGui_SearchBar) {
+    profile = "GlassSearchBarProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "465 29";
+    text = "\c1Search...";
+    command = "GlassModManagerGui_SearchBar.onUpdate();";
+    accelerator = "enter";
+    altcommand = "GlassModManagerGui_SearchBar.search();";
+    filler = 1;
+  };
+
+  %container.add(%search);
+  return %container;
+}
+
+function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
+  %text = %this.getValue();
+  if(%this.filler) {
+    if(strlen(%text) < 10) {
+      %this.setValue("\c1Search...");
+      %this.setCursorPos(0);
+      GlassModManagerGui_SearchResults.setVisible(false);
+      GlassModManagerGui_AddonDisplay.setVisible(true);
+    } else {
+      %char = getsubstr(%text, %this.getCursorPos()-1, 1);
+      %text = %char;
+      %this.setValue(%text);
+      %this.filler = false;
+    }
+  }
+
+  if(strlen(%text) == 0) {
+    %this.filler = true;
+    %this.setValue("\c1Search...");
+    %this.setCursorPos(0);
+    GlassModManagerGui_SearchResults.setVisible(false);
+    GlassModManagerGui_AddonDisplay.setVisible(true);
+  }
+
+  if(!%this.filler) {
+    if(GlassModManager.liveSearch) {
+      GlassModManagerGui_SearchBar.search();
+    }
+  }
+}
+
+function GlassModManagerGui_SearchBar::search(%this) {
+  %query = trim(%this.getValue());
+  if(%this.filler)
+    return;
+
+  if(strlen(%query) == 0)
+    return;
+
+  GlassModManagerGui_SearchResults.clear();
+  %loading = GlassModManagerGui::createLoadingAnimation();
+  GlassModManagerGui_SearchResults.add(%loading);
+  %loading.forceCenter();
+
+
+  GlassModManagerGui_SearchResults.setVisible(true);
+  GlassModManagerGui_AddonDisplay.setVisible(false);
+
+  %this.lastTCP = GlassModManager::placeCall("search", "type\taddon\nby\tname" NL "query" TAB %query);
+}
+
+function GlassModManagerGui::SearchResults(%res) {
+  GlassModManagerGui_SearchResults.deleteAll();
+  %y = 10;
+  for(%i = 0; %i < %res.length; %i++) {
+    %result = %res.value[%i];
+
+    %swat = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "235 235 235 255";
+      position = 10 SPC %y;
+      extent = "465 50";
+    };
+
+    %search = new GuiTextCtrl() {
+      profile = "GlassSearchResultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "255 255 255 255";
+      position = "10 10";
+      extent = "465 25";
+      text = %result.title;
+      filler = 1;
+    };
+    %swat.add(%search);
+    %swat.verticalMatchChildren(0, 5);
+    %y += getWord(%swat.getExtent(), 1) + 5;
+    GlassModManagerGui_SearchResults.add(%swat);
+  }
+
+  if(%res.length == 0) {
+    %text = new GuiTextCtrl() {
+      profile = "GlassSearchResultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "255 255 255 255";
+      position = "10 10";
+      extent = "465 25";
+      text = "No results found";
+      filler = 1;
+    };
+    GlassModManagerGui_SearchResults.add(%text);
+  }
+
+  GlassModManagerGui_SearchResults.verticalMatchChildren(20, 10);
+}
+
+function GlassModManagerGui_SearchBar::onMouseDown(%this, %val) {
+  echo("select");
+}
+
 function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -52,12 +211,22 @@ function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
     extent = "235 0";
   };
 
+  %container.icon = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
+    position = "10 10";
+    extent = "16 16";
+    minextent = "0 0";
+    clipToParent = true;
+  };
+
   %container.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:center>" @ %name;
-    position = "0 0";
-    extent = "225 45";
+    text = "<font:verdana bold:16>" @ %name;
+    position = "35 0";
+    extent = "225 16";
   };
 
   %container.mouse = new GuiMouseEventCtrl(GlassModManagerGui_BoardButton) {
@@ -65,63 +234,9 @@ function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
     swatch = %container;
   };
 
+  %container.add(%container.icon);
   %container.add(%container.text);
   %container.add(%container.mouse);
-
-  return %container;
-}
-
-function GlassModManagerGui::renderHome_recent(%recent) {
-  %container = new GuiSwatchCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "0 0 0 0";
-    position = "255 10";
-    extent = "235 0";
-  };
-
-  %container.text = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:center>New Add-Ons";
-    position = "0 0";
-    extent = "225 45";
-  };
-  %container.add(%container.text);
-
-  %y = 25;
-  for(%i = 0; %i < getLineCount(%recent); %i++) {
-    %info = getLine(%recent, %i);
-    %name = getField(%info, 0);
-    %author = getField(%info, 1);
-    %date = getField(%info, 2);
-    %aid = getField(%info, 3);
-
-    %swatch = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 255";
-      position = 0 SPC (0+%y);
-      extent = "235 45";
-    };
-
-    %swatch.text = new GuiMLTextCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      text = "<font:verdana bold:16>" @ %name @ "<just:right><font:verdana:14>" @ %date @ "<br><just:left><font:verdana:14>by " @ %author;
-      position = "7 7";
-      extent = "225 45";
-    };
-
-
-
-    %swatch.add(%swatch.text);
-    %swatch.add(%swatch.mouse);
-    %container.add(%swatch);
-    %y += 46;
-  }
-
-  %container.extent = "235" SPC %y+25;
 
   return %container;
 }

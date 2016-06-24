@@ -148,3 +148,18 @@ if(!isObject(GlassMLTextEditProfile)) new GuiControlProfile(GlassMLTextEditProfi
   fontColorLink = "100 100 100 255";
   fontColorLinkHL = "200 200 200 255";
 };
+
+if(!isObject(GlassSearchBarProfile)) new GuiControlProfile(GlassSearchBarProfile : GuiTextEditProfile) {
+  fontType = "Verdana";
+  fontSize = "25";
+  fontColors[0] = "64 64 64 255";
+  fontColors[1] = "128 128 128 255";
+
+  fillColor = "245 245 245 255";
+  borderColor = "128 128 128 255";
+};
+
+if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultProfile : GuiTextProfile) {
+  fontType = "Verdana Bold";
+  fontSize = "16";
+};

@@ -5,7 +5,7 @@ function GlassModManager::init() {
   }
 
   new ScriptObject(GlassModManager) {
-    historyPos = -1;
+    liveSearch = 1;
   };
 
   GlassModManager::catalogAddons();
@@ -239,7 +239,10 @@ function GlassModManagerTCP::handleText(%this, %line) {
 
 function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
-    jettisonParse(%this.buffer);
+    %error = jettisonParse(%this.buffer);
+    if(%error) {
+      error("jettison error:" @ $JSON::Error);
+    }
     %ret = $JSON::Value;
 
     if(%ret.action $= "auth") {
@@ -321,6 +324,12 @@ function GlassModManagerTCP::onDone(%this, %error) {
         case "comments":
           echo(%this.buffer);
           GlassModManagerGui::renderAddonComments(%ret.comments);
+
+        case "search":
+          if(GlassModManagerGui_SearchBar.lastTCP == %this)
+            GlassModManagerGui::searchResults(%ret.results);
+          else
+            echo ("old results in!");
       }
 
     } else {

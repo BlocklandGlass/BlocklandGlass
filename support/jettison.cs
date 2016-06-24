@@ -178,7 +178,7 @@ function __jettisonParse(%text, %index, %length) {
               $JSON::Error = "TODO: unicode codepoint escape";
               $JSON::Index = %index - 1;
 
-              return true;
+              //return true;
 
             default:
               $JSON::Error = "invalid string escape";

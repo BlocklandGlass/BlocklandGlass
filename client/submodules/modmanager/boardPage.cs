@@ -140,7 +140,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     vertSizing = "bottom";
     text = "<color:333333><font:verdana bold:16>" @ %title @ "<br><font:verdana:12>by " @ %author;
     position = "10 7";
-    extent = "225 45";
+    extent = "325 45";
   };
 
   %dlStr = "";

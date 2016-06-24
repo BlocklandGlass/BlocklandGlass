@@ -419,7 +419,6 @@ function strLimitRep(%str, %char, %limit) {
 
 function GlassModManagerGui::createLoadingAnimation() {
   %animation = new GuiBitmapCtrl(GlassLoadingAnimation) {
-    profile = "GuiDefaultProfile";
     horizSizing = "center";
     vertSizing = "center";
     position = "365 10";
