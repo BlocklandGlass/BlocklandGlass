@@ -127,3 +127,24 @@ if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLP
   fontColorLink = "100 100 100 255";
   fontColorLinkHL = "200 200 200 255";
 };
+
+if(!isObject(GlassMLTextEditProfile)) new GuiControlProfile(GlassMLTextEditProfile : GuiMLTextEditProfile) {
+  fontType = "Verdana";
+  fontSize = "12";
+  fontColors[0] = "0 0 0 255";
+  fontColors[1] = "255 255 255 255";
+  fontColors[2] = "0 0 0 255";
+  fontColors[3] = "200 200 200 255";
+  fontColors[4] = "0 0 204 255";
+  fontColors[5] = "85 26 139 255";
+  fontColors[6] = "0 0 0 0";
+  fontColors[7] = "0 0 0 0";
+  fontColors[8] = "0 0 0 0";
+  fontColors[9] = "0 0 0 0";
+  fontColor = "0 0 0 255";
+  fontColorHL = "255 255 255 255";
+  fontColorNA = "0 0 0 255";
+  fontColorSEL = "200 200 200 255";
+  fontColorLink = "100 100 100 255";
+  fontColorLinkHL = "200 200 200 255";
+};

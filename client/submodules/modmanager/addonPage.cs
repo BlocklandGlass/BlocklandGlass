@@ -35,7 +35,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left>by " @ %obj.author;
+    text = "<font:verdana:13><just:left>by " @ %obj.author;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -211,6 +211,85 @@ function GlassModManagerGui::renderAddonComments(%data) {
   %swatch = GlassModManagerGui_AddonComments;
   %swatch.deleteAll();
 
+  %newCommentScroll = new GuiScrollCtrl() {
+    profile = "GlassScrollProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 10";
+    extent = "465 100";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    willFirstRespond = "0";
+    hScrollBar = "alwaysOff";
+    vScrollBar = "alwaysOn";
+    constantThumbHeight = "0";
+    childMargin = "0 0";
+    rowHeight = "40";
+    columnWidth = "30";
+  };
+
+  %newCommentSwat = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "240 240 240 255";
+    position = "10 10";
+    extent = "465 97";
+  };
+
+  %newCommentEdit = new GuiMLTextEditCtrl(GlassModManagerGui_newComment) {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    text = "";
+    position = "5 5";
+    extent = "445 90";
+    minextent = "0 0";
+    autoResize = true;
+    profile = "GlassMLTextEditProfile";
+  };
+
+  %newCommentButton = new GuiBitmapButtonCtrl() {
+    profile = "BlockButtonProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "415 175";
+    extent = "60 20";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    command = "GlassModManagerGui::submitComment();";
+    text = "Post";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "base/client/ui/button1";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "220 220 220 255";
+  };
+
+  %newCommentDiv = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "128 128 128 255";
+    position = "10 10";
+    extent = "465 1";
+  };
+
+  %newCommentScroll.add(%newCommentSwat);
+  %newCommentSwat.add(%newCommentEdit);
+  %swatch.add(%newCommentScroll);
+  %swatch.add(%newCommentButton);
+  %swatch.add(%newCommentDiv);
+  %newCommentButton.centerX();
+  %newCommentButton.placeBelow(%newCommentScroll, 10);
+  %newCommentDiv.placeBelow(%newCommentButton, 10);
+  %swatch.verticalMatchChildren(10, 10);
+
   if(%data.length == 0) {
     %text = new GuiMLTextCtrl() {
       horizSizing = "center";
@@ -222,19 +301,23 @@ function GlassModManagerGui::renderAddonComments(%data) {
       autoResize = true;
     };
     %swatch.add(%text);
+    %text.centerX();
+    %text.placeBelow(%newCommentDiv, 10);
     %swatch.verticalMatchChildren(10, 10);
-    %text.forceCenter();
   } else {
     %offset = 0;
+    %dark = 1;
     for(%i = 0; %i < %data.length; %i++) {
       %comment = %data.value[%i];
       %swat = new GuiSwatchCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        color = "255 255 255 255";
-        position = 0 SPC %offset;
-        extent = "485 20";
+        color = (%dark ? "235 235 235 255" : "245 245 245 255");
+        position = 10 SPC %offset;
+        extent = "465 20";
       };
+
+      %dark = !%dark;
 
       %auth = new GuiMLTextCtrl() {
         horizSizing = "right";
@@ -264,9 +347,16 @@ function GlassModManagerGui::renderAddonComments(%data) {
       %text.forceReflow();
       %swat.verticalMatchChildren(0, 10);
       %offset += getWord(%swat.extent, 1);
+
+      if(%i == 0) {
+        %swat.placeBelow(%newCommentButton, 10);
+      } else {
+        %swat.placeBelow(%lastSwat);
+      }
+      %lastSwat = %swat;
     }
 
-    %swatch.verticalMatchChildren();
+    %swatch.verticalMatchChildren(10, 10);
   }
 
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
@@ -275,6 +365,27 @@ function GlassModManagerGui::renderAddonComments(%data) {
   %scroll.clear();
   %scroll.add(GlassModManagerGui_MainDisplay);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+}
+
+function GlassModManagerGui_newComment::onResize(%this, %thisx, %thisy) {
+
+  %x = getWord(%this.getGroup().extent, 0);
+  %y = %thisY + 10;
+
+  if(%y < 97) {
+    %y = 97;
+  }
+
+  if(%this.getGroup().extent !$= (%x SPC %y)) {
+    %this.getGroup().extent = %x SPC %y;
+    %this.getGroup().setVisible(true);
+    %this.makeFirstResponder(1);
+    %this.getGroup().getGroup().scrollToBottom();
+  }
+}
+
+function GlassModManagerGui::submitComment() {
+
 }
 
 function GlassModManagerGui::createLoadingAnimation() {

@@ -256,6 +256,15 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
         case "addon":
           echo(%this.buffer);
+
+          if(%ret.authors.length == 1) {
+            %author = "<font:verdana bold:14>" @ %ret.authors.value[0].name;
+          }
+
+          if(%ret.authors.length == 2) {
+            %author = %ret.authors.value[0].name @ " and " @ %ret.authors.value[1].name;
+          }
+
           %obj = new ScriptObject() {
             class = "GlassAddonData";
 
@@ -265,7 +274,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
             board = %ret.board;
             description = %ret.description;
 
-            author = "Jincux and Nexus";
+            author = %author;
 
             buffer = %this.buffer;
           };
