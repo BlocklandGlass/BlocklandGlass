@@ -9,6 +9,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::Keybind", "keyboard\tctrl m");
     GlassSettings.registerSetting("client", "MM::UseDefault", false);
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
+    GlassSettings.registerSetting("client", "MM::LiveSearch", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);
@@ -31,6 +32,8 @@ function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %
   %this.obj[%name] = %obj;
   %this.add(%obj);
   %this.schedule(0, "add", %obj);
+
+  return %obj;
 }
 
 function GlassSettings::loadData(%this, %context) {

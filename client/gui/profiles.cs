@@ -155,11 +155,29 @@ if(!isObject(GlassSearchBarProfile)) new GuiControlProfile(GlassSearchBarProfile
   fontColors[0] = "64 64 64 255";
   fontColors[1] = "128 128 128 255";
 
-  fillColor = "245 245 245 255";
+  fillColor = "240 240 240 255";
   borderColor = "128 128 128 255";
 };
 
 if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultProfile : GuiTextProfile) {
   fontType = "Verdana Bold";
   fontSize = "16";
+};
+
+if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
+  fontType = "Verdana";
+  fontSize = 12;
+};
+
+if(!isObject(GlassCheckBoxProfile)) new GuiControlProfile(GlassCheckBoxProfile : GuiCheckBoxProfile) {
+  fontType = "Verdana";
+  fontSize = 12;
+  fillColor = "200 200 200 255";
+  borderColor = "100 100 100 255";
+};
+
+if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonProfile : BlockButtonProfile) {
+  fontType = "Verdana Bold";
+  fontSize = 16;
+  fontColor = "64 64 64 255";
 };

@@ -1,5 +1,5 @@
 function GlassNotificationManager::connectToNotificationServer() {
-  %server = "localhost";
+  %server = Glass.address;
   %port = 27000;
 
   if(isObject(GlassNotificationTCP)) {

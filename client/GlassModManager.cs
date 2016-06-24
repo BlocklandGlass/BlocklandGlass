@@ -5,8 +5,10 @@ function GlassModManager::init() {
   }
 
   new ScriptObject(GlassModManager) {
-    liveSearch = 1;
+    liveSearch = GlassSettings.get("MM::LiveSearch");
   };
+
+  GlassModManagerGui_Prefs_LiveSearch.setValue(GlassModManager.liveSearch);
 
   GlassModManager::catalogAddons();
 
@@ -37,6 +39,13 @@ function GlassModManager::toggleHost() {
   GlassAuth.ident = "";
   GlassAuth.heartbeat();
   GlassModManagerGui_HostButton.setText(Glass.address);
+}
+
+function GlassModManager::updateLiveSearch() {
+  %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
+
+  GlassModManager.liveSearch = %val;
+  GlassSettings.update("MM::liveSearch", %val);
 }
 
 function GlassModManager::setAddonStatus(%aid, %status) {
@@ -156,7 +165,7 @@ function GlassModManager_keybind(%down) {
 }
 
 function GlassModManager::changeKeybind(%this) {
-  GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:ffffff>Press any key ...");
+  GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:111111>Press any key ...");
   GlassModManagerGui_KeybindOverlay.setVisible(true);
   %remapper = new GuiInputCtrl(GlassModManager_Remapper);
   GlassModManagerGui.add(%remapper);
@@ -175,12 +184,20 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   if(strlen(%key) == 1) {
     %badChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789[]\\/{};:'\"<>,./?!@#$%^&*-_=+`~";
     if(strpos(%badChar, strupr(%key)) >= 0) {
-      GlassModManagerGui_KeybindText.setText("<font:Arial Bold:16><just:center><color:ffffff>Invalid Character. <font:arial:16>Please try again");
+      GlassModManagerGui_KeybindText.setText("<font:verdana Bold:16><just:center><color:111111>Invalid Character. <font:verdana:16>Please try again");
+      return;
+    }
+  } else {
+    if(%key $= "ESCAPE") {
+      GlassModManagerGui_KeybindOverlay.setVisible(false);
+
+      %bind = GlassSettings.get("MM::Keybind");
+      GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+      GlassModManager_Remapper.delete();
       return;
     }
   }
 
-  //clearSwatch
   GlassModManagerGui_KeybindOverlay.setVisible(false);
 
   %bind = GlassSettings.get("MM::Keybind");
@@ -533,10 +550,10 @@ function GlassModManager::renderMyAddons(%this) {
       %color = "204 119 119 255";
     }
 
-    %text = "<font:arial bold:16>" @ %addon.name;
+    %text = "<font:verdana bold:16>" @ %addon.name;
 
     if(%addon.isBLG) {
-      %text = "<font:arial bold:16>" @ %addon.glassdata.get("title") @ " <font:arial:14>" @ %addon.name;
+      %text = "<font:verdana bold:16>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
     }
 
     %gui = new GuiSwatchCtrl() {
@@ -666,7 +683,7 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
 
     //GlassModManagerGui_AddonSettings_Window.setText(%this.addon.glassdata.get("title") @ " - " @ %versionData.get("version"));
     //GlassModManagerGui_AddonSettings_Window.setVisible(true);
-    messageBoxOk(%this.addon.glassdata.get("title"), "<font:arial bold:14>Version:<font:arial:14> " @ %versionData.get("version"));
+    messageBoxOk(%this.addon.glassdata.get("title"), "<font:verdana bold:14>Version:<font:verdana:14> " @ %versionData.get("version"));
   }
 }
 
@@ -675,7 +692,6 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
 //====================================
 
 function GlassModManager::populateColorsets() {
-  GlassModManager::setLoading(false);
   %this = GlassModManager_MyColorsets;
 
   %this.colorsets = 0;
@@ -687,13 +703,15 @@ function GlassModManager::populateColorsets() {
       continue;
     }
 
+    if(%name !$= "Colorset_Default" && getFileCRC(%file) == -1147879122) continue; //default colorset
+
     %this.colorsetFile[%this.colorsets] = %file;
     %this.colorsetName[%this.colorsets] = %name;
     %this.colorsets++;
 	}
 
   GlassModManagerGui_MyColorsets.clear();
-  %currentY = 5;
+  %currentY = 10;
   for(%i = 0; %i < %this.colorsets; %i++) {
     if(GlassSettings.get("MM::Colorset") $= %this.colorsetFile[%i]) {
       %color = "153 204 119 255";
@@ -704,8 +722,8 @@ function GlassModManager::populateColorsets() {
        profile = "GuiDefaultProfile";
        horizSizing = "center";
        vertSizing = "bottom";
-       position = 5 SPC %currentY;
-       extent = "240 30";
+       position = 10 SPC %currentY;
+       extent = "230 30";
        minExtent = "8 2";
        enabled = "1";
        visible = "1";
@@ -726,7 +744,7 @@ function GlassModManager::populateColorsets() {
           lineSpacing = "2";
           allowColorChars = "0";
           maxChars = "-1";
-          text = "<font:arial bold:16>" @ %this.colorsetName[%i];
+          text = "<font:verdana bold:16>" @ %this.colorsetName[%i];
           maxBitmapHeight = "-1";
           selectable = "1";
           autoResize = "1";
@@ -747,11 +765,7 @@ function GlassModManager::populateColorsets() {
     };
     %currentY += 35;
     GlassModManagerGui_MyColorsets.add(%cs);
-    if(%currentY > 498) {
-      GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC %currentY;
-    } else {
-      GlassModManagerGui_MyColorsets.extent = getWord(GlassModManagerGui_MyColorsets.extent, 0) SPC 498;
-    }
+    GlassModManagerGui_MyColorsets.verticalMatchChildren(498, 10);
     GlassModManagerGui_MyColorsets.setVisible(true);
     GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }

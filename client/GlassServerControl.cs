@@ -522,7 +522,7 @@ function GlassServerControlC::createHeader(%text) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = "<just:center><font:arial bold:16>" @ %text;
+        text = "<just:center><font:verdana bold:16>" @ %text;
         maxBitmapHeight = "-1";
         selectable = "1";
         autoResize = "1";

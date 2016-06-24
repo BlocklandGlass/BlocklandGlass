@@ -20,8 +20,11 @@ function GlassModManagerGui::setPane(%pane) {
     %obj.setVisible(false);
   }
 
+  if(%pane == 0) {
+    GlassModManagerGui_MainDisplay.deleteAll();
+  }
+
   if(%pane == 3) {
-    GlassModManagerGui::setLoading(true);
     GlassModManager.populateMyAddons();
   }
 
