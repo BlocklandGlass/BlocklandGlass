@@ -200,6 +200,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
 function GlassModManagerGui::loadAddonComments(%id, %swatch) {
   %swatch.setName("GlassModManagerGui_AddonComments");
+  GlassModManagerGui_AddonComments.currentAddon = %id;
 
   %tcp = GlassModManager::placeCall("comments", "id" TAB %id);
 }
@@ -244,7 +245,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
     text = "";
     position = "5 5";
     extent = "445 90";
-    minextent = "0 0";
+    extent = "445 90";
     autoResize = true;
     profile = "GlassMLTextEditProfile";
   };
@@ -329,12 +330,14 @@ function GlassModManagerGui::renderAddonComments(%data) {
         autoResize = true;
       };
 
+      %comment.text = strLimitRep(%comment.text, "<br>", 2);
+
       %text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
         text = "<font:verdana:13>" @ %comment.text;
-        position = "135 10";
-        extent = "340 16";
+        position = "115 10";
+        extent = "360 16";
         minextent = "0 0";
         autoResize = true;
       };
@@ -365,6 +368,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
   %scroll.clear();
   %scroll.add(GlassModManagerGui_MainDisplay);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+  GlassModManagerGui_MainDisplay.getGroup().makeFirstResponder(1);
 }
 
 function GlassModManagerGui_newComment::onResize(%this, %thisx, %thisy) {
@@ -385,7 +389,32 @@ function GlassModManagerGui_newComment::onResize(%this, %thisx, %thisy) {
 }
 
 function GlassModManagerGui::submitComment() {
+  %text = GlassModManagerGui_newComment.getValue();
+  %text = strReplace(%text, "\t", "");
+  %text = strLimitRep(%text, "\n", 2);
+  %text = trim(%text);
+  %text = expandEscape(%text);
 
+  if(%text !$= "")
+    GlassModManager::placeCall("comments", "id" TAB GlassModManagerGui_AddonComments.currentAddon NL "newcomment" TAB %text);
+}
+
+function strLimitRep(%str, %char, %limit) {
+  for(%i = 0; %i < %limit; %i++) {
+    %delimiter = %delimiter @ %char;
+  }
+  %remover = %delimiter @ %char;
+
+  while(true) {
+    %lastStr = %str;
+    %str = strReplace(%str, %remover, %delimiter);
+
+    if(strlen(%lastStr) == strlen(%str)) {
+      break;
+    }
+  }
+
+  return %str;
 }
 
 function GlassModManagerGui::createLoadingAnimation() {
