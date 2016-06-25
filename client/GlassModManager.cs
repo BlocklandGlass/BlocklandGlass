@@ -233,6 +233,8 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
         %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
       }
 
+      %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
+
     %url = "http://" @ Glass.address @ "/api/2/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
     if($Glass::Debug) { echo(%url); }
     %method = "GET";
@@ -294,6 +296,10 @@ function GlassModManagerTCP::onDone(%this, %error) {
             board = %ret.board;
             description = %ret.description;
 
+            rating = %ret.rating;
+
+            screenshots = %ret.screenshots;
+
             author = %author;
 
             buffer = %this.buffer;
@@ -347,6 +353,10 @@ function GlassModManagerTCP::onDone(%this, %error) {
             GlassModManagerGui::searchResults(%ret.results);
           else
             echo ("old results in!");
+
+          case "rating":
+            echo(%this.buffer);
+            GlassModManagerGui::displayAddonRating(%ret.rating);
       }
 
     } else {

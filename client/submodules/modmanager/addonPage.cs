@@ -62,9 +62,55 @@ function GlassModManagerGui::renderAddon(%obj) {
     autoResize = true;
   };
 
+  %rate = %obj.rating;
+  %x = 380;
+  for(%i = 0; %i < 5; %i++) {
+    if(%rate >= 1) {
+      %bitmap = "star";
+    } else if(%rate >= 0.75) {
+      %bitmap = "star_frac_3";
+    } else if(%rate >= 0.50) {
+      %bitmap = "star_frac_2";
+    } else if(%rate >= 0.25) {
+      %bitmap = "star_frac_1";
+    } else {
+      %bitmap = "star_empty";
+    }
+    %container.star[%i+1] = new GuiBitmapCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap;
+      dbitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap;
+      position = %x SPC 10;
+      extent = "16 16";
+      minextent = "0 0";
+      clipToParent = true;
+    };
+
+    %x += 20;
+    %rate -= 1;
+
+    %container.add(%container.star[%i+1]);
+  }
+
+  %container.ratingmouse = new GuiMouseEventCtrl(GlassModManagerGui_RatingMouse) {
+    aid = %obj.id;
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = %container.star1.position;
+    extent = "100 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lockMouse = "0";
+  };
+
+  %container.add(%container.ratingmouse);
+
   %branchColor["stable"] = "128 255 128 255";
-  %branchColor["unstable"] = "255 255 128 255";
-  %branchColor["development"] = "255 128 128 255";
+  %branchColor["beta"] = "255 128 128 255";
 
 
   %num = getWordCount(%obj.branches);
@@ -109,8 +155,9 @@ function GlassModManagerGui::renderAddon(%obj) {
       extent = %xExtent SPC 35;
     };
 
+
+
     %name = "GlassModManagerGui_DlButton_" @ %obj.id @ "_" @ (%i+1);
-    echo(%name);
     %container.download[%branch].info = new GuiMLTextCtrl(%name) {
       horizSizing = "center";
       vertSizing = "center";
@@ -171,6 +218,30 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].placeBelow(%container.description, 25);
   }
 
+  %x = 10;
+  for(%i = 0; %i < %obj.screenshots.length; %i++) {
+    %ss = %obj.screenshots.value[%i];
+    %screenshotHolder = new GuiSwatchCtrl(GlassScreenshot) {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "200 200 200 255";
+      position = %x SPC 10;
+      extent =  "96 96";
+
+      thumb = %ss.thumbnail;
+      url = %ss.url;
+      id = %ss.id;
+      display_extent = %ss.extent;
+    };
+
+    %screenshotHolder.loadThumb();
+
+    %x += 106;
+
+    %container.add(%screenshotHolder);
+    %screenshotHolder.placeBelow(%container.downloadStable, 25);
+  }
+
   %container.verticalMatchChildren(0, 10);
 
   //================================
@@ -194,8 +265,160 @@ function GlassModManagerGui::renderAddon(%obj) {
 
   GlassModManagerGui::loadAddonComments(%obj.id, %comments);
 
+  GlassModManagerGui_MainDisplay.container = %container;
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+}
+
+function GlassScreenshot::loadThumb(%this) {
+  %loading = GlassModManagerGui::createLoadingAnimation();
+  %this.add(%loading);
+  %loading.forceCenter();
+
+  %url = %this.thumb;
+  %method = "GET";
+  %downloadPath = "config/client/cache/" @ %this.id @ "_thumb";
+  %className = "GlassScreenshotTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp.swatch = %this;
+}
+
+function GlassScreenshotTCP::onLine(%this, %line) {
+  if(strpos(%line, "Content-Disposition:") == 0) {
+    %filename = getword(%line, 2);
+    %filename = getsubstr(%filename, strpos(%filename, "\"")+1, strlen(%filename)-11);
+    %ext = getSubStr(%filename, stripos(%filename, ".")+1, 4);
+    %this.ext = %ext;
+  }
+}
+
+function GlassScreenshotTCP::onDone(%this, %error) {
+  if(%error) {
+    %swatch = %this.swatch;
+    %swatch.deleteAll();
+    %swatch.color = "255 150 150 255";
+    %text = new GuiTextCtrl() {
+      profile = "GuiTextVerdanaProfile";
+      text = "Error";
+      extent = "96 18";
+    };
+    %swatch.add(%text);
+    %text.forceCenter();
+  } else {
+    %swatch = %this.swatch;
+    fileCopy("config/client/cache/" @ %swatch.id @ "_thumb", "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext);
+    %bitmap = new GuiBitmapCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      bitmap = "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext;
+      position = "0 0";
+      extent = "96 96";
+      minextent = "0 0";
+      clipToParent = true;
+    };
+
+    %swatch.highlight = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "200 200 200 0";
+      position = "0 0";
+      extent =  "96 96";
+
+      thumb = %ss.thumbnail;
+      url = %ss.url;
+      id = %ss.id;
+      display_extent = %ss.extent;
+    };
+
+    %swatch.mouse = new GuiMouseEventCtrl(GlassScreenshotMouse) {
+      swatch = %swatch;
+      highlight = %swatch.highlight;
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "0 0";
+      extent = %swatch.extent;
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lockMouse = "0";
+    };
+
+    %swatch.deleteAll();
+    %swatch.add(%bitmap);
+    %swatch.add(%swatch.highlight);
+    %swatch.add(%swatch.mouse);
+  }
+}
+
+function GlassScreenshotMouse::onMouseEnter(%this) {
+  %this.highlight.color = "255 255 255 128";
+}
+
+function GlassScreenshotMouse::onMouseLeave(%this) {
+  %this.highlight.color = "255 255 255 0";
+}
+
+function GlassModManagerGui::displayAddonRating(%rating) {
+  messageBoxOk("Thanks!", "Your rating has been submitted. Thanks for the input!");
+  %rate = %rating;
+  %x = 380;
+  for(%i = 0; %i < 5; %i++) {
+    if(%rate >= 1) {
+      %bitmap = "star";
+    } else if(%rate >= 0.75) {
+      %bitmap = "star_frac_3";
+    } else if(%rate >= 0.50) {
+      %bitmap = "star_frac_2";
+    } else if(%rate >= 0.25) {
+      %bitmap = "star_frac_1";
+    } else {
+      %bitmap = "star_empty";
+    }
+    GlassModManagerGui_MainDisplay.container.star[%i+1].setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap);
+
+    %x += 20;
+    %rate -= 1;
+  }
+}
+
+function GlassModManagerGui_RatingMouse::onMouseEnter(%this, %x, %pos) {
+  GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos);
+}
+
+function GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos, %y) {
+  %x = getWord(%pos, 0)-getWord(%this.getScreenPosition(), 0);
+  %rating = mceil((%x-4)/20);
+
+  if(%rating < 1)
+    %rating = 1;
+
+  for(%i = 0; %i < 5; %i++) {
+    %star = %this.getGroup().star[%i+1];
+    if(%rating > %i)
+      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star");
+    else
+      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star_empty");
+  }
+}
+
+function GlassModManagerGui_RatingMouse::onMouseLeave(%this, %x, %pos, %y) {
+  for(%i = 0; %i < 5; %i++) {
+    %star = %this.getGroup().star[%i+1];
+    %star.setBitmap(%star.dbitmap);
+  }
+}
+
+function GlassModManagerGui_RatingMouse::onMouseDown(%this, %x, %pos, %y) {
+  %x = getWord(%pos, 0)-getWord(%this.getScreenPosition(), 0);
+  %rating = mceil((%x-4)/20);
+
+  if(%rating < 1)
+    %rating = 1;
+
+  %tcp = GlassModManager::placeCall("rating", "id" TAB %this.aid NL "rating" TAB %rating);
 }
 
 function GlassModManagerGui::loadAddonComments(%id, %swatch) {
