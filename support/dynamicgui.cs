@@ -105,7 +105,7 @@ function GuiControl::forceCenter(%this) {
 function GuiControl::centerY(%this) {
   %parent = %this.getGroup();
 
-  %x = getWord(%this.extent, 0);
+  %x = getWord(%this.position, 0);
   %y = mFloor((getWord(%parent.extent, 1)-getWord(%this.extent, 1))/2);
 
   %this.position = %x SPC %y;

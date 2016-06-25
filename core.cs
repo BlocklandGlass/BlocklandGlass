@@ -22,6 +22,12 @@ function Glass::init(%context) {
 	}
 }
 
+function Glass::debug(%text) {
+	if(Glass.dev) {
+		echo(%text);
+	}
+}
+
 function JettisonObject::get(%this, %key) {
 	return %this.value[%key];
 }

@@ -59,3 +59,17 @@ if($Server::isDedicated) {
 } else {
 	Glass::init("server");
 }
+
+//Zeblote
+function fastPacketFixLoop(%bool)
+{
+   cancel($FastPacketFixSchedule);
+   $Pref::Net::FastPackets = %bool;
+
+   if(%bool)
+      $FastPacketFixSchedule = schedule(8000, 0, fastPacketFixLoop, !%bool);
+   else
+      $FastPacketFixSchedule = schedule(600, 0, fastPacketFixLoop, !%bool);
+}
+
+fastPacketFixLoop(true);
