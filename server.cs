@@ -31,11 +31,13 @@ function Glass::execServer() {
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 
+	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
 	GlassServerControlS::init();
+	GlassAuthS::init();
 
 	if($Server::Dedicated)
 		GlassResourceManager.prompt();

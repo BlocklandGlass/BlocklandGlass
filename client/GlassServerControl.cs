@@ -312,7 +312,7 @@ function GlassServerControlC::renderPrefCategories() {
         mMultiply = "0";
       };
       new GuiTextCtrl() {
-        profile = "GuiTextProfile";
+        profile = "GuiTextVerdanaProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "24 3";
@@ -522,7 +522,7 @@ function GlassServerControlC::createHeader(%text) {
         lineSpacing = "2";
         allowColorChars = "0";
         maxChars = "-1";
-        text = "<just:center><font:verdana bold:16>" @ %text;
+        text = "<just:center><font:verdana bold:14>" @ %text;
         maxBitmapHeight = "-1";
         selectable = "1";
         autoResize = "1";
@@ -545,7 +545,7 @@ function GlassServerControlC::createTextArea() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "10 4";
@@ -610,7 +610,7 @@ function GlassServerControlC::createList() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "10 7";
@@ -657,7 +657,7 @@ function GlassServerControlC::createCheckbox() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "10 7";
@@ -705,7 +705,7 @@ function GlassServerControlC::createInt() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "10 7";
@@ -755,7 +755,7 @@ function GlassServerControlC::createSlider() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "10 7";
@@ -804,7 +804,7 @@ function GlassServerControlC::createText() {
   };
 
   %swatch.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "10 7";

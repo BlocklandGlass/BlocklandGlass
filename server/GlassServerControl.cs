@@ -139,6 +139,17 @@ function serverCmdGlassSetAdmin(%client, %blid, %level) {
   }
 }
 
+function servercmdgetglassusers(%client) {
+  %users = 0;
+  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+    %client = ClientGroup.getObject(%i);
+    if(%client.hasGlass) {
+      %users++;
+    }
+  }
+  messageClient(%client, '', %users);
+}
+
 function GlassServerControlS::addAutoAdmin(%blid, %super) {
   $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
   $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
