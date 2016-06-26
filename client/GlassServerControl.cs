@@ -353,7 +353,7 @@ function GlassServerControlC::renderPrefCategories() {
     GlassServerControlGui_Prefs_Categories.extent = getWord(GlassServerControlGui_Prefs_Categories.extent, 0) SPC 203;
   }
   GlassServerControlGui_Prefs_Categories.getGroup().scrollToTop();
-  GlassServerControlGui_Prefs_Categories.setVisible(true);
+  GlassServerControlGui_Prefs_Categories.getGroup().setVisible(true);
 }
 
 function GlassServerControlGui_CatMouseCtrl::onMouseEnter(%this) {
@@ -960,6 +960,15 @@ function GlassPrefGroup::cleanup() {
 }
 
 package GlassServerControlC {
+  function clientCmdsetAdminLevel(%level) {
+      if(%level > 0) {
+        GlassServerControlC.allowedPrefs = 1;
+      } else {
+        GlassServerControlC.allowedPrefs = 0;
+      }
+      parent::clientCmdsetAdminLevel(%level);
+  }
+
   function NewPlayerListGui::update(%this, %a, %b, %c, %d, %e, %f) {
     parent::update(%this, %a, %b, %c, %d, %e, %f);
     GlassServerControlGui.onWake();
