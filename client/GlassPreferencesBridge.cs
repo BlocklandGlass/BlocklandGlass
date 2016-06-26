@@ -64,18 +64,15 @@ function GlassPrefCategory::requestPrefs(%this) {
 }
 
 function GlassPrefGroup::requestPrefs(%this) {
-	if(!%this.currentCategory) {
-		for(%i = 0; %i < %this.getCount(); %i++) {
-			%cat = %this.getObject(%i);
-			if(!%cat.downloadedPrefs) {
-				%this.currentCategory = %cat;
-				commandToServer('RequestCategoryPrefs', %cat.id);
-				return;
-			}
+	for(%i = 0; %i < %this.getCount(); %i++) {
+		%cat = %this.getObject(%i);
+		if(!%cat.downloadedPrefs) {
+			commandToServer('RequestCategoryPrefs', %cat.id);
+			return;
 		}
-		GlassServerControlC::renderPrefCategories();
-		GlassServerControlC::renderPrefs();
 	}
+	GlassServerControlC::renderPrefCategories();
+	%this.doFirstRender = true;
 }
 
 function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way to do this
@@ -155,6 +152,9 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 
 	if(%last) {
 		GlassPrefGroup.cat[%catId].downloadedPrefs = true;
+		if(GlassPrefGroup.doFirstRender) {
+			GlassServerControlC::renderPrefs();
+		}
 	}
 }
 

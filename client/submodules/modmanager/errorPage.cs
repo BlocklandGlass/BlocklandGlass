@@ -70,6 +70,7 @@ $GlassError["status_"] = "No Status\tThe API failed to return a status message."
 $GlassError["status_error"] = "API Error\tThe API encountered an error completing your request.";
 $GlassError["status_development"] = "Development\tThis page is still in development!";
 
+$GlassError["jettison"] = "Internal Error\tThere was a jettison parse error. If this continues, be sure to report it.";
 
 $GlassError["tcpclient_" @ $TCPClient::Error::connectionFailed] = "Failed to Connect\tThe Mod Manager couldn't connect to the Blockland Glass website!";
 $GlassError["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connection\tDNS Failed.";

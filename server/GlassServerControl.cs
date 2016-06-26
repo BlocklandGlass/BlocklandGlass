@@ -294,6 +294,7 @@ package GlassServerControlS {
       GlassServerControlS::sendAdminData(%client);
       GlassServerControlS::sendUpdateInfo(%client);
     }
+    echo("\c4autoAdminCheck");
     return %ret;
   }
 
@@ -305,44 +306,10 @@ package GlassServerControlS {
 			if(getField(%line, 0) $= "Glass") {
         %this.hasGlass = true;
         %version = getField(%line, 1);
-        %clients = strreplace(getField(%line, 2), " ", "\t"); //addons in the client mods category
-
-        %required = strreplace(GlassSettings.get("SC::RequiredClients"), ",", "\t");
-        if(%required !$= "") {
-          %missingStr = "";
-
-          for(%i = 0; %i < getFieldCount(%required); %i++) {
-            %mid = trim(getField(%required, %i));
-            if(containsField(%mid, %clients)) {
-              %this._glassHasClient[%mid] = true;
-            } else {
-              %missingStr = %mid TAB GlassSettings.cacheFetch("AddonName_" @ %mid) @  "<br>";
-            }
-          }
-
-          if(%missingStr !$= "") {
-            echo(" +- missing client mods");
-            if(!%this.isLocalConnection()) {
-              %this.schedule(0, "delete", "Missing Blockland Glass Mods<br><br>" @ %missingStr);
-            }
-          }
-        }
+        %this._glassVersion = %version;
 				break;
 			}
 		}
-
-    %required = GlassSettings.get("SC::RequiredClients");
-    if(trim(%required) !$= "" && !%this.hasGlass) { //non-glass clients
-      echo(" +- missing client mods AND missing glass");
-      for(%i = 0; %i < getFieldCount(%required); %i++) {
-        %mid = trim(getField(%required, %i));
-        %missingStr = "<a:blocklandglass.com/addon.php?id=" @ %mid @ ">" @ GlassSettings.cacheFetch("AddonName_" @ %mid) @ "</a><br>";
-      }
-      if(!%this.isLocalConnection()) {
-        %this.schedule(0, "delete", "The server host has specified that certain client add-ons are required for this server. You can use <a:blocklandglass.com/dl.php>Blockland Glass</a> to automatically download them for you, or alternatively download them yourself:<br><br>" @ %missingStr);
-      }
-    }
-
     return %ret;
 	}
 };

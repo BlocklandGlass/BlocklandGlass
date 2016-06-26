@@ -282,6 +282,27 @@ function GlassScreenshot::loadThumb(%this) {
 
   %tcp = connectToURL(%url, %method, %downloadPath, %className);
   %tcp.swatch = %this;
+  %tcp.thumb = 1;
+
+  %this.tcp = %tcp;
+}
+
+function GlassScreenshot::loadScreenshot(%this) {
+  %loading = GlassModManagerGui::createLoadingAnimation();
+  GlassModManagerImage.add(%loading);
+  GlassModManagerImage.loading = %loading;
+  %loading.forceCenter();
+
+  %url = %this.url;
+  %method = "GET";
+  %downloadPath = "config/client/cache/" @ %this.id;
+  %className = "GlassScreenshotTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp.swatch = %this;
+  %tcp.thumb = 0;
+
+  %this.tcp = %tcp;
 }
 
 function GlassScreenshotTCP::onLine(%this, %line) {
@@ -306,50 +327,60 @@ function GlassScreenshotTCP::onDone(%this, %error) {
     %swatch.add(%text);
     %text.forceCenter();
   } else {
-    %swatch = %this.swatch;
-    fileCopy("config/client/cache/" @ %swatch.id @ "_thumb", "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext);
-    %bitmap = new GuiBitmapCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      bitmap = "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext;
-      position = "0 0";
-      extent = "96 96";
-      minextent = "0 0";
-      clipToParent = true;
-    };
+    if(%this.thumb) {
+      %swatch = %this.swatch;
+      fileCopy("config/client/cache/" @ %swatch.id @ "_thumb", "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext);
+      %bitmap = new GuiBitmapCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        bitmap = "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext;
+        position = "0 0";
+        extent = "96 96";
+        minextent = "0 0";
+        clipToParent = true;
+      };
 
-    %swatch.highlight = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 0";
-      position = "0 0";
-      extent =  "96 96";
+      %swatch.highlight = new GuiSwatchCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        color = "200 200 200 0";
+        position = "0 0";
+        extent =  "96 96";
 
-      thumb = %ss.thumbnail;
-      url = %ss.url;
-      id = %ss.id;
-      display_extent = %ss.extent;
-    };
+        thumb = %ss.thumbnail;
+        url = %ss.url;
+        id = %ss.id;
+        display_extent = %ss.extent;
+      };
 
-    %swatch.mouse = new GuiMouseEventCtrl(GlassScreenshotMouse) {
-      swatch = %swatch;
-      highlight = %swatch.highlight;
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = %swatch.extent;
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      lockMouse = "0";
-    };
+      %swatch.mouse = new GuiMouseEventCtrl(GlassScreenshotMouse) {
+        swatch = %swatch;
+        highlight = %swatch.highlight;
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %swatch.extent;
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lockMouse = "0";
+      };
 
-    %swatch.deleteAll();
-    %swatch.add(%bitmap);
-    %swatch.add(%swatch.highlight);
-    %swatch.add(%swatch.mouse);
+      %swatch.deleteAll();
+      %swatch.add(%bitmap);
+      %swatch.add(%swatch.highlight);
+      %swatch.add(%swatch.mouse);
+    } else {
+      %swatch = %this.swatch;
+      fileCopy("config/client/cache/" @ %swatch.id, "config/client/cache/" @ %swatch.id @ "." @ %this.ext);
+      GlassModManagerImageCtrl.extent = %swatch.display_extent;
+      GlassModManagerImageCtrl.setBitmap("config/client/cache/" @ %swatch.id @ "." @ %this.ext);
+      GlassModManagerImageCtrl.setVisible(true);
+      GlassModManagerImageCtrl.forceCenter();
+      GlassModManagerImage.loading.delete();
+    }
   }
 }
 
@@ -359,6 +390,12 @@ function GlassScreenshotMouse::onMouseEnter(%this) {
 
 function GlassScreenshotMouse::onMouseLeave(%this) {
   %this.highlight.color = "255 255 255 0";
+}
+
+function GlassScreenshotMouse::onMouseDown(%this) {
+  GlassModManagerImageCtrl.setVisible(false);
+  canvas.pushDialog(GlassModManagerImage);
+  %this.swatch.loadScreenshot();
 }
 
 function GlassModManagerGui::displayAddonRating(%rating) {
@@ -400,7 +437,7 @@ function GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos, %y) {
     if(%rating > %i)
       %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star");
     else
-      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star_empty");
+      %star.setBitmap("Add-Ons/System_`BlocklandGlass/image/icon/star_empty");
   }
 }
 

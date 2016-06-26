@@ -43,7 +43,7 @@ new GuiControl(GlassModManagerImage) {
          mMultiply = "0";
       };
    };
-   new GuiMouseEventCtrl("GlassModManagerImage_Mouse") {
+   new GuiMouseEventCtrl(GlassModManagerImageMouse) {
       profile = "GuiDefaultProfile";
       horizSizing = "relative";
       vertSizing = "relative";

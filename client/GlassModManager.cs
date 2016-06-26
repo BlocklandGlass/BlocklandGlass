@@ -41,6 +41,10 @@ function GlassModManager::toggleHost() {
   GlassModManagerGui_HostButton.setText(Glass.address);
 }
 
+function GlassModManagerImageMouse::onMouseDown(%this) {
+  canvas.popDialog(GlassModManagerImage);
+}
+
 function GlassModManager::updateLiveSearch() {
   %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
 
@@ -260,7 +264,8 @@ function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
     %error = jettisonParse(%this.buffer);
     if(%error) {
-      error("jettison error:" @ $JSON::Error);
+      GlassModManagerGui::loadErrorPage("jettsionError", $JSON::Error @ " : " @ $JSON::Index);
+      return;
     }
     %ret = $JSON::Value;
 

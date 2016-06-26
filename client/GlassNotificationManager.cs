@@ -269,6 +269,11 @@ function GlassNotificationMouse::onMouseDown(%this) {
   %this.swatch.animate();
 }
 
+function GlassNotificationMouse::onRightMouseDown(%this) {
+  %this.swatch.action = "out";
+  %this.swatch.animate();
+}
+
 package GlassNotificationManager {
   function ORBSCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime) {
     //oRBs is cancer
