@@ -24,14 +24,11 @@ function GlassInstallWizard::run() {
   GlassInstallWizard_step2.setVisible(0);
   GlassInstallWizard_step3.setVisible(0);
 
-  exec("Add-Ons/System_BlocklandGlass/client/GlassFontManager.cs");
-  GlassFontManager::init();
-
   schedule(0, 0, eval, "GlassInstallWizard::populateStep(1);");
 }
 
 function GlassInstallWizard_window::onWake(%this) {
-  echo("installer woken");
+
 }
 
 function GlassInstallWizard::populateStep(%step) {
@@ -46,27 +43,6 @@ function GlassInstallWizard::populateStep(%step) {
   GlassInstallWizard_window.setText("Step " @ %step @ "/2 (" @ %title[%step] @ ")");
 
   switch(%step) {
-    case 0:
-      if(!GlassFontManager::hasFonts()) {
-        GlassInstallWizard_step1_continue.setVisible(0);
-        GlassInstallWizard_step1_progress.setValue(0);
-        if(isReadOnly("base/client/ui/cache")) {
-          GlassInstallWizard_step1_text.setText("It\'s been detected that your fonts folder is <color:ff0000>read-only. <color:000000>Because of this, we can't automatically install the required fonts for you.<br><br>We have two options:<br>1: <a:" @ Glass.netaddress @ "/help/readonly.php>Make the folder writeable</a><br><br>2: <a:" @ Glass.netaddress @ "/help/fonts.php>Manually Install Fonts</a><br><br>After you've done either of those, restart Blockland.");
-          GlassInstallWizard_step1_progress.setVisible(false);
-          GlassInstallWizard_step1_continue.command = "quit();";
-          GlassInstallWizard_step1_continue.setText("Quit");
-        } else {
-          GlassInstallWizard_step1_text.setText("Blockland Glass requires some custom fonts to run correctly. They're automatically installing now...");
-          GlassInstallWizard_step1_progress.downloaded = GlassInstallWizard_step1_progress.fin = 0;
-          GlassInstallWizard_step1_progress.length = GlassFontManager.fontsAvailable.length;
-          GlassFontManager.downloadAll(1);
-        }
-      } else {
-        GlassInstallWizard_step1_text.setText("We would be downloading the needed fonts for you, but it looks like you already have all the fonts that you'll need! Proceed to the next step.");
-        GlassInstallWizard_step1_progress.setVisible(0);
-        GlassInstallWizard_step1_continue.setVisible(1);
-      }
-
     case 1:
       GlassSettings.cachePut("FontsRunOnce", 1);
       GlassInstallWizard_step2_progress.setValue(0);
@@ -157,7 +133,6 @@ package GlassInstallWizard {
     %this.prev = %float;
 
     %v = GlassInstallWizard_step1_progress.downloaded/GlassInstallWizard_step1_progress.length;
-    echo("set: " @ %v);
     GlassInstallWizard_step1_progress.setValue(%v);
   }
 

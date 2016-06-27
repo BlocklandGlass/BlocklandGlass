@@ -36,15 +36,12 @@ function GlassDownloadManagerQueue::fetchNext(%this) {
 	if(%this.busy || %this.getCount() == 0)
 		return;
 
-	echo("Downloading");
-
 	%this.busy = true;
 
 	%fileData = %this.getObject(0);
 
 	%url = "http://" @ Glass.netAddress @ "/api/2/download.php?type=addon_download&id=" @ %fileData.id @ "&branch=" @ %fileData.download_branch;
-	//%url = "http://cdn.blocklandglass.com/addons/6_1";
-	echo(%url);
+
 	%method = "GET";
 	%downloadPath = "Add-Ons/" @ %fileData.filename;
 	%className = "GlassDownloadTCP";
@@ -66,8 +63,6 @@ function GlassDownloadManagerQueue::fetchFinished(%this) {
 function GlassDownloadTCP::onLine(%this, %line) { // a little shortcut because AWS is touchy w/ arguments
 	if(%this.redirected && !%this.redirectCleaned) {
 		%this.query = "";
-		echo(%this.request);
-		echo("We're going to redirect!");
 
 		%this.redirectCleaned = true;
 	}

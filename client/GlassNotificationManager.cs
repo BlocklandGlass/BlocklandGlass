@@ -28,7 +28,6 @@ function GlassNotificationTCP::onDisconnect(%this) {
 
 function GlassNotificationTCP::onLine(%this, %line) {
   if(%this.debug) {
-    echo("\c4>\c5" @ %line);
     %call = getField(%line, 0);
 
     switch$(%call) {
@@ -182,9 +181,7 @@ function GlassNotification::onAdd(%this) {
   %swatch.image.centerY();
 
   %swatch.position = vectorAdd(getRes(), getWord(%swatch.extent, 0) SPC -getWord(%swatch.extent, 1)-10-GlassNotificationManager.offset);
-  echo("bef: " @ GlassNotificationManager.offset);
   GlassNotificationManager.offset += getWord(%swatch.extent, 1)+10;
-  echo("aft: " @ GlassNotificationManager.offset);
   %this.swatch = %swatch;
 
   %swatch.action = "in";

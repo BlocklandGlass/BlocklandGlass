@@ -160,10 +160,6 @@ function GlassModManagerGui::SearchResults(%res) {
   GlassModManagerGui_SearchResults.verticalMatchChildren(20, 10);
 }
 
-function GlassModManagerGui_SearchBar::onMouseDown(%this, %val) {
-  echo("select");
-}
-
 function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
   %text = %this.getValue();
   if(%this.filler) {
@@ -255,7 +251,7 @@ function GlassModManagerGui::createBoardButton(%name, %img, %id) {
 }
 
 function GlassModManagerGui_RTBButton::onMouseDown(%this) {
-  %this.lastTCP = GlassModManager::placeCall("board", "id\trtb\npage\t1"); 
+  %this.lastTCP = GlassModManager::placeCall("board", "id\trtb\npage\t1");
 }
 
 function GlassModManagerGui_RTBButton::onMouseEnter(%this) {

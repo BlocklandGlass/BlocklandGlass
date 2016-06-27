@@ -77,7 +77,6 @@ function GlassServerControlC::renderAll() {
     GlassServerControlC::renderCategory(%category);
   }
 
-  echo("render open");
   GlassServerControlC::openCategory(GlassPrefGroup.getObject(0));
 }
 

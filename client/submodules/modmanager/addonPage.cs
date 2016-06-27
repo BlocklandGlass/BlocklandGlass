@@ -168,8 +168,6 @@ function GlassModManagerGui::renderAddon(%obj) {
       autoResize = true;
     };
 
-    echo("swat:" @ %container.download[%branch]);
-
     %container.download[%branch].add(%container.download[%branch].info);
 
     if(%action !$= "") {
@@ -508,6 +506,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
     extent = "445 90";
     autoResize = true;
     profile = "GlassMLTextEditProfile";
+    command = "GlassModManagerGui_newComment.onUpdate();";
   };
 
   %newCommentButton = new GuiBitmapButtonCtrl() {
@@ -653,6 +652,16 @@ function GlassModManagerGui::submitComment() {
   %text = strReplace(%text, "\t", "");
   %text = strLimitRep(%text, "\n", 2);
   %text = trim(%text);
+
+  %input = %text;
+  %text = "";
+  for(%i = 0; %i < getLineCount(%input); %i++) {
+    if(%text !$= "")
+      %text = %text @ "\n";
+
+    %text = %text @ stripMLControlChars(getLine(%input, %i));
+  }
+
   %text = expandEscape(%text);
 
   if(%text !$= "")

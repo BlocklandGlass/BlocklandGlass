@@ -130,8 +130,6 @@ function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   } else {
     %this.extent = getWord(%this.extent, 0) SPC %min;
   }
-
-  echo(%this.extent);
 }
 
 function GuiControl::placeBelow(%this, %other, %margin) {

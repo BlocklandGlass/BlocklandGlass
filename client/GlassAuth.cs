@@ -31,7 +31,7 @@ function GlassAuth::check(%this) {
 
 function GlassAuth::verifyAccept() {
 	%url = "http://" @ Glass.address @ "/api/2/auth.php?ident=" @ urlenc(GlassAuth.ident) @ "&action=verify&email=" @ urlenc(GlassVerifyAccount_Input.getValue());
-	echo(%url);
+
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";
@@ -74,22 +74,21 @@ function GlassAuth::onAuthSuccess(%this) {
 }
 
 function GlassAuthTCP::onDone(%this) {
-	if($Glass::Debug)
-		echo(%this.buffer);
+	Glass::debug(%this.buffer);
 
 	if(!%error) {
 		jettisonParse(collapseEscape(%this.buffer));
 		%object = $JSON::Value;
 		if($JSON::Type $= "object") {
 			GlassAuth.ident = %object.get("ident");
-			//echo("Setting SID: " @ %object.get("sid"));
+
 			if(%object.get("status") $= "error") {
 				error("error authenticating: " @ %object.get("error"));
 			}
 
 			if(%object.get("status") $= "success") {
 				if(%object.get("action") $= "verify") {
-					echo("Opening auth dialog");
+
 					%emails = %object.get("verify_data");
 					for(%i = 0; %i < %emails.length; %i++) {
 						GlassAuth.emails[%i] = %emails.value[%i];
@@ -106,7 +105,6 @@ function GlassAuthTCP::onDone(%this) {
 					GlassAuth.onAuthSuccess();
 				}
 
-				//echo(%object.get("hasGlassAccount"));
 				if(%object.get("hasGlassAccount")) {
 					GlassAuth.hasAccount = true;
 				}

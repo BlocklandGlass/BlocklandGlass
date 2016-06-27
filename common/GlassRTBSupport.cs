@@ -112,8 +112,7 @@ function GlassRTBSupport::updateProgressBar(%handle, %float) {
 
 function GlassRTBSupportTCP::onDone(%this, %error) {
 	if($Glass::Debug) {
-		echo("\c4 + GlassRTBSupportTCP onDone " @ %error);
-		echo(%this.buffer);
+		Glass::debug(%this.buffer);
 	}
 	if(!%error) {
 		jettisonParse(collapseEscape(%this.buffer));

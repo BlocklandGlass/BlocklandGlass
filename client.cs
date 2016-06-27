@@ -45,7 +45,6 @@ function Glass::execClient() {
 	}
 
 	echo(" ===              Executing Important Stuff             ===");
-	exec("./client/GlassFontManager.cs");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassRTBSupport.cs");
@@ -64,7 +63,6 @@ function Glass::execClient() {
 	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
-	GlassFontManager::init();
 
 	GlassDownloadInterface::init();
 	GlassAuth::init();

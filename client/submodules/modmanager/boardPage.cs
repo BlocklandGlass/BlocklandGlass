@@ -179,7 +179,6 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
     %x += 20;
   }
 
-  echo("frac" @ %fracStar);
   if(%fracStar != 0) {
     if(%fracStar > 3)
       %fracStar = 3;

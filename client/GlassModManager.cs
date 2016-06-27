@@ -240,7 +240,9 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
       %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
 
     %url = "http://" @ Glass.address @ "/api/2/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
-    if($Glass::Debug) { echo(%url); }
+
+    Glass::debug("Calling url: " @ %url);
+
     %method = "GET";
     %downloadPath = "";
     %className = "GlassModManagerTCP";
@@ -264,13 +266,13 @@ function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
     %error = jettisonParse(%this.buffer);
     if(%error) {
-      echo(%this.buffer);
+      Glass::debug(%this.buffer);
       GlassModManagerGui::loadErrorPage("jettsionError", $JSON::Error @ " : " @ $JSON::Index);
       return;
     }
     %ret = $JSON::Value;
 
-    echo("glass server res");
+    Glass::debug("glass server res");
 
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";
@@ -281,11 +283,11 @@ function GlassModManagerTCP::onDone(%this, %error) {
       GlassModManagerGui::setLoading(false);
       switch$(%this.glass_call) {
         case "home":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
           GlassModManagerGui::renderHome(%ret.data);
 
         case "addon":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
 
           if(%ret.authors.length == 1) {
             %author = "<font:verdana bold:14>" @ %ret.authors.value[0].name;
@@ -339,7 +341,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
           GlassModManagerGui::renderBoards(trim(%str));
 
         case "board":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
           for(%i = 0; %i < %ret.addons.length; %i++) {
             %addon = %ret.addons.value[%i];
             %name = %addon.name;
@@ -353,21 +355,21 @@ function GlassModManagerTCP::onDone(%this, %error) {
           GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages, %ret.rtb);
 
         case "comments":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
           GlassModManagerGui::renderAddonComments(%ret.comments);
 
         case "search":
           if(GlassModManagerGui_SearchBar.lastTCP == %this)
             GlassModManagerGui::searchResults(%ret.results);
           else
-            echo ("old results in!");
+            Glass::debug ("old results in!");
 
         case "rating":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
           GlassModManagerGui::displayAddonRating(%ret.rating);
 
         case "rtbaddon":
-          echo(%this.buffer);
+          Glass::debug(%this.buffer);
           messageBoxOk("Open in browser?", "<a:http://test.blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
       }
 

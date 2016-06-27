@@ -35,7 +35,6 @@ function GlassPrefGroup::cleanup() {
 }
 
 function GlassPrefGroup::doneLoading() {
-	echo("DONE LOADING!");
 	GlassServerControlC.loaded = true;
 	GlassServerControlC::renderAll();
 }
@@ -47,7 +46,6 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 			%pref = %cate.getObject(%j);
 			if(%pref.localValue !$= %pref.value) {
 				%up = true;
-				echo(%i SPC %j @ ": " @ %pref.variable);
 				commandToServer('UpdatePref', %pref.variable, %pref.localValue);
 				%pref.value = %pref.localValue;
 			}
@@ -95,7 +93,6 @@ function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way
 }
 
 function clientCmdupdateBLPref(%varname, %value) {
-	echo("Updating " @ %varname @ " to " @ %value);
 	if(%pso = GlassPrefGroup::findByVariable(%varname)) {
 		%pso.value = %value;
 		%pso.localValue = %value;
@@ -122,7 +119,7 @@ function clientCmdhasPrefSystem(%version, %permission) {
 
 function clientCmdReceiveCategory(%id, %category, %icon, %last) {
 	GlassServerControlC.receivedPrefs = true;
-	echo(%id TAB %category TAB %icon);
+	Glass::debug(%id TAB %category TAB %icon);
 	%obj = new ScriptGroup() {
 		class = "GlassPrefCategory";
 
