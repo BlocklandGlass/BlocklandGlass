@@ -31,6 +31,13 @@ function GlassPrefGroup::cleanup() {
 	}
 	GlassPrefGroup.delete();
 	new ScriptGroup(GlassPrefGroup);
+	GlassServerControlC::setTab(2);
+}
+
+function GlassPrefGroup::doneLoading() {
+	echo("DONE LOADING!");
+	GlassServerControlC.loaded = true;
+	GlassServerControlC::renderAll();
 }
 
 function GlassPrefGroup::sendChangedPrefs(%this) {
@@ -55,7 +62,7 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 }
 
 function GlassPrefBridge::requestPreferences() {
-	GlassServerControlC.requestedPrefs = true;
+	GlassServerControlC.requested = true;
 	commandToServer('RequestPrefCategories');
 }
 
@@ -71,8 +78,6 @@ function GlassPrefGroup::requestPrefs(%this) {
 			return;
 		}
 	}
-	GlassServerControlC::renderPrefCategories();
-	%this.doFirstRender = true;
 }
 
 function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way to do this
@@ -98,7 +103,7 @@ function clientCmdupdateBLPref(%varname, %value) {
 		// TODO something about updating the gui
 		if(isobject(%pso.swatch.ctrl)) {
 			if(%pso.type !$= "list") {
-				%pso.swatch.ctrl.setValue(%pso.value);
+				%pso.swatch.ctrl.setValue(expandEscape(%pso.value));
 			} else {
 				%pso.swatch.ctrl.setSelected(%pso.value);
 			}
@@ -110,9 +115,8 @@ function clientCmdhasPrefSystem(%version, %permission) {
 	if($Glass::Debug)
 		echo("Server has pref system! (" @ %version @")");
 
-	GlassServerControlC.allowedPrefs = %permission;
 	if(%permission) {
-		GlassPrefBridge::requestPreferences();
+		GlassServerControlC.setEnabled(true);
 	}
 }
 
@@ -152,8 +156,9 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 
 	if(%last) {
 		GlassPrefGroup.cat[%catId].downloadedPrefs = true;
-		if(GlassPrefGroup.doFirstRender) {
-			GlassServerControlC::renderPrefs();
+		GlassPrefGroup.downloaded++;
+		if(GlassPrefGroup.downloaded >= GlassPrefGroup.getCount()) {
+			GlassPrefGroup::doneLoading();
 		}
 	}
 }

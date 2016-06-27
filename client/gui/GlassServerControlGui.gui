@@ -85,7 +85,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "150 25";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          command = "GlassServerControlC::setTab(3);";
          text = "Other";

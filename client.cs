@@ -116,14 +116,6 @@ package GlassPrefs {
 		Glass::openFeedbackPrompt();
 		GlassResourceManager.prompt();
 		parent::blinkSuccess(%this);
-
-		if(isObject(orbsServerControlBtn)) {
-			orbsServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui)";
-		}
-
-		if(isObject(rtbServerControlBtn)) {
-			rtbServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui)";
-		}
 	}
 };
 activatePackage(GlassPrefs);
