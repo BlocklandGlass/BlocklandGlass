@@ -109,8 +109,12 @@ function GlassModManagerGui_AddonButton::onMouseLeave(%this) {
 }
 
 function GlassModManagerGui_AddonButton::onMouseDown(%this) {
-  %obj = GlassModManagerGui::fetchAndRenderAddon(%this.aid);
-  %obj.action = "render";
+  if(!%this.rtb) {
+    %obj = GlassModManagerGui::fetchAndRenderAddon(%this.aid);
+    %obj.action = "render";
+  } else {
+    GlassModManager::placeCall("rtbaddon", "id" TAB %this.aid);
+  }
 }
 
 function GlassModManagerGui_AddonButton::onAdd(%this) {
@@ -217,7 +221,7 @@ function GlassModManagerGui_BoardButton::onMouseEnter(%this) {
   %swatch = %this.swatch;
   if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
 
-  %swatch.color = vectoradd(%swatch.color, "20 20 20");
+  %swatch.color ="240 240 240 255";
 }
 
 function GlassModManagerGui_BoardButton::onMouseLeave(%this) {

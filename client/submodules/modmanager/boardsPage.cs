@@ -39,8 +39,7 @@ function GlassModManagerGui::renderBoards(%boards) {
     %desc = getField(%desc, 2);
     %img = getField(%desc, 3);
 
-    %contain = GlassModManagerGui::createBoardButton(%name, %desc, %img, %id);
-    %contain.extent = 465 SPC 35;
+    %contain = GlassModManagerGui::createBoardButton(%name, "star", %id);
     %contain.position = 10 SPC %yPos;
     %contain.text.centerY();
 
@@ -51,6 +50,21 @@ function GlassModManagerGui::renderBoards(%boards) {
     GlassModManagerGui_AddonDisplay.add(%contain);
     %contain.mouse.onAdd();
   }
+
+  %rtb = GlassModManagerGui::createBoardButton("Return to Blockland Archive", "bricks", "rtb");
+  %rtb.position = 10 SPC %yPos;
+  %rtb.text.centerY();
+  %rtb.color = (!%dark ? "210 210 210 255" : "220 220 220 255");
+  %rtb.ocolor = %rtb.color;
+  GlassModManagerGui_AddonDisplay.add(%rtb);
+  %rtb.mouse.delete();
+
+  %rtb.mouse = new GuiMouseEventCtrl(GlassModManagerGui_RTBButton) {
+    extent = %rtb.extent;
+    position = "0 0";
+    swatch = %rtb;
+  };
+  %rtb.add(%rtb.mouse);
 
   GlassModManagerGui_AddonDisplay.verticalMatchChildren(0, 10);
 
@@ -67,7 +81,6 @@ function GlassModManagerGui::renderBoards(%boards) {
   GlassModManagerGui_MainDisplay.add(%container);
   GlassModManagerGui_MainDisplay.extent = %container.extent;
   GlassModManagerGui_MainDisplay.setVisible(true);
-
 
   //%container.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
@@ -98,57 +111,6 @@ function GlassModManagerGui::createSearchBar() {
 
   %container.add(%search);
   return %container;
-}
-
-function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
-  %text = %this.getValue();
-  if(%this.filler) {
-    if(strlen(%text) < 10) {
-      %this.setValue("\c1Search...");
-      %this.setCursorPos(0);
-      GlassModManagerGui_SearchResults.setVisible(false);
-      GlassModManagerGui_AddonDisplay.setVisible(true);
-    } else {
-      %char = getsubstr(%text, %this.getCursorPos()-1, 1);
-      %text = %char;
-      %this.setValue(%text);
-      %this.filler = false;
-    }
-  }
-
-  if(strlen(%text) == 0) {
-    %this.filler = true;
-    %this.setValue("\c1Search...");
-    %this.setCursorPos(0);
-    GlassModManagerGui_SearchResults.setVisible(false);
-    GlassModManagerGui_AddonDisplay.setVisible(true);
-  }
-
-  if(!%this.filler) {
-    if(GlassModManager.liveSearch) {
-      GlassModManagerGui_SearchBar.search();
-    }
-  }
-}
-
-function GlassModManagerGui_SearchBar::search(%this) {
-  %query = trim(%this.getValue());
-  if(%this.filler)
-    return;
-
-  if(strlen(%query) == 0)
-    return;
-
-  GlassModManagerGui_SearchResults.clear();
-  %loading = GlassModManagerGui::createLoadingAnimation();
-  GlassModManagerGui_SearchResults.add(%loading);
-  %loading.forceCenter();
-
-
-  GlassModManagerGui_SearchResults.setVisible(true);
-  GlassModManagerGui_AddonDisplay.setVisible(false);
-
-  %this.lastTCP = GlassModManager::placeCall("search", "type\taddon\nby\tname" NL "query" TAB %query);
 }
 
 function GlassModManagerGui::SearchResults(%res) {
@@ -202,19 +164,70 @@ function GlassModManagerGui_SearchBar::onMouseDown(%this, %val) {
   echo("select");
 }
 
-function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
+function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
+  %text = %this.getValue();
+  if(%this.filler) {
+    if(strlen(%text) < 10) {
+      %this.setValue("\c1Search...");
+      %this.setCursorPos(0);
+      GlassModManagerGui_SearchResults.setVisible(false);
+      GlassModManagerGui_AddonDisplay.setVisible(true);
+    } else {
+      %char = getsubstr(%text, %this.getCursorPos()-1, 1);
+      %text = %char;
+      %this.setValue(%text);
+      %this.filler = false;
+    }
+  }
+
+  if(strlen(%text) == 0) {
+    %this.filler = true;
+    %this.setValue("\c1Search...");
+    %this.setCursorPos(0);
+    GlassModManagerGui_SearchResults.setVisible(false);
+    GlassModManagerGui_AddonDisplay.setVisible(true);
+  }
+
+  if(!%this.filler) {
+    if(GlassModManager.liveSearch) {
+      GlassModManagerGui_SearchBar.search();
+    }
+  }
+}
+
+function GlassModManagerGui_SearchBar::search(%this) {
+  %query = trim(%this.getValue());
+  if(%this.filler)
+    return;
+
+  if(strlen(%query) == 0)
+    return;
+
+  GlassModManagerGui_SearchResults.clear();
+  %loading = GlassModManagerGui::createLoadingAnimation();
+  GlassModManagerGui_SearchResults.add(%loading);
+  %loading.forceCenter();
+
+
+  GlassModManagerGui_SearchResults.setVisible(true);
+  GlassModManagerGui_AddonDisplay.setVisible(false);
+
+  %this.lastTCP = GlassModManager::placeCall("search", "type\taddon\nby\tname" NL "query" TAB %query);
+}
+
+function GlassModManagerGui::createBoardButton(%name, %img, %id) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "200 200 200 255";
     position = "10 10";
-    extent = "235 0";
+    extent = "465 35";
   };
 
   %container.icon = new GuiBitmapCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %img;
     position = "10 10";
     extent = "16 16";
     minextent = "0 0";
@@ -239,4 +252,16 @@ function GlassModManagerGui::createBoardButton(%name, %desc, %img, %id) {
   %container.add(%container.mouse);
 
   return %container;
+}
+
+function GlassModManagerGui_RTBButton::onMouseDown(%this) {
+  %this.lastTCP = GlassModManager::placeCall("board", "id\trtb\npage\t1"); 
+}
+
+function GlassModManagerGui_RTBButton::onMouseEnter(%this) {
+  %this.swatch.color = vectoradd(%this.swatch.color, "20 20 20");
+}
+
+function GlassModManagerGui_RTBButton::onMouseLeave(%this) {
+  %this.swatch.color = %this.swatch.ocolor;
 }

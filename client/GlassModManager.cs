@@ -264,10 +264,13 @@ function GlassModManagerTCP::onDone(%this, %error) {
   if(!%error) {
     %error = jettisonParse(%this.buffer);
     if(%error) {
+      echo(%this.buffer);
       GlassModManagerGui::loadErrorPage("jettsionError", $JSON::Error @ " : " @ $JSON::Index);
       return;
     }
     %ret = $JSON::Value;
+
+    echo("glass server res");
 
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";
@@ -347,7 +350,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
             %listing = %listing @ %id TAB %name TAB %author TAB %rating TAB %downloads NL "";
           }
-          GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages);
+          GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages, %ret.rtb);
 
         case "comments":
           echo(%this.buffer);
@@ -359,9 +362,13 @@ function GlassModManagerTCP::onDone(%this, %error) {
           else
             echo ("old results in!");
 
-          case "rating":
-            echo(%this.buffer);
-            GlassModManagerGui::displayAddonRating(%ret.rating);
+        case "rating":
+          echo(%this.buffer);
+          GlassModManagerGui::displayAddonRating(%ret.rating);
+
+        case "rtbaddon":
+          echo(%this.buffer);
+          messageBoxOk("Open in browser?", "<a:http://test.blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
       }
 
     } else {

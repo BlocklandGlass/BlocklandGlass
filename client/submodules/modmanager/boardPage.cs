@@ -12,7 +12,7 @@ function GlassModManagerGui::fetchBoard(%id, %page) {
   GlassModManagerGui::renderBoardPage(1, "Client Mods", %listing NL %listing, 11, 14);
 }
 
-function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %maxpage) {
+function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %maxpage, %rtb) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -36,7 +36,7 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
     %rating = getField(%line, 3);
     %downloads = getField(%line, 4);
 
-    %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd);
+    %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd, %rtb);
     %listing.placeBelow(%container.getObject(%container.getCount()-1), 0);
     %container.add(%listing);
   }
@@ -126,7 +126,7 @@ function GlassModManagerGui::createBoardHeader(%title) {
   return %swatch;
 }
 
-function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %downloads, %odd) {
+function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %downloads, %odd, %rtb) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -214,6 +214,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
   }
 
   %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+    rtb = %rtb;
     aid = %id;
     swatch = %swatch;
   };
