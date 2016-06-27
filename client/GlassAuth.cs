@@ -67,8 +67,10 @@ function GlassAuth::updateInput() {
 }
 
 function GlassAuth::onAuthSuccess(%this) {
-	if(!%this.firstAuth)
+	if(!%this.firstAuth) {
   	GlassModManagerGui::loadContext("home");
+		GlassNotificationManager::connectToServer();
+	}
 
 	%this.firstAuth = true;
 }

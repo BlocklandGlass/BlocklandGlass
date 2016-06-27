@@ -1,6 +1,17 @@
-function GlassNotificationManager::connectToNotificationServer() {
+function GlassNotificationManager::init() {
+  if(!isObject(GlassNotificationManager))
+    new ScriptGroup(GlassNotificationManager) {
+      offset = 0;
+    };
+}
+
+function GlassNotificationManager::connectToServer() {
+  cancel(GlassNotificationManager.reconnect);
+
   %server = Glass.address;
   %port = 27000;
+
+  //warn("Connecting to notification server...");
 
   if(isObject(GlassNotificationTCP)) {
     if(GlassNotificationTCP.connected) {
@@ -18,34 +29,45 @@ function GlassNotificationManager::connectToNotificationServer() {
 
 function GlassNotificationTCP::onConnected(%this) {
   %this.connected = true;
-  %this.send("auth\t" @ GlassAuth.ident @ "\r\n");
+  %this.send("auth\t" @ GlassAuth.ident @ "\t" @ Glass.version @ "\r\n");
 }
 
 function GlassNotificationTCP::onDisconnect(%this) {
   %this.connected = false;
-  schedule(1000, 0, "GlassNotificationManager::connectToNotificationServer");
+  GlassNotificationManager.reconnect = GlassNotificationManager.schedule(1000+getRandom(0, 1000), "connectToServer");
+}
+
+function GlassNotificationTCP::onDNSFailed(%this) {
+  %this.connected = false;
+  GlassNotificationManager.reconnect = GlassNotificationManager.schedule(1000+getRandom(0, 1000), "connectToServer");
+}
+
+function GlassNotificationTCP::onConnectFailed(%this) {
+  %this.connected = false;
+  GlassNotificationManager.reconnect = GlassNotificationManager.schedule(1000+getRandom(0, 1000), "connectToServer");
 }
 
 function GlassNotificationTCP::onLine(%this, %line) {
-  if(%this.debug) {
-    %call = getField(%line, 0);
-
-    switch$(%call) {
-      case "notification":
-        %title = getField(%line, 2);
-        %text = getField(%line, 3);
-        %image = getField(%line, 4);
-        %sticky = getField(%line, 6);
-        GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
-    }
+  echo(%line);
+  %error = jettisonParse(%line);
+  if(%error) {
+    error("error");
+    return;
   }
-}
 
-function GlassNotificationManager::init() {
-  new ScriptGroup(GlassNotificationManager) {
-    offset = 0;
-  };
-  GlassNotificationManager::connectToNotificationServer();
+  %data = $JSON::Value;
+
+  switch$(%data.type) {
+    case "auth":
+      echo("Auth status: " @ %data.status);
+
+    case "notification":
+      %title = %data.title;
+      %text = %data.text;
+      %image = %data.image;
+      %sticky = (%data.duration == 0);
+      GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
+  }
 }
 
 function GlassNotificationManager::refocus(%this) {
