@@ -106,24 +106,24 @@ function serverCmdGlassSetAdmin(%client, %blid, %level) {
   }
 
   if(%level > 0) {
-    %sa = %level-1;
+    %sa = (%level == 2);
     if(%sa) {
-      if(%client.checkPermissionLevel($Pref::Glass::SAPromoteLevel)) {
+      if(%client.isSuperAdmin) {
         GlassServerControlS::addAutoAdmin(%blid, 1);
       }
     } else {
-      if(%client.checkPermissionLevel($Pref::Glass::APromoteLevel)) {
+      if(%client.isAdmin) {
         GlassServerControlS::addAutoAdmin(%blid, 0);
       }
     }
   } else {
     %theirlevel = getAdminLevelFromBLID(%blid);
     if(%theirlevel == 2) {
-      if(%client.checkPermissionLevel($Pref::Glass::SAPromoteLevel)) {
+      if(%client.isSuperAdmin) {
         GlassServerControlS::removeAutoAdmin(%blid);
       }
     } else if(%theirlevel == 1) {
-      if(%client.checkPermissionLevel($Pref::Glass::APromoteLevel)) {
+      if(%client.isAdmin) {
         GlassServerControlS::removeAutoAdmin(%blid);
       }
     } else {
@@ -142,8 +142,8 @@ function serverCmdGlassSetAdmin(%client, %blid, %level) {
 function servercmdgetglassusers(%client) {
   %users = 0;
   for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    %client = ClientGroup.getObject(%i);
-    if(%client.hasGlass) {
+    %cl = ClientGroup.getObject(%i);
+    if(%cl.hasGlass) {
       %users++;
     }
   }

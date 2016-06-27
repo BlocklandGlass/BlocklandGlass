@@ -802,6 +802,20 @@ function GlassServerControlGui_CatMouseCtrl::onMouseLeave(%this) {
     %swatch.color = "200 200 255 255";
 }
 
+function clientCmdGlassAdminListing(%data, %append) {
+  if(!%append) {
+    GlassServerControlGui_AdminList.clear();
+  }
+
+  if(%data !$= "") {
+    for(%i = 0; %i < getLineCount(%data); %i++) {
+      GlassServerControlGui_AdminList.addRow(GlassServerControlGui_AdminList.getCount(), getLine(%data, %i));
+    }
+
+    GlassServerControlGui_AdminList.sort(1, true);
+  }
+}
+
 package GlassServerControlC {
   function clientCmdsetAdminLevel(%level) {
     if(%level > 0) {
