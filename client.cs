@@ -67,8 +67,7 @@ function Glass::execClient() {
 	GlassDownloadInterface::init();
 	GlassAuth::init();
 	GlassDownloadManager::init();
-	GlassRTBSupport::init();
-	GlassUpdaterSupport::verifyInstall();
+	//GlassRTBSupport::init();
 	GlassServerControlC::init();
 	GlassClientManager::init();
 	GlassNotificationManager::init();
@@ -78,18 +77,7 @@ function Glass::execClient() {
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
 
 	%bind = GlassSettings.get("MM::Keybind");
-	echo(%bind);
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
-
-	exec("./feedback.cs");
-}
-
-function Glass::doWelcomeMessage() {
-	if(!GlassSettings.cacheFetch("MM::WelcomeMessage")) messageBoxOk("Welcome to Blockland Glass", "<font:arial bold:20>Welcome to Blockland Glass<font:arial: 14><br><br>Thank you very much for downloading Blockland Glass!<br><br>To get started, press <font:arial bold:14>CTRL M<font:arial:14>!", "Glass::welcomeMessageSeen();");
-}
-
-function Glass::welcomeMessageSeen() {
-	GlassSettings.cachePut("MM::WelcomeMessage", true);
 }
 
 function clientCmdGlassHandshake(%ver) {
@@ -110,9 +98,6 @@ package GlassPrefs {
 	}
 
 	function MM_AuthBar::blinkSuccess(%this) {
-		Glass::doWelcomeMessage();
-		Glass::openFeedbackPrompt();
-		GlassResourceManager.prompt();
 		parent::blinkSuccess(%this);
 	}
 };

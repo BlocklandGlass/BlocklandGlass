@@ -68,7 +68,6 @@ function GlassAuth::updateInput() {
 
 function GlassAuth::onAuthSuccess(%this) {
 	if(!%this.firstAuth) {
-  	GlassModManagerGui::loadContext("home");
 		GlassNotificationManager::connectToServer();
 	}
 

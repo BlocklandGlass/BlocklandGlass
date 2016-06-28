@@ -137,8 +137,17 @@ function GlassModManagerGui::SearchResults(%res) {
       text = %result.title;
       filler = 1;
     };
+
+    echo(jettisonStringify("object", %result));
+
+    %swat.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
+      aid = %result.id;
+      swatch = %swat;
+    };
+
     %swat.add(%search);
     %swat.verticalMatchChildren(0, 5);
+    %swat.add(%swat.mouse);
     %y += getWord(%swat.getExtent(), 1) + 5;
     GlassModManagerGui_SearchResults.add(%swat);
   }

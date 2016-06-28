@@ -48,10 +48,10 @@ function GlassNotificationTCP::onConnectFailed(%this) {
 }
 
 function GlassNotificationTCP::onLine(%this, %line) {
-  echo(%line);
+  Glass::debug(%line);
   %error = jettisonParse(%line);
   if(%error) {
-    error("error");
+    Glass::debug("error");
     return;
   }
 

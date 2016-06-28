@@ -51,6 +51,8 @@ function GlassModManagerGui::loadContext(%context) {
 }
 
 function GlassModManagerGui::setLoading(%bool) {
+  GlassModManagerGui_LoadingAnimation.setVisible(false);
+  return;
   if(%bool) {
     //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
     //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);

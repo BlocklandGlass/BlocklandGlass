@@ -26,7 +26,7 @@ function GlassModManager::init() {
 
 function GlassModManager::toggleHost() {
   if(Glass.alt_address $= "") {
-    Glass.alt_address = "test.blocklandglass.com";
+    Glass.alt_address = "blocklandglass.com";
   }
 
   if(Glass.address $= "localhost") {
@@ -165,6 +165,13 @@ function GlassModManager_keybind(%down) {
     canvas.popDialog(GlassModManagerGui);
   } else {
     canvas.pushDialog(GlassModManagerGui);
+  }
+}
+
+function GlassModManagerGui::onWake(%this) {
+  if(!GlassModManagerGui.firstWake) {
+    GlassModManagerGui::loadContext("home");
+    GlassModManagerGui.firstWake = true;
   }
 }
 
@@ -370,7 +377,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
         case "rtbaddon":
           Glass::debug(%this.buffer);
-          messageBoxOk("Open in browser?", "<a:http://test.blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
+          messageBoxOk("Open in browser?", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
       }
 
     } else {

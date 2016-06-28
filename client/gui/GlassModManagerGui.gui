@@ -11699,7 +11699,7 @@ new GuiControl(GlassModManagerGui) {
          visible = "1";
          clipToParent = "1";
          command = "GlassModManager::toggleHost();";
-         text = "test.blocklandglass.com";
+         text = "blocklandglass.com";
          groupNum = "-1";
          buttonType = "PushButton";
       };

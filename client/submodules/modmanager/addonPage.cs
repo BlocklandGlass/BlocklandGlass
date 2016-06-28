@@ -435,7 +435,7 @@ function GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos, %y) {
     if(%rating > %i)
       %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star");
     else
-      %star.setBitmap("Add-Ons/System_`BlocklandGlass/image/icon/star_empty");
+      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star_empty");
   }
 }
 
