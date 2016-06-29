@@ -81,8 +81,8 @@ function GlassStatistics::scanFiles() {
 }
 
 package GlassStatistics {
-  function GlassAuth::heartbeat(%this) {
-    parent::heartbeat(%this);
+  function GlassAuth::onAuthSuccess(%this) {
+    parent::onAuthSuccess(%this);
   	GlassStatistics::reportMods();
   }
 };

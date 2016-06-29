@@ -113,7 +113,7 @@ new GuiControl(MainMenuGui) {
                enabled = "1";
                visible = "1";
                clipToParent = "1";
-               command = "GlassInstallWizard::populateStep(2);";
+               command = "GlassInstallWizard::populateStep(1);";
                text = "Continue >";
                groupNum = "-1";
                buttonType = "PushButton";
@@ -179,7 +179,7 @@ new GuiControl(MainMenuGui) {
                enabled = "1";
                visible = "1";
                clipToParent = "1";
-               command = "GlassInstallWizard::populateStep(3);";
+               command = "GlassInstallWizard::populateStep(2);";
                text = "Continue >";
                groupNum = "-1";
                buttonType = "PushButton";

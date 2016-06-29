@@ -27,13 +27,9 @@ function GlassInstallWizard::run() {
   schedule(0, 0, eval, "GlassInstallWizard::populateStep(1);");
 }
 
-function GlassInstallWizard_window::onWake(%this) {
-
-}
-
 function GlassInstallWizard::populateStep(%step) {
-  if(isObject(%o = "GlassInstallWizard_step" @ %step-1)) { %o.setVisible(0); }
-  %o = "GlassInstallWizard_step" @ %step;
+  if(isObject(%o = "GlassInstallWizard_step" @ %step)) { %o.setVisible(0); }
+  %o = "GlassInstallWizard_step" @ %step+1;
   %o.setVisible(1);
 
   //%title[1] = "Fonts";
