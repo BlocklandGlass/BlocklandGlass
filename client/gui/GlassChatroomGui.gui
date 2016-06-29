@@ -1,0 +1,120 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassChatroomGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl() {
+      profile = "GlassWindowProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "135 131";
+      extent = "436 267";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Chatroom - General Discussion";
+      maxLength = "255";
+      resizeWidth = "1";
+      resizeHeight = "1";
+      canMove = "1";
+      canClose = "1";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+
+      new GuiScrollCtrl() {
+         profile = "GlassScrollProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 35";
+         extent = "315 200";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         willFirstRespond = "0";
+         hScrollBar = "alwaysOff";
+         vScrollBar = "alwaysOn";
+         constantThumbHeight = "0";
+         childMargin = "0 0";
+         rowHeight = "40";
+         columnWidth = "30";
+
+         new GuiSwatchCtrl(GlassChatroomGui_TextSwatch) {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "1 -152";
+            extent = "304 351";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            color = "0 0 0 0";
+
+            new GuiMLTextCtrl(GlassChatroomGui_Text) {
+               profile = "GuiMLTextProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "3 0";
+               extent = "300 351";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               lineSpacing = "2";
+               allowColorChars = "0";
+               maxChars = "-1";
+               maxBitmapHeight = "-1";
+               selectable = "1";
+               autoResize = "1";
+            };
+         };
+      };
+      new GuiScrollCtrl() {
+         profile = "GlassScrollProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "330 35";
+         extent = "95 200";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         willFirstRespond = "0";
+         hScrollBar = "alwaysOff";
+         vScrollBar = "alwaysOn";
+         constantThumbHeight = "0";
+         childMargin = "0 0";
+         rowHeight = "40";
+         columnWidth = "30";
+      };
+      new GuiTextEditCtrl(GlassChatroomGui_Input) {
+         profile = "GuiTextEditProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 240";
+         extent = "315 18";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         altCommand = "GlassLive::sendRoomMessage(GlassChatroomGui_Input.getValue());GlassChatroomGui_Input.setValue(\"\");";
+         accelerator = "enter";
+         maxLength = "255";
+         historySize = "0";
+         password = "0";
+         tabComplete = "0";
+         sinkAllKeyEvents = "0";
+      };
+   };
+};
+//--- OBJECT WRITE END ---

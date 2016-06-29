@@ -29,12 +29,20 @@ function GlassNotificationManager::connectToServer() {
 
 function GlassNotificationTCP::onConnected(%this) {
   %this.connected = true;
-  %this.send("auth\t" @ GlassAuth.ident @ "\t" @ Glass.version @ "\r\n");
+  %obj = JettisonObject();
+  %obj.set("type", "string", "auth");
+  %obj.set("ident", "string", GlassAuth.ident);
+  %obj.set("version", "string", Glass.version);
+  //echo(jettisonStringify("object", %obj));
+  %this.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassNotificationTCP::onDisconnect(%this) {
   %this.connected = false;
   GlassNotificationManager.reconnect = GlassNotificationManager.schedule(1000+getRandom(0, 1000), "connectToServer");
+
+  %text = "<br><font:verdana:12><color:666666>[ Disconnected ]<br>";
+  GlassLive::pushMessage(%text);
 }
 
 function GlassNotificationTCP::onDNSFailed(%this) {
@@ -57,7 +65,7 @@ function GlassNotificationTCP::onLine(%this, %line) {
 
   %data = $JSON::Value;
 
-  switch$(%data.type) {
+  switch$(%data.value["type"]) {
     case "auth":
       echo("Auth status: " @ %data.status);
 
@@ -67,6 +75,25 @@ function GlassNotificationTCP::onLine(%this, %line) {
       %image = %data.image;
       %sticky = (%data.duration == 0);
       GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
+
+    case "roomJoin":
+      canvas.pushDialog(GlassChatroomGui);
+      GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+      %motd = %data.motd;
+      %motd = strreplace(%motd, "\n", "<br> * ");
+      %motd = "<color:666666> * " @ %motd;
+      GlassLive::pushMessage(%motd);
+
+    case "roomMessage":
+      %msg = %data.msg;
+      %sender = %data.sender;
+      %text = "<font:verdana bold:12><color:6688ff>" @ %sender @ ": <font:verdana:12><color:333333>" @ stripMlControlChars(%msg);
+      GlassLive::pushMessage(%text);
+
+    case "roomUserJoin":
+      %user = %data.username;
+      %text = "<font:verdana:12><color:333333>" @ %user @ " entered the room.";
+      GlassLive::pushMessage(%text);
   }
 }
 

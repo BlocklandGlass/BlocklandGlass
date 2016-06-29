@@ -7,7 +7,7 @@ function Glass::init(%context) {
 			enableCLI = true;
 		};
 
-		if($Pref::Player::NetName $= "Jincux") {
+		if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
 			Glass.dev = true;
 			Glass.address = "localhost";
 		}
