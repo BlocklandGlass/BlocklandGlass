@@ -15,6 +15,22 @@ if(!isObject(GlassScrollProfile)) new GuiControlProfile(GlassScrollProfile)
    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/scroll.png";
 };
 
+if(!isObject(GlassTextEditProfile)) new GuiControlProfile(GlassTextEditProfile : GuiTextEditProfile)
+{
+  fontType = "Verdana";
+  fillColor = "240 240 240 255";
+  borderColor = "150 150 150 255";
+  border = "1";
+  opaque = "1";
+  fontSize = 12;
+
+  fontColor = "70 70 70 255";
+  fontColors[0] = "70 70 70";
+  fontColors[1] = "255 70 70"; //R
+  fontColors[2] = "70 255 70"; //G
+  fontColors[3] = "70 70 255"; //B
+};
+
 if(!isObject(GlassWindowProfile)) new GuiControlProfile(GlassWindowProfile) {
   tab = "0";
   canKeyFocus = "0";
@@ -164,6 +180,11 @@ if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultP
   fontSize = "16";
 };
 
+if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfile : GuiTextProfile) {
+  fontType = "Verdana Bold";
+  fontSize = "13";
+};
+
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
   fontType = "Verdana";
   fontSize = 12;
@@ -180,4 +201,17 @@ if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonPro
   fontType = "Verdana Bold";
   fontSize = 16;
   fontColor = "64 64 64 255";
+};
+
+if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
+  volume = 2.0;
+  isLooping = false;
+  is3D = false;
+  type = $GuiAudioType;
+};
+
+if(!isObject(GlassChatAudio)) new AudioProfile(GlassChatAudio) {
+  filename = "base/data/sound/clickPlant.wav";
+  description = "AudioGui";
+  preload = true;
 };

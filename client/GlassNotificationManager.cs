@@ -9,7 +9,7 @@ function GlassNotificationManager::connectToServer() {
   cancel(GlassNotificationManager.reconnect);
 
   %server = Glass.address;
-  %port = 27000;
+  %port = 27002;
 
   //warn("Connecting to notification server...");
 
@@ -76,25 +76,90 @@ function GlassNotificationTCP::onLine(%this, %line) {
       %sticky = (%data.duration == 0);
       GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
 
+    case "message":
+      GlassLive::onMessage(%data.message, %data.sender, %data.sender_id);
+
     case "roomJoin":
-      canvas.pushDialog(GlassChatroomGui);
       GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+      GlassLive::onChatroomJoin(%data.id, %data.title);
       %motd = %data.motd;
       %motd = strreplace(%motd, "\n", "<br> * ");
-      %motd = "<color:666666> * " @ %motd;
-      GlassLive::pushMessage(%motd);
+      %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
+
+      %clients = %data.clients;
+      for(%i = 0; %i < %clients.length; %i++) {
+        %cl = %clients.value[%i];
+        %chatroom = GlassLive.chatroom[%data.id];
+        %chatroom.userlist.addRow(%cl.blid, %cl.username);
+        %chatroom.userlist.sort(0);
+      }
+
+      GlassLive::pushMessage(%motd, %data.id);
 
     case "roomMessage":
+      %now = getRealTime();
+      if(%now-GlassLive.lastMessageTime > 1000 * 60 * 5) {
+        %text = "<font:verdana bold:12><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
+        GlassLive::pushMessage(%text, %data.room);
+      }
+      GlassLive.lastMessageTime = %now;
+
       %msg = %data.msg;
       %sender = %data.sender;
-      %text = "<font:verdana bold:12><color:6688ff>" @ %sender @ ": <font:verdana:12><color:333333>" @ stripMlControlChars(%msg);
-      GlassLive::pushMessage(%text);
+      %senderblid = %data.sender_id;
+
+      if(%senderblid == getNumKeyId()) {
+        %color = GlassLive.color_self;
+      } else if(GlassLive.isAdmin[%senderblid]) {
+        %color = GlassLive.color_admin;
+      } else if(GlassLive.isModerator[%senderblid]) {
+        %color = GlassLive.color_moderator;
+      } else if(GlassLive.isFriend[%senderblid]) {
+        %color = GlassLive.color_friend;
+      } else {
+        %color = GlassLive.color_default;
+      }
+
+      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ": <font:verdana:12><color:333333>" @ stripMlControlChars(%msg);
+      GlassLive::pushMessage(%text, %data.room);
+      alxPlay(GlassChatAudio);
 
     case "roomUserJoin":
       %user = %data.username;
-      %text = "<font:verdana:12><color:333333>" @ %user @ " entered the room.";
-      GlassLive::pushMessage(%text);
+      %text = "<font:verdana:12><color:666666>" @ %user @ " entered the room.";
+      GlassLive::pushMessage(%text, %data.id);
+      GlassLive::chatroomUserJoin(%data.id, %data.username, %data.blid);
+
+      echo("admin: " @ %data.admin);
+      if(%data.admin) {
+        GlassLive.isAdmin[%data.blid] = 1;
+      }
+
+    case "roomUserLeave":
+      GlassLive::chatroomUserLeave(%data.id, %data.blid, %data.reason);
+
+    case "friendsList":
+      GlassLive::createFriendList(%data.friends);
+
+    case "friendRequest":
+      %user = %data.sender;
+      %blid = %data.sender_blid;
+      GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user @ " (" @ %blid @ ")", "user_add", 0);
+
+    case "friendAdd":
+      %obj = JettisonObject();
+      %obj.set("blid", "string", %data.blid);
+      %obj.set("username", "string", %data.username);
+      GlassLive.friends.push("object", %obj);
+
+      GlassLive::createFriendList(GlassLive.friends);
   }
+}
+
+function formatTimeHourMin(%datetime) {
+  %t = getWord(%datetime, 0);
+  %t = getSubStr(%t, 0, strpos(%t, ":", 4));
+  return %t SPC getWord(%datetime, 1);
 }
 
 function GlassNotificationManager::refocus(%this) {

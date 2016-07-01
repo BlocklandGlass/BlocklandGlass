@@ -68,6 +68,7 @@ function Glass::execClient() {
 
 	GlassDownloadInterface::init();
 	GlassAuth::init();
+	GlassLive::init();
 	GlassDownloadManager::init();
 	//GlassRTBSupport::init();
 	GlassServerControlC::init();
