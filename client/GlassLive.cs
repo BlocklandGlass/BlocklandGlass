@@ -32,7 +32,7 @@ function GlassLive::leaveRoom(%id, %conf) {
     %obj.set("type", "string", "roomLeave");
     %obj.set("id", "string", %id);
 
-    GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
   }
 }
 
@@ -44,7 +44,7 @@ function GlassLive::joinRoom(%id) {
   %obj.set("type", "string", "roomJoin");
   %obj.set("id", "string", %id);
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::openDirectMessage(%blid, %username) {
@@ -55,6 +55,7 @@ function GlassLive::openDirectMessage(%blid, %username) {
   } else {
     %gui = GlassLive.message[%blid];
   }
+
   return %gui;
 }
 
@@ -63,6 +64,9 @@ function GlassLive::closeMessage(%blid) {
   GlassOverlayGui.remove(%gui);
   %gui.deleteAll();
   %gui.delete();
+
+  if(GlassLive.typing[%blid])
+    GlassLive::messageTypeEnd(%blid);
 }
 
 function GlassLive::onChatroomJoin(%id, %title) {
@@ -110,7 +114,7 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   %obj.set("message", "string", %msg);
   %obj.set("room", "string", %id);
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::sendMessage(%blid, %msg) {
@@ -119,7 +123,7 @@ function GlassLive::sendMessage(%blid, %msg) {
   %obj.set("message", "string", %msg);
   %obj.set("target", "string", %blid);
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::sendFriendRequest(%blid) {
@@ -127,7 +131,7 @@ function GlassLive::sendFriendRequest(%blid) {
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::friendAccept(%blid) {
@@ -135,7 +139,7 @@ function GlassLive::friendAccept(%blid) {
   %obj.set("type", "string", "friendAccept");
   %obj.set("blid", "string", %blid);
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::chatroomUserJoin(%id, %name, %blid) {
@@ -201,7 +205,7 @@ function GlassLive::updateLocation(%inServer) {
 
   echo(jettisonStringify("object", %obj));
 
-  GlassNotificationTCP.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 
@@ -218,6 +222,35 @@ function GlassLive::chatroomInputSend(%id) {
 
   GlassLive::sendRoomMessage(%val, %id);
   %chatroom.input.setValue("");
+}
+
+function GlassLive::messageType(%blid) {
+  if(GlassLive.typing[%blid]) {
+    cancel(GlassLive.typingSched);
+  }
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "messageTyping");
+  %obj.set("target", "string", %blid);
+  %obj.set("typing", "string", "1");
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  GlassLive.typing[%blid] = 1;
+  GlassLive.typingSched = schedule(5000, 0, eval, "GlassLive::messageTypeEnd(" @ %blid @ ");");
+}
+
+function GlassLive::messageTypeEnd(%blid) {
+  cancel(GlassLive.typingSched);
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "messageTyping");
+  %obj.set("target", "string", %blid);
+  %obj.set("typing", "string", "0");
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  GlassLive.typing[%blid] = 0;
 }
 
 function GlassLive::messageInputSend(%id) {
@@ -509,7 +542,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     autoResize = "1";
   };
 
-  %dm.input = new GuiTextEditCtrl(GlassChatroomGui_Input) {
+  %dm.input = new GuiTextEditCtrl() {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -519,6 +552,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
+    command = "GlassLive::messageType(" @ %blid @ ");";
     altCommand = "GlassLive::messageInputSend(" @ %blid @ ");";
     accelerator = "enter";
     maxLength = "255";

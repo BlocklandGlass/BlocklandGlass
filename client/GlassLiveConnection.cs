@@ -85,6 +85,9 @@ function GlassLiveConnection::onLine(%this, %line) {
         %chatroom = GlassLive.chatroom[%data.id];
         %chatroom.userlist.addRow(%cl.blid, %cl.username);
         %chatroom.userlist.sort(0);
+
+        %user = GlassLiveUser::new(%cl.username, %cl.blid);
+        // TODO admin/mod
       }
 
       GlassLive::pushMessage(%motd, %data.id);
@@ -123,10 +126,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::pushMessage(%text, %data.id);
       GlassLive::chatroomUserJoin(%data.id, %data.username, %data.blid);
 
-      echo("admin: " @ %data.admin);
-      if(%data.admin) {
-        GlassLive.isAdmin[%data.blid] = 1;
-      }
+      %user = GlassLiveUser::new(%data.username, %data.id);
+      %user.setAdmin(%data.admin);
+      %user.setMod(%data.mod);
 
     case "roomUserLeave":
       GlassLive::chatroomUserLeave(%data.id, %data.blid, %data.reason);

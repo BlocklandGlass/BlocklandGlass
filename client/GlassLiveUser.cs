@@ -1,4 +1,7 @@
 function GlassLiveUser::new(%username, %blid) {
+  if(isObject(GlassLiveUsers.user[%blid]))
+    return GlassLiveUsers.user[%blid];
+
   %user = new ScriptObject() {
     class = "GlassLiveUser";
     username = %username;
@@ -7,6 +10,22 @@ function GlassLiveUser::new(%username, %blid) {
   GlassLiveUsers.add(%user);
   GlassLiveUsers.user[%blid] = %user;
   return %user;
+}
+
+function GlassLiveUser::addRoom(%this, %id) {
+  if(%this.inRoom[%id])
+    return;
+
+  %this.inRoom[%id] = 1;
+  %this.rooms++;
+}
+
+function GlassLiveUser::removeRoom(%this, %id) {
+  if(!%this.inRoom[%id])
+    return;
+
+  %this.inRoom[%id] = 0;
+  %this.rooms--;
 }
 
 function GlassLiveUser::setAdmin(%this, %bool) {

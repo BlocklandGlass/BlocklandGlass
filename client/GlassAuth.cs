@@ -68,7 +68,7 @@ function GlassAuth::updateInput() {
 
 function GlassAuth::onAuthSuccess(%this) {
 	if(!%this.firstAuth) {
-		GlassNotificationManager::connectToServer();
+		GlassLive::connectToServer();
 	}
 
 	%this.firstAuth = true;
