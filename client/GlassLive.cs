@@ -65,6 +65,13 @@ function GlassLive::closeMessage(%blid) {
   %gui.deleteAll();
   %gui.delete();
 
+  %obj = JettisonObject();
+  %obj.set("type", "string", "messageClose");
+  %obj.set("target", "string", %blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+
   if(GlassLive.typing[%blid])
     GlassLive::messageTypeEnd(%blid);
 }
