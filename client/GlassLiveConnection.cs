@@ -86,7 +86,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %chatroom.userlist.addRow(%cl.blid, %cl.username);
         %chatroom.userlist.sort(0);
 
-        %user = GlassLiveUser::new(%cl.username, %cl.blid);
+        %user = GlassLiveUser::create(%cl.username, %cl.blid);
         // TODO admin/mod
       }
 
@@ -126,7 +126,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::pushMessage(%text, %data.id);
       GlassLive::chatroomUserJoin(%data.id, %data.username, %data.blid);
 
-      %user = GlassLiveUser::new(%data.username, %data.id);
+      %user = GlassLiveUser::create(%data.username, %data.id);
       %user.setAdmin(%data.admin);
       %user.setMod(%data.mod);
 
@@ -140,6 +140,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       %user = %data.sender;
       %blid = %data.sender_blid;
       GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user @ " (" @ %blid @ ")", "user_add", 0);
+
+    case "friendStatus":
+      for(%i = 0; %i < GlassLive.friends.length; %i++) {
+        %friend = GlassLive.friends.value[%i];
+        if(%friend.blid == %data.blid)
+          %friend.set("online", "string", %data.online);
+      }
+      GlassLive::createFriendList(GlassLive.friends);
 
     case "friendAdd":
       %obj = JettisonObject();

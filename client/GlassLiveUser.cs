@@ -1,4 +1,5 @@
-function GlassLiveUser::new(%username, %blid) {
+
+function GlassLiveUser::create(%username, %blid) {
   if(isObject(GlassLiveUsers.user[%blid]))
     return GlassLiveUsers.user[%blid];
 

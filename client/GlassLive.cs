@@ -1,10 +1,18 @@
+exec("./GlassLiveConnection.cs");
+exec("./GlassLiveUser.cs");
+
 function GlassLive::init() {
-  new ScriptObject(GlassLive) {
-    color_friend = "66dd88";
-    color_default = "666666";
-    color_self = "6688ff";
-    color_admin = "ffaa00";
-  };
+  if(!isObject(GlassLive))
+    new ScriptObject(GlassLive) {
+      color_friend = "66dd88";
+      color_default = "666666";
+      color_self = "6688ff";
+      color_admin = "ffaa00";
+    };
+
+  if(!isObject(GlassLiveUsers))
+    new ScriptGroup(GlassLiveUsers);
+
   GlassOverlayGui.add(GlassFriendsGui.getObject(0));
 }
 
@@ -602,14 +610,22 @@ function GlassLive::createFriendHeader(%name) {
 }
 
 
-function GlassLive::createFriendSwatch(%name, %blid, %status) {
+function GlassLive::createFriendSwatch(%name, %blid, %online) {
+  if(%online) {
+    %color = "210 220 255 255";
+    %hcolor = "220 230 255 255";
+  } else {
+    %color = "210 210 210 255";
+    %hcolor = "230 230 230 255";
+  }
+
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     extent = "180 26";
     position = "10 5";
-    color = "210 220 255 255";
-    hcolor = "220 230 255 255";
+    color = %color;
+    hcolor = %hcolor;
   };
 
   %gui.text = new GuiTextCtrl() {
@@ -683,7 +699,7 @@ function GlassLive::createFriendList(%friends) {
 
   for(%i = 0; %i < %friends.length; %i++) {
     %friend = %friends.value[%i];
-    %gui = GlassLive::createFriendSwatch(%friend.username, %friend.blid);
+    %gui = GlassLive::createFriendSwatch(%friend.username, %friend.blid, %friend.online);
     %gui.placeBelow(%last, 5);
 
     GlassLive.isFriend[%friend.blid] = 1;
