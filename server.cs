@@ -36,6 +36,9 @@ function Glass::execServer() {
 
 	echo(" ===                   Starting it up                   ===");
 
+	GlassResourceManager::execResource("Support_Preferences", "server");
+	GlassResourceManager::execResource("Support_Updater", "server");
+
 	GlassServerControlS::init();
 	GlassAuthS::init();
 

@@ -11,6 +11,7 @@ function GlassModManager::init() {
   GlassModManagerGui_Prefs_LiveSearch.setValue(GlassModManager.liveSearch);
 
   GlassModManager::catalogAddons();
+  GlassModManager::scanForRTB();
 
   GlassModManagerGui::setPane(1);
 
@@ -332,7 +333,8 @@ function GlassModManagerTCP::onDone(%this, %error) {
           if(%this.action $= "render") {
             GlassModManagerGui::renderAddon(%obj);
           } else if(%this.action $= "download") {
-            GlassModManager::downloadAddon(%obj);
+            %ret = GlassModManager::downloadAddon(%obj);
+            %ret.rtbImportProgress = %this.rtbImportProgress;
           }
 
         case "boards":
@@ -378,6 +380,24 @@ function GlassModManagerTCP::onDone(%this, %error) {
         case "rtbaddon":
           Glass::debug(%this.buffer);
           messageBoxOk("Open in browser?", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
+
+        case "rtb":
+          %newArray = JettisonArray();
+          %addons = %ret.addons;
+          for(%i = 0; %i < %addons.length; %i++) {
+            %addon = %addons.value[%i];
+            if(GlassModManager.rtbAddon[%addon.id] !$= "") {
+              %newArray.push("object", %addon);
+              %addon.set("filename", "string", GlassModManager.rtbAddon[%addon.id]);
+            }
+          }
+
+          if(%newArray.length > 0) {
+            GlassModManagerGui.firstWake = true;
+            canvas.pushDialog(GlassModManagerGui);
+            GlassModManagerGui::openRTBImport(%newArray);
+
+          }
       }
 
     } else {
@@ -385,6 +405,38 @@ function GlassModManagerTCP::onDone(%this, %error) {
     }
 	} else {
     GlassModManagerGui::loadErrorPage("tcpclient_" @ %error);
+  }
+}
+
+//====================================
+// RTB
+//====================================
+
+function GlassModManager::scanForRTB() {
+  %pattern = "Add-ons/*/rtbInfo.txt";
+	//echo("\c1Looking for Glass Add-Ons");
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+    %path = filePath(%file);
+    %name = getsubstr(%path, 8, strlen(%path)-8);
+
+    if(strpos(%name, "_") == -1 || strpos(%name, "/") > -1) {
+      warn("Skipping " @ %name @ ", invalid add-on name");
+      continue;
+    }
+
+    echo("Found " @ %name);
+    %fo = new FileObject();
+    %fo.openForRead(%file);
+    while(!%fo.isEOF()) {
+      %line = %fo.readLine();
+      if(getWord(%line, 0) $= "id:") {
+        %id = getWord(%line, 1);
+        GlassModManager.rtbAddon[%id] = %name;
+        GlassModManager.isRTBAddon[%name] = true;
+      }
+    }
+    %fo.close();
+    %fo.delete();
   }
 }
 

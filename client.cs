@@ -5,7 +5,7 @@
 //=	little skiddy trying to 'troll'						              		 =
 //================================================================
 
-if($Pref::PreLoadScriptLauncherVersion != 1) {
+if($Pref::PreLoadScriptLauncherVersion != 2) {
 	echo("Installing pre-loader!");
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }
@@ -36,14 +36,6 @@ function Glass::execClient() {
 	exec("./client/gui/GlassModManagerImage.gui");
 	exec("./client/gui/GlassServerControlGui.gui");
 
-	echo("");
-	exec("./client/GlassInstallWizard.cs");
-	if(!GlassInstallWizard::hasRun()) {
-		echo(" ===              Launching Install Wizard              ===");
-		GlassInstallWizard::run();
-		return;
-	}
-
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
@@ -63,6 +55,9 @@ function Glass::execClient() {
 	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
+
+	GlassResourceManager::execResource("Support_Preferences", "client");
+	GlassResourceManager::execResource("Support_Updater", "client");
 
 	GlassDownloadInterface::init();
 	GlassAuth::init();

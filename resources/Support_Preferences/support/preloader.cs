@@ -9,14 +9,13 @@ if(!$PreLoadScriptsRun) {
     %file = getField(%fileList, %fileIndex);
     %path = filePath(%file);
     %dirName = getSubStr(%path, strPos(%path, "/") + 1, strLen(%path));
-    if(strPos(%dirName, "/") == -1 && !$AddonPreloaded__[%dirName]) {
+    if(strPos(%dirName, "/") == -1) {
       echo("\n\c4Pre-Loading Add-On:" SPC %dirName);
       exec(%file);
-      $AddonPreloaded__[%dirName] = true;
     }
   }
   $PreLoadScriptsRun = true;
   $Pref::PreLoadScriptLauncherInstalled = true;
-  $Pref::PreLoadScriptLauncherVersion = 2;
+  $Pref::PreLoadScriptLauncherVersion = 1;
 }
 ///END PRE-LOAD SCRIPT LAUNCHER///
