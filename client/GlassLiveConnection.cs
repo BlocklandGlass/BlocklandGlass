@@ -34,6 +34,7 @@ function GlassLiveConnection::onDisconnect(%this) {
   %this.connected = false;
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
 
+
   %text = "<br><font:verdana:12><color:666666>[ Disconnected ]<br>";
   GlassLive::pushMessage(%text);
 }
@@ -72,31 +73,37 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "message":
       GlassLive::onMessage(%data.message, %data.sender, %data.sender_id);
 
+    case "messageNotification":
+      GlassLive::onMessageNotification(%data.message, %data.chat_blid);
+
     case "roomJoin":
       GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
-      GlassLive::onChatroomJoin(%data.id, %data.title);
+      %room = GlassLiveRoom::create(%data.id, %data.title);
+
+      %room.createWindow();
+
       %motd = %data.motd;
       %motd = strreplace(%motd, "\n", "<br> * ");
       %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
 
+      %room.pushText(%motd);
+
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
-        %chatroom = GlassLive.chatroom[%data.id];
-        %chatroom.userlist.addRow(%cl.blid, %cl.username);
-        %chatroom.userlist.sort(0);
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
+        %room.addUser(%user.blid);
         // TODO admin/mod
       }
 
-      GlassLive::pushMessage(%motd, %data.id);
-
     case "roomMessage":
+      %room = GlassLiveRoom::getFromId(%data.room);
+
       %now = getRealTime();
       if(%now-GlassLive.lastMessageTime > 1000 * 60 * 5) {
         %text = "<font:verdana bold:12><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
-        GlassLive::pushMessage(%text, %data.room);
+        %room.pushText(%text);
       }
       GlassLive.lastMessageTime = %now;
 
@@ -117,23 +124,27 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
       %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ": <font:verdana:12><color:333333>" @ stripMlControlChars(%msg);
-      GlassLive::pushMessage(%text, %data.room);
+      %room.pushText(%text);
       alxPlay(GlassChatAudio);
 
     case "roomUserJoin":
-      %user = %data.username;
-      %text = "<font:verdana:12><color:666666>" @ %user @ " entered the room.";
-      GlassLive::pushMessage(%text, %data.id);
-      GlassLive::chatroomUserJoin(%data.id, %data.username, %data.blid);
-
-      %user = GlassLiveUser::create(%data.username, %data.id);
+      %user = GlassLiveUser::create(%data.username, %data.blid);
       %user.setAdmin(%data.admin);
       %user.setMod(%data.mod);
 
+      %room = GlassLiveRoom::getFromId(%data.id);
+      %room.onUserJoin(%data.blid);
+
     case "roomUserLeave":
-      GlassLive::chatroomUserLeave(%data.id, %data.blid, %data.reason);
+      %room = GlassLiveRoom::getFromId(%data.id);
+      %room.onUserLeave(%data.blid, %data.reason);
 
     case "friendsList":
+      for(%i = 0; %i < %data.friends.length; %i++) {
+        %friend = %data.friends.value[%i];
+        %user = GlassLiveUser::create(%friend.username, %friend.blid);
+        %user.setFriend(true);
+      }
       GlassLive::createFriendList(%data.friends);
 
     case "friendRequest":

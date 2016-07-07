@@ -10,6 +10,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::UseDefault", false);
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
     GlassSettings.registerSetting("client", "MM::LiveSearch", true);
+
+    GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);

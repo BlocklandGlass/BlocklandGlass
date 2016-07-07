@@ -1,0 +1,57 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassOverlayGui) {
+  profile = "GuiDefaultProfile";
+  horizSizing = "right";
+  vertSizing = "bottom";
+  position = "0 0";
+  extent = "1600 900";
+  minExtent = "8 2";
+  enabled = "1";
+  visible = "1";
+  clipToParent = "1";
+
+  new GuiBitmapCtrl(GlassOverlay) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "800 600";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    bitmap = "base/client/ui/vignette";
+    wrap = "0";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    keepCached = "0";
+    mColor = "0 0 50 255";
+    mMultiply = "1";
+
+    new GuiBitmapButtonCtrl() {
+       profile = "GlassRoundedButtonProfile";
+       horizSizing = "right";
+       vertSizing = "top";
+       position = "6 562";
+       extent = "69 30";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       command = "GlassLive::closeOverlay();";
+       text = "Close";
+       groupNum = "-1";
+       buttonType = "PushButton";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/roundedBtn";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       mKeepCached = "0";
+       mColor = "255 255 255 255";
+    };
+  };
+};
+//--- OBJECT WRITE END ---

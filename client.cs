@@ -25,6 +25,7 @@ function Glass::execClient() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
+	exec("./support/Support_MetaTCP.cs");
 	exec("./support/Support_Markdown.cs");
 	exec("./support/DynamicGui.cs");
 
@@ -81,6 +82,9 @@ function Glass::execClient() {
 
 	%bind = GlassSettings.get("MM::Keybind");
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+
+	%bind = GlassSettings.get("Live::Keybind");
+	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
 }
 
 function clientCmdGlassHandshake(%ver) {

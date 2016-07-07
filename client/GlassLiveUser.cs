@@ -1,5 +1,6 @@
 
 function GlassLiveUser::create(%username, %blid) {
+  echo("creating glu: " @ %username SPC %blid);
   if(isObject(GlassLiveUsers.user[%blid]))
     return GlassLiveUsers.user[%blid];
 
@@ -11,6 +12,13 @@ function GlassLiveUser::create(%username, %blid) {
   GlassLiveUsers.add(%user);
   GlassLiveUsers.user[%blid] = %user;
   return %user;
+}
+
+function GlassLiveUser::getFromBlid(%blid) {
+  if(isObject(GlassLiveUsers.user[%blid]))
+    return GlassLiveUsers.user[%blid];
+  else
+    return false;
 }
 
 function GlassLiveUser::addRoom(%this, %id) {

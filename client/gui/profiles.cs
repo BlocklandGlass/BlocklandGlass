@@ -203,6 +203,12 @@ if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonPro
   fontColor = "64 64 64 255";
 };
 
+if(!isObject(GlassRoundedButtonProfile)) new GuiControlProfile(GlassRoundedButtonProfile : BlockButtonProfile) {
+  fontType = "Verdana Bold";
+  fontSize = 16;
+  fontColor = "220 220 220 255";
+};
+
 if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
   volume = 2.0;
   isLooping = false;
