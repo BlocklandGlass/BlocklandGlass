@@ -285,6 +285,14 @@ function serverCmdGlassUpdateSend(%client) {
   messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
 }
 
+//====================================
+// Required Clients
+//====================================
+
+function GlassServerControlS::addRequiredClient(%this, %id) {
+
+}
+
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
@@ -307,9 +315,16 @@ package GlassServerControlS {
         %this.hasGlass = true;
         %version = getField(%line, 1);
         %this._glassVersion = %version;
+        %this._glassModsRaw = getField(%line, 2);
 				break;
 			}
 		}
+
+    %res = GlassClientSupport::checkClient(%this, %this._glassModsRaw);
+
+    if(%res != true) {
+      return %res;
+    }
     return %ret;
 	}
 };

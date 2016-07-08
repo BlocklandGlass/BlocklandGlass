@@ -35,6 +35,7 @@ function Glass::execClient() {
 	exec("./client/gui/GlassModManagerGui.gui");
 	exec("./client/gui/GlassModManagerImage.gui");
 	exec("./client/gui/GlassServerControlGui.gui");
+	exec("./client/gui/GlassClientGui.gui");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
