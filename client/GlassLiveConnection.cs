@@ -97,6 +97,9 @@ function GlassLiveConnection::onLine(%this, %line) {
         // TODO admin/mod
       }
 
+    case "roomTyping":
+      GlassLive::setMessageTyping(%data.blid, %data.typing);
+
     case "roomMessage":
       %room = GlassLiveRoom::getFromId(%data.room);
 

@@ -131,6 +131,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
     }
   }
 
+  GlassLive::setMessageTyping(%blid, false);
+
   %val = %gui.chattext.getValue();
   %msg = "<color:333333><font:verdana bold:12>" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
   if(%val !$= "")
@@ -201,6 +203,23 @@ function GlassLive::messageImagePreview(%blid, %url, %type) {
 
   %gui.scrollSwatch.setVisible(true);
   %gui.scroll.scrollToBottom();
+}
+
+function GlassLive::setMessageTyping(%blid, %typing) {
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(isObject(%user)) {
+    %window = %user.getMessageGui();
+    if(isObject(%window)) {
+
+      if(%typing) {
+        %window.typing.startAnimation();
+        %window.typing.setVisible(true);
+      } else {
+        %window.typing.endAnimation();
+        %window.typing.setVisible(false);
+      }
+    }
+  }
 }
 
 function GlassLive::loadImagePreview(%swat, %url, %ext) {
@@ -659,6 +678,16 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     autoResize = "1";
   };
 
+  %dm.typing = new GuiBitmapCtrl(GlassMessageTyping) {
+    window = %dm;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = "0 0";
+    visible = 0;
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "user.png" : "user_gray.png");
+  };
+
   %dm.input = new GuiTextEditCtrl() {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
@@ -681,6 +710,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.add(%dm.scroll);
   %dm.scroll.add(%dm.scrollSwatch);
   %dm.scrollSwatch.add(%dm.chattext);
+  %dm.scrollSwatch.add(%dm.typing);
   %dm.add(%dm.input);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
@@ -688,6 +718,42 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   return %dm;
 }
 
+function GlassMessageTyping::startAnimation(%this) {
+  %window = %this.window;
+  %this.placeBelow(%window.chattext, 4);
+
+  %window.scrollSwatch.verticalMatchChildren(0, 3);
+  %window.scrollSwatch.setVisible(true);
+  %window.scoll.scrollToBottom();
+
+  %this.tick();
+}
+
+function GlassMessageTyping::tick(%this) {
+  cancel(%this.tick);
+
+  %steps = 4;
+  %this.step++;
+
+  //TODO update bitmap
+
+  if(%this.step > %steps) {
+    %this.step = 0;
+  }
+
+  %this.tick = %this.schedule(100, tick);
+}
+
+function GlassMessageTyping::endAnimation(%this) {
+  %window = %this.window;
+  %this.position = "0 0";
+  cancel(%this.tick);
+  %this.step = 0;
+
+  %window.scrollSwatch.verticalMatchChildren(0, 3);
+  %window.scrollSwatch.setVisible(true);
+  %window.scroll.scrollToBottom();
+}
 
 if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/GlassFriendsGui.gui");
 
