@@ -35,8 +35,9 @@ function GlassClientSupport::registerRequiredAddon(%this, %name, %glassId, %vers
 
 function GlassClientSupport::checkClient(%client, %mods) {
   %this = GlassClientSupport;
-  if(!%this.required)
-    return;
+  if(%this.idx == 0) {
+    return true;
+  }
 
   for(%i = 0; %i < getWordCount(%mods); %i++) {
     %words = strreplace(getWord(%mods, %i), "|", " ");
@@ -52,17 +53,33 @@ function GlassClientSupport::checkClient(%client, %mods) {
   if(%missing $= "") {
     echo("Has all required clients");
   } else {
-    echo("Missing clients");
     if(%client.hasGlass) {
+      echo("Missing clients, has Glass");
       for(%i = 0; %i < getFieldCount(%missing); %i++) {
         %idx = getField(%missing, %i);
         %missingStr = %missingStr TAB %this.name[%i] @ "^" @ %this.id[%i];
       }
       %missingStr = trim(%missingStr);
-      return "MISSING\t" @ %missingStr;
+      if(%this.required) {
+        return "MISSING\t" @ %missingStr;
+      } else {
+        return "MISSING_OPT\t" @ %missingStr;
+      }
     } else {
-      %client.schedule(0, "delete", "Missing Blockland Glass<br><br>This server uses <a:http://blocklandglass.com/dl.php>Blockland Glass</a> to manage client mods. Please download Blockland Glass to access this server's client.");
+      echo("Missing clients, no Glass");
+      if(%this.required) {
+        %client.schedule(0, "delete", "Missing Blockland Glass<br><br>This server uses <a:http://blocklandglass.com/dl.php>Blockland Glass</a> to manage client mods. Please download Blockland Glass to access this server's client.");
+      } else {
+
+      }
     }
   }
   return true;
+}
+
+function GlassClientSupport::getLinks(%this) {
+  for(%i = 0; %i < %this.idx; %i++) {
+    %missingStr = %missingStr @ "<br><a:http://blocklandglass.com/addon.php?id=" @ %this.id[%i] @ ">" @ %this.name[%i] @ "</a>";
+  }
+  return %missingStr;
 }

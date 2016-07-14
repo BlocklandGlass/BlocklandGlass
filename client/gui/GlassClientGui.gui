@@ -113,6 +113,29 @@ new GuiControl(GlassClientGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
       };
+      new GuiBitmapButtonCtrl(GlassClientGui_Skip) {
+         profile = "BlockButtonProfile";
+         horizSizing = "left";
+         vertSizing = "top";
+         position = "200 230";
+         extent = "60 21";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         command = "GlassClientManager::skip();";
+         accelerator = "";
+         text = "Skip";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "base/client/ui/button2";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "255 255 255 255";
+      };
    };
 };
 //--- OBJECT WRITE END ---

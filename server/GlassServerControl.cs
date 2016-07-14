@@ -285,14 +285,6 @@ function serverCmdGlassUpdateSend(%client) {
   messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
 }
 
-//====================================
-// Required Clients
-//====================================
-
-function GlassServerControlS::addRequiredClient(%this, %id) {
-
-}
-
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
@@ -300,15 +292,18 @@ package GlassServerControlS {
     if(%client.isAdmin || %client.bl_id == 999999) {
       commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
-      GlassServerControlS::sendUpdateInfo(%client);
     }
-    echo("\c4autoAdminCheck");
+
+    if(!%client.hasGlass && GlassClientSupport.idx > 0) {
+      commandToClient(%client, 'messageBoxOk', "Recommended Mods", "This server has some optional clients you can download:<br>" @ GlassClientSupport.getLinks());
+    }
+
     return %ret;
   }
 
 	function GameConnection::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p) {
     //echo(%a TAB %b TAB %c TAB %d TAB %e TAB %f TAB %g TAB %us TAB %i TAB %j TAB %k TAB %l TAB %m TAB %n TAB %o TAB %p);
-    %ret = parent::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p);
+    %parent = parent::onConnectRequest(%this, %a, %b, %c, %d, %e, %f, %g, %us, %i, %j, %k, %l, %m, %n, %o, %p);
 		for(%i = 0; %i < getLineCount(%us); %i++) { //being respectful of other mods, not hogging a whole argument
 			%line = getLine(%us, %i);
 			if(getField(%line, 0) $= "Glass") {
@@ -316,16 +311,18 @@ package GlassServerControlS {
         %version = getField(%line, 1);
         %this._glassVersion = %version;
         %this._glassModsRaw = getField(%line, 2);
+        %this._glassBypass = getField(%line, 3);
 				break;
 			}
 		}
 
-    %res = GlassClientSupport::checkClient(%this, %this._glassModsRaw);
+    if(GlassClientSupport.required || !%this._glassBypass)
+      %res = GlassClientSupport::checkClient(%this, %this._glassModsRaw);
 
     if(%res != true) {
       return %res;
     }
-    return %ret;
+    return %parent;
 	}
 };
 activatePackage(GlassServerControlS);

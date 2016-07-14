@@ -99,13 +99,13 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
 
       switch$(getField(%button, 0)) {
         case "addon":
-          %t = "<font:verdana bold:16><just:center>Glass Add-On<font:verdana:14><br>ID " @ getField(%button, 1);
+          %t = "<font:Verdana Bold:15><just:center>Glass Add-On<font:verdana:14><br>ID " @ getField(%button, 1);
 
         case "link":
-          %t = "<font:verdana bold:16><just:center>Url<font:verdana:14><br>" @ getField(%button, 1);
+          %t = "<font:Verdana Bold:15><just:center>Url<font:verdana:14><br>" @ getField(%button, 1);
 
         case "zip":
-          %t = "<font:verdana bold:16><just:center>ZIP File<font:verdana:14><br>" @ getField(%button, 2);
+          %t = "<font:Verdana Bold:15><just:center>ZIP File<font:verdana:14><br>" @ getField(%button, 2);
       }
       %container.button[%i].info = new GuiMLTextCtrl(%name) {
         horizSizing = "center";
@@ -183,7 +183,7 @@ function GlassModManagerGui::renderForumBoard(%topics) {
     %container.topic[%i].title = new GuiMLTextCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      text = "<font:verdana bold:16><just:left>" @ %topictitle @ "<just:right><font:verdana:16>" @ getField(%topic, 1);
+      text = "<font:Verdana Bold:15><just:left>" @ %topictitle @ "<just:right><font:verdana:16>" @ getField(%topic, 1);
       position = "0 0";
       extent = "300 24";
       minextent = "0 0";
@@ -283,7 +283,7 @@ function GlassForumBrowser::processPostBuffer(%post, %title) {
           %cleanText = %cleanText @ "<br>";
 
         case "b":
-          %cleanText = %cleanText @ "<font:verdana bold:16>";
+          %cleanText = %cleanText @ "<font:Verdana Bold:15>";
 
         case "/b":
           %cleanText = %cleanText @ "<font:verdana:16>";

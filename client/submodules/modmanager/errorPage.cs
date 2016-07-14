@@ -20,7 +20,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
   if($GlassError[%errorcode] !$= "") {
     %text = %text @ getField($GlassError[%errorcode], 0);
     %text = %text @ "<br><br>";
-    %text = %text @ "<font:verdana bold:16>" @ getField($GlassError[%errorcode], 1);
+    %text = %text @ "<font:Verdana Bold:15>" @ getField($GlassError[%errorcode], 1);
   } else {
     %text = %text @ "Code: " @ %errorcode;
   }

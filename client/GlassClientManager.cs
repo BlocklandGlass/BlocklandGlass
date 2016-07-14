@@ -8,6 +8,7 @@ function GlassClientManager::init() {
 }
 
 function GlassClientManager::scan(%this) {
+  discoverFile("*");
   %pattern = "Add-ons/*/glass.json";
 	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
@@ -52,7 +53,7 @@ function GlassClientManager::downloadFinished(%id) {
   }
 }
 
-function GlassClientManager::populateGui() {
+function GlassClientManager::populateGui(%required) {
   %this = GlassClientManager;
 
   %container = new GuiSwatchCtrl() {
@@ -154,6 +155,8 @@ function GlassClientManager::populateGui() {
   GlassClientGui_Scroll.add(%container);
   %container.verticalMatchChildren(0, 10);
   %container.setVisible(true);
+
+  GlassClientGui_Skip.setVisible(!%required);
 }
 
 function GlassClientManager::accept() {
@@ -166,10 +169,21 @@ function GlassClientManager::accept() {
   }
 }
 
+function GlassClientManager::skip() {
+  canvas.popDialog(GlassClientGui);
+  GlassClientManager.downloads = 0;
+  GlassClientManager.mods = 0;
+  GlassClientManager.bypass = true;
+  JoinServerGui.join();
+}
+
 package GlassClientManager {
   function GameConnection::onConnectRequestRejected(%this, %reason) {
     GlassClientManager.mods = 0;
-    if(getField(%reason, 0) $= "MISSING") {
+    if(getField(%reason, 0) $= "MISSING" || getField(%reason, 0) $= "MISSING_OPT") {
+      if(getField(%reason, 0) $= "MISSING")
+        %required = true;
+
       canvas.popDialog(connectingGui);
       %mods = trim(setField(%reason, 0, ""));
       for(%i = 0; %i < getFieldCount(%mods); %i++) {
@@ -181,14 +195,15 @@ package GlassClientManager {
         echo("Required mod: " @ %name SPC %id);
       }
       GlassClientManager.mods = getFieldCount(%mods);
-      GlassClientManager::populateGui();
+      GlassClientManager::populateGui(%required);
     } else {
       parent::onConnectRequestRejected(%this, %reason);
     }
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-    return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+    parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+    GlassClientManager.bypass = false;
   }
 
   function GlassClientGuiProgress::setValue(%this, %val) {

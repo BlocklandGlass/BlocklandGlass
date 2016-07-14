@@ -41,11 +41,7 @@ function Glass::execServer() {
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
 
-	GlassServerControlS::init();
 	GlassAuthS::init();
-
-	if($Server::Dedicated)
-		GlassResourceManager.prompt();
 }
 
 if($Server::isDedicated) {

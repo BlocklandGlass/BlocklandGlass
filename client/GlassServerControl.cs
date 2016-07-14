@@ -816,6 +816,8 @@ function clientCmdGlassAdminListing(%data, %append) {
   }
 }
 
+return;
+
 package GlassServerControlC {
   function clientCmdsetAdminLevel(%level) {
     if(%level > 0) {

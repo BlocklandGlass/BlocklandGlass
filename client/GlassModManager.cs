@@ -196,7 +196,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   if(strlen(%key) == 1) {
     %badChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789[]\\/{};:'\"<>,./?!@#$%^&*-_=+`~";
     if(strpos(%badChar, strupr(%key)) >= 0) {
-      GlassModManagerGui_KeybindText.setText("<font:verdana Bold:16><just:center><color:111111>Invalid Character. <font:verdana:16>Please try again");
+      GlassModManagerGui_KeybindText.setText("<font:Verdana Bold:15><just:center><color:111111>Invalid Character. <font:verdana:16>Please try again");
       return;
     }
   } else {
@@ -633,10 +633,10 @@ function GlassModManager::renderMyAddons(%this) {
       %color = "204 119 119 255";
     }
 
-    %text = "<font:verdana bold:16>" @ %addon.name;
+    %text = "<font:Verdana Bold:15>" @ %addon.name;
 
     if(%addon.isBLG) {
-      %text = "<font:verdana bold:16>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
+      %text = "<font:Verdana Bold:15>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
     }
 
     %gui = new GuiSwatchCtrl() {
@@ -827,7 +827,7 @@ function GlassModManager::populateColorsets() {
           lineSpacing = "2";
           allowColorChars = "0";
           maxChars = "-1";
-          text = "<font:verdana bold:16>" @ %this.colorsetName[%i];
+          text = "<font:Verdana Bold:15>" @ %this.colorsetName[%i];
           maxBitmapHeight = "-1";
           selectable = "1";
           autoResize = "1";

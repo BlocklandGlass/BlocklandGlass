@@ -76,7 +76,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
   borderColor = "0 0 0 255";
   borderColorHL = "128 128 128 255";
   borderColorNA = "64 64 64 255";
-  fontType = "verdana bold";
+  fontType = "Verdana Bold";
   fontSize = "15";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";
@@ -108,7 +108,7 @@ if(!isObject(GlassSideTabProfile)) new GuiControlProfile(GlassSideTabProfile) {
 };
 
 if(!isObject(GlassModManagerMLProfile)) new GuiControlProfile(GlassModManagerMLProfile : GuiDefaultProfile) {
-  fontType = "verdana bold";
+  fontType = "Verdana Bold";
   fontSize = "18";
   fontColors[0] = "0 0 0 255";
   fontColors[1] = "255 255 255 255";
@@ -161,7 +161,7 @@ if(!isObject(GlassSearchBarProfile)) new GuiControlProfile(GlassSearchBarProfile
 
 if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultProfile : GuiTextProfile) {
   fontType = "Verdana Bold";
-  fontSize = "16";
+  fontSize = "15";
 };
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
@@ -178,6 +178,6 @@ if(!isObject(GlassCheckBoxProfile)) new GuiControlProfile(GlassCheckBoxProfile :
 
 if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonProfile : BlockButtonProfile) {
   fontType = "Verdana Bold";
-  fontSize = 16;
+  fontSize = 15;
   fontColor = "64 64 64 255";
 };
