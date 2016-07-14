@@ -136,3 +136,12 @@ function GuiControl::placeBelow(%this, %other, %margin) {
   %y = getWord(%other.position, 1)+getWord(%other.extent, 1)+%margin;
   %this.position = getWord(%this.position, 0) SPC %y;
 }
+
+function GuiControl::getCanvasPosition(%this) {
+  %pos = %this.position;
+  %parent = %this;
+  while(isObject(%parent = %parent.getGroup())) {
+    %pos = vectorAdd(%pos, %parent.position);
+  }
+  return %pos;
+}

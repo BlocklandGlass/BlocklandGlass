@@ -206,11 +206,13 @@ function GlassLive::messageImagePreview(%blid, %url, %type) {
 }
 
 function GlassLive::setMessageTyping(%blid, %typing) {
+  echo("typing: " @ %typing);
   %user = GlassLiveUser::getFromBlid(%blid);
   if(isObject(%user)) {
+    echo("usr");
     %window = %user.getMessageGui();
     if(isObject(%window)) {
-
+      echo("wind");
       if(%typing) {
         %window.typing.startAnimation();
         %window.typing.setVisible(true);
@@ -273,6 +275,8 @@ function GlassLive::sendMessage(%blid, %msg) {
   %obj.set("type", "string", "message");
   %obj.set("message", "string", %msg);
   %obj.set("target", "string", %blid);
+
+  GlassLive.typing[%blid] = false;
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -382,7 +386,7 @@ function GlassLive::messageType(%blid) {
     GlassLive.typing[%blid] = 1;
   }
 
-  GlassLive.typingSched = schedule(5000, 0, eval, "GlassLive::messageTypeEnd(" @ %blid @ ");");
+  GlassLive.typingSched = schedule(2500, 0, eval, "GlassLive::messageTypeEnd(" @ %blid @ ");");
 }
 
 function GlassLive::messageTypeEnd(%blid) {
@@ -682,10 +686,11 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     window = %dm;
     horizSizing = "right";
     vertSizing = "bottom";
-    extent = "16 16";
-    position = "0 0";
+    extent = "24 6";
+    position = "5 0";
     visible = 0;
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "user.png" : "user_gray.png");
+    mcolor = "255 255 255 64";
   };
 
   %dm.input = new GuiTextEditCtrl() {
@@ -719,12 +724,13 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
 }
 
 function GlassMessageTyping::startAnimation(%this) {
+  echo("start");
   %window = %this.window;
   %this.placeBelow(%window.chattext, 4);
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scrollSwatch.setVisible(true);
-  %window.scoll.scrollToBottom();
+  %window.scroll.scrollToBottom();
 
   %this.tick();
 }
@@ -735,18 +741,18 @@ function GlassMessageTyping::tick(%this) {
   %steps = 4;
   %this.step++;
 
-  //TODO update bitmap
+  %this.setBitmap("Add-Ons/System_BlocklandGlass/image/loading_animation/" @ %this.step);
 
-  if(%this.step > %steps) {
+  if(%this.step >= %steps) {
     %this.step = 0;
   }
 
-  %this.tick = %this.schedule(100, tick);
+  %this.tick = %this.schedule(150, tick);
 }
 
 function GlassMessageTyping::endAnimation(%this) {
   %window = %this.window;
-  %this.position = "0 0";
+  %this.position = "5 0";
   cancel(%this.tick);
   %this.step = 0;
 

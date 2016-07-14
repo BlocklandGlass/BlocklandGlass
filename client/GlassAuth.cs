@@ -12,6 +12,11 @@ function GlassAuth::heartbeat(%this) {
 	//basically just keeping the session alive
 	cancel(%this.heartbeat);
 	echo("BLG heartbeat");
+	if(Glass.devLocal) {
+		%this.ident = "devLocal";
+		%this.onAuthSuccess();
+		return;
+	}
 	%this.check();
 	return %this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
 }
