@@ -170,6 +170,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive.friends.push("object", %obj);
 
       GlassLive::createFriendList(GlassLive.friends);
+
+    case "location":
+      GlassLive::displayLocation(%data);
   }
 }
 

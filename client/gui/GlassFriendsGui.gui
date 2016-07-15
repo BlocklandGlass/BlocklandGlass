@@ -56,6 +56,7 @@ new GuiControl(GlassFriendsGui) {
             maxLength = "255";
          };
       };
+
       new GuiScrollCtrl() {
          profile = "GlassScrollProfile";
          horizSizing = "right";
@@ -151,6 +152,16 @@ new GuiControl(GlassFriendsGui) {
                };
             };
          };
+      };
+
+      new GuiSwatchCtrl(GlassFriendsGui_ScrollOverlay) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "10 95";
+        extent = "210 250";
+        visible = 0;
+        color = "255 255 255 64";
       };
    };
 };

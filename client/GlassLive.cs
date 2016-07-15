@@ -69,7 +69,45 @@ function GlassLive::joinRoom(%id) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
+function GlassLive::viewLocation(%blid) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "locationGet");
+  %obj.set("target", "string", %blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  GlassFriendsGui_ScrollOverlay.setVisible(true);
+  GlassFriendsGui_ScrollOverlay.deleteAll();
+  %ml = new GuiMlTextCtrl() {
+    profile = "GuiMlTextProfile";
+    position = "20 20";
+    extent = "170 210";
+    text = "<font:verdana bold:15>" @ %blid @ "<font:verdana:12><br><br>Loading...";
+  };
+  GlassFriendsGui_ScrollOverlay.ml = %ml;
+  GlassFriendsGui_ScrollOverlay.add(%ml);
+}
+
+function GlassLive::displayLocation(%data) {
+ %ml = GlassFriendsGui_ScrollOverlay.ml;
+ %user = GlassLiveUser::getFromBlid(%data.blid);
+
+ %text = "<font:verdana bold:15>";
+ %text = %text @ %user.username;
+ %text = %text @ "<br><br>";
+ %text = %text @ "<font:verdana bold:14>Activity: <font:verdana:14>";
+ %text = %text @ %data.activity;
+ %text = %text @ "<br><font:verdana bold:14>Location: <font:verdana:14>";
+ %text = %text @ %data.location;
+
+ %ml.setValue(%text);
+}
+
 function GlassLive::openDirectMessage(%blid, %username) {
+  if(%blid < 0 || %blid $= "") {
+    return false;
+  }
+
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%username $= "") {
     if(%user != false) { //this shouldn't happen
