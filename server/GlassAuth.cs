@@ -28,7 +28,9 @@ function GlassAuthS::heartbeat(%this) {
 
     %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion;
   }
-  %clients = getsubstr(%clients, 1, strlen(%clients)-1);
+
+  if(%clients !$= "")
+    %clients = getsubstr(%clients, 1, strlen(%clients)-1);
 
   %url = %url @ "&clients=" @ urlenc(expandEscape(%clients));
 
@@ -47,7 +49,7 @@ function GlassAuthSTCP::onDone(%this, %buffer) {
   jettisonParse(%this.buffer);
   %res = $JSON::Value;
 
-  echo(%this.buffer);
+  Glass::debug(%this.buffer);
 
   if(%res.action $= "reauth") {
     GlassAuthS.ident = "";
