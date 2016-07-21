@@ -26,6 +26,7 @@ function GlassLive_keybind() {
 
 function GlassLive::openOverlay() {
   canvas.pushDialog(GlassOverlayGui);
+  GlassNotificationManager.dismissAll();
 }
 
 function GlassLive::closeOverlay() {

@@ -82,9 +82,24 @@ function GlassNotificationManager::condense(%this) {
   GlassNotificationManager.offset = %offset-10;
 }
 
+function GlassNotificationManager::dismissAll(%this) {
+  while(%this.getCount() > 0) {
+    %obj = %this.getObject(0);
+    %obj.swatch.delete();
+    %obj.delete();
+  }
+  %this.condense();
+}
+
 function GlassNotification::dismiss(%this) {
   %this.swatch.action = "out";
   %this.swatch.sch = %this.swatch.schedule(0, animate);
+}
+
+function GlassNotification::instantDismiss(%this) {
+  %this.swatch.delete();
+  %this.delete();
+  GlassNotificationManager.schedule(0, condense);
 }
 
 function GlassNotification::onAdd(%this) {
