@@ -150,6 +150,16 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
       GlassLive::createFriendList(%data.friends);
 
+
+    case "friendRequests":
+      for(%i = 0; %i < %data.requests.length; %i++) {
+        %friend = %data.requests.value[%i];
+        %user = GlassLiveUser::create(%friend.username, %friend.blid);
+        %user.setFriendRequest(true);
+      }
+      GlassLive.friendRequests = %data.requests;
+      GlassLive::createFriendList();
+
     case "friendRequest":
       %user = %data.sender;
       %blid = %data.sender_blid;

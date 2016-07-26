@@ -486,7 +486,13 @@ function GlassHighlightMouse::onMouseLeave(%this) {
 
   %this.getGroup().flare.setVisible(false);
   %this.getGroup().color = %this.getGroup().ocolor;
-  %this.getGroup().chaticon.setVisible(false);
+
+  if(%this.type $= "request") {
+    %this.getGroup().decline.setVisible(false);
+    %this.getGroup().accept.setVisible(false);
+  } else {
+    %this.getGroup().chaticon.setVisible(false);
+  }
 }
 
 function GlassHighlightMouse::onMouseEnter(%this) {
@@ -495,7 +501,13 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
   %this.getGroup().ocolor = %this.getGroup().color;
   %this.getGroup().color = %this.getGroup().hcolor;
-  %this.getGroup().chaticon.setVisible(true);
+
+  if(%this.type $= "request") {
+    %this.getGroup().decline.setVisible(true);
+    %this.getGroup().accept.setVisible(true);
+  } else {
+    %this.getGroup().chaticon.setVisible(true);
+  }
 }
 
 function GlassHighlightMouse::onMouseDown(%this) {
@@ -504,7 +516,14 @@ function GlassHighlightMouse::onMouseDown(%this) {
 
 function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
-  if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+  if(%this.type $= "request") {
+    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+      messageBoxOk("Ignored", "Friend Request ignored");
+    } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
+      messageBoxOk("Accepted", "Friend Request accepted");
+      GlassLive::friendAccept(%this.blid);
+    }
+  } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
     GlassLive::openDirectMessage(%this.blid);
   } else {
     eval(%this.callback);
@@ -814,12 +833,13 @@ function GlassLive::createFriendHeader(%name) {
     profile = "GlassFriendTextProfile";
     text = %name;
     extent = "45 18";
-    position = "24 10";
+    position = "10 10";
   };
 
   %gui.add(%gui.text);
 
-  %gui.text.forceCenter();
+  //%gui.text.forceCenter();
+  %gui.text.centerY();
 
   return %gui;
 }
@@ -916,6 +936,83 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
   return %gui;
 }
 
+function GlassLive::createFriendRequest(%name, %blid) {
+  %color = "210 210 210 255";
+  %hcolor = "230 230 230 255";
+
+  %gui = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "180 26";
+    position = "10 5";
+    color = %color;
+    hcolor = %hcolor;
+  };
+
+  %gui.text = new GuiTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    profile = "GlassFriendTextProfile";
+    text = %name @ " (" @ %blid @ ")";
+    extent = "31 18";
+    position = "24 10";
+  };
+
+  %gui.icon = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = "5 5";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ "user_gray.png";
+  };
+
+  %gui.decline = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = %gui.extent-22 SPC 5;
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/delete.png";
+    visible = "0";
+  };
+
+  %gui.accept = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = %gui.extent-47 SPC 5;
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/accept_button.png";
+    visible = "0";
+  };
+
+  %gui.mouse = new GuiMouseEventCtrl(GlassHighlightMouse) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = %gui.extent;
+    position = "0 0";
+    //callback = "GlassLive::friendTabExtend(" @ %blid @ ");";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lockMouse = "0";
+
+    blid = %blid;
+    type = "request";
+  };
+
+  %gui.add(%gui.text);
+  %gui.add(%gui.icon);
+  %gui.add(%gui.decline);
+  %gui.add(%gui.accept);
+  %gui.add(%gui.mouse);
+
+  %gui.text.centerY();
+  %gui.icon.centerY();
+
+  return %gui;
+}
+
+
 function GlassLive::createFriendList(%friends) {
   if(%friends $= "")
     %friends = GlassLive.friends;
@@ -937,6 +1034,24 @@ function GlassLive::createFriendList(%friends) {
     GlassFriendGui_ScrollSwatch.add(%gui);
 
     %last = %gui;
+  }
+
+  %requests = GlassLive.friendRequests;
+  if(isObject(%requests) && %requests.length > 0) {
+    %h = GlassLive::createFriendHeader("Friend Requests");
+    %h.placeBelow(%last, 10);
+    GlassFriendGui_ScrollSwatch.add(%h);
+
+    %last = %h;
+
+    for(%i = 0; %i < %requests.length; %i++) {
+      %friend = %requests.value[%i];
+      %gui = GlassLive::createFriendRequest(%friend.username, %friend.blid);
+      %gui.placeBelow(%last, 5);
+      GlassFriendGui_ScrollSwatch.add(%gui);
+
+      %last = %gui;
+    }
   }
 }
 

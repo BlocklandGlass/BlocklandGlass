@@ -35,11 +35,16 @@ function Glass::execServer() {
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
 	exec("./server/GlassClientSupport.cs");
+	exec("./server/GlassInfoServer.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
+
+	GlassServerControlS::init();
+	GlassAuthS::init();
+	GlassInfoServer::init();
 
 	GlassAuthS::init();
 }
