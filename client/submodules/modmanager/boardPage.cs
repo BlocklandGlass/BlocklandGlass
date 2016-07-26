@@ -138,7 +138,7 @@ function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %d
   %swatch.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<color:333333><font:verdana bold:16>" @ %title @ "<br><font:verdana:12>by " @ %author;
+    text = "<color:333333><font:Verdana Bold:15>" @ %title @ "<br><font:verdana:12>by " @ %author;
     position = "10 7";
     extent = "325 45";
   };

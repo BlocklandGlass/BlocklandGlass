@@ -11,7 +11,6 @@ function GlassModManagerGui::renderHome(%data) {
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
   GlassModManagerGui_MainDisplay.extent = %container.extent;
-  GlassModManagerGui_MainDisplay.setVisible(true);
 
   for(%i = 0; %i < %data.length; %i++) {
     %dlg = %data.value[%i];
@@ -29,7 +28,9 @@ function GlassModManagerGui::renderHome(%data) {
   }
 
   %container.verticalMatchChildren(498, 0);
+  GlassModManagerGui_MainDisplay.setVisible(true);
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
 }
 
 function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {

@@ -242,7 +242,7 @@ function GlassModManagerGui::createBoardButton(%name, %img, %id) {
   %container.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:16>" @ %name;
+    text = "<font:Verdana Bold:15>" @ %name;
     position = "35 0";
     extent = "225 16";
   };

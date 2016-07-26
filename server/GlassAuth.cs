@@ -10,15 +10,27 @@ function GlassAuthS::init() {
 function GlassAuthS::heartbeat(%this) {
   %url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin&server=1&port=" @ $Server::Port;
 	if(%this.ident !$= "") {
-			%url = %url @ "&ident=" @ %this.ident;
+			%url = %url @ "&ident=" @ urlenc(%this.ident);
 	}
 
   %clients = "";
   for(%i = 0; %i < ClientGroup.getCount(); %i++) {
     %cl = ClientGroup.getObject(%i);
-    %clients = %clients NL %cl.netname TAB %cl.bl_id;
+
+    %status = "";
+    if(%cl.bl_id == getNumKeyId()) {
+      %status = "H";
+    } else if(%cl.isSuperAdmin) {
+      %status = "S";
+    } else if(%cl.isAdmin) {
+      %status = "A";
+    }
+
+    %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion;
   }
-  %clients = getsubstr(%clients, 1, strlen(%clients)-1);
+
+  if(%clients !$= "")
+    %clients = getsubstr(%clients, 1, strlen(%clients)-1);
 
   %url = %url @ "&clients=" @ urlenc(expandEscape(%clients));
 
@@ -37,7 +49,7 @@ function GlassAuthSTCP::onDone(%this, %buffer) {
   jettisonParse(%this.buffer);
   %res = $JSON::Value;
 
-  echo(%this.buffer);
+  Glass::debug(%this.buffer);
 
   if(%res.action $= "reauth") {
     GlassAuthS.ident = "";
