@@ -40,7 +40,6 @@ function Glass::execClient() {
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
-	exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 	exec("./common/GlassStatistics.cs");

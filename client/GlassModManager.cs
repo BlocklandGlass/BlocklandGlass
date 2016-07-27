@@ -424,7 +424,11 @@ function GlassModManager::scanForRTB() {
       continue;
     }
 
-    echo("Found " @ %name);
+    if(isFile(%path @ "/glass.json")) {
+      continue;
+    }
+
+    //echo("Found " @ %name);
     %fo = new FileObject();
     %fo.openForRead(%file);
     while(!%fo.isEOF()) {
@@ -620,7 +624,7 @@ function GlassModManager::populateMyAddons(%this) {
 }
 
 function GlassModManager::renderMyAddons(%this) {
-  GlassModManager::setLoading(false);
+  //GlassModManager::setLoading(false);
   GlassModManagerGui_MyAddons.clear();
   %currentY = 10;
   for(%i = 0; %i < GlassModManager_MyAddons.getCount(); %i++) {
