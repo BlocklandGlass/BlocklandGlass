@@ -48,7 +48,18 @@ function GlassLive::chatColorCheck(%this) {
   GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_default @  ">Pleb: <font:verdana:12><color:333333>rambling message", 0);
 }
 
+function GlassLive::disconnect() {
+  if(isObject(GlassLiveConnection))
+    GlassLiveConnection.doDisconnect();
 
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassMessageGui") {
+      %window.deleteAll();
+      %window.delete();
+    }
+  }
+}
 
 //================================================================
 //= Communication                                                =
@@ -390,6 +401,42 @@ function GlassLive::urlMetadata(%tcp, %error) {
 //================================================================
 //= Gui Population                                               =
 //================================================================
+
+function GlassLive::powerButtonPress() {
+  %btn = GlassFriendsGui_PowerButton;
+  if(%btn.on) {
+    GlassLive::disconnect();
+  } else {
+    GlassLive::connectToServer();
+  }
+}
+
+function GlassLive::setPowerButton(%bool) {
+  %btn = GlassFriendsGui_PowerButton;
+  %btn.text = "";
+  %btn.on = %bool;
+  if(%btn.on) {
+    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
+  } else {
+    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
+  }
+}
+
+function GlassLive::openAddDlg() {
+  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(true);
+  GlassFriendsGui_ScrollOverlay.setVisible(true);
+}
+
+function GlassLive::addDlgSubmit() {
+  if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue()) {
+    messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    return;
+  }
+
+  GlassLive::sendFriendRequest(GlassFriendsGui_AddFriendBLID.getValue());
+  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
+  GlassFriendsGui_ScrollOverlay.setVisible(false);
+}
 
 function GlassLive::chatroomInputSend(%id) {
   %room = GlassLiveRoom::getFromId(%id);

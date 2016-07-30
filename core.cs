@@ -9,7 +9,7 @@ function Glass::init(%context) {
 
 		if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
 			Glass.dev = true;
-			Glass.devLocal = true;
+			Glass.devLocal = false;
 			Glass.address = "localhost";
 		}
 	}

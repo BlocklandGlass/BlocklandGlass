@@ -21,6 +21,8 @@ function GlassLive::connectToServer() {
 }
 
 function GlassLiveConnection::onConnected(%this) {
+  GlassLive::setPowerButton(1);
+
   %this.connected = true;
   %obj = JettisonObject();
   %obj.set("type", "string", "auth");
@@ -28,25 +30,43 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("version", "string", Glass.version);
   //echo(jettisonStringify("object", %obj));
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
 }
 
 function GlassLiveConnection::onDisconnect(%this) {
+  GlassLive::setPowerButton(0);
   %this.connected = false;
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
 
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %text = "<br><font:verdana:12><color:666666>[ Disconnected ]<br>";
   GlassLive::pushMessage(%text);
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
+  GlassLive::setPowerButton(0);
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+
   %this.connected = false;
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
 }
 
 function GlassLiveConnection::onConnectFailed(%this) {
+  GlassLive::setPowerButton(0);
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+
   %this.connected = false;
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
+}
+
+function GlassLiveConnection::doDisconnect(%this) {
+  %this.disconnect();
+  %this.connected = false;
+
+  GlassLive::setPowerButton(0);
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 }
 
 function GlassLiveConnection::onLine(%this, %line) {
