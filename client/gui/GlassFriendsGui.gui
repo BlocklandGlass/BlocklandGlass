@@ -103,8 +103,8 @@ new GuiControl(GlassFriendsGui) {
                visible = "1";
                clipToParent = "1";
                color = "120 160 225 255";
-                  hcolor = "190 200 225 255";
-                  text = "14639";
+                hcolor = "190 200 225 255";
+                text = "14639";
 
                new GuiTextCtrl() {
                   profile = "GlassFriendTextProfile";
@@ -260,6 +260,7 @@ new GuiControl(GlassFriendsGui) {
             canMinimize = "0";
             canMaximize = "0";
             minSize = "50 50";
+            closeCommand = "GlassLive::addDlgClose();";
 
             new GuiTextCtrl() {
                profile = "GuiTextProfile";
@@ -330,6 +331,7 @@ new GuiControl(GlassFriendsGui) {
          groupNum = "-1";
          buttonType = "PushButton";
          bitmap = "~/System_BlocklandGlass/image/gui/btn_add";
+         text = "";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";

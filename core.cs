@@ -1,7 +1,7 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "2.0.1+indev";
+			version = "3.0.0-alpha.0.1.0+closed";
 			address = "blocklandglass.com";
 			netAddress = "blocklandglass.com";
 			enableCLI = true;

@@ -436,6 +436,13 @@ function GlassLive::addDlgSubmit() {
   GlassLive::sendFriendRequest(GlassFriendsGui_AddFriendBLID.getValue());
   GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
   GlassFriendsGui_ScrollOverlay.setVisible(false);
+  GlassFriendsGui_AddFriendBLID.setValue("");
+}
+
+function GlassLive::addDlgClose() {
+  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
+  GlassFriendsGui_ScrollOverlay.setVisible(false);
+  GlassFriendsGui_AddFriendBLID.setValue("");
 }
 
 function GlassLive::chatroomInputSend(%id) {
