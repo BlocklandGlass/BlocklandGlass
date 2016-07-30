@@ -48,7 +48,18 @@ function GlassLive::chatColorCheck(%this) {
   GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_default @  ">Pleb: <font:verdana:12><color:333333>rambling message", 0);
 }
 
+function GlassLive::disconnect() {
+  if(isObject(GlassLiveConnection))
+    GlassLiveConnection.doDisconnect();
 
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassMessageGui") {
+      %window.deleteAll();
+      %window.delete();
+    }
+  }
+}
 
 //================================================================
 //= Communication                                                =
@@ -390,6 +401,19 @@ function GlassLive::urlMetadata(%tcp, %error) {
 //================================================================
 //= Gui Population                                               =
 //================================================================
+
+function GlassLive::powerButtonPress() {
+  %btn = GlassFriendsGui_PowerButton;
+  if(%btn.on) {
+    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
+    GlassLive::disconnect();
+  } else {
+    GlassLive::connectToServer();
+    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
+  }
+
+  %btn.on = !%btn.on;
+}
 
 function GlassLive::chatroomInputSend(%id) {
   %room = GlassLiveRoom::getFromId(%id);

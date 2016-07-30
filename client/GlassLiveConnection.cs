@@ -49,6 +49,11 @@ function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
 }
 
+function GlassLiveConnection::doDisconnect(%this) {
+  %this.disconnect();
+  %this.connected = false;
+}
+
 function GlassLiveConnection::onLine(%this, %line) {
   Glass::debug(%line);
   %error = jettisonParse(%line);
