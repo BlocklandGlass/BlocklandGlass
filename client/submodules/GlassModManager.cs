@@ -143,7 +143,7 @@ function GlassModManagerGui_AddonDownloadButton::onMouseLeave(%this) {
 function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
   GlassModManagerGui::doDownloadSprite(%pos, vectorAdd(GlassModManagerGui_ProgressBar.getCanvasPosition(), GlassModManagerGui_ProgressBar.getCenter()), 100);
 
-  %this.swatch.info.setValue("<font:verdana bold:16><just:center>Queued..<br><font:verdana:14>" @ strcap(%this.branch));
+  %this.swatch.info.setValue("<font:Verdana Bold:15><just:center>Queued..<br><font:verdana:14>" @ strcap(%this.branch));
   //something about redrawing the button?
 
   if(isObject(%this.obj))
@@ -245,4 +245,5 @@ exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");
 exec("./modmanager/boardsPage.cs");
 exec("./modmanager/boardPage.cs");
-exec("./modmanager/forumBrowser.cs");
+//exec("./modmanager/forumBrowser.cs");
+exec("./modmanager/rtbImport.cs");

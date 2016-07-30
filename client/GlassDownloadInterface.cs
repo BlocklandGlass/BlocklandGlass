@@ -122,7 +122,7 @@ function GlassDownloadGui::buildSwatch(%obj) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "<font:verdana bold:16>" @ %obj.text;
+    text = "<font:verdana bold:15>" @ %obj.text;
   };
 
   %gui.text = %text;

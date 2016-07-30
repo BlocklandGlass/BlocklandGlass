@@ -77,6 +77,10 @@ function GlassServerControlC::renderAll() {
     GlassServerControlC::renderCategory(%category);
   }
 
+  GlassServerControlGui_Prefs_Categories.verticalMatchChildren(0, 0);
+  GlassServerControlGui_Prefs_Categories.setVisible(true);
+  GlassServerControl_PrefScroll.setVisible(true);
+
   GlassServerControlC::openCategory(GlassPrefGroup.getObject(0));
 }
 
@@ -815,6 +819,8 @@ function clientCmdGlassAdminListing(%data, %append) {
     GlassServerControlGui_AdminList.sort(1, true);
   }
 }
+
+return;
 
 package GlassServerControlC {
   function clientCmdsetAdminLevel(%level) {

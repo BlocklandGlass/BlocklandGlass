@@ -111,6 +111,15 @@ function GuiControl::centerY(%this) {
   %this.position = %x SPC %y;
 }
 
+function GuiControl::centerX(%this) {
+  %parent = %this.getGroup();
+
+  %y = getWord(%this.position, 1);
+  %x = mFloor((getWord(%parent.extent, 0)-getWord(%this.extent, 0))/2);
+
+  %this.position = %x SPC %y;
+}
+
 function GuiControl::getCenter(%this) {
   %x = mFloor(getWord(%this.extent, 0)/2);
   %y = mFloor(getWord(%this.extent, 1)/2);

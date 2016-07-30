@@ -23,6 +23,7 @@ function Glass::execServer() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
+	exec("./support/jettison.cs");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -33,25 +34,19 @@ function Glass::execServer() {
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
+	exec("./server/GlassClientSupport.cs");
+	exec("./server/GlassInfoServer.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
+	GlassResourceManager::execResource("Support_Preferences", "server");
+	GlassResourceManager::execResource("Support_Updater", "server");
+
 	GlassServerControlS::init();
 	GlassAuthS::init();
+	GlassInfoServer::init();
 
-	if($Server::Dedicated)
-		GlassResourceManager.prompt();
-}
-
-function serverCmdGlassHandshake(%client, %ver) {
-  %client.hasGlass = true;
-  %client._glassVersion = %ver;
-}
-
-function Glass::reload() {
-  discoverFile("*");
-
-  exec("./server/GlassPreferences.cs");
+	GlassAuthS::init();
 }
 
 if($Server::isDedicated) {

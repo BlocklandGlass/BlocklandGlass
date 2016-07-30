@@ -17,6 +17,7 @@ function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
 		GlassModManagerGui::setProgress(0, "Connecting...");
 	}
 
+	return %addonHandler;
 }
 
 function GlassDownloadManager::fakeDownload(%duration) {
@@ -73,15 +74,32 @@ function GlassDownloadTCP::onDone(%this, %error) {
 		error("An error was encountered downloading file (" @ %error @ ") - need to handle this better");
 		if(!$Server::Dedicated) {
 			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-			%name.setValue("<font:verdana bold:16><just:center>Download<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
+			%name.setValue("<font:Verdana Bold:15><just:center>Download<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 		}
 
 		GlassModManagerGui::setProgress(1, "Error Downloading Add-On");
 		GlassModManager::setAddonStatus(%this.filedata.id, "");
 	} else {
+		if(isObject(%this.fileData.rtbImportProgress)) {
+			%this.fileData.rtbImportProgress.setValue(1);
+			%this.fileData.rtbImportProgress.getObject(0).setValue("<shadow:1:1><just:center><font:verdana:12><color:dddddd>Downloaded");
+			%filename = %this.fileData.rtbImportProgress.getGroup().import.filename;
+
+			%zip = %this.fileData.filename;
+			%name = getsubstr(%zip, 0, strlen(%zip)-4);
+
+			if(%name !$= %filename) {
+				fileDelete("Add-Ons/" @ %filename @ ".zip");
+			}
+			%cl = "Add-Ons/" @ %name @ "/client.cs";
+			if(isFile(%cl))
+				exec(%cl);
+		}
+
 		if(!$Server::Dedicated) {
 			%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-			%name.setValue("<font:verdana bold:16><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
+			if(isObject(%name))
+				%name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 		}
 
 		GlassModManager::setAddonStatus(%this.filedata.id, "installed");
@@ -95,6 +113,11 @@ function GlassDownloadTCP::onDone(%this, %error) {
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
+	if(isObject(%this.fileData.rtbImportProgress)) {
+		%this.fileData.rtbImportProgress.setValue(%float);
+		%this.fileData.rtbImportProgress.getObject(0).setValue("<shadow:1:1><just:center><font:verdana:12><color:999999>Downloading");
+	}
+
 	if(!$Server::Dedicated) {
 		GlassModManager::setAddonStatus(%this.filedata.id, "downloading");
 		cancel(GlassModManagerGui.sch);
@@ -103,7 +126,8 @@ function GlassDownloadTCP::setProgressBar(%this, %float) {
 		}
 
 		%name = "GlassModManagerGui_DlButton_" @ %this.filedata.id @ "_" @ (%this.fileData.download_branch);
-		%name.setValue("<font:verdana bold:16><just:center>Downloading..<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
+		if(isObject(%name))
+			%name.setValue("<font:Verdana Bold:15><just:center>Downloading..<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
 
 		if(%float < 1)
 			GlassModManagerGui::setProgress(%float, "Downloading " @ %this.fileData.filename @ " (" @ GlassDownloadManagerQueue.getCount() @ " remaining)");

@@ -1,125 +1,64 @@
-function GlassResourceManager::addResource(%name, %filename, %url, %restart) {
-  if(!isObject(GlassResourceManager)) {
-    %this = new ScriptObject(GlassResourceManager);
-    %this.resources = new ScriptGroup(GlassResourceGroup);
+function GlassResourceManager::execResource(%resource, %context) {
+  if(!isObject(GlassResourceManager))
+    new ScriptObject(GlassResourceManager);
+  //first, check if we have an update-able local copy
+  //if we do, allow it to load normally
+  //if not, execute our local version
+
+  //if there's a zip, check for a version.json
+  //if it's just a folder, we're going to assume they know what they're doing
+  if(getFileLength("Add-Ons/" @ %resource @ ".zip") > 0 && isFile("Add-Ons/" @ %resource @ ".zip") && (isFile("Add-Ons/" @ %resource @ "/version.json") || isFile("Add-Ons/" @ %resource @ "/version.txt"))) {
+    echo("Local version of " @ %resource @ " found, proceeding as normal");
+  } else if(getFileCount("Add-Ons/" @ %resource @ "/*.cs") > 0) {
+    echo("Local zip of " @ %resource @ " is missing, but a folder is present");
   } else {
-    %this = GlassResourceManager;
-  }
+    echo("\n\c4Loading local resource " @ %resource @ "...");
+    if(isFile("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs"))
+      exec("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs");
+    else
+      echo("Missing context");
+    echo("\n");
 
-  %obj = new ScriptObject() {
-    class = "GlassResource";
+    GlassResourceManager::createFakeFile(%resource);
 
-    name = %name;
-    filename = %filename;
-    url = %url;
-
-    restart = %restart;
-
-    downloaded = false;
-  };
-  %this.resources.add(%obj);
-
-  if(isfile("Add-Ons/" @ %filename)) {
-    echo("Resource \"" @ %name @ "\" found!");
-    %obj.downloaded = true;
-  } else {
-    echo("Resource \"" @ %name @ "\" not found. Attempting to download.");
-    warn("If you're developing, I'd recommend putting an empty zip in your add-ons folder");
-  }
-
-  return %obj;
-}
-
-function GlassResourceManager::prompt(%this) {
-  return;
-  for(%i = 0; %i < %this.resources.getCount(); %i++) {
-    if(!%this.resources.getObject(%i).downloaded) {
-      %download = true;
-    }
-  }
-
-  if(%download) {
-    if($Server::Dedicated) {
-      echo("Downloading Glass Dependencies");
-      GlassResourceManager::acceptPrompt();
-    } else {
-      %ctx = GlassDownloadInterface::openContext("Required Add-Ons", "Blockland Glass relies on a few standardized add-ons to work. They'll automatically install, all you have to do is press download!");
-      %ctx.registerCallback("GlassResourceManager::downloadGui");
-      %ctx.inhibitClose(true);
-      for(%i = 0; %i < %this.resources.getCount(); %i++) {
-        %res = %this.resources.getObject(%i);
-        if(!%res.downloaded)
-          %res.dlHandler = %ctx.addDownload("<font:arial bold:16>" @ %res.name @ " <font:arial:14>" @ %res.filename);
-      }
-    }
-  } else {
-    echo("All dependencies found");
-  }
-}
-
-function GlassResourceManager::downloadGui(%call) {
-  if(%call == 1) {
-    GlassResourceManager::acceptPrompt();
-  } else if(%code == 2) {
-    if(GlassDownloadInterface.getCount() == 1) {
-      messageBoxOk("Please Restart", "Please restart Blockland for these changes to take effect. Pressing OK will close Blockland.", "quit();");
+    if(!GlassResourceManager.faked[%resource]) {
+      %fakes = GlassResourceManager.fakes + 0;
+      GlassResourceManager.fake[%fakes] = %resource;
+      GlassResourceManager.fakes++;
+      GlassResourceManager.faked[%resource] = true;
     }
   }
 }
 
-function GlassResourceManager::acceptPrompt() { //the user doesn't quite have a choice with this one, as it's required
-  %this = GlassResourceManager;
-  for(%i = 0; %i < %this.resources.getCount(); %i++) {
-    %res = %this.resources.getObject(%i);
-    if(!%res.downloaded) {
-      echo("Downloading " @ %this.name);
-      %url = %res.url;
-    	%method = "GET";
-    	%downloadPath = "Add-Ons/" @ %res.filename;
-    	%className = "GlassResourceTCP";
+function GlassResourceManager::createFakeFile(%resource) {
+  %fo = new FileObject();
+  %fo.openforwrite("Add-Ons/" @ %resource @ ".zip");
+  %fo.writeLine("");
+  %fo.close();
+  %fo.delete();
+}
 
-    	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-      %tcp.resource = %res;
+package GlassResourceManager {
+  function Updater::onAdd(%this) {
+    parent::onAdd(%this);
 
-      %this.downloads++;
+    %version["Support_Updater"] = "0.12.1+release-20160619";
+    %version["Support_Preferences"] = "1.0.2";
+    %channel["Support_Updater"] = "release";
+    %channel["Support_Preferences"] = "stable";
+    %repourl["Support_Updater"] = "mods.greek2me.us";
+    %repourl["Support_Preferences"] = "http://api.blocklandglass.com/api/2/repository.php";
+    %format["Support_Updater"] = "TML";
+    %format["Support_Preferences"] = "JSON";
+    %id["Support_Updater"] = "";
+    %id["Support_Preferences"] = "193";
+
+    for(%i = 0; %i < GlassResourceManager.fakes; %i++) {
+      %resource = GlassResourceManager.fake[%i];
+      echo("\c5> GLASS FAKE: " @ %resource);
+      %addonHandler = %this.addons;
+      %addonHandler.storeFileInfo(%resource, %version[%resource], %channel[%resource], %repoURL[%resource], %format[%resource], %id[%resource], false, "");
     }
   }
-}
-
-function GlassResourceManager::check(%this) {
-  for(%i = 0; %i < %this.resources.getcount(); %i++) {
-    %resource = %this.resources.getObject(%i);
-  }
-}
-
-function GlassResourceTCP::setProgressBar(%this, %completed) {
-  if(!$Server::Dedicated) {
-    %this.resource.dlHandler.setProgress(%completed);
-  }
-}
-
-function GlassResourceTCP::onDone(%this, %error) {
-  if(!%error) {
-    echo("Downloaded " @ %this.resource.name @ " as " @ %this.resource.filename);
-
-    if(isFunction(%this.resource.getClassName(), "onDone")) {
-      %this.resource.onDone();
-    }
-
-    if(%this.resource.restart) {
-      GlassResourceManager.restart = true;
-    } else {
-      if($Server::Dedicated) {
-        %f = "server.cs";
-      } else {
-        %f = "client.cs";
-      }
-      exec("Add-Ons/" @ getsubstr(%this.resource.filename, 0, strlen(%this.resource.filename)-4) @ "/" @ %f);
-    }
-  } else {
-    echo("Error: " @ %error);
-  }
-}
-
-GlassResourceManager::addResource("Updater", "Support_Updater.zip", "http://mods.greek2me.us/storage/Support_Updater.zip", true);
-GlassResourceManager::addResource("Preferences", "Support_Preferences.zip", "http://api.blocklandglass.com/download.php?branch=3&aid=193", false);
+};
+activatePackage(GlassResourceManager);

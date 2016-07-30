@@ -346,7 +346,7 @@ new GuiControl(GlassServerControlGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<just:center><font:verdana bold:16>You aren\'t allowed to use preferences!";
+            text = "<just:center><font:Verdana Bold:15>You aren\'t allowed to use preferences!";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";

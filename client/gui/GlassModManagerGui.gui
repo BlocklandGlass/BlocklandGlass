@@ -390,7 +390,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Bot_Blockhead";
+                        text = "<font:Verdana Bold:15>Bot_Blockhead";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -489,7 +489,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Bot_Hole";
+                        text = "<font:Verdana Bold:15>Bot_Hole";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -588,7 +588,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Bot_Horse";
+                        text = "<font:Verdana Bold:15>Bot_Horse";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -687,7 +687,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Bot_Shark";
+                        text = "<font:Verdana Bold:15>Bot_Shark";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -786,7 +786,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Bot_Zombie";
+                        text = "<font:Verdana Bold:15>Bot_Zombie";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -885,7 +885,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Arch";
+                        text = "<font:Verdana Bold:15>Brick_Arch";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -984,7 +984,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_BlackDragonIV";
+                        text = "<font:Verdana Bold:15>Brick_BlackDragonIV";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1083,7 +1083,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_BlackDragonIV_Filler";
+                        text = "<font:Verdana Bold:15>Brick_BlackDragonIV_Filler";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1182,7 +1182,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Checkpoint";
+                        text = "<font:Verdana Bold:15>Brick_Checkpoint";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1281,7 +1281,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Christmas_Tree";
+                        text = "<font:Verdana Bold:15>Brick_Christmas_Tree";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1380,7 +1380,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Doors";
+                        text = "<font:Verdana Bold:15>Brick_Doors";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1479,7 +1479,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Halloween";
+                        text = "<font:Verdana Bold:15>Brick_Halloween";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1578,7 +1578,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Large_Cubes";
+                        text = "<font:Verdana Bold:15>Brick_Large_Cubes";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1677,7 +1677,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_ModTer_4xPack";
+                        text = "<font:Verdana Bold:15>Brick_ModTer_4xPack";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1776,7 +1776,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_ModTer_BasicPack";
+                        text = "<font:Verdana Bold:15>Brick_ModTer_BasicPack";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1875,7 +1875,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_ModTer_InvertedPack";
+                        text = "<font:Verdana Bold:15>Brick_ModTer_InvertedPack";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -1974,7 +1974,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Poster_8x";
+                        text = "<font:Verdana Bold:15>Brick_Poster_8x";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2073,7 +2073,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Teledoor";
+                        text = "<font:Verdana Bold:15>Brick_Teledoor";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2172,7 +2172,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_Treasure_Chest";
+                        text = "<font:Verdana Bold:15>Brick_Treasure_Chest";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2271,7 +2271,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Brick_V15";
+                        text = "<font:Verdana Bold:15>Brick_V15";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2370,7 +2370,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Emote_Alarm";
+                        text = "<font:Verdana Bold:15>Emote_Alarm";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2469,7 +2469,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Emote_Confusion";
+                        text = "<font:Verdana Bold:15>Emote_Confusion";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2568,7 +2568,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Emote_Hate";
+                        text = "<font:Verdana Bold:15>Emote_Hate";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2667,7 +2667,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Emote_Love";
+                        text = "<font:Verdana Bold:15>Emote_Love";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2766,7 +2766,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Event_Camera_Control";
+                        text = "<font:Verdana Bold:15>Event_Camera_Control";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2865,7 +2865,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>onAllChestsFound <font:verdana:14>Event_onFoundAllChests";
+                        text = "<font:Verdana Bold:15>onAllChestsFound <font:verdana:14>Event_onFoundAllChests";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -2964,7 +2964,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Event_Server";
+                        text = "<font:Verdana Bold:15>Event_Server";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3063,7 +3063,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>GameMode_Blockheads_Ruin_Xmas";
+                        text = "<font:Verdana Bold:15>GameMode_Blockheads_Ruin_Xmas";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3162,7 +3162,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Gamemode_Blocktopia";
+                        text = "<font:Verdana Bold:15>Gamemode_Blocktopia";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3261,7 +3261,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Pictionary <font:verdana:14>Gamemode_Pictionary";
+                        text = "<font:Verdana Bold:15>Pictionary <font:verdana:14>Gamemode_Pictionary";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3360,7 +3360,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>GameMode_Rampage";
+                        text = "<font:Verdana Bold:15>GameMode_Rampage";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3459,7 +3459,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>GameMode_SpeedKart";
+                        text = "<font:Verdana Bold:15>GameMode_SpeedKart";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3558,7 +3558,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>GameMode_Tutorial";
+                        text = "<font:Verdana Bold:15>GameMode_Tutorial";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3657,7 +3657,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Gamemode_ZombieDefense";
+                        text = "<font:Verdana Bold:15>Gamemode_ZombieDefense";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3756,7 +3756,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Item_Key";
+                        text = "<font:Verdana Bold:15>Item_Key";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3855,7 +3855,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Item_Skis";
+                        text = "<font:Verdana Bold:15>Item_Skis";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -3954,7 +3954,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Item_Sports";
+                        text = "<font:Verdana Bold:15>Item_Sports";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4053,7 +4053,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Light_Animated";
+                        text = "<font:Verdana Bold:15>Light_Animated";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4152,7 +4152,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Light_Basic";
+                        text = "<font:Verdana Bold:15>Light_Basic";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4251,7 +4251,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Particle_Basic";
+                        text = "<font:Verdana Bold:15>Particle_Basic";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4350,7 +4350,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Particle_FX_Cans";
+                        text = "<font:Verdana Bold:15>Particle_FX_Cans";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4449,7 +4449,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Particle_Grass";
+                        text = "<font:Verdana Bold:15>Particle_Grass";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4548,7 +4548,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Particle_Player";
+                        text = "<font:Verdana Bold:15>Particle_Player";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4647,7 +4647,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Particle_Tools";
+                        text = "<font:Verdana Bold:15>Particle_Tools";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4746,7 +4746,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Player_Fuel_Jet";
+                        text = "<font:Verdana Bold:15>Player_Fuel_Jet";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4845,7 +4845,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Player_Jump_Jet";
+                        text = "<font:Verdana Bold:15>Player_Jump_Jet";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -4944,7 +4944,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Player_Leap_Jet";
+                        text = "<font:Verdana Bold:15>Player_Leap_Jet";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5043,7 +5043,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Player_No_Jet";
+                        text = "<font:Verdana Bold:15>Player_No_Jet";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5142,7 +5142,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Player_Quake";
+                        text = "<font:Verdana Bold:15>Player_Quake";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5241,7 +5241,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_1x2f_BLPRemote";
+                        text = "<font:Verdana Bold:15>Print_1x2f_BLPRemote";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5340,7 +5340,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_1x2f_Default";
+                        text = "<font:Verdana Bold:15>Print_1x2f_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5439,7 +5439,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_2x2f_Default";
+                        text = "<font:Verdana Bold:15>Print_2x2f_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5538,7 +5538,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_2x2r_Default";
+                        text = "<font:Verdana Bold:15>Print_2x2r_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5637,7 +5637,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_2x2r_Monitor3";
+                        text = "<font:Verdana Bold:15>Print_2x2r_Monitor3";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5736,7 +5736,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_Letters_Default";
+                        text = "<font:Verdana Bold:15>Print_Letters_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5835,7 +5835,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_ModTer_Default";
+                        text = "<font:Verdana Bold:15>Print_ModTer_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -5934,7 +5934,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Print_Poster_Tutorial";
+                        text = "<font:Verdana Bold:15>Print_Poster_Tutorial";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6033,7 +6033,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Projectile_GravityRocket";
+                        text = "<font:Verdana Bold:15>Projectile_GravityRocket";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6132,7 +6132,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Projectile_Pinball";
+                        text = "<font:Verdana Bold:15>Projectile_Pinball";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6231,7 +6231,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Projectile_Pong";
+                        text = "<font:Verdana Bold:15>Projectile_Pong";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6330,7 +6330,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Projectile_Radio_Wave";
+                        text = "<font:Verdana Bold:15>Projectile_Radio_Wave";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6429,7 +6429,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Script_Player_Persistence";
+                        text = "<font:Verdana Bold:15>Script_Player_Persistence";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6528,7 +6528,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>TotalRPG Events <font:verdana:14>Script_TotalRPG";
+                        text = "<font:Verdana Bold:15>TotalRPG Events <font:verdana:14>Script_TotalRPG";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6627,7 +6627,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>ServerAdminChat";
+                        text = "<font:Verdana Bold:15>ServerAdminChat";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6726,7 +6726,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Admin Chat <font:verdana:14>Server_AdminChat";
+                        text = "<font:Verdana Bold:15>Admin Chat <font:verdana:14>Server_AdminChat";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6825,7 +6825,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>And Branches? <font:verdana:14>Server_Branched";
+                        text = "<font:Verdana Bold:15>And Branches? <font:verdana:14>Server_Branched";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -6924,7 +6924,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Destructo Wand++ <font:verdana:14>Server_DWandPlusPlus";
+                        text = "<font:Verdana Bold:15>Destructo Wand++ <font:verdana:14>Server_DWandPlusPlus";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7023,7 +7023,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>FireMod <font:verdana:14>Server_FireMod";
+                        text = "<font:Verdana Bold:15>FireMod <font:verdana:14>Server_FireMod";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7122,7 +7122,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Playtime (Logging) <font:verdana:14>Server_Playtime";
+                        text = "<font:Verdana Bold:15>Playtime (Logging) <font:verdana:14>Server_Playtime";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7221,7 +7221,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Server_TrustLevels";
+                        text = "<font:Verdana Bold:15>Server_TrustLevels";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7320,7 +7320,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Server_VehicleGore";
+                        text = "<font:Verdana Bold:15>Server_VehicleGore";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7419,7 +7419,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Sound_Beeps";
+                        text = "<font:Verdana Bold:15>Sound_Beeps";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7518,7 +7518,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Sound_Phone";
+                        text = "<font:Verdana Bold:15>Sound_Phone";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7617,7 +7617,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Sound_Synth4";
+                        text = "<font:Verdana Bold:15>Sound_Synth4";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7716,7 +7716,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>SupportPreferences";
+                        text = "<font:Verdana Bold:15>SupportPreferences";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7815,7 +7815,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Support_Doors";
+                        text = "<font:Verdana Bold:15>Support_Doors";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -7914,7 +7914,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Support_LegacyDoors";
+                        text = "<font:Verdana Bold:15>Support_LegacyDoors";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8013,7 +8013,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Support_Player_Persistence";
+                        text = "<font:Verdana Bold:15>Support_Player_Persistence";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8112,7 +8112,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Preferences <font:verdana:14>Support_Preferences";
+                        text = "<font:Verdana Bold:15>Preferences <font:verdana:14>Support_Preferences";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8211,7 +8211,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>System_BAM";
+                        text = "<font:Verdana Bold:15>System_BAM";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8310,7 +8310,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>System_oRBs";
+                        text = "<font:Verdana Bold:15>System_oRBs";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8409,7 +8409,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>System_ReturnToBlockland";
+                        text = "<font:Verdana Bold:15>System_ReturnToBlockland";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8508,7 +8508,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Tool_Duplicator";
+                        text = "<font:Verdana Bold:15>Tool_Duplicator";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8607,7 +8607,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Tool_NewDuplicator";
+                        text = "<font:Verdana Bold:15>Tool_NewDuplicator";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8706,7 +8706,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Ball";
+                        text = "<font:Verdana Bold:15>Vehicle_Ball";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8805,7 +8805,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Flying_Wheeled_Jeep";
+                        text = "<font:Verdana Bold:15>Vehicle_Flying_Wheeled_Jeep";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -8904,7 +8904,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Horse";
+                        text = "<font:Verdana Bold:15>Vehicle_Horse";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9003,7 +9003,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Jeep";
+                        text = "<font:Verdana Bold:15>Vehicle_Jeep";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9102,7 +9102,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Magic_Carpet";
+                        text = "<font:Verdana Bold:15>Vehicle_Magic_Carpet";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9201,7 +9201,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Pirate_Cannon";
+                        text = "<font:Verdana Bold:15>Vehicle_Pirate_Cannon";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9300,7 +9300,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Dalton Rodeo <font:verdana:14>Vehicle_Rodeo";
+                        text = "<font:Verdana Bold:15>Dalton Rodeo <font:verdana:14>Vehicle_Rodeo";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9399,7 +9399,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Rowboat";
+                        text = "<font:Verdana Bold:15>Vehicle_Rowboat";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9498,7 +9498,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Vehicle_Tank";
+                        text = "<font:Verdana Bold:15>Vehicle_Tank";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9597,7 +9597,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Bow";
+                        text = "<font:Verdana Bold:15>Weapon_Bow";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9696,7 +9696,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Gun";
+                        text = "<font:Verdana Bold:15>Weapon_Gun";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9795,7 +9795,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Guns_Akimbo";
+                        text = "<font:Verdana Bold:15>Weapon_Guns_Akimbo";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9894,7 +9894,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Horse_Ray";
+                        text = "<font:Verdana Bold:15>Weapon_Horse_Ray";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -9993,7 +9993,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Push_Broom";
+                        text = "<font:Verdana Bold:15>Weapon_Push_Broom";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10092,7 +10092,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Rocket_Launcher";
+                        text = "<font:Verdana Bold:15>Weapon_Rocket_Launcher";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10191,7 +10191,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Spear";
+                        text = "<font:Verdana Bold:15>Weapon_Spear";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10290,7 +10290,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Weapon_Sword";
+                        text = "<font:Verdana Bold:15>Weapon_Sword";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10570,7 +10570,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Gamemode_Pictionary";
+                        text = "<font:Verdana Bold:15>Gamemode_Pictionary";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10615,7 +10615,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Colorset_Default";
+                        text = "<font:Verdana Bold:15>Colorset_Default";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10660,7 +10660,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Colorset_D4SB";
+                        text = "<font:Verdana Bold:15>Colorset_D4SB";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";
@@ -10705,7 +10705,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:16>Colorset_Chaos";
+                        text = "<font:Verdana Bold:15>Colorset_Chaos";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";

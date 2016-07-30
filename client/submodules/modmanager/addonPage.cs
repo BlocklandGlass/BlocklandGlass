@@ -161,7 +161,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].info = new GuiMLTextCtrl(%name) {
       horizSizing = "center";
       vertSizing = "center";
-      text = "<font:verdana bold:16><just:center>" @ %text @ "<br><font:verdana:14>" @ strcap(%branch);
+      text = "<font:Verdana Bold:15><just:center>" @ %text @ "<br><font:verdana:14>" @ strcap(%branch);
       position = "0 0";
       extent = "300 16";
       minextent = "0 0";
@@ -265,6 +265,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
   GlassModManagerGui_MainDisplay.container = %container;
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+  GlassModManagerGui_MainDisplay.setVisible(true);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
 }
 

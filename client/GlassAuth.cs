@@ -74,6 +74,7 @@ function GlassAuth::updateInput() {
 function GlassAuth::onAuthSuccess(%this) {
 	if(!%this.firstAuth) {
 		GlassLive::connectToServer();
+    GlassModManager::placeCall("rtb");
 	}
 
 	%this.firstAuth = true;
