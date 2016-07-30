@@ -1,9 +1,10 @@
 
 function GlassLiveUser::create(%username, %blid) {
-  echo("creating glu: " @ %username SPC %blid);
   if(isObject(GlassLiveUsers.user[%blid]))
     return GlassLiveUsers.user[%blid];
 
+  echo("creating glu: " @ %username SPC %blid);
+  
   %user = new ScriptObject() {
     class = "GlassLiveUser";
     username = %username;

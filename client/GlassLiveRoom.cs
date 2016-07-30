@@ -125,7 +125,12 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
       %text = "no reason";
   }
 
-  %user = "BLID_" @ %blid; // todo local caching
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user == false)
+    %user = "BLID_" @ %blid; // todo local caching
+  else
+    %user = %user.username;
+    
   %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
   %this.pushText(%text);
 }
