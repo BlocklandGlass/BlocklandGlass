@@ -405,14 +405,37 @@ function GlassLive::urlMetadata(%tcp, %error) {
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
   if(%btn.on) {
-    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
     GlassLive::disconnect();
   } else {
     GlassLive::connectToServer();
+  }
+}
+
+function GlassLive::setPowerButton(%bool) {
+  %btn = GlassFriendsGui_PowerButton;
+  %btn.text = "";
+  %btn.on = %bool;
+  if(%btn.on) {
     %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
+  } else {
+    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
+  }
+}
+
+function GlassLive::openAddDlg() {
+  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(true);
+  GlassFriendsGui_ScrollOverlay.setVisible(true);
+}
+
+function GlassLive::addDlgSubmit() {
+  if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue()) {
+    messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    return;
   }
 
-  %btn.on = !%btn.on;
+  GlassLive::sendFriendRequest(GlassFriendsGui_AddFriendBLID.getValue());
+  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
+  GlassFriendsGui_ScrollOverlay.setVisible(false);
 }
 
 function GlassLive::chatroomInputSend(%id) {
