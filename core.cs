@@ -1,7 +1,7 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "3.0.0-alpha.0.1.0+closed";
+			version = "3.0.0-alpha.0.2.0+closed";
 
 			address = "api.blocklandglass.com";
 			netAddress = "blocklandglass.com";
@@ -11,7 +11,7 @@ function Glass::init(%context) {
 		if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
 			Glass.dev = true;
 			Glass.devLocal = false;
-			Glass.address = "localhost";
+			//Glass.address = "localhost";
 		}
 	}
 

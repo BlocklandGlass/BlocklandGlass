@@ -1,10 +1,13 @@
 
 function GlassLiveUser::create(%username, %blid) {
-  if(isObject(GlassLiveUsers.user[%blid]))
+  if(isObject(GlassLiveUsers.user[%blid])) {
+    GlassLiveUsers.user[%blid].username = %username;
     return GlassLiveUsers.user[%blid];
+  }
 
-  echo("creating glu: " @ %username SPC %blid);
-  
+  //echo("[" @ GlassLiveUsers.user[%blid] @ "] exists: " @ isObject(GlassLiveUsers.user[%blid]));
+  //echo("creating glu: [" @ %username @ "] [" @ %blid @ "]");
+
   %user = new ScriptObject() {
     class = "GlassLiveUser";
     username = %username;
@@ -60,6 +63,14 @@ function GlassLiveUser::setFriend(%this, %bool) {
 
 function GlassLiveUser::isFriend(%this) {
   return %this.isFriend;
+}
+
+function GlassLiveUser::setFriendRequest(%this, %bool) {
+  %this.isFriendRequest = %bool == 1;
+}
+
+function GlassLiveUser::isFriendRequest(%this) {
+  return %this.isFriendRequest;
 }
 
 function GlassLiveUser::setMessageGui(%this, %obj) {

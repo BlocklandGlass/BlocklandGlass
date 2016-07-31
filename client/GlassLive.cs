@@ -38,6 +38,17 @@ function GlassOverlayGui::onWake(%this) {
 	%y = getWord(getRes(), 1);
 	GlassOverlay.resize(0, 0, %x, %y);
 
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %obj = %this.getObject(%i);
+    if(%obj.getName() $= "GlassChatroomWindow") {
+      %chatroom = %obj;
+      %chatroom.chattext.forceReflow();
+
+      %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
+      %chatroom.scrollSwatch.setVisible(true);
+      %chatroom.scroll.scrollToBottom();
+    }
+  }
   //instantly close all notifications
 }
 
@@ -116,7 +127,7 @@ function GlassLive::displayLocation(%data) {
 }
 
 function GlassLive::openDirectMessage(%blid, %username) {
-  if(%blid < 0 || %blid $= "") {
+  if(%blid < 0 || %blid $= "" || %blid == getNumKeyId()) {
     return false;
   }
 
@@ -332,6 +343,9 @@ function GlassLive::sendMessage(%blid, %msg) {
 }
 
 function GlassLive::sendFriendRequest(%blid) {
+  if(%blid == getNumKeyId())
+    return;
+
   %obj = JettisonObject();
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
@@ -343,6 +357,26 @@ function GlassLive::friendAccept(%blid) {
   %obj = JettisonObject();
   %obj.set("type", "string", "friendAccept");
   %obj.set("blid", "string", %blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+}
+
+function GlassLive::friendDecline(%blid) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "friendDecline");
+  %obj.set("blid", "string", %blid);
+
+  %newRequests = JettisonArray();
+
+  for(%i = 0; %i < GlassLive.friendRequests.length; %i++) {
+    %o = GlassLive.friendRequests.value[%i];
+    if(%o.blid != %blid) {
+      %newRequests.push("object", %o);
+    }
+  }
+
+  GlassLive.friendRequests.delete();
+  GlassLive.friendRequests = %newRequests;
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -430,6 +464,11 @@ function GlassLive::openAddDlg() {
 function GlassLive::addDlgSubmit() {
   if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue()) {
     messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    return;
+  }
+
+  if(GlassFriendsGui_AddFriendBLID.getValue() == getNumKeyId()) {
+    messageBoxOk("Invalid BLID", "You can't friend yourself");
     return;
   }
 
@@ -538,7 +577,9 @@ function GlassHighlightMouse::onMouseLeave(%this) {
   if(!%this.enabled)
     return;
 
-  %this.getGroup().flare.setVisible(false);
+  if(isObject(%this.getGroup().flare))
+    %this.getGroup().flare.setVisible(false);
+
   %this.getGroup().color = %this.getGroup().ocolor;
 
   if(%this.type $= "request") {
@@ -573,6 +614,7 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   if(%this.type $= "request") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
       messageBoxOk("Ignored", "Friend Request ignored");
+      GlassLive::friendDecline(%this.blid);
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
       messageBoxOk("Accepted", "Friend Request accepted");
       GlassLive::friendAccept(%this.blid);
@@ -608,7 +650,7 @@ function GlassLive::createChatroomGui(%id) {
     canMinimize = "0";
     canMaximize = "0";
     minSize = "50 50";
-    closeCommand = "GlassLiveRoom::leaveRoom(" @ %id @ ");";
+    closeCommand = "GlassLiveRoom::leave(" @ %id @ ");";
   };
 
   %chatroom.scroll = new GuiScrollCtrl() {

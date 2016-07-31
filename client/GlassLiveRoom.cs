@@ -29,7 +29,7 @@ function GlassLiveRoom::getFromId(%id) {
 function GlassLiveRoom::leave(%this, %conf) {
   if(!%conf) {
     %this = GlassLiveRoom::getFromId(%this);
-    messageBoxYesNo("Are you sure?", "Are you sure you want to leave this room?", "GlassLiveRoom::leaveRoom(" @ %this.getId() @ ", true);");
+    messageBoxYesNo("Are you sure?", "Are you sure you want to leave this room?", "GlassLiveRoom::leave(" @ %this.getId() @ ", true);");
   } else {
     echo(%this);
     %this.window.deleteAll();
@@ -130,9 +130,11 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
     %user = "BLID_" @ %blid; // todo local caching
   else
     %user = %user.username;
-    
+
   %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
   %this.pushText(%text);
+
+  %this.renderUserList();
 }
 
 function GlassLiveRoom::sendMessage(%this, %msg) {
@@ -162,18 +164,63 @@ function GlassLiveRoom::pushText(%this, %msg) {
     %val = %msg;
 
   %chatroom.chattext.setValue(%val);
-  %chatroom.chattext.forceReflow();
+  if(GlassOverlayGui.isAwake())
+    %chatroom.chattext.forceReflow();
+
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
   %chatroom.scroll.scrollToBottom();
 }
 
+function GlassLiveRoom::getOrderedUserList(%this) {
+  %users = new GuiTextListCtrl();
+  %admins = new GuiTextListCtrl();
+  %mods = new GuiTextListCtrl();
+
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %user = %this.getUser(%i);
+    if(%user.isAdmin()) {
+      %admins.addRow(%i, %user.username);
+    } else if(%user.isMod()) {
+      %mods.addRow(%i, %user.username);
+    } else {
+      %users.addRow(%i, %user.username);
+    }
+  }
+
+  %users.sort(0);
+  %admins.sort(0);
+  %mods.sort(0);
+
+  %idList = "";
+
+  for(%i = 0; %i < %admins.rowCount(); %i++) {
+    %idList = %idList SPC %admins.getRowId(%i);
+  }
+
+  for(%i = 0; %i < %mods.rowCount(); %i++) {
+    %idList = %idList SPC %mods.getRowId(%i);
+  }
+
+  for(%i = 0; %i < %users.rowCount(); %i++) {
+    %idList = %idList SPC %users.getRowId(%i);
+  }
+
+  %admins.delete();
+  %mods.delete();
+  %users.delete();
+
+  return trim(%idList);
+}
+
 function GlassLiveRoom::renderUserList(%this) {
   %userSwatch = %this.window.userswatch;
   %userSwatch.deleteAll();
-  echo("us: " @ %userSwatch);
-  for(%i = 0; %i < %this.getCount(); %i++) {
-    %user = %this.getUser(%i);
+
+  %orderedList = %this.getOrderedUserList();
+
+  for(%i = 0; %i < getWordCount(%orderedList); %i++) {
+    %user = %this.getUser(getWord(%orderedList, %i));
 
     if(%user.isAdmin()) {
       %icon = "crown_gold";
