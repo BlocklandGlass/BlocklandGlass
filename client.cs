@@ -77,7 +77,10 @@ function Glass::execClient() {
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
 
 	%bind = GlassSettings.get("MM::Keybind");
-	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+	if(%bind !$= "") {
+		GlassSettings.update("Live::Keybind", %bind);
+		GlassSettings.update("MM::Keybind", "");
+	}
 
 	%bind = GlassSettings.get("Live::Keybind");
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");

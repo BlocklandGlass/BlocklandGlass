@@ -30,6 +30,15 @@ function GlassLive::openOverlay() {
   GlassNotificationManager.dismissAll();
 }
 
+function GlassLive::openModManager() {
+  canvas.pushDialog(GlassModManagerGui);
+}
+
+function GlassLive::openSettings() {
+  canvas.pushDialog(GlassModManagerGui);
+  GlassModManagerGui::setPane(5);
+}
+
 function GlassLive::closeOverlay() {
   canvas.popDialog(GlassOverlayGui);
 }
@@ -352,6 +361,8 @@ function GlassLive::sendFriendRequest(%blid) {
   %obj = JettisonObject();
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
+
+  messageBoxOk("Friend Request Sent", "Friend request sent to BLID " @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }

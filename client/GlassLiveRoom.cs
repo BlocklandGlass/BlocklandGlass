@@ -232,15 +232,15 @@ function GlassLiveRoom::renderUserList(%this) {
 
     if(%user.isAdmin()) {
       %icon = "crown_gold";
-      %pos = "2 2";
+      %pos = "2 4";
       %ext = "14 14";
     } else if(%user.isMod()) {
       %icon = "crown_silver";
-      %pos = "2 2";
+      %pos = "2 4";
       %ext = "14 14";
     } else {
       %icon = "user";
-      %pos = "1 1";
+      %pos = "1 3";
       %ext = "16 16";
     }
 
@@ -255,7 +255,7 @@ function GlassLiveRoom::renderUserList(%this) {
       horizSizing = "right";
       vertSizing = "bottom";
       position = "3 3";
-      extent = "109 18";
+      extent = "110 22";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -276,14 +276,26 @@ function GlassLiveRoom::renderUserList(%this) {
       text = collapseEscape("\\c" @ %colorCode) @ %user.username;
       rawtext = %user.username;
       extent = "45 18";
-      position = "22 10";
+      position = "22 12";
+    };
+
+    %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "0 0";
+      extent = %swatch.extent;
+
+      swatch = %swatch;
+      user = %user;
     };
 
     %swatch.add(%swatch.icon);
     %swatch.add(%swatch.text);
+    %swatch.add(%swatch.mouse);
     %swatch.text.centerY();
     if(%last !$= "") {
-      %swatch.placeBelow(%last, 2);
+      %swatch.placeBelow(%last, 0);
     }
     %last = %swatch;
     %userSwatch.add(%swatch);
@@ -292,4 +304,26 @@ function GlassLiveRoom::renderUserList(%this) {
   }
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);
+}
+
+function GlassLiveUserListSwatch::onMouseEnter(%this) {
+  %this.swatch.color = "220 220 220 255";
+}
+
+function GlassLiveUserListSwatch::onMouseLeave(%this) {
+  %this.swatch.color = "160 160 160 0";
+  %this.down = false;
+}
+
+function GlassLiveUserListSwatch::onMouseDown(%this) {
+  %this.swatch.color = "150 150 255 255";
+  %this.down = true;
+}
+
+function GlassLiveUserListSwatch::onMouseUp(%this) {
+  %this.swatch.color = "220 220 220 255";
+  if(%this.down) {
+    %this.down = false;
+    messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
+  }
 }

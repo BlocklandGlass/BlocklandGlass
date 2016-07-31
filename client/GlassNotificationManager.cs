@@ -280,7 +280,7 @@ package GlassNotificationManager {
       }
     } else if(%content.getName() $= "MainMenuGui") {
       if(!isObject(Glass.mmNotification)) {
-        Glass.mmNotification = GlassNotificationManager::newNotification("Mod Manager", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)) @ "<color:000000> to open the mod manager!", "module", 1, "canvas.pushDialog(GlassModManagerGui);");
+        Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "module", 1, "GlassLive::openOverlay();");
       }
     }
   }
