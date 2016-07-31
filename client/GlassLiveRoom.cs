@@ -31,7 +31,6 @@ function GlassLiveRoom::leave(%this, %conf) {
     %this = GlassLiveRoom::getFromId(%this);
     messageBoxYesNo("Are you sure?", "Are you sure you want to leave this room?", "GlassLiveRoom::leave(" @ %this.getId() @ ", true);");
   } else {
-    echo(%this);
     %this.window.deleteAll();
     %this.window.delete();
 
@@ -155,6 +154,15 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
+function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
+  %this.awake[%blid] = %awake;
+  %text = %this.userListSwatch[%blid].text;
+  if(isObject(%text)) {
+    %colorCode = %awake ? 0 : 2;
+    %text.setValue(collapseEscape("\\c" @ %colorCode) @ %text.rawtext);
+  }
+}
+
 function GlassLiveRoom::pushText(%this, %msg) {
   %chatroom = %this.window;
   %val = %chatroom.chattext.getValue();
@@ -236,6 +244,11 @@ function GlassLiveRoom::renderUserList(%this) {
       %ext = "16 16";
     }
 
+    if(%this.awake[%user.blid])
+      %colorCode = 0;
+    else
+      %colorCode = 2;
+
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
       profile = "GuiDefaultProfile";
@@ -260,7 +273,8 @@ function GlassLiveRoom::renderUserList(%this) {
 
     %swatch.text = new GuiTextCtrl() {
       profile = "GlassFriendTextProfile";
-      text = %user.username;
+      text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+      rawtext = %user.username;
       extent = "45 18";
       position = "22 10";
     };
@@ -273,6 +287,8 @@ function GlassLiveRoom::renderUserList(%this) {
     }
     %last = %swatch;
     %userSwatch.add(%swatch);
+
+    %this.userListSwatch[%user.blid] = %swatch;
   }
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);

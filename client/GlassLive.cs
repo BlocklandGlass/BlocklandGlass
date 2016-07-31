@@ -10,6 +10,7 @@ function GlassLive::init() {
       color_default = "666666";
       color_self = "6688ff";
       color_admin = "ffaa00";
+      color_mod = "ee6600";
     };
 
   if(!isObject(GlassLiveUsers))
@@ -47,6 +48,8 @@ function GlassOverlayGui::onWake(%this) {
       %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
       %chatroom.scrollSwatch.setVisible(true);
       %chatroom.scroll.scrollToBottom();
+
+
     }
   }
   //instantly close all notifications
@@ -770,20 +773,27 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     vertSizing = "bottom";
     position = "135 131";
     extent = "270 180";
-    minExtent = "8 2";
+    minExtent = "270 180";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
     text = "Message - " @ %username;
     maxLength = "255";
-    resizeWidth = "0";
-    resizeHeight = "0";
+    resizeWidth = "1";
+    resizeHeight = "1";
     canMove = "1";
     canClose = "1";
     canMinimize = "0";
     canMaximize = "0";
-    minSize = "50 50";
     closeCommand = "GlassLive::closeMessage(" @ %blid @ ");";
+  };
+
+  %dm.resize = new GuiMLTextCtrl(GlassMessageResize) {
+    profile = "GuiMLTextProfile";
+    horizSizing = "relative";
+    vertSizing = "relative";
+    position = "0 0";
+    extent = %dm.extent;
   };
 
   %dm.scroll = new GuiScrollCtrl() {
@@ -850,7 +860,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.input = new GuiTextEditCtrl() {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
-    vertSizing = "bottom";
+    vertSizing = "top";
     position = "10 155";
     extent = "250 16";
     minExtent = "8 2";
@@ -866,6 +876,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     tabComplete = "0";
     sinkAllKeyEvents = "0";
   };
+  %dm.add(%dm.resize);
   %dm.add(%dm.scroll);
   %dm.scroll.add(%dm.scrollSwatch);
   %dm.scrollSwatch.add(%dm.chattext);
@@ -877,8 +888,20 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   return %dm;
 }
 
+function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
+  %window = %this.getGroup();
+  %extent = %window.extent;
+  %window.scroll.extent = vectorSub(%extent, "20 65");
+  %window.scrollSwatch.extent = getWord(%extent, 0)-30 SPC getWord(%window.chattext.extent, 1);
+  %window.chattext.extent = getWord(%extent, 0)-35 SPC getWord(%window.chattext.extent, 1);
+
+  %window.input.extent = getWord(%extent, 0)-20 SPC getWord(%window.input.extent, 1);
+
+  %window.scrollSwatch.verticalMatchChildren(0, 3);
+  %window.scroll.setVisible(true);
+}
+
 function GlassMessageTyping::startAnimation(%this) {
-  echo("start");
   %window = %this.window;
   %this.placeBelow(%window.chattext, 4);
 
@@ -1156,6 +1179,23 @@ function GlassChatroomWindow::onWake(%chatroom) {
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
   %chatroom.scroll.scrollToBottom();
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "roomAwake");
+  %obj.set("id", "string", %chatroom.id);
+  %obj.set("bool", "string", "1");
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+}
+
+function GlassChatroomWindow::onSleep(%chatroom) {
+  echo("sleep");
+  %obj = JettisonObject();
+  %obj.set("type", "string", "roomAwake");
+  %obj.set("id", "string", %chatroom.id);
+  %obj.set("bool", "string", "0");
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 package GlassLivePackage {

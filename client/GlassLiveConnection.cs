@@ -141,12 +141,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       %sender = %data.sender;
       %senderblid = %data.sender_id;
 
+      %senderUser = GlassLiveUser::getFromBlid(%senderblid);
+
       if(%senderblid == getNumKeyId()) {
         %color = GlassLive.color_self;
-      } else if(GlassLive.isAdmin[%senderblid]) {
+      } else if(%senderUser.isAdmin()) {
         %color = GlassLive.color_admin;
-      } else if(GlassLive.isModerator[%senderblid]) {
-        %color = GlassLive.color_moderator;
+      } else if(%senderUser.isMod()) {
+        %color = GlassLive.color_mod;
       } else if(GlassLive.isFriend[%senderblid]) {
         %color = GlassLive.color_friend;
       } else {
@@ -168,6 +170,11 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomUserLeave":
       %room = GlassLiveRoom::getFromId(%data.id);
       %room.onUserLeave(%data.blid, %data.reason);
+
+    case "roomAwake":
+      %room = GlassLiveRoom::getFromId(%data.id);
+      %room.setUserAwake(%data.user, %data.awake);
+
 
     case "friendsList":
       for(%i = 0; %i < %data.friends.length; %i++) {
