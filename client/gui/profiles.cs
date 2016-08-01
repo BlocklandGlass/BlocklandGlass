@@ -227,7 +227,13 @@ if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
 };
 
 if(!isObject(GlassChatAudio)) new AudioProfile(GlassChatAudio) {
-  filename = "base/data/sound/clickPlant.wav";
+  filename = "Add-Ons/System_BlocklandGlass/sound/messageClick.wav";
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassNotificationAudio)) new AudioProfile(GlassNotificationAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/messageNotification.wav";
   description = "AudioGui";
   preload = true;
 };

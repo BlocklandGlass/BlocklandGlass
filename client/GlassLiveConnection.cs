@@ -88,11 +88,17 @@ function GlassLiveConnection::onLine(%this, %line) {
       %text = %data.text;
       %image = %data.image;
       %sticky = (%data.duration == 0);
+
       GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
 
     case "message":
       GlassLive::onMessage(%data.message, %data.sender, %data.sender_id);
-      GlassNotificationManager::newNotification(%data.sender, %data.message, "comment", 0);
+
+      if(GlassSettings.get("Live::MessageNotification") )
+        GlassNotificationManager::newNotification(%data.sender, %data.message, "comment", 0);
+
+      if(GlassSettings.get("Live::MessageSound"))
+        alxPlay(GlassNotificationAudio);
 
     case "messageNotification":
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
@@ -155,9 +161,29 @@ function GlassLiveConnection::onLine(%this, %line) {
         %color = GlassLive.color_default;
       }
 
-      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ": <font:verdana:12><color:333333>" @ stripMlControlChars(%msg);
+      %msg = stripMlControlChars(%msg);
+      for(%i = 0; %i < getWordCount(%msg); %i++) {
+        %word = getWord(%msg, %i);
+        if(%word $= ("@" @ $Pref::Player::NetName)) {
+          %mentioned = true;
+          %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+        }
+      }
+
+      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ": <font:verdana:12><color:333333>" @ %msg;
       %room.pushText(%text);
-      alxPlay(GlassChatAudio);
+      if(GlassSettings.get("Live::RoomChatSound"))
+        alxPlay(GlassChatAudio);
+
+      if(%senderblid != getNumKeyId())
+        if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
+          GlassNotificationManager::newNotification(%room.name, "You were mentioned by " @ %sender, 0);
+        } else if(GlassSettings.get("Live::RoomChatNotification"))
+          GlassNotificationManager::newNotification(%room.name, %sender@": "@%msg, "comment", 0);
+
+    case "roomText":
+      %room = GlassLiveRoom::getFromId(%data.id);
+      %room.pushText(%data.text);
 
     case "roomUserJoin":
       %user = GlassLiveUser::create(%data.username, %data.blid);
@@ -218,6 +244,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %obj = JettisonObject();
       %obj.set("blid", "string", %data.blid);
       %obj.set("username", "string", %data.username);
+      %obj.set("online", "string", %data.online);
       GlassLive.friends.push("object", %obj);
 
       %newRequests = JettisonArray();

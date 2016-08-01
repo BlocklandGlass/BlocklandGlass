@@ -2,6 +2,14 @@ exec("./GlassLiveConnection.cs");
 exec("./GlassLiveUser.cs");
 exec("./GlassLiveRoom.cs");
 
+//Settings:
+//RoomChatNotification
+//RoomChatSound
+//RoomMentionNotification
+//RoomAutoJoin
+//MessageNotification
+//MessageSound
+//MessageAnyone
 
 function GlassLive::init() {
   if(!isObject(GlassLive))
@@ -19,6 +27,13 @@ function GlassLive::init() {
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassOverlayGui.gui");
 
   GlassOverlayGui.add(GlassFriendsGui.getObject(0));
+
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin MessageNotification MessageSound MessageAnyone";
+  for(%i = 0; %i < getWordCount(%settings); %i++) {
+    %setting = getWord(%settings, %i);
+    %box = "GlassModManagerGui_Prefs_" @ %setting;
+    %box.setValue(GlassSettings.get("Live::" @ %setting));
+  }
 }
 
 function GlassLive_keybind() {
@@ -31,16 +46,31 @@ function GlassLive::openOverlay() {
 }
 
 function GlassLive::openModManager() {
-  canvas.pushDialog(GlassModManagerGui);
+  GlassLive::openOverlay();
+  if(GlassModManagerGui.getCount() > 0) {
+    GlassOverlayGui.add(GlassModManagerGui_Window);
+    GlassModManagerGui_Window.forceCenter();
+  }
+  GlassModManagerGui_Window.setVisible(true);
+}
+
+function GlassLive::closeModManager() {
+  GlassModManagerGui_Window.setVisible(false);
 }
 
 function GlassLive::openSettings() {
-  canvas.pushDialog(GlassModManagerGui);
+  GlassLive::openModManager();
   GlassModManagerGui::setPane(5);
 }
 
 function GlassLive::closeOverlay() {
   canvas.popDialog(GlassOverlayGui);
+}
+
+function GlassLive::updateSetting(%setting) {
+  %box = "GlassModManagerGui_Prefs_" @ %setting;
+  GlassSettings.update("Live::" @ %setting, %box.getValue());
+  %box.setValue(GlassSettings.get("Live::" @ %setting));
 }
 
 function GlassOverlayGui::onWake(%this) {
@@ -476,7 +506,7 @@ function GlassLive::openAddDlg() {
 }
 
 function GlassLive::addDlgSubmit() {
-  if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue()) {
+  if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue() || GlassFriendsGui_AddFriendBLID.getValue() < 0) {
     messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
     return;
   }
@@ -1191,16 +1221,17 @@ function GlassChatroomWindow::onWake(%chatroom) {
   %chatroom.scrollSwatch.setVisible(true);
   %chatroom.scroll.scrollToBottom();
 
-  %obj = JettisonObject();
-  %obj.set("type", "string", "roomAwake");
-  %obj.set("id", "string", %chatroom.id);
-  %obj.set("bool", "string", "1");
+  if(GlassSettings.get("Live::RoomShowAwake")) {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "roomAwake");
+    %obj.set("id", "string", %chatroom.id);
+    %obj.set("bool", "string", "1");
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  }
 }
 
 function GlassChatroomWindow::onSleep(%chatroom) {
-  echo("sleep");
   %obj = JettisonObject();
   %obj.set("type", "string", "roomAwake");
   %obj.set("id", "string", %chatroom.id);

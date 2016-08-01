@@ -56,6 +56,7 @@ function Glass::execClient() {
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
+	//exec("./client/GlassServerList.cs");
 	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
@@ -74,7 +75,7 @@ function Glass::execClient() {
 
 	GlassModManager::init();
 
-  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("MM::Keybind"), 1)));
+  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
 	%bind = GlassSettings.get("MM::Keybind");
 	if(%bind !$= "") {

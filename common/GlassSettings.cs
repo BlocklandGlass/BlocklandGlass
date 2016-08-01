@@ -6,12 +6,21 @@ function GlassSettings::init(%context) {
   echo("Loading " @ %context @ " prefs");
 
   if(%context $= "client") {
-    GlassSettings.registerSetting("client", "MM::Keybind", "keyboard\tctrl m");
     GlassSettings.registerSetting("client", "MM::UseDefault", false);
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
     GlassSettings.registerSetting("client", "MM::LiveSearch", true);
 
-    GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
+    GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
+
+    GlassSettings.registerSetting("client", "Live::RoomChatNotification", false);
+    GlassSettings.registerSetting("client", "Live::RoomChatSound", false);
+    GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
+    GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
+    GlassSettings.registerSetting("client", "Live::RoomShowAwake", true);
+
+    GlassSettings.registerSetting("client", "Live::MessageNotification", true);
+    GlassSettings.registerSetting("client", "Live::MessageSound", true);
+    GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);

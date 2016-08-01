@@ -81,91 +81,15 @@ function GlassModManager::catalogAddons() {
   }
 }
 
-function GlassModManager::historyAdd(%this, %page, %parameter) {
-  if(%this.historyWriteIgnore) {
-    %this.historyWriteIgnore = false;
-    return;
-  }
-
-  %this.historyLen = %this.historyPos+1;
-  %this.history[%this.historyLen] = %page TAB %parameter;
-
-  %this.historyLen++;
-  %this.historyPos++;
-
-  GlassModManagerGui_ForwardButton.setVisible(false);
-  GlassModManagerGui_BackButton.setVisible(true);
-}
-
-function GlassModManager::historyBack(%this) {
-  GlassModManagerGui_ForwardButton.setVisible(true);
-  if(%this.historyPos <= 1) {
-    GlassModManagerGui_BackButton.setVisible(false);
-  }
-
-  if(%this.historyPos <= 0) {
-    return;
-  }
-
-  %this.historyPos--;
-  %this.historyWriteIgnore = true;
-  %hdat = %this.history[%this.historyPos];
-  %page = getField(%hdat, 0);
-  %parm = getField(%hdat, 1);
-
-  //main, board, addon
-  if(%page $= "main") {
-    GlassModManager.loadBoards();
-    GlassModManager::setLoading(true);
-  } else if(%page $= "board") {
-    GlassModManager.loadBoard(%parm);
-  } else if(%page $= "addon") {
-    GlassModManager_AddonPage.loadAddon(%parm);
-  }
-
-  GlassModManager::setPaneRaw(2);
-}
-
-function GlassModManager::historyForward(%this) {
-  GlassModManagerGui_BackButton.setVisible(true);
-  if(%this.historyPos < %this.historyLen-1) {
-    %this.historyPos++;
-    %hdat = %this.history[%this.historyPos];
-    %page = getField(%hdat, 0);
-    %parm = getField(%hdat, 1);
-
-    %this.historyWriteIgnore = true;
-    //main, board, addon
-    if(%page $= "main") {
-      GlassModManager.loadBoards();
-      GlassModManager::setLoading(true);
-    } else if(%page $= "board") {
-      GlassModManager.loadBoard(%parm);
-      GlassModManager::setLoading(true);
-    } else if(%page $= "addon") {
-      GlassModManager_AddonPage.loadAddon(%parm);
-      GlassModManager::setLoading(true);
-    }
-
-    if(%this.historyPos == %this.historyLen-1) {
-      GlassModManagerGui_ForwardButton.setVisible(false);
-    }
-  } else {
-    GlassModManagerGui_ForwardButton.setVisible(false);
-  }
-
-  GlassModManager::setPaneRaw(2);
-}
-
 function GlassModManager_keybind(%down) {
   if(%down) {
     return;
   }
 
   if(GlassModManagerGui.isAwake()) {
-    canvas.popDialog(GlassModManagerGui);
+    GlassLive::closeModManager();
   } else {
-    canvas.pushDialog(GlassModManagerGui);
+    GlassLive::openModManager();
   }
 }
 
@@ -180,10 +104,10 @@ function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:111111>Press any key ...");
   GlassModManagerGui_KeybindOverlay.setVisible(true);
   %remapper = new GuiInputCtrl(GlassModManager_Remapper);
-  GlassModManagerGui.add(%remapper);
+  GlassOverlayGui.add(%remapper);
   %remapper.makeFirstResponder(1);
 
-  %bind = GlassSettings.get("MM::Keybind");
+  %bind = GlassSettings.get("Live::Keybind");
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   //swatch
 }
@@ -203,7 +127,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
     if(%key $= "ESCAPE") {
       GlassModManagerGui_KeybindOverlay.setVisible(false);
 
-      %bind = GlassSettings.get("MM::Keybind");
+      %bind = GlassSettings.get("Live::Keybind");
       GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
       GlassModManager_Remapper.delete();
       return;
@@ -212,13 +136,13 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 
   GlassModManagerGui_KeybindOverlay.setVisible(false);
 
-  %bind = GlassSettings.get("MM::Keybind");
+  %bind = GlassSettings.get("Live::Keybind");
 
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   GlobalActionMap.bind(%device, %key, "GlassModManager_keybind");
   GlassModManager_Remapper.delete();
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
-  GlassSettings.update("MM::Keybind", %device TAB %key);
+  GlassSettings.update("Live::Keybind", %device TAB %key);
 }
 
 //====================================
@@ -394,7 +318,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
           if(%newArray.length > 0) {
             GlassModManagerGui.firstWake = true;
-            canvas.pushDialog(GlassModManagerGui);
+            GlassLive::openModManager();
             GlassModManagerGui::openRTBImport(%newArray);
 
           }
