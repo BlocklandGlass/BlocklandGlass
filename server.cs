@@ -34,8 +34,9 @@ function Glass::execServer() {
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
+	exec("./server/GlassServerInfo.cs");
 	exec("./server/GlassClientSupport.cs");
-	exec("./server/GlassInfoServer.cs");
+	//exec("./server/GlassInfoServer.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
@@ -44,7 +45,8 @@ function Glass::execServer() {
 
 	GlassServerControlS::init();
 	GlassAuthS::init();
-	GlassInfoServer::init();
+	GlassServerInfo::connectToServer();
+	//GlassInfoServer::init();
 
 	GlassAuthS::init();
 }

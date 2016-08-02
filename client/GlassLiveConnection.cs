@@ -41,8 +41,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
-  %text = "<br><font:verdana:12><color:666666>[ Disconnected ]<br>";
-
+  GlassLive::cleanUp();
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
@@ -227,6 +226,10 @@ function GlassLiveConnection::onLine(%this, %line) {
       %obj = JettisonObject();
       %obj.set("blid", "string", %blid);
       %obj.set("username", "string", %user);
+
+      if(!isObject(GlassLive.friendRequests))
+        GlassLive.friendRequests = JettisonArray();
+
       GlassLive.friendRequests.push("object", %obj);
 
       GlassLive::createFriendList();
@@ -245,6 +248,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       %obj.set("blid", "string", %data.blid);
       %obj.set("username", "string", %data.username);
       %obj.set("online", "string", %data.online);
+      if(!isObject(GlassLive.friends))
+        GlassLive.friends = JettisonArray();
+
       GlassLive.friends.push("object", %obj);
 
       %newRequests = JettisonArray();
@@ -263,6 +269,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "location":
       GlassLive::displayLocation(%data);
+
+    case "serverListUpdate":
+      GlassServerList.doLiveUpdate(%data.ip, %data.port, %data.key, %data.value);
+
+    case "serverListing":
+      GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
     case "messageBox":
       messageBoxOk(%data.title, %data.text);

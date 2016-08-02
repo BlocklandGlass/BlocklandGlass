@@ -2,9 +2,7 @@ function GlassLiveRoom::create(%id, %name) {
   if(isObject(GlassLive.room[%id]))
     return GlassLive.room[%id];
 
-  %room = new ScriptObject() {
-    class = "GlassLiveRoom";
-
+  %room = new ScriptObject(GlassLiveRoom) {
     id = %id;
     name = %name;
 
@@ -13,8 +11,6 @@ function GlassLiveRoom::create(%id, %name) {
   };
 
   GlassLive.room[%id] = %room;
-
-
 
   return %room;
 }

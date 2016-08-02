@@ -56,7 +56,7 @@ function Glass::execClient() {
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
-	//exec("./client/GlassServerList.cs");
+	exec("./client/GlassServerList.cs");
 	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");
@@ -68,7 +68,6 @@ function Glass::execClient() {
 	GlassAuth::init();
 	GlassLive::init();
 	GlassDownloadManager::init();
-	//GlassRTBSupport::init();
 	GlassServerControlC::init();
 	GlassClientManager::init();
 	GlassNotificationManager::init();

@@ -5,8 +5,58 @@ if(!isObject(GlassServerList)) {
 if(!isObject(GlassServerListGui))
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassServerListGui.gui");
 
+function GlassServerList::doLiveUpdate(%this, %ip, %port, %key, %val) {
+  if(!JS_Window.glassTouched)
+    %this.modifyJoinGui();
+
+  if(!isObject(ServerInfoGroup))
+    return;
+
+  for(%i = 0; %i < ServerInfoGroup.getCount(); %i++) {
+    %obj = ServerInfoGroup.getObject(%i);
+    if(%obj.ip $= (%ip@":"@ %port)) {
+      %serverSo = %obj;
+      break;
+    }
+  }
+
+  if(%serverSO $= "") {
+    echo("couldnt find serverso for " @ %ip @ ":" @ %port);
+    return;
+  }
+
+  if(%key $= "players") {
+    %serverSO.currPlayers = %val;
+    %serverSO.display();
+  } else if(%key $= "maxPlayers") {
+    %serverSO.maxPlayers = %val;
+    %serverSO.display();
+  } else if(%key $= "brickCount") {
+    %serverSO.brickcount = %val;
+    %serverSO.display();
+  } else if(%key $= "name") {
+    %serverSO.brickcount = %val;
+    %serverSO.display();
+  } else if(%key $= "passworded") {
+    %serverSO.pass = (%val ? "Yes" : "No");
+    %serverSO.display();
+  } else if(%key $= "hasGlass") {
+    %serverSO.hasGlass = %val;
+    %serverSO.display();
+  }
+}
+
+function GlassServerList::modifyJoinGui(%this) {
+  JS_Window.extent = "670 480"; // 30 0
+  JS_ServerList.getGroup().extent = "653 372"; // 30 0
+  JS_ServerList.columns = setWord(JS_ServerList.columns, 9, 610);
+  JS_Window.glassTouched = true;
+}
+
 function GlassServerList::display(%this, %obj) {
-  echo(%obj);
+  if(!JS_Window.glassTouched)
+    %this.modifyJoinGui();
+  return;
   if(!isObject(%this.listing[%obj.addr]))
     %this.addServer(%obj);
 }
@@ -17,6 +67,7 @@ function GlassServerList::addServer(%this, %obj) {
     return;
   }
 
+  return;
   %obj.glassTcp = new TCPObject(GlassServerTCP);
   %obj.glassTcp.serverSO = %obj;
   echo("connecting to " @ %obj.ip);
@@ -32,8 +83,16 @@ function GlassServerList::addServer(%this, %obj) {
 }
 
 function GlassServerList::clearAll(%this) {
-  echo("Clear All");
   GlassServerListGui_ScrollSwatch.deleteAll();
+}
+
+function GlassServerList::doQuery(%this) {
+  if(GlassLiveConnection.connected) {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "queryServerList");
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  }
 }
 
 function GlassServerList::createServerBar(%this, %obj) {
@@ -72,46 +131,11 @@ function GlassServerList::createServerBar(%this, %obj) {
   return %swatch;
 }
 
-function GlassServerTCP::onConnected(%this) {
-  echo("connected");
-  %this.swatch.color = "255 0 0 255";
-  %this.connected = true;
-  $Glass::st[$Glass::stc+0] = %this;
-  $Glass::stc++;
-  %this.send("listen\t1\r\n");
-}
-
-function GlassServerTCP::onLine(%this, %line) {
-  echo("c > " @ %line);
-  %cmd = getField(%line, 0);
-  switch$(%cmd) {
-    case "updateField":
-      %key = getField(%line, 1);
-      %val = collapseEscape(getField(%line, 2));
-
-      if(%key $= "playercount") {
-        %this.serverSO.currPlayers = %val;
-        %this.serverSO.display();
-      } else if(%key $= "maxPlayers") {
-        %this.serverSO.maxPlayers = %val;
-        %this.serverSO.display();
-      } else if(%key $= "brickCount") {
-        %this.serverSO.brickcount = %val;
-        %this.serverSO.display();
-      } else if(%key $= "name") {
-        %this.serverSO.brickcount = %val;
-        %this.serverSO.display();
-      } else if(%key $= "passworded") {
-        %this.serverSO.pass = (%val ? "Yes" : "No");
-        %this.serverSO.display();
-      }
-  }
-}
-
 package GlassServerList {
   function ServerSO::display(%this) {
     parent::display(%this);
     GlassServerList.display(%this);
+    //echo(%this);
   }
 
   function JoinServerGui::joinServer(%gui) {
@@ -126,10 +150,10 @@ package GlassServerList {
   function Canvas::pushDialog(%canvas, %dlg) {
     if(%dlg.getName() $= "JoinServerGui") {
       if(!$Glass::SL) {
-        canvas.pushDialog(GlassServerListGui);
+        //canvas.pushDialog(GlassServerListGui);
       }
 
-      messageBoxYesNo("Glass Server List", "Hey there! Do you want to use the Glass server list? Here's some neat features:<br><br>+ Live updating list (no refreshing)<br>+ Detailed server information<br>+ Other stuff");
+      //messageBoxYesNo("Glass Server List", "Hey there! Do you want to use the Glass server list? Here's some neat features:<br><br>+ Live updating list (no refreshing)<br>+ Detailed server information<br>+ Other stuff");
     }
 
     parent::pushDialog(%canvas, %dlg);
@@ -138,6 +162,22 @@ package GlassServerList {
   function ServerInfoSO_ClearAll() {
     parent::ServerInfoSO_ClearAll();
     GlassServerList.clearAll();
+    GlassServerList.doQuery();
+  }
+
+  function ServerSO::serialize(%this) {
+    %str = parent::serialize(%this);
+    //echo("bef:" @ %str);
+    %str = setField(%str, 9, (%this.hasGlass ? "Yes" : "No") TAB getField(%str, 9));
+    //echo("aft:" @ %str);
+    return %str;
+  }
+
+  function JS_sortList(%id) {
+    if(%id > 9) {
+      %id++;
+    }
+    return parent::JS_sortList(%id);
   }
 };
 activatePackage(GlassServerList);

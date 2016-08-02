@@ -1,3 +1,9 @@
+//Discontinued 8/1/2016
+
+//
+return;
+//
+
 function GlassInfoServer::init() {
   new ScriptObject(GlassInfoServer);
   GlassInfoServer.connectionGroup = new ScriptGroup();

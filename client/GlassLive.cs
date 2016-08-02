@@ -28,7 +28,7 @@ function GlassLive::init() {
 
   GlassOverlayGui.add(GlassFriendsGui.getObject(0));
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin MessageNotification MessageSound MessageAnyone";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -112,6 +112,14 @@ function GlassLive::disconnect() {
       %window.delete();
     }
   }
+}
+
+function GlassLive::cleanup() {
+  while(isObject(GlassLiveRoom)) {
+    GlassLiveRoom.delete();
+  }
+
+  GlassLiveUsers.deleteAll();
 }
 
 //================================================================
