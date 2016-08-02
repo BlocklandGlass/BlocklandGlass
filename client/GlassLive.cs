@@ -43,6 +43,7 @@ function GlassLive_keybind() {
 function GlassLive::openOverlay() {
   canvas.pushDialog(GlassOverlayGui);
   GlassNotificationManager.dismissAll();
+  //GlassLive.makeFirstResponder(1);
 }
 
 function GlassLive::openModManager() {
@@ -105,18 +106,26 @@ function GlassLive::disconnect() {
   if(isObject(GlassLiveConnection))
     GlassLiveConnection.doDisconnect();
 
-  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
-    %window = GlassOverlayGui.getObject(%i);
-    if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassMessageGui") {
-      %window.deleteAll();
-      %window.delete();
-    }
-  }
+  GlassLive::cleanup();
 }
 
 function GlassLive::cleanup() {
-  while(isObject(GlassLiveRoom)) {
-    GlassLiveRoom.delete();
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow") {
+      if(isObject(GlassLive.room[%window.id]))
+        GlassLive.room[%window.id].delete();
+
+      GlassLive.room[%window.id] = "";
+
+      %window.deleteAll();
+      %window.delete();
+      %i--;
+    } else if(%window.getName() $= %window.getName() $= "GlassMessageGui") {
+      %window.deleteAll();
+      %window.delete();
+      %i--;
+    }
   }
 
   GlassLiveUsers.deleteAll();
@@ -637,7 +646,7 @@ function GlassHighlightMouse::onMouseLeave(%this) {
   if(%this.type $= "request") {
     %this.getGroup().decline.setVisible(false);
     %this.getGroup().accept.setVisible(false);
-  } else {
+  } else if(%this.online) {
     %this.getGroup().chaticon.setVisible(false);
   }
 }
@@ -652,7 +661,7 @@ function GlassHighlightMouse::onMouseEnter(%this) {
   if(%this.type $= "request") {
     %this.getGroup().decline.setVisible(true);
     %this.getGroup().accept.setVisible(true);
-  } else {
+  } else if(%this.online) {
     %this.getGroup().chaticon.setVisible(true);
   }
 }
@@ -703,6 +712,7 @@ function GlassLive::createChatroomGui(%id) {
     canMaximize = "0";
     minSize = "50 50";
     closeCommand = "GlassLiveRoom::leave(" @ %id @ ");";
+    id = %id;
   };
 
   %chatroom.scroll = new GuiScrollCtrl() {
@@ -1089,6 +1099,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
     lockMouse = "0";
 
     blid = %blid;
+    online = %online;
   };
 
   %gui.add(%gui.text);

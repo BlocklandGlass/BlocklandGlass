@@ -21,7 +21,7 @@ function GlassServerList::doLiveUpdate(%this, %ip, %port, %key, %val) {
   }
 
   if(%serverSO $= "") {
-    echo("couldnt find serverso for " @ %ip @ ":" @ %port);
+    //echo("couldnt find serverso for " @ %ip @ ":" @ %port);
     return;
   }
 
