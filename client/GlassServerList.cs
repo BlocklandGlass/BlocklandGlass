@@ -50,6 +50,33 @@ function GlassServerList::modifyJoinGui(%this) {
   JS_Window.extent = "670 480"; // 30 0
   JS_ServerList.getGroup().extent = "653 372"; // 30 0
   JS_ServerList.columns = setWord(JS_ServerList.columns, 9, 610);
+
+  %sort = new GuiBitmapButtonCtrl() {
+     profile = "BlockButtonProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = "617 34";
+     extent = "40 19";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     command = "JS_sortList(9);";
+     text = "BLG";
+     groupNum = "-1";
+     buttonType = "PushButton";
+     bitmap = "base/client/ui/button1";
+     lockAspectRatio = "0";
+     alignLeft = "0";
+     alignTop = "0";
+     overflowImage = "0";
+     mKeepCached = "1";
+     mColor = "255 255 255 255";
+        wrap = "0";
+  };
+
+  JS_Window.add(%sort);
+
   JS_Window.glassTouched = true;
 }
 

@@ -43,7 +43,6 @@ function GlassLive_keybind() {
 function GlassLive::openOverlay() {
   canvas.pushDialog(GlassOverlayGui);
   GlassNotificationManager.dismissAll();
-  //GlassLive.makeFirstResponder(1);
 }
 
 function GlassLive::openModManager() {
@@ -89,7 +88,10 @@ function GlassOverlayGui::onWake(%this) {
       %chatroom.scrollSwatch.setVisible(true);
       %chatroom.scroll.scrollToBottom();
 
-
+      if(!%first) {
+        echo(%chatroom.input);
+        %first = true;
+      }
     }
   }
   //instantly close all notifications
@@ -1262,9 +1264,11 @@ function GlassChatroomWindow::onSleep(%chatroom) {
 package GlassLivePackage {
   function GlassOverlayGui::onWake(%this) {
     parent::onWake(%this);
-    GlassOverlayGui.add(GlassFriendsWindow);
+    if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
+      GlassOverlayGui.add(GlassFriendsWindow);
 
-    GlassFriendsWindow.position = (getWord(getRes(), 0) - getWord(GlassFriendsWindow.extent, 0) - 50) SPC 50;
+      GlassFriendsWindow.position = (getWord(getRes(), 0) - getWord(GlassFriendsWindow.extent, 0) - 50) SPC 50;
+    }
   }
 
   function disconnectedCleanup() {
