@@ -6,20 +6,6 @@ $Glass::Modules::Prefs = true;
 // Admin
 //====================================
 
-function registerGlassPrefs() {
-	%cat = "Blockland Glass"; //on the glass client, this will be loaded in to it's own page (settings)
-	%icon = "server";
-
-	//%promotesa = registerBlocklandPref(%cat, "Who can manage super-admins?", "list", "$Pref::Glass::SAPromoteLevel", GlassSettings.get("SC::SAEditRank"), "Host**3|Super Admin**2", "updateGlassPref", %icon, 0);
-	//%promotea = registerBlocklandPref(%cat, "Who can manage admins?", "list", "$Pref::Glass::APromoteLevel", GlassSettings.get("SC::AEditRank"), "Host**3|Super Admin**2|Admin**1", "updateGlassPref", %icon, 0);
-	//%required = registerBlocklandPref(%cat, "Required Client Add-Ons", "string", "$Pref::Glass::ClientAddons", GlassSettings.get("SC::RequiredClients"), "", "updateGlassPref", "", %icon, 0);
-
-  //registerBlocklandPref(%cat, "Colorset (restart)", "string", "$Pref::Glass::Colorset", GlassSettings.get("SC::RequiredClients"), "updateGlassPref", "", %icon, 0);
-
-  //%required.announce = false;
-}
-registerGlassPrefs();
-
 function updateGlassPref(%value, %client, %pso) {
   if(%pso.title $= "Who can manage super-admins?") {
     GlassSettings.update("SC::SAEditRank", %value);
