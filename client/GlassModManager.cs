@@ -81,18 +81,6 @@ function GlassModManager::catalogAddons() {
   }
 }
 
-function GlassModManager_keybind(%down) {
-  if(%down) {
-    return;
-  }
-
-  if(GlassModManagerGui.isAwake()) {
-    GlassLive::closeModManager();
-  } else {
-    GlassLive::openModManager();
-  }
-}
-
 function GlassModManagerGui::onWake(%this) {
   if(!GlassModManagerGui.firstWake) {
     GlassModManagerGui::loadContext("home");
@@ -128,7 +116,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
       GlassModManagerGui_KeybindOverlay.setVisible(false);
 
       %bind = GlassSettings.get("Live::Keybind");
-      GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+      GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive::openOverlay");
       GlassModManager_Remapper.delete();
       return;
     }

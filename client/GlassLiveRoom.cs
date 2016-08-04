@@ -1,8 +1,10 @@
-function GlassLiveRoom::create(%id, %name) {
+function GlassLiveRooms::create(%id, %name) {
   if(isObject(GlassLive.room[%id]))
     return GlassLive.room[%id];
 
-  %room = new ScriptObject(GlassLiveRoom) {
+  %room = new ScriptObject() {
+    class = "GlassLiveRoom";
+
     id = %id;
     name = %name;
 
@@ -82,9 +84,10 @@ function GlassLiveRoom::createWindow(%this) {
   }
 
   %gui = GlassLive::createChatroomGui(%this.id);
-  %gui.title = %this.title;
+  %gui.setText("Chatroom - " @ %this.name);
+  %gui.title = %this.name;
   %gui.id = %this.id;
-  %gui.position = "100 100";
+  %gui.position = vectorAdd("100 100", getRandom(-50, 50) SPC getRandom(-50, 50));
 
   %this.window = %gui;
 
@@ -114,7 +117,11 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
       %text = "Disconnected";
 
     case 2:
+      %text = "Kicked";
+
+    case 3:
       %text = "Connection Dropped";
+
 
     default:
       %text = "no reason";
@@ -160,6 +167,15 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
 }
 
 function GlassLiveRoom::pushText(%this, %msg) {
+  for(%i = 0; %i < getWordCount(%msg); %i++) {
+    %word = getWord(%msg, %i);
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+      %raw = %word;
+      %word = "<a:" @ %word @ ">" @ %word @ "</a>";
+      %msg = setWord(%msg, %i, %word);
+    }
+  }
+
   %chatroom = %this.window;
   %val = %chatroom.chattext.getValue();
   if(%val !$= "")

@@ -14,8 +14,8 @@ exec("./GlassLiveRoom.cs");
 function GlassLive::init() {
   if(!isObject(GlassLive))
     new ScriptObject(GlassLive) {
-      color_friend = "66dd88";
-      color_default = "666666";
+      color_friend = "33cc44";
+      color_default = "444444";
       color_self = "6688ff";
       color_admin = "ffaa00";
       color_mod = "ee6600";
@@ -25,8 +25,12 @@ function GlassLive::init() {
     new ScriptGroup(GlassLiveUsers);
 
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassOverlayGui.gui");
+  exec("Add-Ons/System_BlocklandGlass/client/gui/GlassSettingsGui.gui");
 
-  GlassOverlayGui.add(GlassFriendsGui.getObject(0));
+
+  //GlassOverlayGui.add(GlassFriendsGui.getObject(0));
+  GlassSettingsWindow.setVisible(false);
+  GlassOverlayGui.add(GlassSettingsWindow);
 
   %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -52,6 +56,8 @@ function GlassLive::openModManager() {
     GlassModManagerGui_Window.forceCenter();
   }
   GlassModManagerGui_Window.setVisible(true);
+
+  GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 }
 
 function GlassLive::closeModManager() {
@@ -59,8 +65,13 @@ function GlassLive::closeModManager() {
 }
 
 function GlassLive::openSettings() {
-  GlassLive::openModManager();
-  GlassModManagerGui::setPane(5);
+  GlassSettingsWindow.setVisible(true);
+
+  GlassOverlayGui.pushToBack(GlassSettingsWindow);
+}
+
+function GlassLive::closeSettings() {
+  GlassSettingsWindow.setVisible(false);
 }
 
 function GlassLive::closeOverlay() {
@@ -87,13 +98,21 @@ function GlassOverlayGui::onWake(%this) {
       %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
       %chatroom.scrollSwatch.setVisible(true);
       %chatroom.scroll.scrollToBottom();
-
-      if(!%first) {
-        echo(%chatroom.input);
-        %first = true;
-      }
     }
   }
+
+  if(!isObject(GlassOverlayResponder)) {
+    new GuiTextEditCtrl(GlassOverlayResponder) {
+      profile = "GuiTextEditProfile";
+      position = "-100 -100";
+      extent = "10 10";
+      visible = 1;
+    };
+    GlassOverlayGui.add(GlassOverlayResponder);
+  }
+
+  GlassOverlayResponder.schedule(1, makeFirstResponder, true);
+
   //instantly close all notifications
 }
 
@@ -133,9 +152,39 @@ function GlassLive::cleanup() {
   GlassLiveUsers.deleteAll();
 }
 
+function GlassLive::showUserStatus() {
+  %str = "<font:verdana:15><color:333333><tab:110>";
+  %val[%vals++] = "BLID\t9789";
+  %val[%vals++] = "";
+  %val[%vals++] = "Status\tOnline";
+  %val[%vals++] = "Location\tCrown's Prison Escape";
+  %val[%vals++] = "";
+  %val[%vals++] = "Forum Account\t<a:forum.blockland.us>Scout31</a>";
+  for(%i = 0; %i < %vals; %i++) {
+    %line = %val[%i+1];
+    if(%line $= "") {
+      %str = %str @ "<br><br>";
+    } else {
+      %str = %str @ "<font:verdana bold:15>" @ getField(%line, 0) @ ":\t<font:verdana:15>" @ getField(%line, 1) @ "<br>";
+    }
+  }
+
+  echo(%str);
+
+  GlassUserStatus.setValue(%str);
+}
+
 //================================================================
 //= Communication                                                =
 //================================================================
+
+function GlassLive::linkForumAccount(%url) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "linkForum");
+  %obj.set("url", "string", %url);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+}
 
 function GlassLive::joinRoom(%id) {
   %room = GlassLiveRoom::getFromId(%id);
@@ -704,7 +753,7 @@ function GlassLive::createChatroomGui(%id) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "Chatroom - General Discussion";
+    text = "Chatroom";
     maxLength = "255";
     resizeWidth = "0";
     resizeHeight = "0";
@@ -1263,12 +1312,12 @@ function GlassChatroomWindow::onSleep(%chatroom) {
 
 package GlassLivePackage {
   function GlassOverlayGui::onWake(%this) {
-    parent::onWake(%this);
     if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
-      GlassOverlayGui.add(GlassFriendsWindow);
-
       GlassFriendsWindow.position = (getWord(getRes(), 0) - getWord(GlassFriendsWindow.extent, 0) - 50) SPC 50;
+      GlassFriendsWindow.horizSizing = "left";
+      GlassOverlayGui.add(GlassFriendsWindow);
     }
+    parent::onWake(%this);
   }
 
   function disconnectedCleanup() {

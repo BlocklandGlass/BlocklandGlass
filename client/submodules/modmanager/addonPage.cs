@@ -632,7 +632,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
 }
 
 function GlassModManagerGui_newComment::onResize(%this, %thisx, %thisy) {
-
+  echo("GlassModManagerGui Resize");
   %x = getWord(%this.getGroup().extent, 0);
   %y = %thisY + 10;
 

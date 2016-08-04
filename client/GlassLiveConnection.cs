@@ -1,3 +1,8 @@
+$Glass::DisconnectManual = 1;
+//$Glass::DisconnectKicked = 2;
+//$Glass::DisconnectConnectionDropped = 3;
+$Glass::DisconnectUpdate = 4;
+
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
@@ -60,7 +65,13 @@ function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
 }
 
-function GlassLiveConnection::doDisconnect(%this) {
+function GlassLiveConnection::doDisconnect(%this, %reason) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "disconnect");
+  %obj.set("reason", "string", %reason);
+  %this.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
+
   %this.disconnect();
   %this.connected = false;
 
@@ -104,7 +115,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomJoin":
       GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
-      %room = GlassLiveRoom::create(%data.id, %data.title);
+      %room = GlassLiveRooms::create(%data.id, %data.title);
 
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
@@ -169,7 +180,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         }
       }
 
-      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ": <font:verdana:12><color:333333>" @ %msg;
+      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ":<font:verdana:12><color:333333> " @ %msg;
       %room.pushText(%text);
       if(GlassSettings.get("Live::RoomChatSound"))
         alxPlay(GlassChatAudio);
@@ -278,7 +289,23 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "messageBox":
       messageBoxOk(%data.title, %data.text);
+
+    case "shutdown":
+      %planned = %data.planned;
+      %reason = %data.reason;
+      %timeout = %data.timeout;
+
+      if(%timeout < 1000) {
+        %timeout = 1000;
+      }
+
+      GlassNotificationManager::newNotification((%planned ? "Planned" : "Unplanned") SPC "Shutdown", %reason, (%planned ? "cog_go" : "cog_error"), 5000);
+
+      %this.disconnect();
+      %this.connected = false;
+      GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
   }
+  //%data.delete();
 }
 
 function formatTimeHourMin(%datetime) {
@@ -286,3 +313,16 @@ function formatTimeHourMin(%datetime) {
   %t = getSubStr(%t, 0, strpos(%t, ":", 4));
   return %t SPC getWord(%datetime, 1);
 }
+
+package GlassLiveConnectionPackage {
+  function messageCallback(%this, %call) {
+    if(updater.restartRequired) {
+      if(%call $= "quit();") {
+        GlassLiveConnection.doDisconnect($Glass::DisconnectUpdate);
+      }
+    }
+    echo(callback);
+    parent::messageCallback(%this, %call);
+  }
+};
+activatePackage(GlassLiveConnectionPackage);
