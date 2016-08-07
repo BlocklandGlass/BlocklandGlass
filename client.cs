@@ -55,7 +55,7 @@ function Glass::execClient() {
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
-	exec("./client/GlassServerList.cs");
+	//exec("./client/GlassServerList.cs");
 	exec("./client/GlassNotificationManager.cs");
 
 	echo(" ===                   Starting it up                   ===");

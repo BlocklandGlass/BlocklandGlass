@@ -317,6 +317,9 @@ function GlassLiveConnection::onLine(%this, %line) {
     if(%data.reason == 1) {
       messageBoxOk("Glass Live Disconnected", "You logged in from somewhere else!");
       %this.disconnect();
+    } else if(%data.reason == 2) {
+      messageBoxOk("Glass Live Disconnected", "You're banned!");
+      %this.disconnect();
     }
   }
   //%data.delete();

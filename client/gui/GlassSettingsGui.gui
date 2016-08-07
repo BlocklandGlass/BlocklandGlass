@@ -12,13 +12,13 @@ new GuiControl(GlassSettingsGui) {
 
    new GuiWindowCtrl(GlassSettingsWindow) {
       profile = "GlassWindowProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "170 3";
       extent = "300 474";
       minExtent = "8 2";
       enabled = "1";
-      visible = "0";
+      visible = "1";
       clipToParent = "1";
       text = "Glass Settings";
       maxLength = "255";
@@ -53,7 +53,7 @@ new GuiControl(GlassSettingsGui) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "1 1";
+            position = "1 -71";
             extent = "270 495";
             minExtent = "8 2";
             enabled = "1";
@@ -253,7 +253,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomChatNotification\");";
-                  text = "RoomChatNotification";
+                  text = "Chatroom Notifications";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -281,7 +281,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomChatSound\");";
-                  text = "RoomChatSound";
+                  text = "Chatroom Click Sound";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -309,7 +309,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomMentionNotification\");";
-                  text = "RoomMentionNotification";
+                  text = "Chatroom Mention Notification";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -337,7 +337,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomShowAwake\");";
-                  text = "RoomShowAwake";
+                  text = "Share Awake Status";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -365,7 +365,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"MessageNotification\");";
-                  text = "MessageNotification";
+                  text = "Direct Message Notification";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -393,7 +393,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"MessageSound\");";
-                  text = "MessageSound";
+                  text = "Direct Message Sound";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -421,7 +421,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"MessageAnyone\");";
-                  text = "MessageAnyone";
+                  text = "Message Anyone";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -449,7 +449,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomAutoJoin\");";
-                  text = "RoomAutoJoin";
+                  text = "Auto Join Room";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
@@ -477,7 +477,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"ShowTimestamps\");";
-                  text = "ShowTimestamps";
+                  text = "Show Timestamps";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };

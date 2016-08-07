@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -131,10 +131,9 @@ function GlassLive::chatColorCheck(%this) {
 }
 
 function GlassLive::disconnect(%reason) {
+  GlassLive::cleanup();
   if(isObject(GlassLiveConnection))
     GlassLiveConnection.doDisconnect(%reason);
-
-  GlassLive::cleanup();
 }
 
 function GlassLive::cleanup() {
@@ -145,7 +144,7 @@ function GlassLive::cleanup() {
       %room = GlassLiveRoomGroup.getObject(%i);
       if(isObject(%room.view)) {
         %room.view.deleteAll();
-        %room.view.delete();
+        %room.view.schedule(0, delete);
       }
     }
 

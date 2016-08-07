@@ -5,7 +5,7 @@
 //=	little skiddy trying to 'troll'						              		 =
 //================================================================
 
-if($Pref::PreLoadScriptLauncherVersion != 1) {
+if($Pref::PreLoadScriptLauncherVersion < 1) {
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }
 
@@ -34,7 +34,7 @@ function Glass::execServer() {
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
-	exec("./server/GlassServerInfo.cs");
+	//exec("./server/GlassServerInfo.cs");
 	exec("./server/GlassClientSupport.cs");
 	//exec("./server/GlassInfoServer.cs");
 

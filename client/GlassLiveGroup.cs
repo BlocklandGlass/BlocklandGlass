@@ -26,8 +26,8 @@ function GlassLiveGroup::create(%id, %users) {
 
   if(isObject(%users)) {
     for(%i = 0; %i < %users.length; %i++) {
-      %ud = users.value[%i];
-      GlassLiveUsers::create(%ud.username, %ud.blid);
+      %ud = %users.value[%i];
+      GlassLiveUser::create(%ud.username, %ud.blid);
       %group.addUser(%ud.blid);
     }
   }
