@@ -219,6 +219,14 @@ if(!isObject(GlassUserListButtonProfile)) new GuiControlProfile(GlassUserListBut
   fontColors[2] = "100 100 100 255";
 };
 
+if(!isObject(GlassChatroomTabProfile)) new GuiControlProfile(GlassChatroomTabProfile : GuiCenterTextProfile) {
+  fontType = "Verdana Bold";
+  fontSize = 15;
+  fontColor = "64 64 64 255";
+  fontColors[0] = "64 64 64 255";
+  fontColors[1] = "200 64 64 255";
+};
+
 if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
   volume = 2.0;
   isLooping = false;

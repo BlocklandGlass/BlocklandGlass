@@ -2,8 +2,10 @@ if(!isObject(GlassServerList)) {
   new ScriptObject(GlassServerList);
 }
 
-if(!isObject(GlassServerListGui))
+if(!isObject(GlassServerListGui)) {
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassServerListGui.gui");
+  exec("Add-Ons/System_BlocklandGlass/client/gui/JoinServerGui.gui");
+}
 
 function GlassServerList::doLiveUpdate(%this, %ip, %port, %key, %val) {
   if(!JS_Window.glassTouched)
@@ -47,35 +49,11 @@ function GlassServerList::doLiveUpdate(%this, %ip, %port, %key, %val) {
 }
 
 function GlassServerList::modifyJoinGui(%this) {
-  JS_Window.extent = "670 480"; // 30 0
-  JS_ServerList.getGroup().extent = "653 372"; // 30 0
-  JS_ServerList.columns = setWord(JS_ServerList.columns, 9, 610);
-
-  %sort = new GuiBitmapButtonCtrl() {
-     profile = "BlockButtonProfile";
-     horizSizing = "right";
-     vertSizing = "bottom";
-     position = "617 34";
-     extent = "40 19";
-     minExtent = "8 2";
-     enabled = "1";
-     visible = "1";
-     clipToParent = "1";
-     command = "JS_sortList(9);";
-     text = "BLG";
-     groupNum = "-1";
-     buttonType = "PushButton";
-     bitmap = "base/client/ui/button1";
-     lockAspectRatio = "0";
-     alignLeft = "0";
-     alignTop = "0";
-     overflowImage = "0";
-     mKeepCached = "1";
-     mColor = "255 255 255 255";
-        wrap = "0";
-  };
-
-  JS_Window.add(%sort);
+  if(isObject(JS_window_glass)) {
+    JS_Window.delete();
+    JS_Window_glass.setName("JS_Window");
+    JoinServerGui.add(JS_Window);
+  }
 
   JS_Window.glassTouched = true;
 }

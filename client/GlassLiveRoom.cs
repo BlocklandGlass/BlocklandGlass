@@ -9,8 +9,14 @@ function GlassLiveRooms::create(%id, %name) {
     name = %name;
 
     users = "";
-    window = "";
+    view = "";
   };
+
+  if(!isObject(GlassLiveRoomGroup)) {
+    new ScriptGroup(GlassLiveRoomGroup);
+  }
+
+  GlassLiveRoomGroup.add(%room);
 
   GlassLive.room[%id] = %room;
 
@@ -24,20 +30,18 @@ function GlassLiveRoom::getFromId(%id) {
     return false;
 }
 
-function GlassLiveRoom::leave(%this, %conf) {
-  if(!%conf) {
-    %this = GlassLiveRoom::getFromId(%this);
-    messageBoxYesNo("Are you sure?", "Are you sure you want to leave this room?", "GlassLiveRoom::leave(" @ %this.getId() @ ", true);");
-  } else {
-    %this.window.deleteAll();
-    %this.window.delete();
+function GlassLiveRoom::leaveRoom(%this) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "roomLeave");
+  %obj.set("id", "string", %this.id);
 
-    %obj = JettisonObject();
-    %obj.set("type", "string", "roomLeave");
-    %obj.set("id", "string", %this.id);
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
-    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  }
+  %this.view.window.removeTab(%this.view);
+  %this.view.deleteAll();
+  %this.view.delete();
+
+  %this.schedule(0, delete);
 }
 
 function GlassLiveRoom::addUser(%this, %blid) {
@@ -47,7 +51,7 @@ function GlassLiveRoom::addUser(%this, %blid) {
   %this.user[%blid] = true;
   %this.users = trim(%this.users TAB %blid);
 
-  if(isObject(%this.window)) {
+  if(isObject(%this.view)) {
     %this.renderUserList();
   }
 }
@@ -77,23 +81,32 @@ function GlassLiveRoom::getUser(%this, %idx) {
   return GlassLiveUser::getFromBlid(%this.getBl_id(%idx));
 }
 
-function GlassLiveRoom::createWindow(%this) {
-  if(isObject(%this.window)) {
-    %this.window.deleteAll();
-    %this.window.delete();
+function GlassLiveRoom::createView(%this, %window) {
+  if(isObject(%this.view)) {
+    %this.view.deleteAll();
+    %this.view.delete();
   }
 
-  %gui = GlassLive::createChatroomGui(%this.id);
-  %gui.setText("Chatroom - " @ %this.name);
+  %gui = GlassLive::createChatroomView(%this.id);
+
   %gui.title = %this.name;
   %gui.id = %this.id;
-  %gui.position = vectorAdd("100 100", getRandom(-50, 50) SPC getRandom(-50, 50));
 
-  %this.window = %gui;
+  %gui.room = %this;
 
+  if(!isObject(%window)) {
+    if(!isObject($Glass::defaultRoomWindow)) {
+      $Glass::defaultRoomWindow = GlassLive::createChatroomWindow();
+    }
+
+    %window = $Glass::defaultRoomWindow;
+  }
+
+  %window.addTab(%gui);
+
+  %this.view = %gui;
   %this.renderUserList();
 
-  GlassOverlayGui.add(%gui);
   return %gui;
 }
 
@@ -105,11 +118,14 @@ function GlassLiveRoom::onUserJoin(%this, %blid) {
 }
 
 function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
-  %chatroom = %this.window;
+  %chatroom = %this.view;
 
   %this.removeUser(%blid);
 
   switch(%reason) {
+    case -1:
+      %text = "No Reason";
+
     case 0:
       %text = "Left";
 
@@ -122,9 +138,11 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
     case 3:
       %text = "Connection Dropped";
 
+    case 4:
+      %text = "Updates";
 
     default:
-      %text = "no reason";
+      %text = "unhandled: " @ %reason;
   }
 
   %user = GlassLiveUser::getFromBlid(%blid);
@@ -166,6 +184,64 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
   }
 }
 
+function GlassLiveRoom::setAwake(%this, %bool) {
+  if(GlassSettings.get("Live::RoomShowAwake")) {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "roomAwake");
+    %obj.set("id", "string", %this.id);
+    %obj.set("bool", "string", %bool);
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  }
+}
+
+function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
+  %now = getRealTime();
+  if(%now-%this.lastMessageTime > 1000 * 60 * 5) {
+    %text = "<font:verdana bold:12><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
+    %this.pushText(%text);
+  }
+  %this.lastMessageTime = %now;
+
+  %senderblid = %sender.blid;
+
+  if(%senderblid == getNumKeyId()) {
+    %color = GlassLive.color_self;
+  } else if(%sender.isAdmin()) {
+    %color = GlassLive.color_admin;
+  } else if(%sender.isMod()) {
+    %color = GlassLive.color_mod;
+  } else if(GlassLive.isFriend[%senderblid]) {
+    %color = GlassLive.color_friend;
+  } else {
+    %color = GlassLive.color_default;
+  }
+
+  %msg = stripMlControlChars(%msg);
+  for(%i = 0; %i < getWordCount(%msg); %i++) {
+    %word = getWord(%msg, %i);
+    if(%word $= ("@" @ $Pref::Player::NetName)) {
+      %mentioned = true;
+      %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+    }
+  }
+
+
+  %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender.username @ ":<font:verdana:12><color:333333> " @ %msg;
+  %this.pushText(%text);
+
+  %this.view.setFlashing(true);
+
+  if(GlassSettings.get("Live::RoomChatSound"))
+    alxPlay(GlassChatAudio);
+
+  if(%senderblid != getNumKeyId())
+    if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
+      GlassNotificationManager::newNotification(%this.name, "You were mentioned by " @ %sender.username, 0);
+    } else if(GlassSettings.get("Live::RoomChatNotification"))
+      GlassNotificationManager::newNotification(%this.name, %sender.username@": "@%msg, "comment", 0);
+}
+
 function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
@@ -176,7 +252,11 @@ function GlassLiveRoom::pushText(%this, %msg) {
     }
   }
 
-  %chatroom = %this.window;
+  if(GlassSettings.get("Live::ShowTimestamps")) {
+    %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
+  }
+
+  %chatroom = %this.view;
   %val = %chatroom.chattext.getValue();
   if(%val !$= "")
     %val = %val @ "<br>" @ %msg;
@@ -234,7 +314,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 }
 
 function GlassLiveRoom::renderUserList(%this) {
-  %userSwatch = %this.window.userswatch;
+  %userSwatch = %this.view.userswatch;
   %userSwatch.deleteAll();
 
   %orderedList = %this.getOrderedUserList();
@@ -336,6 +416,9 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
   %this.swatch.color = "220 220 220 255";
   if(%this.down) {
     %this.down = false;
-    messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
+    //if(%this.group)
+    //  %this.group.displayUserOptions(%this.user);
+    //else
+      messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
   }
 }

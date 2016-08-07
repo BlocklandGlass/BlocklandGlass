@@ -79,6 +79,13 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 }
 
+function GlassLiveConnection::placeCall(%this, %call) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", %call);
+  %this.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
+}
+
 function GlassLiveConnection::onLine(%this, %line) {
   Glass::debug(%line);
   %error = jettisonParse(%line);
@@ -131,7 +138,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %room.addUser(%user.blid);
       }
 
-      %room.createWindow();
+      %room.createView();
 
       %motd = %data.motd;
       %motd = strreplace(%motd, "\n", "<br> * ");
@@ -146,50 +153,13 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomMessage":
       %room = GlassLiveRoom::getFromId(%data.room);
 
-      %now = getRealTime();
-      if(%now-GlassLive.lastMessageTime > 1000 * 60 * 5) {
-        %text = "<font:verdana bold:12><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
-        %room.pushText(%text);
-      }
-      GlassLive.lastMessageTime = %now;
-
       %msg = %data.msg;
       %sender = %data.sender;
       %senderblid = %data.sender_id;
 
       %senderUser = GlassLiveUser::getFromBlid(%senderblid);
 
-      if(%senderblid == getNumKeyId()) {
-        %color = GlassLive.color_self;
-      } else if(%senderUser.isAdmin()) {
-        %color = GlassLive.color_admin;
-      } else if(%senderUser.isMod()) {
-        %color = GlassLive.color_mod;
-      } else if(GlassLive.isFriend[%senderblid]) {
-        %color = GlassLive.color_friend;
-      } else {
-        %color = GlassLive.color_default;
-      }
-
-      %msg = stripMlControlChars(%msg);
-      for(%i = 0; %i < getWordCount(%msg); %i++) {
-        %word = getWord(%msg, %i);
-        if(%word $= ("@" @ $Pref::Player::NetName)) {
-          %mentioned = true;
-          %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
-        }
-      }
-
-      %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender @ ":<font:verdana:12><color:333333> " @ %msg;
-      %room.pushText(%text);
-      if(GlassSettings.get("Live::RoomChatSound"))
-        alxPlay(GlassChatAudio);
-
-      if(%senderblid != getNumKeyId())
-        if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-          GlassNotificationManager::newNotification(%room.name, "You were mentioned by " @ %sender, 0);
-        } else if(GlassSettings.get("Live::RoomChatNotification"))
-          GlassNotificationManager::newNotification(%room.name, %sender@": "@%msg, "comment", 0);
+      %room.pushMessage(%senderUser, %msg, %data);
 
     case "roomText":
       %room = GlassLiveRoom::getFromId(%data.id);
@@ -211,6 +181,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       %room = GlassLiveRoom::getFromId(%data.id);
       %room.setUserAwake(%data.user, %data.awake);
 
+    case "roomList":
+      %window = GlassLive.pendingRoomList;
+      %window.openRoomBrowser(%data.rooms);
 
     case "friendsList":
       for(%i = 0; %i < %data.friends.length; %i++) {
@@ -278,6 +251,38 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::createFriendList();
 
+    case "groupJoin":
+      %group = GlassLiveGroup::create(%data.id, %data.clients);
+      %group.createGui();
+
+    case "groupInvite":
+      %id = %data.id;
+      %name = %data.inviterName;
+      %blid = %data.inviterBlid;
+      %users = %data.users;
+
+      GlassNotificationManager::newNotification("Groupchat Invite", "You've been invited to group chat by <font:verdana bold:13>" @ %name, "group", 1, "GlassLive::joinGroupPrompt(" @ %id @ ");");
+
+    case "groupMessage":
+      %group = GlassLiveGroup::getFromId(%data.id);
+
+      %name = %data.senderName;
+      %blid = %data.senderBlid;
+
+      %user = GlassLiveUser::getFromBlid(%blid);
+      %group.pushMessage(%user, %data.msg);
+
+    case "groupClientEnter":
+      %client = GlassLiveUser::create(%data.username, %data.blid);
+      %group = GlassLiveGroup::getFromId(%data.id);
+
+      %group.addUser(%client.blid);
+      %group.pushText("<font:verdana:12><color:666666>" @ %client.username @ " entered the group.");
+
+    case "groupClientLeave":
+      %group = GlassLiveGroup::getFromId(%data.id);
+      %group.removeUser(%data.blid);
+
     case "location":
       GlassLive::displayLocation(%data);
 
@@ -304,6 +309,15 @@ function GlassLiveConnection::onLine(%this, %line) {
       %this.disconnect();
       %this.connected = false;
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
+
+    case "disconnected":
+    // 0 - server shutdown
+    // 1 - other sign-in
+    // 2 - barred
+    if(%data.reason == 1) {
+      messageBoxOk("Glass Live Disconnected", "You logged in from somewhere else!");
+      %this.disconnect();
+    }
   }
   //%data.delete();
 }
@@ -318,7 +332,7 @@ package GlassLiveConnectionPackage {
   function messageCallback(%this, %call) {
     if(updater.restartRequired) {
       if(%call $= "quit();") {
-        GlassLiveConnection.doDisconnect($Glass::DisconnectUpdate);
+        GlassLive::disconnect($Glass::DisconnectUpdate);
       }
     }
     echo(callback);
