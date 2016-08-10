@@ -33,7 +33,7 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("type", "string", "auth");
   %obj.set("ident", "string", GlassAuth.ident);
   %obj.set("version", "string", Glass.version);
-  //echo(jettisonStringify("object", %obj));
+
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
@@ -98,7 +98,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
   switch$(%data.value["type"]) {
     case "auth":
-      echo("Auth status: " @ %data.status);
+      echo("Glass Live: " @ %data.status);
 
     case "notification":
       %title = %data.title;
@@ -130,7 +130,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
 
-        //echo("user (" @ %user.blid @ "): " @ %user);
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
@@ -287,9 +286,11 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::displayLocation(%data);
 
     case "serverListUpdate":
+      return;
       GlassServerList.doLiveUpdate(%data.ip, %data.port, %data.key, %data.value);
 
     case "serverListing":
+      return;
       GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
     case "messageBox":
@@ -338,7 +339,6 @@ package GlassLiveConnectionPackage {
         GlassLive::disconnect($Glass::DisconnectUpdate);
       }
     }
-    echo(callback);
     parent::messageCallback(%this, %call);
   }
 };

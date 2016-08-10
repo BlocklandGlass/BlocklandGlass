@@ -644,7 +644,7 @@ function GlassLive::updateLocation(%inServer) {
     %obj.set("location", "string", %location);
   }
 
-  echo(jettisonStringify("object", %obj));
+  //echo(jettisonStringify("object", %obj));
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -930,7 +930,6 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
   if(%this.tabId[%tabObj] !$= "" && %tabObj.window.getId() == %this.getId()) {
     %this.renderTabs();
     %this.openTab(%this.tabId[%tabObj]);
-    echo("tab found, no need continue");
     return;
   }
 
