@@ -28,7 +28,7 @@ function Glass::execServer() {
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
-	exec("./common/GlassRTBSupport.cs");
+	//exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 
@@ -43,9 +43,9 @@ function Glass::execServer() {
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
 
-	GlassServerControlS::init();
+	//GlassServerControlS::init();
 	GlassAuthS::init();
-	GlassServerInfo::connectToServer();
+	//GlassServerInfo::connectToServer();
 	//GlassInfoServer::init();
 
 	GlassAuthS::init();
