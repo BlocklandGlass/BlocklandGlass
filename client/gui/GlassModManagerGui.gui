@@ -9,9 +9,6 @@ new GuiControl(GlassModManagerGui) {
    enabled = "1";
    visible = "1";
    clipToParent = "1";
-      sch = "2225";
-      firstWake = "1";
-      frame = "1";
 
    new GuiWindowCtrl(GlassModManagerGui_Window) {
       profile = "GlassWindowProfile";

@@ -678,7 +678,6 @@ function GlassLive::powerButtonPress() {
 
 function GlassLive::setPowerButton(%bool) {
   %btn = GlassFriendsGui_PowerButton;
-  %btn.text = "";
   %btn.on = %bool;
   if(%btn.on) {
     %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");

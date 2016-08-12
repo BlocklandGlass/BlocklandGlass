@@ -305,6 +305,7 @@ new GuiControl(GlassFriendsGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
+		 text = "";
          command = "GlassLive::powerButtonPress();";
          groupNum = "-1";
          buttonType = "PushButton";

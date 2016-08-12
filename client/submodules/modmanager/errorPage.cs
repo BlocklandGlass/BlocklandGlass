@@ -73,7 +73,7 @@ $GlassError["status_development"] = "Development\tThis page is still in developm
 $GlassError["jettison"] = "Internal Error\tThere was a jettison parse error. If this continues, be sure to report it.";
 
 $GlassError["tcpclient_" @ $TCPClient::Error::connectionFailed] = "Failed to Connect\tThe Mod Manager couldn't connect to the Blockland Glass website!";
-$GlassError["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connection\tDNS Failed.";
+$GlassError["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connect\tDNS Failed.";
 $GlassError["tcpclient_" @ $TCPClient::Error::invalidResponse] = "Invalid Response\tThe server encountered an error!";
 $GlassError["tcpclient_" @ $TCPClient::Error::connectionTimedOut] = "Timeout\tThe connection timed out.";
 
