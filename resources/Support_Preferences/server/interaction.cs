@@ -70,7 +70,7 @@ function serverCmdUpdatePref(%client, %varname, %newvalue, %announce) {
 		%pso.updateValue(%newvalue, %client);
 
 		if($Pref::BLPrefs::ServerDebug) {
-			echo("\c4" @ %client.name @ "(BL_ID: " @ %client.bl_id @ ") set " @ %varname @ " to " @ %newvalue);
+			echo("\c4" @ %client.name @ " (BL_ID: " @ %client.bl_id @ ") set " @ %varname @ " to " @ %newvalue);
 		}
 
 		if(%announce) {
@@ -92,6 +92,8 @@ function serverCmdUpdatePref(%client, %varname, %newvalue, %announce) {
 				commandToClient(%cl, 'updateBLPref', %varname, %newvalue);
 			}
 		}
+		
+		saveBLPreferences();
 	} else {
 		//so they tried to update a variable that doesn't exist...
 		warn("Variable \"" @ %varname @ "\" doesn't exist!");

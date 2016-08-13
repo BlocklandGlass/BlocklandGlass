@@ -8,6 +8,14 @@ if(isFile("Add-Ons/System_oRBs/hooks/serverControl.cs"))
 	exec("Add-Ons/System_oRBs/hooks/serverControl.cs");
 $ORBS::Hooks::ServerControl = true; // yup oRBs too
 
+if(!isFile("Add-Ons/System_ReturnToBlockland/server.cs")) {
+	%file = new FileObject();
+	%file.openForWrite("Add-Ons/System_ReturnToBlockland/server.cs");
+	%file.writeLine("// This is an empty, fake RTB folder so that RTB prefs will load.");
+	%file.close();
+	%file.delete();
+}
+
 package BLPrefCompatibilityPackage {
 	function RTB_registerPref(%name, %addon, %variable, %params, %file, %default, %requiresRestart, %hostOnly, %callback) {
 		if(isFunction("RTB_registerPref")) {
