@@ -850,7 +850,8 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
       GlassLive::friendAccept(%this.blid);
     }
   } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-    GlassLive::openDirectMessage(%this.blid);
+	if (%this.online)
+        GlassLive::openDirectMessage(%this.blid);
   } else {
     eval(%this.callback);
   }

@@ -18,8 +18,15 @@ if(!isObject(PreferenceContainerGroup)) {
 }
 
 $Pref::BLPrefs::ServerDebug = true;
-%Pref::BLPrefs::iconDefault = "wrench";
-$BLPrefs::Version = "1.0.2-beta";
+$Pref::BLPrefs::iconDefault = "wrench";
+
+$BLPrefs::Version = "1.0.3-beta";
+
+if ($Pref::BLPrefs::AllowedRank $= "")
+	$Pref::BLPrefs::AllowedRank = "3";
+
+if (!$BLPrefs::Init)
+	$BLPrefs::PrefCount = -1;
 
 exec("./support/admin.cs");
 exec("./support/lesseval.cs");
@@ -330,7 +337,10 @@ function registerPref(%addon, %dev, %title, %type, %variable, %default, %params,
 
 			%pref.defaultValue = strreplace(%prefsAsFields, "" TAB "", %pref.delimiter);
 	}
-
+	
+	if (getSubStr(%variable, 0, 5) $= "$Pref")
+		$BLPrefs::Pref[$BLPrefs::PrefCount++] = %variable;
+	
 	return %pref;
 }
 
@@ -349,6 +359,17 @@ function registerPrefGroupIcon(%addon, %icon) {
 	}
 
 	%group.icon = %icon; // change icon with this function, so they're per category only now
+}
+
+function saveBLPreferences() {
+	%file = new FileObject();
+	%file.openForWrite("config/server/BLPrefs/prefs.cs");
+	for (%i = 0; %i < $BLPrefs::PrefCount; %i++) {
+		%variable = $BLPrefs::Pref[%i];
+		%file.writeLine(%variable @ " = \"" @ getGlobalByName(%variable) @ "\";");
+	}
+	%file.close();
+	%file.delete();
 }
 
 function BlocklandPrefSO::onAdd(%obj)
@@ -520,5 +541,20 @@ if(!$BLPrefs::AddedServerSettings) {
 	  %file = findNextFile("./server/prefs/*.cs");
 	}
 }
+
+package BLPrefSaveLoad { // this doesn't work in dedi. if you find replacement function(s) that work for this, amend asap.
+	function startGame() {
+		parent::startGame();
+		
+		if(isFile(%blprefs = "config/server/BLPrefs/prefs.cs"))
+			exec(%blprefs);
+	}
+};
+activatePackage(BLPrefSaveLoad);
+
+if(!$BLPrefs::Init) // because the function(s) above don't work for dedi, i have to do this (?) - it sucks
+	if($Server::Dedicated)
+		if(isFile("config/server/BLPrefs/prefs.cs"))
+			schedule(4000, 0, exec, "config/server/BLPrefs/prefs.cs"); // there must be a better way to achieve this
 
 $BLPrefs::Init = true;
