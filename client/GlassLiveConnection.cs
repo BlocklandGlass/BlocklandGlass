@@ -189,8 +189,11 @@ function GlassLiveConnection::onLine(%this, %line) {
         %friend = %data.friends.value[%i];
         %user = GlassLiveUser::create(%friend.username, %friend.blid);
         %user.setFriend(true);
+        %user.online = %friend.online;
+
+        GlassLive::addFriendToList(%user);
       }
-      GlassLive::createFriendList(%data.friends);
+      GlassLive::createFriendList();
 
 
     case "friendRequests":
@@ -219,22 +222,15 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user @ " (" @ %blid @ ")", "user_add", 0);
 
     case "friendStatus":
-      for(%i = 0; %i < GlassLive.friends.length; %i++) {
-        %friend = GlassLive.friends.value[%i];
-        if(%friend.blid == %data.blid)
-          %friend.set("online", "string", %data.online);
-      }
-      GlassLive::createFriendList(GlassLive.friends);
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      %uo.online = %data.online;
+      GlassLive::createFriendList();
 
     case "friendAdd":
-      %obj = JettisonObject();
-      %obj.set("blid", "string", %data.blid);
-      %obj.set("username", "string", %data.username);
-      %obj.set("online", "string", %data.online);
-      if(!isObject(GlassLive.friends))
-        GlassLive.friends = JettisonArray();
+      %uo = GlassLiveUser::create(%data.blid, %data.username);
+      %uo.online = %data.online;
 
-      GlassLive.friends.push("object", %obj);
+      GlassLive::addFriendToList(%uo);
 
       %newRequests = JettisonArray();
 

@@ -394,6 +394,8 @@ function GlassLiveRoom::renderUserList(%this) {
 
     %this.userListSwatch[%user.blid] = %swatch;
   }
+
+  %userSwatch.getGroup().scrollToTop();
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);
 }

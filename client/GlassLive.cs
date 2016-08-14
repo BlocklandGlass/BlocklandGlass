@@ -138,6 +138,9 @@ function GlassLive::disconnect(%reason) {
 
 function GlassLive::cleanup() {
   GlassLiveUsers.deleteAll();
+  GlassLive.friendList = "";
+  GlassFriendGui_ScrollSwatch.deleteAll();
+  GlassFriendGui_ScrollSwatch.setVisible(true);
 
   if(isObject(GlassLiveRoomGroup)) {
     for(%i = 0; %i < GlassLiveRoomGroup.getcount(); %i++) {
@@ -296,6 +299,21 @@ function GlassLive::joinGroup(%id) {
   %obj.delete();
 }
 
+function wordPos(%str, %word) {
+  for(%i = 0; %i < getWordCount(%str); %i++) {
+    if(getWord(%str, %i) $= %word)
+      return %i;
+  }
+  return -1;
+}
+
+function GlassLive::addFriendToList(%user) {
+  if((%i = wordPos(GlassLive.friendList, %user.blid)) > -1) {
+    return;
+  }
+
+  GlassLive.friendList = setWord(GlassLive.friendList, getWordCount(GlassLive.friendList), %user.blid);
+}
 //================================================================
 //= Communication                                                =
 //================================================================
@@ -2047,19 +2065,17 @@ function GlassLive::createFriendRequest(%name, %blid) {
 
 
 function GlassLive::createFriendList(%friends) {
-  if(%friends $= "")
-    %friends = GlassLive.friends;
-
-  GlassLive.friends = %friends;
   GlassFriendGui_ScrollSwatch.deleteAll();
   %h = GlassLive::createFriendHeader("Friends");
   GlassFriendGui_ScrollSwatch.add(%h);
 
   %last = %h;
 
-  for(%i = 0; %i < %friends.length; %i++) {
-    %friend = %friends.value[%i];
-    %gui = GlassLive::createFriendSwatch(%friend.username, %friend.blid, %friend.online);
+  for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
+    %blid = getWord(GlassLive.friendList, %i);
+    %uo = GlassLiveUser::getFromBlid(%blid);
+
+    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online);
     %gui.placeBelow(%last, 5);
 
     GlassLive.isFriend[%friend.blid] = 1;
@@ -2086,6 +2102,9 @@ function GlassLive::createFriendList(%friends) {
       %last = %gui;
     }
   }
+  GlassFriendGui_ScrollSwatch.verticalMatchChildren(0, 5);
+  GlassFriendGui_ScrollSwatch.setVisible(true);
+  GlassFriendGui_ScrollSwatch.getGroup().setVisible(true);
 }
 
 package GlassLivePackage {
