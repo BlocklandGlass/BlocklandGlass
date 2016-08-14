@@ -644,7 +644,7 @@ function GlassLive::updateLocation(%inServer) {
     %obj.set("location", "string", %location);
   }
 
-  echo(jettisonStringify("object", %obj));
+  //echo(jettisonStringify("object", %obj));
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -678,7 +678,6 @@ function GlassLive::powerButtonPress() {
 
 function GlassLive::setPowerButton(%bool) {
   %btn = GlassFriendsGui_PowerButton;
-  %btn.text = "";
   %btn.on = %bool;
   if(%btn.on) {
     %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
@@ -930,7 +929,6 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
   if(%this.tabId[%tabObj] !$= "" && %tabObj.window.getId() == %this.getId()) {
     %this.renderTabs();
     %this.openTab(%this.tabId[%tabObj]);
-    echo("tab found, no need continue");
     return;
   }
 

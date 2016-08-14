@@ -81,7 +81,7 @@ function GlassModManager::catalogAddons() {
   }
 }
 
-function GlassModManagerGui::onWake(%this) {
+function GlassModManagerGui_Window::onWake(%this) {
   if(!GlassModManagerGui.firstWake) {
     GlassModManagerGui::loadContext("home");
     GlassModManagerGui.firstWake = true;
