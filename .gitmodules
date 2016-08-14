@@ -1,0 +1,3 @@
+[submodule "resources/Support_Preferences"]
+	path = resources/Support_Preferences
+	url = https://github.com/TheBlackParrot/blockland-preferences
