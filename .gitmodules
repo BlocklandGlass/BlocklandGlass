@@ -1,3 +1,6 @@
 [submodule "resources/Support_Preferences"]
 	path = resources/Support_Preferences
 	url = https://github.com/TheBlackParrot/blockland-preferences
+[submodule "resources/Support_Updater"]
+	path = resources/Support_Updater
+	url = https://bitbucket.org/Greek2me/support_updater.git

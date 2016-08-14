@@ -1,3 +1,0 @@
-version	0.12.1+release-20160619
-channel	release
-repository	mods.greek2me.us
