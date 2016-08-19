@@ -314,6 +314,14 @@ function GlassLive::addFriendToList(%user) {
 
   GlassLive.friendList = setWord(GlassLive.friendList, getWordCount(GlassLive.friendList), %user.blid);
 }
+
+function GlassLive::removeFriendFromList(%blid) {
+  if((%i = wordPos(GlassLive.friendList, %blid)) == -1) {
+    return;
+  }
+
+  GlassLive.friendList = removeWord(GlassLive.friendList, %i);
+}
 //================================================================
 //= Communication                                                =
 //================================================================
@@ -630,6 +638,30 @@ function GlassLive::friendDecline(%blid) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
+function GlassLive::removeFriend(%blid, %silent) {
+  if(%blid == getNumKeyId())
+    return;
+
+  if(!%silent) {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "friendRemove");
+    %obj.set("target", "string", %blid);
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
+  }
+
+  GlassLive::removeFriendFromList(%blid);
+  GlassLive::createFriendList();
+
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user) {
+    if(isObject(%user.window))
+      %user.window.delete();
+  }
+}
+
+
 function GlassLive::updateLocation(%inServer) {
 
   if(!%inServer) {
@@ -869,17 +901,172 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
       messageBoxOk("Accepted", "Friend Request accepted");
       GlassLive::friendAccept(%this.blid);
     }
-  } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-    if(%this.online)
-      GlassLive::openDirectMessage(%this.blid);
   } else {
-    eval(%this.callback);
+    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+      if(%this.online)
+        GlassLive::openDirectMessage(%this.blid);
+    } else {
+      GlassLive::openUserWindow(%this.blid);
+    }
   }
 }
 
 //================================================================
 //= Gui Creation                                                 =
 //================================================================
+
+function GlassLive::addFriendPrompt(%blid) {
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user) {
+    messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
+  }
+}
+
+function GlassLive::removeFriendPrompt(%blid) {
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user) {
+    messageBoxYesNo("Remove Friend", "<font:verdana:13>Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
+  }
+}
+
+function GlassLive::openUserWindow(%blid) {
+  %uo = GlassLiveUser::getFromBlid(%blid);
+  if(%uo) {
+    %window = GlassLive::createUserWindow(%uo);
+    %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid;
+    %window.text.setValue(%text);
+    %window.text.forceReflow();
+    %window.text.centerY();
+
+    if(%uo.isFriend()) {
+      %window.friendButton.mcolor = "255 200 200 200";
+      %window.friendButton.command = "GlassLive::removeFriendPrompt(" @ %uo.blid @ ");";
+      %window.friendButton.text = "Unfriend";
+    } else {
+      %window.friendButton.mcolor = "200 255 200 200";
+      %window.friendButton.command = "GlassLive::addFriendPrompt(" @ %uo.blid @ ");";
+      %window.friendButton.text = "Add Friend";
+    }
+
+    %window.messageButton.enabled = %uo.online;
+
+    %window.forceCenter();
+  }
+}
+
+function GlassLive::createUserWindow(%uo) {
+  if(isObject(%uo.window)) {
+    GlassOverlayGui.pushToBack(%uo.window);
+    return %uo.window;
+  }
+
+  %window = new GuiWindowCtrl() {
+    profile = "GlassWindowProfile";
+    horizSizing = "center";
+    vertSizing = "center";
+    position = "235 157";
+    extent = "170 166";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = %uo.username;
+    maxLength = "255";
+    resizeWidth = "1";
+    resizeHeight = "1";
+    canMove = "1";
+    canClose = "1";
+    canMinimize = "0";
+    canMaximize = "0";
+    minSize = "50 50";
+  };
+
+  %window.textcontainer = new GuiSwatchCtrl(GlassUserTextContainer) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 35";
+    extent = "150 50";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "220 220 220 255";
+  };
+
+  %window.text = new GuiMLTextCtrl(GlassUserText) {
+   profile = "GuiMLTextProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "10 10";
+   extent = "130 14";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+   lineSpacing = "2";
+   allowColorChars = "0";
+   maxChars = "-1";
+   maxBitmapHeight = "-1";
+   selectable = "1";
+   autoResize = "1";
+  };
+
+  %window.friendButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 125";
+    extent = "150 30";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Unfriend";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "base/client/ui/button1";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "255 200 200 200";
+  };
+
+  %window.messageButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 90";
+    extent = "150 30";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Message";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "base/client/ui/button1";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "255 255 255 200";
+  };
+
+  %window.add(%window.textcontainer);
+  %window.textcontainer.add(%window.text);
+  %window.add(%window.messageButton);
+  %window.add(%window.friendButton);
+
+  %window.closeCommand = %window.getId() @ ".delete();";
+
+  GlassOverlayGui.add(%window);
+  %uo.window = %window;
+  return %window;
+}
 
 function GlassLive::createChatroomWindow() {
   %chatroom = new GuiWindowCtrl(GlassChatroomWindow) {
