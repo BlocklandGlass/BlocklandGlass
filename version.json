@@ -1,6 +1,6 @@
 {
   "version":"3.0.0",
-  "channel":"closedbeta",
+  "channel":"stable",
   "repositories": [
     {
       "url":"http://api.blocklandglass.com/api/beta/repo.json",
