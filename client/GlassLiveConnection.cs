@@ -246,6 +246,9 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::createFriendList();
 
+    case "friendRemove":
+      GlassLive::removeFriend(%data.blid, true);
+
     case "groupJoin":
       %group = GlassLiveGroup::create(%data.id, %data.clients);
       %group.createGui();

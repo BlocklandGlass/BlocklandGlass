@@ -645,7 +645,7 @@ function GlassLive::removeFriend(%blid, %silent) {
   if(!%silent) {
     %obj = JettisonObject();
     %obj.set("type", "string", "friendRemove");
-    %obj.set("target", "string", %blid);
+    %obj.set("blid", "string", %blid);
 
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
     %obj.delete();

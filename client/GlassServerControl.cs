@@ -846,9 +846,9 @@ package GlassServerControlC {
     parent::disconnect(%a);
   }
 
-  function disconnectCleanup() {
+  function disconnectCleanup(%a) {
     GlassPrefGroup::cleanup();
-    parent::disconnectCleanup();
+    parent::disconnectCleanup(%a);
   }
 };
 activatePackage(GlassServerControlC);
