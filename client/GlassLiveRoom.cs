@@ -185,6 +185,7 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
 }
 
 function GlassLiveRoom::setAwake(%this, %bool) {
+  %this.awake = %bool;
   if(GlassSettings.get("Live::RoomShowAwake")) {
     %obj = JettisonObject();
     %obj.set("type", "string", "roomAwake");
@@ -235,7 +236,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   if(GlassSettings.get("Live::RoomChatSound"))
     alxPlay(GlassChatAudio);
 
-  if(%senderblid != getNumKeyId())
+  if(%senderblid != getNumKeyId() && !%this.awake)
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
       GlassNotificationManager::newNotification(%this.name, "You were mentioned by " @ %sender.username, 0);
     } else if(GlassSettings.get("Live::RoomChatNotification"))
@@ -330,6 +331,10 @@ function GlassLiveRoom::renderUserList(%this) {
       %icon = "crown_silver";
       %pos = "2 4";
       %ext = "14 14";
+    } else if(%user.isFriend()) {
+      %icon = "user_green";
+      %pos = "1 3";
+      %ext = "16 16";
     } else {
       %icon = "user";
       %pos = "1 3";

@@ -854,7 +854,9 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 }
 
 function GlassHighlightMouse::onMouseDown(%this) {
-  %this.down = 1;
+  if(%this.online) {
+    %this.down = 1;
+  }
 }
 
 function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
@@ -2075,7 +2077,7 @@ function GlassLive::createFriendList(%friends) {
     %blid = getWord(GlassLive.friendList, %i);
     %uo = GlassLiveUser::getFromBlid(%blid);
 
-    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online);
+    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
     %gui.placeBelow(%last, 5);
 
     GlassLive.isFriend[%friend.blid] = 1;

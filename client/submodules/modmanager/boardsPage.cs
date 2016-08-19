@@ -138,8 +138,6 @@ function GlassModManagerGui::SearchResults(%res) {
       filler = 1;
     };
 
-    echo(jettisonStringify("object", %result));
-
     %swat.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
       aid = %result.id;
       swatch = %swat;

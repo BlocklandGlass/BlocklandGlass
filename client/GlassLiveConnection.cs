@@ -227,7 +227,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::createFriendList();
 
     case "friendAdd":
-      %uo = GlassLiveUser::create(%data.blid, %data.username);
+      %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.online = %data.online;
 
       GlassLive::addFriendToList(%uo);

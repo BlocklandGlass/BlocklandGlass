@@ -282,8 +282,6 @@ function GlassModManagerTCP::onDone(%this, %error) {
         case "search":
           if(GlassModManagerGui_SearchBar.lastTCP == %this)
             GlassModManagerGui::searchResults(%ret.results);
-          else
-            Glass::debug ("old results in!");
 
         case "rating":
           Glass::debug(%this.buffer);
@@ -719,7 +717,7 @@ function GlassModManager::populateColorsets() {
     }
     %cs = new GuiSwatchCtrl("GlassModManager_ColorsetListing_" @ %i) {
        profile = "GuiDefaultProfile";
-       horizSizing = "center";
+       horizSizing = "right";
        vertSizing = "bottom";
        position = 10 SPC %currentY;
        extent = "230 30";
