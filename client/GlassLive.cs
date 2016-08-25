@@ -322,6 +322,23 @@ function GlassLive::removeFriendFromList(%blid) {
 
   GlassLive.friendList = removeWord(GlassLive.friendList, %i);
 }
+
+function GlassLive::addfriendRequestToList(%user) {
+  if((%i = wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
+    return;
+  }
+
+  GlassLive.friendRequestList = setWord(GlassLive.friendRequestList, getWordCount(GlassLive.friendRequestList), %user.blid);
+}
+
+function GlassLive::removefriendRequestFromList(%blid) {
+  if((%i = wordPos(GlassLive.friendRequestList, %blid)) == -1) {
+    return;
+  }
+
+  GlassLive.friendRequestList = removeWord(GlassLive.friendRequestList, %i);
+}
+
 //================================================================
 //= Communication                                                =
 //================================================================
@@ -390,6 +407,7 @@ function GlassLive::openDirectMessage(%blid, %username) {
   }
 
   %user = GlassLiveUser::getFromBlid(%blid);
+
   if(%username $= "") {
     if(%user != false) { //this shouldn't happen
       %username = %user.username;
@@ -1054,6 +1072,7 @@ function GlassLive::createUserWindow(%uo) {
     overflowImage = "0";
     mKeepCached = "0";
     mColor = "255 255 255 200";
+    command = "GlassLive::openDirectMessage(" @ %uo.blid @ ");";
   };
 
   %window.add(%window.textcontainer);
@@ -2268,25 +2287,25 @@ function GlassLive::createFriendList(%friends) {
     %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
     %gui.placeBelow(%last, 5);
 
-    GlassLive.isFriend[%friend.blid] = 1;
-    GlassLive.friendTab[%friend.blid] = %gui;
     GlassFriendGui_ScrollSwatch.add(%gui);
 
     %last = %gui;
   }
 
-  %requests = GlassLive.friendRequests;
-  if(isObject(%requests) && %requests.length > 0) {
+  if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
     %h = GlassLive::createFriendHeader("Friend Requests");
     %h.placeBelow(%last, 10);
     GlassFriendGui_ScrollSwatch.add(%h);
 
     %last = %h;
 
-    for(%i = 0; %i < %requests.length; %i++) {
-      %friend = %requests.value[%i];
-      %gui = GlassLive::createFriendRequest(%friend.username, %friend.blid);
+    for(%i = 0; %i < getWordCount(GlassLive.friendRequestList); %i++) {
+      %blid = getWord(GlassLive.friendRequestList, %i);
+      %uo = GlassLiveUser::getFromBlid(%blid);
+
+      %gui = GlassLive::createFriendRequest(%uo.username, %blid);
       %gui.placeBelow(%last, 5);
+
       GlassFriendGui_ScrollSwatch.add(%gui);
 
       %last = %gui;
@@ -2307,10 +2326,10 @@ package GlassLivePackage {
     }
   }
 
-  function disconnectedCleanup() {
+  function disconnectedCleanup(%a) {
     GlassLive::updateLocation(false);
 
-    parent::disconnectedCleanup();
+    parent::disconnectedCleanup(%a);
   }
 
   function GameConnection::onConnectionAccepted(%this, %a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k) {

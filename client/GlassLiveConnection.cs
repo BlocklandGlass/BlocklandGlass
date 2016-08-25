@@ -201,25 +201,21 @@ function GlassLiveConnection::onLine(%this, %line) {
         %friend = %data.requests.value[%i];
         %user = GlassLiveUser::create(%friend.username, %friend.blid);
         %user.setFriendRequest(true);
+
+        GlassLive::addfriendRequestToList(%user);
       }
-      GlassLive.friendRequests = %data.requests;
       GlassLive::createFriendList();
 
     case "friendRequest":
-      %user = %data.sender;
+      %username = %data.sender;
       %blid = %data.sender_blid;
 
-      %obj = JettisonObject();
-      %obj.set("blid", "string", %blid);
-      %obj.set("username", "string", %user);
+      %user = GlassLiveUser::create(%username, %blid);
 
-      if(!isObject(GlassLive.friendRequests))
-        GlassLive.friendRequests = JettisonArray();
-
-      GlassLive.friendRequests.push("object", %obj);
+      GlassLive::addfriendRequestToList(%user);
 
       GlassLive::createFriendList();
-      GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user @ " (" @ %blid @ ")", "user_add", 0);
+      GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "user_add", 0);
 
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
@@ -230,19 +226,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.online = %data.online;
 
+      GlassLive::removefriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
-
-      %newRequests = JettisonArray();
-
-      for(%i = 0; %i < GlassLive.friendRequests.length; %i++) {
-        %o = GlassLive.friendRequests.value[%i];
-        if(%o.blid != %data.blid) {
-          %newRequests.push("object", %o);
-        }
-      }
-
-      GlassLive.friendRequests.delete();
-      GlassLive.friendRequests = %newRequests;
 
       GlassLive::createFriendList();
 

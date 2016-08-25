@@ -1,8 +1,8 @@
 //================================================================
-//=	Title: 	Blockland Glass (i3)								                 =
-//=	Author:	Jincux (9789)								                     		 =
-//=	If you're looking at this, go you. either that, or you're a  =
-//=	little skiddy trying to 'troll'						              		 =
+//=	Title: 	Blockland Glass (i3)																 =
+//=	Author:	Jincux (9789)																				 =
+//=	If you're looking at this, go you. either that, or you're a	 =
+//=	little skiddy trying to 'troll'															 =
 //================================================================
 
 if($Pref::PreLoadScriptLauncherVersion != 2) {
