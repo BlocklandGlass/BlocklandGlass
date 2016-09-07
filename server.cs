@@ -43,9 +43,9 @@ function Glass::execServer() {
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
 
-	GlassServerControlS::init();
+	//GlassServerControlS::init();
 	GlassAuthS::init();
-	GlassServerInfo::connectToServer();
+	//GlassServerInfo::connectToServer();
 	//GlassInfoServer::init();
 
 	GlassAuthS::init();

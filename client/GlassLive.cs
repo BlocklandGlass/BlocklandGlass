@@ -2326,10 +2326,10 @@ package GlassLivePackage {
     }
   }
 
-  function disconnectedCleanup(%a) {
+  function disconnectedCleanup(%doReconnect) {
     GlassLive::updateLocation(false);
 
-    parent::disconnectedCleanup(%a);
+    return parent::disconnectedCleanup(%doReconnect);
   }
 
   function GameConnection::onConnectionAccepted(%this, %a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k) {
