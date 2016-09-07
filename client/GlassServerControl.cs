@@ -826,7 +826,9 @@ function getServerSettingsBtn() {
   for(%i = 0; %i < %gui.getCount(); %i++) {
     %obj = %gui.getObject(%i);
 	
-    if(%obj.text $= "Server Settings >>")
+    if(%obj.command $= "AdminGui.clickServerSettings();"
+	|| %obj.command $= "openGlassSettings();"
+	&& %obj.text $= "Server Settings >>")
       return %obj;
   }
 }
@@ -886,7 +888,7 @@ package GlassServerControlC {
 	%serverSettingsBtn = getServerSettingsBtn();
 	
 	if(ServerConnection.hasGlass) {
-	  %serverSettingsBtn.command = "canvas.pushDialog(GlassServerControlGUI);";
+	  %serverSettingsBtn.command = "openGlassSettings();";
       %serverSettingsBtn.mcolor = "50 150 250 255"; // blue
 	} else {
 	  %serverSettingsBtn.command = "AdminGui.clickServerSettings();";
