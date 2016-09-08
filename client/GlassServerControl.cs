@@ -642,13 +642,13 @@ function GlassServerControlC::setEnabled(%this, %enabled) {
     GlassPrefGroup::cleanup();
   }
 
-  if(isObject(orbsServerControlBtn)) {
-    orbsServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui);";
-  }
+  // if(isObject(orbsServerControlBtn)) {
+    // orbsServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui);";
+  // }
 
-  if(isObject(rtbServerControlBtn)) {
-    rtbServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui);";
-  }
+  // if(isObject(rtbServerControlBtn)) {
+    // rtbServerControlBtn.command = "canvas.pushDialog(GlassServerControlGui);";
+  // }
 }
 
 function GlassServerControlC::valueUpdate(%obj) {
@@ -820,35 +820,80 @@ function clientCmdGlassAdminListing(%data, %append) {
   }
 }
 
-return;
+function getServerSettingsBtn() {
+  %gui = adminGui.getObject(0);
+  
+  for(%i = 0; %i < %gui.getCount(); %i++) {
+    %obj = %gui.getObject(%i);
+	
+    if(%obj.command $= "AdminGui.clickServerSettings();"
+	|| %obj.command $= "openGlassSettings();"
+	&& %obj.text $= "Server Settings >>")
+      return %obj;
+  }
+}
 
 package GlassServerControlC {
-  function clientCmdsetAdminLevel(%level) {
-    if(%level > 0) {
-      GlassServerControlC.setEnabled(true);
-    } else {
-      GlassServerControlC.setEnabled(false);
-    }
-    parent::clientCmdsetAdminLevel(%level);
+  // function clientCmdsetAdminLevel(%level) {
+    // if(%level > 0) {
+      // GlassServerControlC.setEnabled(true);
+    // } else {
+      // GlassServerControlC.setEnabled(false);
+    // }
+    // parent::clientCmdsetAdminLevel(%level);
+  // }
+
+  // function NewPlayerListGui::update(%this, %a, %b, %c, %d, %e, %f) {
+    // parent::update(%this, %a, %b, %c, %d, %e, %f);
+    // GlassServerControlGui.onWake();
+  // }
+
+  // function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
+		// return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+	// }
+
+  function disconnect(%doReconnect) {
+    GlassPrefGroup::cleanup();
+    return parent::disconnect(%doReconnect);
   }
 
-  function NewPlayerListGui::update(%this, %a, %b, %c, %d, %e, %f) {
-    parent::update(%this, %a, %b, %c, %d, %e, %f);
-    GlassServerControlGui.onWake();
+  function disconnectedCleanup(%doReconnect) {
+    GlassPrefGroup::cleanup();
+    return parent::disconnectedCleanup(%doReconnect);
   }
-
-  function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-		return parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+  
+  function adminGui::onWake(%this) {
+	parent::onWake(%this);
+	
+	// RTB
+	
+	if(isObject(rtbServerControlBtn)) {
+	  if(ServerConnection.hasGlass)
+	    rtbServerControlBtn.setVisible(false);
+	  else
+	    rtbServerControlBtn.setVisible(true);
 	}
-
-  function disconnect(%a) {
-    GlassPrefGroup::cleanup();
-    parent::disconnect(%a);
-  }
-
-  function disconnectCleanup(%a) {
-    GlassPrefGroup::cleanup();
-    parent::disconnectCleanup(%a);
+	
+	// oRBs
+	
+	if(isObject(orbsServerControlBtn)) {
+	  if(ServerConnection.hasGlass)
+	    orbsServerControlBtn.setVisible(false);
+	  else
+	    orbsServerControlBtn.setVisible(true);
+	}
+	
+	// glass (takes over BL's standard server settings btn)
+	
+	%serverSettingsBtn = getServerSettingsBtn();
+	
+	if(ServerConnection.hasGlass) {
+	  %serverSettingsBtn.command = "openGlassSettings();";
+      %serverSettingsBtn.mcolor = "50 150 250 255"; // blue
+	} else {
+	  %serverSettingsBtn.command = "AdminGui.clickServerSettings();";
+      %serverSettingsBtn.mcolor = "255 255 255 255";
+	}
   }
 };
 activatePackage(GlassServerControlC);
