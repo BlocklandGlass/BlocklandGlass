@@ -222,14 +222,18 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.online = %data.online;
       GlassLive::createFriendList();
 
-    case "friendAdd":
+    case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.online = %data.online;
+	  %uo.isFriend = true;
 
       GlassLive::removefriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
 
       GlassLive::createFriendList();
+	  
+      if(isObject(%room = GlassChatroomWindow.activeTab.room))
+        %room.renderUserList();
 
     case "friendRemove":
       GlassLive::removeFriend(%data.blid, true);
