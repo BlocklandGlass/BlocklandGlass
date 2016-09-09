@@ -671,8 +671,9 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
   if(!%this.addon.isBLG) {
     messageBoxOk("Add-On", %this.addon.name);
   } else {
-    %versionData = loadJSON("Add-Ons/" @ %this.addon.name @ "/version.json");
-
+    jettisonReadFile("Add-Ons/" @ %this.addon.name @ "/version.json");
+	%versionData = $JSON::Value;
+	
     //GlassModManagerGui_AddonSettings_Branch.clear();
     //GlassModManagerGui_AddonSettings_Branch.add("Stable", 1);
     //GlassModManagerGui_AddonSettings_Branch.add("Unstable", 2);
