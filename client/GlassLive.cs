@@ -633,6 +633,14 @@ function GlassLive::friendAccept(%blid) {
   %obj.set("type", "string", "friendAccept");
   %obj.set("blid", "string", %blid);
 
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user) {
+    %user.isFriend = true;
+	
+    if(isObject(%room = GlassChatroomWindow.activeTab.room))
+      %room.renderUserList();
+  }
+  
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
@@ -674,8 +682,11 @@ function GlassLive::removeFriend(%blid, %silent) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user) {
+	%user.isFriend = false;
     if(isObject(%user.window))
       %user.window.delete();
+    if(isObject(%room = GlassChatroomWindow.activeTab.room))
+      %room.renderUserList();
   }
 }
 
