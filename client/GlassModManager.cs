@@ -116,7 +116,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
       GlassModManagerGui_KeybindOverlay.setVisible(false);
 
       %bind = GlassSettings.get("Live::Keybind");
-      GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassModManager_keybind");
+      GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
       GlassModManager_Remapper.delete();
       return;
     }
@@ -127,7 +127,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   %bind = GlassSettings.get("Live::Keybind");
 
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
-  GlobalActionMap.bind(%device, %key, "GlassModManager_keybind");
+  GlobalActionMap.bind(%device, %key, "GlassLive_keybind");
   GlassModManager_Remapper.delete();
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
   GlassSettings.update("Live::Keybind", %device TAB %key);
