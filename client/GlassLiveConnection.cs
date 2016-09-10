@@ -222,7 +222,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.online = %data.online;
       
       GlassLive::createFriendList(); // maybe add two sounds for this at some point (friend online/offline)
-      GlassNotificationManager::newNotification(%uo.username, "has " @ (%uo.online ? "come online" : "gone offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
+      GlassNotificationManager::newNotification(%uo.username, "is now " @ (%uo.online ? "online" : "offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);

@@ -187,7 +187,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
     %error = jettisonParse(%this.buffer);
     if(%error) {
       Glass::debug(%this.buffer);
-      GlassModManagerGui::loadErrorPage("jettsionError", $JSON::Error @ " : " @ $JSON::Index);
+      GlassModManagerGui::loadErrorPage("jettisonError", $JSON::Error @ " : " @ $JSON::Index);
       return;
     }
     %ret = $JSON::Value;
