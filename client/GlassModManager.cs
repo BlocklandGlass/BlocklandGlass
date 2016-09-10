@@ -540,7 +540,10 @@ function GlassModManager::renderMyAddons(%this) {
   for(%i = 0; %i < GlassModManager_MyAddons.getCount(); %i++) {
     //I guess they load in reverse order. lets fix that
     %addon = GlassModManager_MyAddons.getObject(GlassModManager_MyAddons.getCount()-%i-1);
-    %enabled = $AddOn["__" @ %addon.name];
+	if($AddOn["__" @ %addon.name] == 1)
+		%enabled = true;
+	else
+		%enabled = false;
     if(%enabled) {
       %color = "153 204 119 255";
     } else {
@@ -553,7 +556,7 @@ function GlassModManager::renderMyAddons(%this) {
       %text = "<font:Verdana Bold:15>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
     }
 
-    %gui = new GuiSwatchCtrl() {
+    %gui = new GuiSwatchCtrl("GlassModManager_AddonListing_" @ %i) {
       profile = "GuiDefaultProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -585,6 +588,7 @@ function GlassModManager::renderMyAddons(%this) {
         autoResize = "1";
       };
       new GuiCheckBoxCtrl(GlassTempCheck) {
+		addonId = %i;
         addon = %addon.name;
         profile = "GuiCheckBoxProfile";
         horizSizing = "right";
@@ -618,6 +622,19 @@ function GlassModManager::renderMyAddons(%this) {
         keepCached = "0";
         mColor = "255 255 255 255";
         mMultiply = "0";
+     };
+     new GuiMouseEventCtrl("GlassModManagerGui_AddonHighlight") {
+        addonId = %i;
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "340 30";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lockMouse = "0";
      };
      new GuiBitmapCtrl() {
         profile = "GuiDefaultProfile";
@@ -654,7 +671,7 @@ function GlassModManager::renderMyAddons(%this) {
         };
       };
     };
-    GlassTempCheck.setValue($AddOn["__" @ %addon.name]);
+    GlassTempCheck.setValue(%enabled);
     GlassTempCheck.setName("GlassModManagerGui_MyAddonCheckbox");
     %currentY += 32;
     GlassModManagerGui_MyAddons.add(%gui);
@@ -683,6 +700,16 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
     //GlassModManagerGui_AddonSettings_Window.setVisible(true);
     messageBoxOk(%this.addon.glassdata.get("title"), "<font:verdana bold:14>Version:<font:verdana:14> " @ %versionData.get("version"));
   }
+}
+
+function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {
+  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
+  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
+}
+
+function GlassModManagerGui_AddonHighlight::onMouseLeave(%this) {
+  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
+  %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
 }
 
 //====================================
