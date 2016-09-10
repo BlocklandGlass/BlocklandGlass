@@ -23,6 +23,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
 
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
+    
+    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);

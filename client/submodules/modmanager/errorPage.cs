@@ -32,7 +32,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
   } else {
     //record the event
     %fo = new FileObject();
-    %fo.openForRead("config/client/blg/error_log/" @ getrealtime() @ ".log");
+    %fo.openForWrite("config/client/blg/error_log/" @ getrealtime() @ ".log");
     %fo.writeLine("Error Code: " @ %errorcode);
     %fo.writeLine("");
     %fo.writeLine(%buffer);

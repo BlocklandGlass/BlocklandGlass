@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -633,6 +633,14 @@ function GlassLive::friendAccept(%blid) {
   %obj.set("type", "string", "friendAccept");
   %obj.set("blid", "string", %blid);
 
+  %user = GlassLiveUser::getFromBlid(%blid);
+  if(%user) {
+    %user.isFriend = true;
+	
+    if(isObject(%room = GlassChatroomWindow.activeTab.room))
+      %room.renderUserList();
+  }
+  
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
@@ -641,17 +649,16 @@ function GlassLive::friendDecline(%blid) {
   %obj.set("type", "string", "friendDecline");
   %obj.set("blid", "string", %blid);
 
-  %newRequests = JettisonArray();
-
-  for(%i = 0; %i < GlassLive.friendRequests.length; %i++) {
-    %o = GlassLive.friendRequests.value[%i];
-    if(%o.blid != %blid) {
-      %newRequests.push("object", %o);
+  for(%i = 0; %i < getWordCount(GlassLive.friendRequestList); %i++) {
+    %blid2 = getWord(GlassLive.friendRequestList, %i);
+    if(%blid2 != %blid) {
+      %newRequests = trim(%newRequests @ %blid2);
     }
   }
 
-  GlassLive.friendRequests.delete();
-  GlassLive.friendRequests = %newRequests;
+  GlassLive.friendRequestList = %newRequests;
+  
+  GlassLive::createFriendList();
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -674,8 +681,11 @@ function GlassLive::removeFriend(%blid, %silent) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user) {
+    %user.isFriend = false;
     if(isObject(%user.window))
       %user.window.delete();
+    if(isObject(%room = GlassChatroomWindow.activeTab.room))
+      %room.renderUserList();
   }
 }
 
