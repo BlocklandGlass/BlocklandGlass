@@ -43,7 +43,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
   };
 
   if(%uploads.length > 0) {
-    %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you!<br><br>";
+    %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you:<br><br>";
 
     for(%i = 0; %i < %uploads.length; %i++) {
       %u = %uploads.value[%i];
@@ -55,11 +55,11 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
 
     }
   } else {
-    %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>There are no new uploads today.<br><br>";
+    %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>There's no new uploads today.<br><br>";
   }
 
   if(%updates.length > 0) {
-    %text = %text @ "<br><font:verdana:13>There's been a few recent updates<br><br>";
+    %text = %text @ "<br><font:verdana:13>There's been a few recent updates:<br><br>";
 
     for(%i = 0; %i < %updates.length; %i++) {
       %u = %updates.value[%i];
@@ -70,6 +70,8 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
       %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> to version <font:verdana bold:13>" @ %version @ "<br>";
 
     }
+  } else {
+    %text = %text @ "<br><font:verdana:13>There's been no recent updates.<br><br>";
   }
 
   %text = %text @ "<br><br>- ModBot<br><font:verdana:10><just:right>" @ getSubStr(getDateTime(), 0, 14);

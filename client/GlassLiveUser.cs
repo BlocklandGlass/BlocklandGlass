@@ -12,6 +12,7 @@ function GlassLiveUser::create(%username, %blid) {
     class = "GlassLiveUser";
     username = %username;
     blid = %blid;
+    online = true;
   };
   GlassLiveUsers.add(%user);
   GlassLiveUsers.user[%blid] = %user;

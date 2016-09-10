@@ -207,16 +207,17 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::createFriendList();
 
     case "friendRequest":
-      %username = %data.sender;
-      %blid = %data.sender_blid;
+      if(strStr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
+        %username = %data.sender;
+        %user = GlassLiveUser::create(%username, %blid);
 
-      %user = GlassLiveUser::create(%username, %blid);
+        GlassLive::addfriendRequestToList(%user);
 
-      GlassLive::addfriendRequestToList(%user);
-
-      GlassLive::createFriendList();
-      GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "user_add", 0);
-
+        GlassLive::createFriendList();
+        
+        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "user_add", 0);
+      }
+      
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.online = %data.online;
@@ -236,9 +237,20 @@ function GlassLiveConnection::onLine(%this, %line) {
 	  
       if(isObject(%room = GlassChatroomWindow.activeTab.room))
         %room.renderUserList();
+      
+      GlassNotificationManager::newNotification("Friend Added", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been added to your friends list.", "user_add", 0);
 
     case "friendRemove":
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      
       GlassLive::removeFriend(%data.blid, true);
+      
+      GlassNotificationManager::newNotification("Friend Removed", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been removed from your friends list.", "user_delete", 0);
+    
+    case "friendDecline": // nothing responding here - serverside issue?
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      
+      GlassNotificationManager::newNotification("Friend Declined", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has declined your friend request.", "cross", 0);
 
     case "groupJoin":
       %group = GlassLiveGroup::create(%data.id, %data.clients);

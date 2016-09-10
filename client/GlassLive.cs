@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -1000,8 +1000,8 @@ function GlassLive::createUserWindow(%uo) {
     clipToParent = "1";
     text = %uo.username;
     maxLength = "255";
-    resizeWidth = "1";
-    resizeHeight = "1";
+    resizeWidth = "0";
+    resizeHeight = "0";
     canMove = "1";
     canClose = "1";
     canMinimize = "0";
