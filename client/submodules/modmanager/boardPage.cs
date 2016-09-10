@@ -36,9 +36,11 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
     %rating = getField(%line, 3);
     %downloads = getField(%line, 4);
 
-    %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd, %rtb);
-    %listing.placeBelow(%container.getObject(%container.getCount()-1), 0);
-    %container.add(%listing);
+    if(strLen(%name)) {
+      %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd, %rtb);
+      %listing.placeBelow(%container.getObject(%container.getCount()-1), 0);
+      %container.add(%listing);
+    }
   }
 
   GlassModManagerGui_MainDisplay.deleteAll();
