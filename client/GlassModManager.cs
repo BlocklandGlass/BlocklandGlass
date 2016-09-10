@@ -588,7 +588,6 @@ function GlassModManager::renderMyAddons(%this) {
         autoResize = "1";
       };
       new GuiCheckBoxCtrl(GlassTempCheck) {
-		addonId = %i;
         addon = %addon.name;
         profile = "GuiCheckBoxProfile";
         horizSizing = "right";
@@ -602,6 +601,19 @@ function GlassModManager::renderMyAddons(%this) {
         groupNum = "-1";
         buttonType = "ToggleButton";
         text = "";
+     };
+     new GuiMouseEventCtrl("GlassModManagerGui_AddonHighlight") {
+        addonId = %i;
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "340 30";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        lockMouse = "0";
      };
      new GuiBitmapCtrl() {
         profile = "GuiDefaultProfile";
@@ -622,19 +634,6 @@ function GlassModManager::renderMyAddons(%this) {
         keepCached = "0";
         mColor = "255 255 255 255";
         mMultiply = "0";
-     };
-     new GuiMouseEventCtrl("GlassModManagerGui_AddonHighlight") {
-        addonId = %i;
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "340 30";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = "1";
-        clipToParent = "1";
-        lockMouse = "0";
      };
      new GuiBitmapCtrl() {
         profile = "GuiDefaultProfile";
@@ -710,6 +709,12 @@ function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {
 function GlassModManagerGui_AddonHighlight::onMouseLeave(%this) {
   %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
   %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
+}
+
+function GlassModManagerGui_AddonHighlight::onMouseUp(%this) {
+  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
+  %button = %swatch.getObject(1);
+  %button.setValue(!%button.getValue());
 }
 
 //====================================
