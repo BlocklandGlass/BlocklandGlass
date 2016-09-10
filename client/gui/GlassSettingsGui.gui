@@ -54,7 +54,7 @@ new GuiControl(GlassSettingsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 -71";
-            extent = "270 495";
+            extent = "270 525";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -482,6 +482,34 @@ new GuiControl(GlassSettingsGui) {
                   buttonType = "ToggleButton";
                };
             };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "10 490";
+               extent = "250 25";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "230 230 230 255";
+               
+             new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_ShowJoinLeave) {
+                profile = "GlassCheckBoxProfile";
+                horizSizing = "right";
+                vertSizing = "center";
+                position = "28 -3";
+                extent = "180 30";
+                minExtent = "8 2";
+                enabled = "1";
+                visible = "1";
+                clipToParent = "1";
+                command = "GlassLive::updateSetting(\"ShowJoinLeave\");";
+                text = "Show Joining/Leaving";
+                groupNum = "-1";
+                buttonType = "ToggleButton";
+             };
+           };
          };
       };
       new GuiSwatchCtrl(GlassModManagerGui_KeybindOverlay) {

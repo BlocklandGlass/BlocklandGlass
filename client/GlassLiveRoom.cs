@@ -112,8 +112,10 @@ function GlassLiveRoom::createView(%this, %window) {
 
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
-  %this.pushText(%text);
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
+    %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
+    %this.pushText(%text);
+  }
   %this.addUser(%blid);
 }
 
@@ -122,38 +124,40 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
 
   %this.removeUser(%blid);
 
-  switch(%reason) {
-    case -1:
-      %text = "No Reason";
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
+    switch(%reason) {
+      case -1:
+        %text = "No Reason";
 
-    case 0:
-      %text = "Left";
+      case 0:
+        %text = "Left";
 
-    case 1:
-      %text = "Disconnected";
+      case 1:
+        %text = "Disconnected";
 
-    case 2:
-      %text = "Kicked";
+      case 2:
+        %text = "Kicked";
 
-    case 3:
-      %text = "Connection Dropped";
+      case 3:
+        %text = "Connection Dropped";
 
-    case 4:
-      %text = "Updates";
+      case 4:
+        %text = "Updates";
 
-    default:
-      %text = "unhandled: " @ %reason;
+      default:
+        %text = "unhandled: " @ %reason;
+    }
+
+    %user = GlassLiveUser::getFromBlid(%blid);
+    if(%user == false)
+      %user = "BLID_" @ %blid; // todo local caching
+    else
+      %user = %user.username;
+
+    %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
+    %this.pushText(%text);
   }
-
-  %user = GlassLiveUser::getFromBlid(%blid);
-  if(%user == false)
-    %user = "BLID_" @ %blid; // todo local caching
-  else
-    %user = %user.username;
-
-  %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
-  %this.pushText(%text);
-
+  
   %this.renderUserList();
 }
 
