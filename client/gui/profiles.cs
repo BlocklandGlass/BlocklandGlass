@@ -263,3 +263,27 @@ if(!isObject(GlassFriendOfflineAudio)) new AudioProfile(GlassFriendOfflineAudio)
   description = "AudioGui";
   preload = true;
 };
+
+if(!isObject(GlassFriendRequestAudio)) new AudioProfile(GlassFriendRequestAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRequest.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendAddedAudio)) new AudioProfile(GlassFriendAddedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendOnline.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendDeclinedAudio)) new AudioProfile(GlassFriendDeclinedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};

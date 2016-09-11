@@ -58,8 +58,9 @@ function GlassLive::openModManager() {
   if(GlassModManagerGui.getCount() > 0) {
     GlassOverlayGui.add(GlassModManagerGui_Window);
     GlassModManagerGui_Window.forceCenter();
+    GlassModManagerGui_Window.visible = false;
   }
-  GlassModManagerGui_Window.setVisible(true);
+  GlassModManagerGui_Window.setVisible(!GlassModManagerGui_Window.visible);
 
   GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 }
@@ -69,9 +70,21 @@ function GlassLive::closeModManager() {
 }
 
 function GlassLive::openSettings() {
-  GlassSettingsWindow.setVisible(true);
+  if(isObject(GlassSettingsWindow))
+    GlassSettingsWindow.setVisible(!GlassSettingsWindow.visible);
 
-  GlassOverlayGui.pushToBack(GlassSettingsWindow);
+  if(GlassSettingsWindow.visible)
+    GlassOverlayGui.pushToBack(GlassSettingsWindow);
+}
+
+function GlassLive::openChatroom() {
+  if(isObject(GlassChatroomWindow)) {
+    GlassChatroomWindow.setVisible(!GlassChatroomWindow.visible);
+  } else {
+    // $Glass::ChatroomConnect = true; // must be a better way to do this?
+    GlassLive::disconnect();
+    GlassLive.schedule(0, connectToServer);
+  }
 }
 
 function GlassLive::closeSettings() {
@@ -354,7 +367,7 @@ function GlassLive::linkForumAccount(%url) {
 function GlassLive::joinRoom(%id) {
   %room = GlassLiveRoom::getFromId(%id);
 
-  if(isObject(%oom.window)) {
+  if(isObject(%room.window)) {
     GlassOverlayGui.add(%room.window);
     GlassOverlayGui.pushToBack(%room.window);
     return;
@@ -1603,14 +1616,16 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
 }
 
 function GlassChatroomTab::setFlashing(%this, %bool) {
-  if(%bool) {
-    if(%this.visible)
-      return;
+  if(isObject(%this)) {
+    if(%bool) {
+      if(%this.visible)
+        return;
 
-    %this.flashSchedule = %this.schedule(0, flashTick, 1);
-  } else {
-    %this.tabButton.text.setText(%this.title);
-    cancel(%this.flashSchedule);
+      %this.flashSchedule = %this.schedule(0, flashTick, 1);
+    } else {
+      %this.tabButton.text.setText(%this.title);
+      cancel(%this.flashSchedule);
+    }
   }
 }
 
@@ -1930,7 +1945,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "Message - " @ %username;
+    text = "Message - " @ %username @ " (" @ %blid @ ")";
     maxLength = "255";
     resizeWidth = "1";
     resizeHeight = "1";
@@ -1940,6 +1955,8 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     canMaximize = "0";
     closeCommand = "GlassLive::closeMessage(" @ %blid @ ");";
   };
+  
+  %dm.dump();
 
   %dm.resize = new GuiMLTextCtrl(GlassMessageResize) {
     profile = "GuiMLTextProfile";
