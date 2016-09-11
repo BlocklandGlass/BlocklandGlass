@@ -863,37 +863,37 @@ package GlassServerControlC {
   }
   
   function adminGui::onWake(%this) {
-	parent::onWake(%this);
-	
-	// RTB
-	
-	if(isObject(rtbServerControlBtn)) {
-	  if(ServerConnection.hasGlass)
-	    rtbServerControlBtn.setVisible(false);
-	  else
-	    rtbServerControlBtn.setVisible(true);
-	}
-	
-	// oRBs
-	
-	if(isObject(orbsServerControlBtn)) {
-	  if(ServerConnection.hasGlass)
-	    orbsServerControlBtn.setVisible(false);
-	  else
-	    orbsServerControlBtn.setVisible(true);
-	}
-	
-	// glass (takes over BL's standard server settings btn)
-	
-	%serverSettingsBtn = getServerSettingsBtn();
-	
-	if(ServerConnection.hasGlass) {
-	  %serverSettingsBtn.command = "openGlassSettings();";
+    parent::onWake(%this);
+    
+    // RTB
+    
+    if(isObject(rtbServerControlBtn)) {
+      if(ServerConnection.hasGlass)
+        rtbServerControlBtn.setVisible(false);
+      else
+        rtbServerControlBtn.setVisible(true);
+    }
+    
+    // oRBs
+    
+    if(isObject(orbsServerControlBtn)) {
+      if(ServerConnection.hasGlass)
+        orbsServerControlBtn.setVisible(false);
+      else
+        orbsServerControlBtn.setVisible(true);
+    }
+    
+    // glass (takes over BL's standard server settings btn)
+    
+    %serverSettingsBtn = getServerSettingsBtn();
+    
+    if(ServerConnection.hasGlass) {
+      %serverSettingsBtn.command = "openGlassSettings();";
       %serverSettingsBtn.mcolor = "50 150 250 255"; // blue
-	} else {
-	  %serverSettingsBtn.command = "AdminGui.clickServerSettings();";
+    } else {
+      %serverSettingsBtn.command = "AdminGui.clickServerSettings();";
       %serverSettingsBtn.mcolor = "255 255 255 255";
-	}
+    }
   }
 };
 activatePackage(GlassServerControlC);

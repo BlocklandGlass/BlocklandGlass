@@ -432,8 +432,7 @@ function GlassLive::openDirectMessage(%blid, %username) {
   %gui = %user.getMessageGui();
 
   if(%gui == false) {
-    %gui = GlassLive::createDirectMessageGui(%blid, %username);
-
+    %gui = GlassLive::createDirectMessageGui(%blid, %username);    
     GlassLive.message[%blid] = %gui;
     %user.setMessageGui(%gui);
 
@@ -1014,7 +1013,7 @@ function GlassLive::createUserWindow(%uo) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = %uo.username;
+    text = "Glass User";
     maxLength = "255";
     resizeWidth = "0";
     resizeHeight = "0";
@@ -1919,7 +1918,7 @@ function GlassLive::createGroupchatView(%id) {
      overflowImage = "0";
      mKeepCached = "0";
      mColor = "255 255 255 255";
-        on = "1";
+     on = "1";
   };
 
   %chatroom.add(%chatroom.scroll);
@@ -1956,7 +1955,12 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     closeCommand = "GlassLive::closeMessage(" @ %blid @ ");";
   };
   
-  %dm.dump();
+  %titleLen = strLen(%dm.text);
+  
+  if(%titleLen > 25) {
+    %dm.extent = %titleLen * 11 SPC 180;
+    %dm.minExtent = %dm.extent;
+  }
 
   %dm.resize = new GuiMLTextCtrl(GlassMessageResize) {
     profile = "GuiMLTextProfile";
@@ -2054,7 +2058,9 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.add(%dm.input);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
-
+  
+  %dm.resize.onResize(getWord(%dm.position, 0), getWord(%dm.position, 1), getWord(%dm.extent, 0), getWord(%dm.extent, 1));
+  
   return %dm;
 }
 
