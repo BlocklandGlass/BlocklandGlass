@@ -115,7 +115,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassNotificationManager::newNotification(%data.sender, %data.message, "comment", 0);
 
       if(GlassSettings.get("Live::MessageSound"))
-        alxPlay(GlassNotificationAudio);
+        alxPlay(GlassUserMsgReceivedAudio);
 
     case "messageNotification":
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
@@ -222,7 +222,11 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.online = %data.online;
       
-      GlassLive::createFriendList(); // maybe add two sounds for this at some point (friend online/offline)
+      GlassLive::createFriendList();
+      
+      %sound = %uo.online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
+      alxPlay(%sound);
+      
       GlassNotificationManager::newNotification(%uo.username, "is now " @ (%uo.online ? "online" : "offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?

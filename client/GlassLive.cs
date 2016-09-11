@@ -613,6 +613,9 @@ function GlassLive::sendMessage(%blid, %msg) {
   GlassLive.typing[%blid] = false;
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  if(GlassSettings.get("Live::MessageSound"))
+    alxPlay(GlassUserMsgSentAudio);
 }
 
 function GlassLive::sendFriendRequest(%blid) {

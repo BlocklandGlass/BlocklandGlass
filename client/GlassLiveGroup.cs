@@ -156,7 +156,7 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
   %this.pushText(%text);
 
   if(GlassSettings.get("Live::RoomChatSound"))
-    alxPlay(GlassChatAudio);
+    alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId())
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {

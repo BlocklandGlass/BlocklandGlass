@@ -238,7 +238,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %this.view.setFlashing(true);
 
   if(GlassSettings.get("Live::RoomChatSound"))
-    alxPlay(GlassChatAudio);
+    alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId() && !%this.awake)
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
