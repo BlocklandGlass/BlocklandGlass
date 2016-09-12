@@ -1962,7 +1962,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   
   if(%titleLen > 25) {
     %dm.extent = %titleLen * 11 SPC 180;
-    %dm.minExtent = %dm.extent;
+    // %dm.minExtent = %dm.extent;
   }
 
   %dm.resize = new GuiMLTextCtrl(GlassMessageResize) {

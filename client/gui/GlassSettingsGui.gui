@@ -281,7 +281,7 @@ new GuiControl(GlassSettingsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"RoomChatSound\");";
-                  text = "Chatroom Click Sound";
+                  text = "Chatroom Blip Sound";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };
