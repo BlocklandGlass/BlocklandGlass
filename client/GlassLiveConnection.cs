@@ -22,9 +22,6 @@ function GlassLive::connectToServer() {
     };
   }
   
-  GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
-  
   %this.connected = false;
 
   GlassLiveConnection.connect(%server @ ":" @ %port);
@@ -238,7 +235,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         GlassLive::createFriendList();
         
-        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "user_add", 0);
+        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "email_add", 0);
         
         alxPlay(GlassFriendRequestAudio);
       }
@@ -342,7 +339,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %timeout = 1000;
       }
 
-      GlassNotificationManager::newNotification((%planned ? "Planned" : "Unplanned") SPC "Shutdown", %reason, (%planned ? "cog_go" : "cog_error"), 5000);
+      GlassNotificationManager::newNotification((%planned ? "Planned" : "Unplanned") SPC "Shutdown", %reason, (%planned ? "traffic_lights_yellow" : "traffic_lights_red"), 1);
 
       %this.disconnect();
       %this.connected = false;

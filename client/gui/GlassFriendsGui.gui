@@ -55,11 +55,12 @@ new GuiControl(GlassFriendsGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana bold:14>Jincux<br><font:verdana:12>9789";
+            text = "<font:verdana bold:14><color:cc0000>Disconnected";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
-               maxLength = "255";
+            maxLength = "255";
+            alignLeft = "1";
          };
       };
       new GuiScrollCtrl() {
@@ -91,142 +92,6 @@ new GuiControl(GlassFriendsGui) {
             visible = "1";
             clipToParent = "1";
             color = "0 0 0 0";
-
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "5 5";
-               extent = "190 26";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "120 160 225 255";
-                hcolor = "190 200 225 255";
-                text = "14639";
-
-               new GuiTextCtrl() {
-                  profile = "GlassFriendTextProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "72 4";
-                  extent = "49 17";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "Friends";
-                  maxLength = "255";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 36";
-               extent = "180 26";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "210 210 210 255";
-                  chaticon = "14643";
-                  hcolor = "230 230 230 255";
-                  buttonChat = "14644";
-                  mouse = "14645";
-                  text = "14641";
-                  icon = "14642";
-
-               new GuiTextCtrl() {
-                  profile = "GlassFriendTextProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "24 4";
-                  extent = "24 17";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "BLG";
-                  maxLength = "255";
-               };
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "5 5";
-                  extent = "16 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/icon/user_gray.png";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 255";
-                  mMultiply = "0";
-               };
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "158 5";
-                  extent = "16 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "0";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/icon/comment.png";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 255";
-                  mMultiply = "0";
-               };
-               new GuiMouseEventCtrl(GlassHighlightMouse) {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "180 26";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  lockMouse = "0";
-                     blid = "27323";
-               };
-               new GuiBitmapButtonCtrl() {
-                  profile = "GuiButtonProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "31 28";
-                  extent = "140 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::openDirectMessage(27323, \"BLG\");";
-                  text = "Message";
-                  groupNum = "-1";
-                  buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  mKeepCached = "0";
-                  mColor = "255 255 255 255";
-               };
-            };
          };
       };
       new GuiSwatchCtrl(GlassFriendsGui_ScrollOverlay) {

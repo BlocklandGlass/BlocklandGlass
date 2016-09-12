@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -780,6 +780,9 @@ function GlassLive::setPowerButton(%bool) {
 }
 
 function GlassLive::openAddDlg() {
+  if(!GlassLiveConnection.connected)
+    return;
+  
   GlassFriendsGui_AddFriendBLID.getGroup().setVisible(true);
   GlassFriendsGui_ScrollOverlay.setVisible(true);
 }

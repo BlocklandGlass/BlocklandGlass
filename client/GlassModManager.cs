@@ -497,6 +497,11 @@ function GlassModManager::populateMyAddons(%this) {
 	%idArrayLen = 0;
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-18);
+    
+    if(!clientIsValidAddon(%name, 0)) {
+      continue;
+    }
+    
     if(strpos(%name, "/") >= 0) { //removes sub-directories
       continue;
     }

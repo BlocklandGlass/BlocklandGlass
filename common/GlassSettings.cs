@@ -26,6 +26,7 @@ function GlassSettings::init(%context) {
     
     GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true);
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
+    GlassSettings.registerSetting("client", "Live::StartupConnect", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);
