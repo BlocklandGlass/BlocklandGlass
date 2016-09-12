@@ -251,7 +251,6 @@ function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
     if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
-      %raw = %word;
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }

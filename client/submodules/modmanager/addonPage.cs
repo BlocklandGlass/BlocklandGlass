@@ -51,6 +51,14 @@ function GlassModManagerGui::renderAddon(%obj) {
     minextent = "0 0";
     autoResize = true;
   };
+  
+  for(%i = 0; %i < getWordCount(%obj.description); %i++) {
+    %word = getWord(%obj.description, %i);
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+      %word = "<a:" @ %word @ ">" @ %word @ "</a>";
+      %obj.description = setWord(%obj.description, %i, %word);
+    }
+  }
 
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "right";
