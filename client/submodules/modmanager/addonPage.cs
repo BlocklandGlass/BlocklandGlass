@@ -14,12 +14,28 @@ function GlassModManagerGui::renderAddon(%obj) {
   // board
   // dependencies
   //
+  
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "255 255 255 255";
     position = "10 10";
     extent = "485 498";
+  };
+  
+  
+  if($Glass::MM_PreviousBoard == -1 || $Glass::MM_PreviousPage == -1)
+    %link = "<a:glass://home><< Back</a>";
+  else
+    %link = "<a:glass://board=" @ $Glass::MM_PreviousBoard @ "&page=" @ $Glass::MM_PreviousPage @ "><< Back</a>";
+  
+  %container.back = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    profile = "GlassModManagerMLProfile";
+    text = "<color:333333><font:verdana:16><just:left>" @ %link;
+    position = "10 10";
+    extent = "485 45";
   };
 
   %container.title = new GuiMLTextCtrl() {
@@ -192,16 +208,17 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].info.forceCenter();
     %container.add(%container.download[%branch]);
   }
-
-
+  
+  %container.add(%container.back);
+  
   %container.add(%container.title);
   %container.add(%container.author);
   %container.add(%container.info);
   %container.add(%container.description);
-
+  
   GlassModManagerGui_MainDisplay.deleteAll();
   GlassModManagerGui_MainDisplay.add(%container);
-
+  
   %container.info.setMarginResize(20);
   %container.description.setMarginResize(20);
 
@@ -215,6 +232,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.title.setMargin(20, 20);
   %container.title.setMarginResize(20);
   %container.author.setMarginResize(20);
+  %container.title.placeBelow(%container.back);
   %container.author.placeBelow(%container.title, 1);
   %container.info.placeBelow(%container.author, 15);
   %container.description.placeBelow(%container.info, 25);

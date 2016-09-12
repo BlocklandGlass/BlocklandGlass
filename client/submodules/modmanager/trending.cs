@@ -43,7 +43,10 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
   };
 
   if(%uploads.length > 0) {
-    %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you:<br><br>";
+    if(%uploads.length > 5)
+      %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got a lot of new uploads for you:<br><br>";
+    else
+      %text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We've got some new uploads for you:<br><br>";
 
     for(%i = 0; %i < %uploads.length; %i++) {
       %u = %uploads.value[%i];
@@ -59,7 +62,10 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
   }
 
   if(%updates.length > 0) {
-    %text = %text @ "<br><font:verdana:13>There's been a few recent updates:<br><br>";
+    if(%updates.length > 5)
+      %text = %text @ "<br><font:verdana:13>There's been a lot of recent updates:<br><br>";
+    else
+      %text = %text @ "<br><font:verdana:13>There's been some recent updates:<br><br>";
 
     for(%i = 0; %i < %updates.length; %i++) {
       %u = %updates.value[%i];

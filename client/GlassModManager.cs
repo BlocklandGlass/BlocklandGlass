@@ -945,11 +945,15 @@ package GlassModManager {
       %link = getsubstr(%url, 8, strlen(%url)-8);
       if(%link $= "boards") {
         GlassModManagerGui::loadContext("addons");
+      } else if(%link $= "home") {
+        GlassModManagerGui::loadContext("home");
       } else if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
         %b = getsubstr(%link, 6, strpos(%link, "&")-6);
         %p = getsubstr(%link, 12+strlen(%b), strlen(%link)-12-strlen(%b));
         GlassModManagerGui::fetchBoard(%b, %p);
       } else if(strpos(%link, "aid-") == 0) {
+        $Glass::MM_PreviousPage = -1;
+        $Glass::MM_PreviousBoard = -1;
         %id = getsubstr(%link, 4, strlen(%link)-4);
         %o = GlassModManagerGui::fetchAndRenderAddon(%id);
         %o.action = "render";
