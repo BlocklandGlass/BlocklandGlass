@@ -223,6 +223,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   }
 
   %msg = stripMlControlChars(%msg);
+  
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
     if(%word $= ("@" @ $Pref::Player::NetName)) {
@@ -238,7 +239,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %this.view.setFlashing(true);
 
   if(GlassSettings.get("Live::RoomChatSound"))
-    alxPlay(GlassChatAudio);
+    alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId() && !%this.awake)
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
@@ -251,10 +252,18 @@ function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
     if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
-      %raw = %word;
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
+    // too much potential for it to be spammed ridiculously in chat for now.
+    // if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      // %bitmap = stripChars(%word, ":");
+      // %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      // if(isFile(%bitmap)) {
+        // %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        // %msg = setWord(%msg, %i, %word);
+      // }
+    // }
   }
 
   if(GlassSettings.get("Live::ShowTimestamps")) {

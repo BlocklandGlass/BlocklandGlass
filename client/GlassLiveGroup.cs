@@ -156,7 +156,7 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
   %this.pushText(%text);
 
   if(GlassSettings.get("Live::RoomChatSound"))
-    alxPlay(GlassChatAudio);
+    alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId())
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
@@ -169,7 +169,6 @@ function GlassLiveGroup::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
     if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
-      %raw = %word;
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }

@@ -57,6 +57,28 @@ new GuiControl(GlassOverlayGui) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
+      position = "6 402";
+      extent = "122 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      command = "GlassLive::openChatroom();";
+      groupNum = "-1";
+      buttonType = "PushButton";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_chatroom";
+      lockAspectRatio = "0";
+      alignLeft = "0";
+      alignTop = "0";
+      overflowImage = "0";
+      mKeepCached = "0";
+      mColor = "255 255 255 255";
+      text = "";
+    };
+    new GuiBitmapButtonCtrl() {
+      profile = "GlassRoundedButtonProfile";
+      horizSizing = "right";
+      vertSizing = "top";
       position = "6 442";
       extent = "150 30";
       minExtent = "8 2";

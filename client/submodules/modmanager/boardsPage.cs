@@ -51,7 +51,7 @@ function GlassModManagerGui::renderBoards(%boards) {
     %star["Bargain Bin"] = "bin";
     %star["Sounds"] = "sound";
     
-    %star = strLen(%star[%name]) ? %star[%name] : "star";
+    %star = strLen(%star[%name]) ? %star[%name] : "ask_and_answer";
 
     %contain = GlassModManagerGui::createBoardButton(%name, %star, %id);
     %contain.position = 10 SPC %yPos;

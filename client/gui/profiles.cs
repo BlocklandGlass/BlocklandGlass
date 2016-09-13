@@ -234,14 +234,56 @@ if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
   type = $GuiAudioType;
 };
 
-if(!isObject(GlassChatAudio)) new AudioProfile(GlassChatAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/messageClick.wav";
+if(!isObject(GlassChatroomMsgAudio)) new AudioProfile(GlassChatroomMsgAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/chatroomMsg.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;
 };
 
-if(!isObject(GlassNotificationAudio)) new AudioProfile(GlassNotificationAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/messageNotification.wav";
+if(!isObject(GlassUserMsgSentAudio)) new AudioProfile(GlassUserMsgSentAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/userMsgSent.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassUserMsgReceivedAudio)) new AudioProfile(GlassUserMsgReceivedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/userMsgReceived.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendOnlineAudio)) new AudioProfile(GlassFriendOnlineAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendOnline.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendOfflineAudio)) new AudioProfile(GlassFriendOfflineAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendOffline.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendRequestAudio)) new AudioProfile(GlassFriendRequestAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRequest.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendAddedAudio)) new AudioProfile(GlassFriendAddedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendOnline.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassFriendDeclinedAudio)) new AudioProfile(GlassFriendDeclinedAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;
 };

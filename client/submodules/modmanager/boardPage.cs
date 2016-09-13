@@ -58,6 +58,9 @@ function _glassPageNav(%board, %id) {
 }
 
 function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
+  $Glass::MM_PreviousBoard = %bid;
+  $Glass::MM_PreviousPage = %page;
+  
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -66,7 +69,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
     extent = "485 25";
   };
 
-  %back = "<a:glass://boards><< Boards</a>";
+  %back = "<a:glass://boards><< Back</a>";
 
   if(%pages == 1) {
     %pageText = "";

@@ -22,7 +22,7 @@ new GuiControl(GlassModManagerGui) {
       clipToParent = "1";
       command = "GlassLive::closeModManager();";
       altCommand = "GlassLive::closeModManager();";
-      text = "Blockland Glass Mod Manager";
+      text = "Glass Mod Manager";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";

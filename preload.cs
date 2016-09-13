@@ -18,10 +18,10 @@ package GlassPreload {
 	}
 };
 
-if($ClientLoaded || $Server::Dedicated) {
-  activatePackage(GlassPreload);
-}
-
 if(!$Server::Dedicated && !$ClientLoaded) {
   $ClientLoaded = true;
+}
+
+if($ClientLoaded || $Server::Dedicated) {
+  activatePackage(GlassPreload);
 }
