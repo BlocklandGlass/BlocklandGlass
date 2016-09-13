@@ -43,7 +43,7 @@ package GlassResourceManager {
     parent::onAdd(%this);
 
     %version["Support_Updater"] = "0.12.1+release-20160619";
-    %version["Support_Preferences"] = "1.1.1";
+    %version["Support_Preferences"] = "1.1.2+beta";
     %channel["Support_Updater"] = "release";
     %channel["Support_Preferences"] = "stable";
     %repourl["Support_Updater"] = "mods.greek2me.us";

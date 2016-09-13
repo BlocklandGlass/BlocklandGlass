@@ -636,11 +636,11 @@ function GlassLive::friendAccept(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user) {
     %user.isFriend = true;
-	
+
     if(isObject(%room = GlassChatroomWindow.activeTab.room))
       %room.renderUserList();
   }
-  
+
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
@@ -657,7 +657,7 @@ function GlassLive::friendDecline(%blid) {
   }
 
   GlassLive.friendRequestList = %newRequests;
-  
+
   GlassLive::createFriendList();
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
@@ -976,7 +976,7 @@ function GlassLive::openUserWindow(%blid) {
       %window.friendButton.text = "Add Friend";
     }
 
-    %window.messageButton.enabled = %uo.online;
+    %window.messageButton.enabled = true;
 
     %window.forceCenter();
   }
