@@ -2020,7 +2020,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     canMaximize = "0";
     closeCommand = "GlassLive::closeMessage(" @ %blid @ ");";
   };
-  `
+  
   %titleLen = strLen(%dm.text);
   
   if(%titleLen > 25) {
