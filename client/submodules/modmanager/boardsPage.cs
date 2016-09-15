@@ -225,6 +225,8 @@ function GlassModManagerGui_SearchBar::search(%this) {
   GlassModManagerGui_SearchResults.add(%loading);
   %loading.forceCenter();
 
+  $Glass::MM_PreviousPage = -1;
+  $Glass::MM_PreviousBoard = -1;
 
   GlassModManagerGui_SearchResults.setVisible(true);
   GlassModManagerGui_AddonDisplay.setVisible(false);

@@ -51,6 +51,9 @@ function GlassModManagerGui::loadContext(%context) {
 }
 
 function GlassModManagerGui::setLoading(%bool) {
+  if($Server::Dedicated)
+    return;
+  
   GlassModManagerGui_LoadingAnimation.setVisible(false);
   return;
   if(%bool) {
