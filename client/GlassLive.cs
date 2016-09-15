@@ -280,11 +280,11 @@ function GlassLiveDrag::onMouseUp(%this, %a, %pos) {
   }
 
   %newWindow.addTab(%this.dragObj.tabObj);
-  
+
   %newWindow.extent = %extX SPC %extY;
-  
+
   %newWindow.schedule(0, "resize", getWord(%newWindow.position, 0), getWord(%newWindow.position, 1), getWord(%newWindow.extent, 0), getWord(%newWindow.extent, 1));
-  
+
   if(isObject(%this.dragObj))
     %this.dragObj.delete();
 
@@ -370,10 +370,10 @@ function GlassLive::linkForumAccount(%url) {
 
 function GlassLive::joinRoom(%id) {
   %room = GlassLiveRoom::getFromId(%id);
-  
+
   if(isObject(GlassLive.room[%id]))
     return;
-  
+
   if(isObject(%room.window)) {
     GlassOverlayGui.add(%room.window);
     GlassOverlayGui.pushToBack(%room.window);
@@ -385,7 +385,7 @@ function GlassLive::joinRoom(%id) {
   %obj.set("id", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   GlassChatroomWindow.schedule(0, "openRoomBrowser");
 }
 
@@ -441,7 +441,7 @@ function GlassLive::openDirectMessage(%blid, %username) {
   %gui = %user.getMessageGui();
 
   if(%gui == false) {
-    %gui = GlassLive::createDirectMessageGui(%blid, %username);    
+    %gui = GlassLive::createDirectMessageGui(%blid, %username);
     GlassLive.message[%blid] = %gui;
     %user.setMessageGui(%gui);
 
@@ -634,7 +634,7 @@ function GlassLive::sendMessage(%blid, %msg) {
   GlassLive.typing[%blid] = false;
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   if(GlassSettings.get("Live::MessageSound"))
     alxPlay(GlassUserMsgSentAudio);
 }
@@ -791,7 +791,7 @@ function GlassLive::setPowerButton(%bool) {
 function GlassLive::openAddDlg() {
   if(!GlassLiveConnection.connected)
     return;
-  
+
   GlassFriendsGui_AddFriendBLID.getGroup().setVisible(true);
   GlassFriendsGui_ScrollOverlay.setVisible(true);
 }
@@ -1150,7 +1150,7 @@ function GlassLive::createChatroomWindow() {
   };
 
   %chatroom.closeCommand = %chatroom.getId() @ ".exitTab();";
-  
+
   %chatroom.resize = new GuiMLTextCtrl(GlassChatroomResize) {
     profile = "GuiMLTextProfile";
     horizSizing = "relative";
@@ -1205,10 +1205,10 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
     %this.openTab(%this.tabId[%tabObj]);
     return;
   }
-  
+
   if(%this.isAwake())
     %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
-  
+
   if(isObject(%tabObj.window)) {
     %tabObj.window.removeTab(%tabObj);
   }
@@ -1436,7 +1436,7 @@ function GlassChatroomWindow::renderTabs(%this) {
 function GlassChatroomWindow::setTabsVisible(%this, %toggle) {
   if(%toggle) {
     %position = "0 60";
-    %extent = "475 290";
+    %extent = "455 290";
   } else {
     %position = "0 35";
     %extent = "475 265";
@@ -1498,7 +1498,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
       //%tab.renderUserList();
     }
   }
-  
+
   if(%this.isAwake())
     %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
 }
@@ -1674,7 +1674,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %activeTab = %window.activeTab;
   %tabSwatch = %window.tabSwatch;
   %browserSwatch = %window.browserSwatch;
-  
+
   %scrollSwatch = %activeTab.scrollSwatch;
   %userSwatch = %activeTab.userswatch;
   %input = %activeTab.input;
@@ -1682,8 +1682,8 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %tabButton = %activeTab.tabButton;
   %userScroll = %activeTab.userscroll;
   %chatText = %activeTab.chattext;
-  
-  %activeTab.extent = getWord(%extent, 0) - 5 SPC getWord(%extent, 1) - 5;
+
+  %activeTab.extent = getWord(%extent, 0) - 10 SPC getWord(%extent, 1) - 68;
   %tabSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%tabSwatch.extent, 1);
   %scroll.extent = getWord(%extent, 0) - 150 SPC getWord(%extent, 1) - 90;
   %scrollSwatch.extent = getWord(%scroll.extent, 0) SPC getWord(%scroll.extent, 1);
@@ -1692,16 +1692,16 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %userScroll.position = getWord(%scroll.extent, 0) + 15 SPC getWord(%userScroll.position, 1);
   %input.extent = getWord(%extent, 0) - 150 SPC getWord(%input.extent, 1);
   %input.position = getWord(%input.position, 0) SPC getWord(%scroll.extent, 1) + 5;
-  
+
   if(isObject(%browserSwatch)) {
     %browserSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%extent, 1) - 70;
   }
-  
+
   %scroll.scrollToBottom();
-  
+
   %scrollSwatch.verticalMatchChildren(0, 2);
   %scrollSwatch.setVisible(true);
-  
+
   %userSwatch.getGroup().scrollToTop();
   %userSwatch.setVisible(true);
 }
@@ -1712,7 +1712,7 @@ function GlassLive::createChatroomView(%id) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 35";
-    extent = "460 225";
+    extent = "450 215";
     minExtent = "8 2";
     enabled = "1";
     visible = "0";
@@ -2021,9 +2021,9 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     canMaximize = "0";
     closeCommand = "GlassLive::closeMessage(" @ %blid @ ");";
   };
-  
+
   %titleLen = strLen(%dm.text);
-  
+
   if(%titleLen > 25) {
     %dm.extent = %titleLen * 10 SPC 180;
     // %dm.minExtent = %dm.extent;
@@ -2126,9 +2126,9 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.add(%dm.input);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
-  
+
   %dm.resize.onResize(getWord(%dm.position, 0), getWord(%dm.position, 1), getWord(%dm.extent, 0), getWord(%dm.extent, 1));
-  
+
   return %dm;
 }
 
