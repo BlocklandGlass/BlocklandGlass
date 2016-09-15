@@ -1206,8 +1206,9 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
     return;
   }
   
-  %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
-
+  if(%this.isAwake())
+    %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
+  
   if(isObject(%tabObj.window)) {
     %tabObj.window.removeTab(%tabObj);
   }
@@ -1494,12 +1495,12 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %tab.scrollSwatch.verticalMatchChildren(0, 2);
       %tab.scrollSwatch.setVisible(true);
       %tab.scroll.scrollToBottom();
-
       //%tab.renderUserList();
     }
   }
   
-  %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
+  if(%this.isAwake())
+    %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
 }
 
 function GlassChatroomWindow::setDropMode(%this, %bool) {
@@ -1542,7 +1543,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "10 60";
-    extent = "445 220";
+    extent = "455 220";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1555,7 +1556,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "10 10";
-    extent = "425 26";
+    extent = "435 26";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1569,7 +1570,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     profile = "GuiMLTextProfile";
     position = "25 6";
     text = "<tab:200><font:verdana bold:13><color:eeeeee>Name\tUsers";
-    extent = "405 16";
+    extent = "445 16";
   };
 
   %swatch.add(%swatch.text);
@@ -1583,7 +1584,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
       horizSizing = "right";
       vertSizing = "bottom";
       position = "10 10";
-      extent = "425 26";
+      extent = "435 26";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -1610,7 +1611,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     %swatch.button = new GuiBitmapButtonCtrl() {
       profile = "GlassBlockButtonProfile";
       extent = "48 18";
-      position = "350 4";
+      position = "365 4";
       bitmap = "base/client/ui/button1";
       text = "Join";
       visible = !isObject(GlassLive.room[%room.id]);
@@ -1676,7 +1677,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   
   %scrollSwatch = %activeTab.scrollSwatch;
   %userSwatch = %activeTab.userswatch;
-  %input = %activeTab.input; //position = "10 205";
+  %input = %activeTab.input;
   %scroll = %activeTab.scroll;
   %tabButton = %activeTab.tabButton;
   %userScroll = %activeTab.userscroll;
