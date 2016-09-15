@@ -78,9 +78,18 @@ function GlassLive::openSettings() {
 }
 
 function GlassLive::openChatroom() {
-  if(isObject(GlassChatroomWindow)) {
-    GlassChatroomWindow.setVisible(!GlassChatroomWindow.visible);
-  } else {
+  %chatFound = false;
+  
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow") {
+      %chatFound = true;
+      
+      %window.setVisible(!%window.visible);
+    }
+  }
+  
+  if(!%chatFound) {
     // $Glass::ChatroomConnect = true; // must be a better way to do this?
     GlassLive::disconnect();
     GlassLive.schedule(0, connectToServer);

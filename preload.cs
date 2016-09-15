@@ -14,7 +14,8 @@ GlassResourceManager::execResource("Support_Preferences", "preload");
 package GlassPreload {
   function deactivateServerPackages() {
 		parent::deactivateServerPackages();
-		activatePackage(GlassServerControlS);
+    if(isPackage(GlassServerControlS))
+      activatePackage(GlassServerControlS);
 	}
 };
 
