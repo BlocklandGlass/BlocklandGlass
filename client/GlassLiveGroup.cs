@@ -158,11 +158,17 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
   if(GlassSettings.get("Live::RoomChatSound"))
     alxPlay(GlassChatroomMsgAudio);
 
-  if(%senderblid != getNumKeyId())
+  if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-      GlassNotificationManager::newNotification(%this.name, "You were mentioned by " @ %sender.username, 0);
-    } else if(GlassSettings.get("Live::RoomChatNotification"))
-      GlassNotificationManager::newNotification(%this.name, %sender.username@": "@%msg, "comment", 0);
+      if(!%this.awake)
+        GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+      
+      alxPlay(GlassUserMentionedAudio);
+    } else if(GlassSettings.get("Live::RoomChatNotification")) {
+      if(!%this.awake)
+        GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
+    }
+  }
 }
 
 function GlassLiveGroup::pushText(%this, %msg) {
@@ -171,6 +177,14 @@ function GlassLiveGroup::pushText(%this, %msg) {
     if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
+    }
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = stripChars(%word, ":");
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %msg = setWord(%msg, %i, %word);
+      }
     }
   }
 

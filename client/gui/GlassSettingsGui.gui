@@ -54,7 +54,7 @@ new GuiControl(GlassSettingsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 -71";
-            extent = "270 585";
+            extent = "270 610";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -562,6 +562,34 @@ new GuiControl(GlassSettingsGui) {
                   clipToParent = "1";
                   command = "GlassLive::updateSetting(\"StartupConnect\");";
                   text = "Startup Connect";
+                  groupNum = "-1";
+                  buttonType = "ToggleButton";
+               };
+            };
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "10 580";
+               extent = "250 25";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "230 230 230 255";
+               
+               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_ShowFriendStatus) {
+                  profile = "GlassCheckBoxProfile";
+                  horizSizing = "right";
+                  vertSizing = "center";
+                  position = "28 -3";
+                  extent = "180 30";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  command = "GlassLive::updateSetting(\"ShowFriendStatus\");";
+                  text = "Show Friend Status";
                   groupNum = "-1";
                   buttonType = "ToggleButton";
                };

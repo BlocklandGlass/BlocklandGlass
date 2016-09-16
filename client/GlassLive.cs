@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -108,6 +108,9 @@ function GlassLive::updateSetting(%setting) {
   %box = "GlassModManagerGui_Prefs_" @ %setting;
   GlassSettings.update("Live::" @ %setting, %box.getValue());
   %box.setValue(GlassSettings.get("Live::" @ %setting));
+  
+  if(strLen(%callback = GlassSettings.obj[%setting].callback))
+    call(%callback);
 }
 
 function GlassOverlayGui::onWake(%this) {
@@ -496,6 +499,14 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %obj.blid = %blid;
       %obj.raw = %raw;
     }
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = stripChars(%word, ":");
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %message = setWord(%message, %i, %word);
+      }
+    }
   }
 
   GlassLive::setMessageTyping(%blid, false);
@@ -508,7 +519,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
     %val = %msg;
 
   %gui.chattext.setValue(%val);
-  %gui.chattext.forceReflow();
+  if(%gui.chattext.isVisible())
+    %gui.chattext.forceReflow();
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
   %gui.scroll.scrollToBottom();
@@ -1526,6 +1538,14 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
   }
 }
 
+function GlassChatroomWindow::awakeCallback(%this, %callback) {
+  if(isObject(%this.activeTab)) {
+    %bool = GlassSettings.get(%callback) ? true : false;
+    
+    %this.activeTab.room.setAwake(%bool);
+  }
+}
+
 function GlassChatroomWindow::onWake(%this) {
   if(isObject(%this.activeTab)) {
     %this.activeTab.room.setAwake(true);
@@ -1776,7 +1796,7 @@ function GlassLive::createChatroomView(%id) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };
@@ -1904,7 +1924,7 @@ function GlassLive::createGroupchatView(%id) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };
@@ -2034,7 +2054,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %titleLen = strLen(%dm.text);
 
   if(%titleLen > 25) {
-    %dm.extent = %titleLen * 10 SPC 180;
+    %dm.extent = %titleLen * 10.75 SPC 180; // close enough
     // %dm.minExtent = %dm.extent;
   }
 
@@ -2092,7 +2112,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };

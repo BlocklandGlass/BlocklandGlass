@@ -246,10 +246,11 @@ function GlassLiveConnection::onLine(%this, %line) {
       
       GlassLive::createFriendList();
       
-      %sound = %uo.online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
-      alxPlay(%sound);
-      
-      GlassNotificationManager::newNotification(%uo.username, "is now " @ (%uo.online ? "online" : "offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
+      if(GlassSettings.get("Live::ShowFriendStatus")) {
+        %sound = %uo.online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
+        alxPlay(%sound);
+        GlassNotificationManager::newNotification(%uo.username, "is now " @ (%uo.online ? "online" : "offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
+      }
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
