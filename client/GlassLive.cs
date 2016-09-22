@@ -1102,7 +1102,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Unfriend";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     lockAspectRatio = "0";
     alignLeft = "0";
     alignTop = "0";
@@ -1124,7 +1124,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Message";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     lockAspectRatio = "0";
     alignLeft = "0";
     alignTop = "0";
@@ -1642,7 +1642,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
       profile = "GlassBlockButtonProfile";
       extent = "48 18";
       position = "365 4";
-      bitmap = "base/client/ui/button1";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
       text = "Join";
       visible = !isObject(GlassLive.room[%room.id]);
       command = "GlassLive::joinRoom(" @ %room.id @ ");";
@@ -2294,7 +2294,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
     text = "blocklandglass.com";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
     extent = "140 16";
     position = "31 28";

@@ -121,7 +121,7 @@ function GlassLiveGroup::displayUserOptions(%this, %user) {
     mKeepCached = "0";
     mColor = "255 255 255 200";
 
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
   };
 
   %overlay.add(%overlay.text);

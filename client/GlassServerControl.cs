@@ -164,7 +164,7 @@ function GlassServerControlC::renderCategory(%category) {
         %swatch = GlassServerControlC::createText();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));
-        
+
       case "userlist":
 
       case "button":
@@ -717,30 +717,30 @@ function GlassServerControlC::onSelect(%list) {
   %blid = getField(%row, 1);
 }
 
-function GlassServerControlC::addBtn() {
+function GlassServerControlC::addUser() {
   %blid = GlassServerControlGui_InputBLID.getValue();
-  
+
   GlassServerControlGui_InputBLID.setValue("");
-  
+
   if((%blid+0 !$= %blid) || %blid < 0) {
     messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
     return;
   }
-  
+
   %rank = GlassServerControlGui_InputRank.getValue();
-  
+
   GlassServerControlGui_InputRank.setValue("Admin");
-  
+
   if(%rank $= "Super Admin") {
     %rank = 2;
   } else if(%rank $= "Admin") {
     %rank = 1;
   }
-  
+
   if(%rank $= "") {
     return;
   }
-  
+
   commandToServer('GlassSetAdmin', %blid, %rank, true);
 }
 
@@ -750,12 +750,12 @@ function GlassServerControlC::addSelected(%rank, %auto) {
 
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
-  
+
   if(%auto) {
     GlassServerControlGui_InputBLID.setValue("");
-    
+
     GlassServerControlGui_AddUserBLID.setVisible(true);
-    
+
     if(%blid !$= "") {
       GlassServerControlGui_InputBLID.setValue(%blid);
     }
@@ -763,7 +763,7 @@ function GlassServerControlC::addSelected(%rank, %auto) {
     if(%blid $= "") {
       return;
     }
-    
+
     commandToServer('GlassSetAdmin', %blid, %rank, %auto);
   }
 }
@@ -774,11 +774,11 @@ function GlassServerControlC::removeSelected() {
 
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
-  
+
   if(%blid $= "") {
     return;
   }
-  
+
   commandToServer('GlassSetAdmin', %blid, 0, true);
 }
 
@@ -788,7 +788,7 @@ function GlassServerControlC::deAdminSelected() {
 
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
-  
+
   commandToServer('GlassSetAdmin', %blid, 0, false);
 }
 
@@ -806,9 +806,9 @@ function GlassServerControlGui::onWake(%this) {
 
 function GlassServerControlGui_AddUserBLID::onWake(%this) {
   GlassServerControlGui_InputRank.clear();
-  
+
   GlassServerControlGui_InputRank.setValue("Admin");
-  
+
   GlassServerControlGui_InputRank.add("Super Admin", 1);
   GlassServerControlGui_InputRank.add("Admin", 2);
 }
@@ -854,16 +854,16 @@ function clientCmdGlassAdminListing(%data, %append) {
 
     GlassServerControlGui_AdminList.sort(1, true);
   }
-  
+
   GlassServerControlGui.onWake();
 }
 
 function getServerSettingsBtn() {
   %gui = adminGui.getObject(0);
-  
+
   for(%i = 0; %i < %gui.getCount(); %i++) {
     %obj = %gui.getObject(%i);
-	
+
     if(%obj.command $= "AdminGui.clickServerSettings();"
     || %obj.command $= "openGlassSettings();"
     && %obj.text $= "Server Settings >>")
@@ -899,32 +899,32 @@ package GlassServerControlC {
     GlassPrefGroup::cleanup();
     return parent::disconnectedCleanup(%doReconnect);
   }
-  
+
   function adminGui::onWake(%this) {
     parent::onWake(%this);
-    
+
     // RTB
-    
+
     if(isObject(rtbServerControlBtn)) {
       if(ServerConnection.hasGlass)
         rtbServerControlBtn.setVisible(false);
       else
         rtbServerControlBtn.setVisible(true);
     }
-    
+
     // oRBs
-    
+
     if(isObject(orbsServerControlBtn)) {
       if(ServerConnection.hasGlass)
         orbsServerControlBtn.setVisible(false);
       else
         orbsServerControlBtn.setVisible(true);
     }
-    
+
     // glass (takes over BL's standard server settings btn)
-    
+
     %serverSettingsBtn = getServerSettingsBtn();
-    
+
     if(ServerConnection.hasGlass) {
       %serverSettingsBtn.command = "openGlassSettings();";
       %serverSettingsBtn.mcolor = "50 150 250 255"; // blue
