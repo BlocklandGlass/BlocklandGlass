@@ -519,8 +519,9 @@ function GlassLive::onMessage(%message, %username, %blid) {
     %val = %msg;
 
   %gui.chattext.setValue(%val);
-  if(%gui.chattext.isVisible())
+  if(%gui.isAwake()) {
     %gui.chattext.forceReflow();
+  }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
   %gui.scroll.scrollToBottom();

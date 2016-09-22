@@ -111,10 +111,16 @@ function clientCmdupdateBLPref(%varname, %value) {
 function clientCmdhasPrefSystem(%version, %permission) {
 	if($Glass::Debug)
 		echo("Server has pref system! (" @ %version @")");
-
+  
 	if(%permission) {
 		GlassServerControlC.setEnabled(true);
-	}
+	} else {
+    GlassServerControlC.setEnabled(false);
+  }
+}
+
+function clientCmdBLPAllowedUse(%permission) { // why.
+  clientCmdhasPrefSystem("", %permission);
 }
 
 function clientCmdReceiveCategory(%id, %category, %icon, %last) {
