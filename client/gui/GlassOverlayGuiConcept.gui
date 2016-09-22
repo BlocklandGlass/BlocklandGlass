@@ -637,7 +637,7 @@ new GuiControl(GlassOverlayGui) {
             text = "Add-Ons";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -659,7 +659,7 @@ new GuiControl(GlassOverlayGui) {
             text = "Activity";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -681,7 +681,7 @@ new GuiControl(GlassOverlayGui) {
             text = "My Add-Ons";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -703,7 +703,7 @@ new GuiControl(GlassOverlayGui) {
             text = "Colorsets";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -736,7 +736,7 @@ new GuiControl(GlassOverlayGui) {
             text = "Builds";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
