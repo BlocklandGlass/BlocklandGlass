@@ -10474,7 +10474,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "220 220 120 200";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10496,7 +10496,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "120 220 120 200";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10518,7 +10518,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "220 120 120 200";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10540,7 +10540,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "120 220 120 200";
+                  mColor = "120 220 120 128";
                };
             };
             new GuiWindowCtrl(GlassModManagerGui_AddonSettings_Window) {
@@ -10834,7 +10834,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "220 220 120 255";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10856,7 +10856,7 @@ new GuiControl(GlassModManagerGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "120 220 120 255";
+                  mColor = "120 220 120 128";
                };
                new GuiBitmapCtrl(GlassModManagerGui_ColorsetPreview) {
                   profile = "GuiDefaultProfile";

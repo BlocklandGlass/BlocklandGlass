@@ -353,7 +353,7 @@ function GlassLive::removeFriendFromList(%blid) {
 }
 
 function GlassLive::addfriendRequestToList(%user) {
-  if((%i = wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
+  if((wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
     return;
   }
 
@@ -361,7 +361,7 @@ function GlassLive::addfriendRequestToList(%user) {
 }
 
 function GlassLive::removefriendRequestFromList(%blid) {
-  if((%i = wordPos(GlassLive.friendRequestList, %blid)) == -1) {
+  if((wordPos(GlassLive.friendRequestList, %blid)) == -1) {
     return;
   }
 
@@ -2406,29 +2406,11 @@ function GlassLive::createFriendRequest(%name, %blid) {
   return %gui;
 }
 
-
 function GlassLive::createFriendList(%friends) {
   GlassFriendGui_ScrollSwatch.deleteAll();
-  %h = GlassLive::createFriendHeader("Friends");
-  GlassFriendGui_ScrollSwatch.add(%h);
-
-  %last = %h;
-
-  for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
-    %blid = getWord(GlassLive.friendList, %i);
-    %uo = GlassLiveUser::getFromBlid(%blid);
-
-    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
-    %gui.placeBelow(%last, 5);
-
-    GlassFriendGui_ScrollSwatch.add(%gui);
-
-    %last = %gui;
-  }
-
+  
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
     %h = GlassLive::createFriendHeader("Friend Requests");
-    %h.placeBelow(%last, 10);
     GlassFriendGui_ScrollSwatch.add(%h);
 
     %last = %h;
@@ -2445,6 +2427,29 @@ function GlassLive::createFriendList(%friends) {
       %last = %gui;
     }
   }
+  
+  %h = GlassLive::createFriendHeader("Friends");
+  
+  if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
+    %h.placeBelow(%last, 10);
+  }
+  
+  GlassFriendGui_ScrollSwatch.add(%h);
+
+  %last = %h;
+
+  for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
+    %blid = getWord(GlassLive.friendList, %i);
+    %uo = GlassLiveUser::getFromBlid(%blid);
+
+    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
+    %gui.placeBelow(%last, 5);
+
+    GlassFriendGui_ScrollSwatch.add(%gui);
+
+    %last = %gui;
+  }
+  
   GlassFriendGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendGui_ScrollSwatch.setVisible(true);
   GlassFriendGui_ScrollSwatch.getGroup().setVisible(true);
