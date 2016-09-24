@@ -517,7 +517,13 @@ function GlassLive::onMessage(%message, %username, %blid) {
   GlassLive::setMessageTyping(%blid, false);
 
   %val = %gui.chattext.getValue();
+  
   %msg = "<color:333333><font:verdana bold:12>" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
+  
+  if(GlassSettings.get("Live::ShowTimestamps")) {
+    %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
+  }
+  
   if(%val !$= "")
     %val = %val @ "<br>" @ %msg;
   else
