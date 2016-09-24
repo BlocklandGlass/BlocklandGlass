@@ -1724,7 +1724,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %tabSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%tabSwatch.extent, 1);
   %scroll.extent = getWord(%extent, 0) - 150 SPC getWord(%extent, 1) - 90;
   %scrollSwatch.extent = getWord(%scroll.extent, 0) SPC getWord(%scroll.extent, 1);
-  %chatText.extent = getWord(%scroll.extent, 0) SPC getWord(%chatText.extent, 1);
+  %chatText.extent = getWord(%scroll.extent, 0) - 15 SPC getWord(%chatText.extent, 1);
   %userScroll.extent = getWord(%userScroll.extent, 0) SPC getWord(%extent, 1) - 90;
   %userScroll.position = getWord(%scroll.extent, 0) + 15 SPC getWord(%userScroll.position, 1);
   %input.extent = getWord(%extent, 0) - 150 SPC getWord(%input.extent, 1);
