@@ -17,7 +17,8 @@
 // - colorset #
 // - rgb [form] # form = hex, integer
 
-$BLPrefs::Version = "1.0.0+glassbridge.2";
+// this doesn't help during debugging - Support_Preferences does this already (with the actual vers. no)
+// $BLPrefs::Version = "1.0.0+glassbridge.2";
 
 if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);

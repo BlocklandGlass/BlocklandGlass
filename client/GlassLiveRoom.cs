@@ -285,8 +285,9 @@ function GlassLiveRoom::pushText(%this, %msg) {
     %val = %msg;
 
   %chatroom.chattext.setValue(%val);
-  if(GlassOverlayGui.isAwake())
+  if(GlassOverlayGui.isAwake()) {
     %chatroom.chattext.forceReflow();
+  }
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);

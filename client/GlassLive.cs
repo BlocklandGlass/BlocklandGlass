@@ -90,7 +90,6 @@ function GlassLive::openChatroom() {
   }
   
   if(!%chatFound) {
-    // $Glass::ChatroomConnect = true; // must be a better way to do this?
     GlassLive::disconnect();
     GlassLive.schedule(0, connectToServer);
   }
@@ -129,8 +128,14 @@ function GlassOverlayGui::onWake(%this) {
         %tab.scroll.scrollToBottom();
       }
     }
+    if(%window.getName() $= "GlassMessageGui") {
+      %window.chattext.forceReflow();
+      %window.scrollSwatch.verticalMatchChildren(0, 3);
+      %window.scrollSwatch.setVisible(true);
+      %window.scroll.scrollToBottom();
+    }
   }
-
+  
   if(!isObject(GlassOverlayResponder)) {
     new GuiTextEditCtrl(GlassOverlayResponder) {
       profile = "GuiTextEditProfile";
@@ -517,7 +522,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
     %val = %val @ "<br>" @ %msg;
   else
     %val = %msg;
-
+  
   %gui.chattext.setValue(%val);
   if(%gui.isAwake()) {
     %gui.chattext.forceReflow();
@@ -543,10 +548,12 @@ function GlassLive::onMessageNotification(%message, %blid) {
     %val = %msg;
 
   %gui.chattext.setValue(%val);
-  %gui.chattext.forceReflow();
+  if(%gui.isAwake()) {
+    %gui.chattext.forceReflow();
+  }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
-  %gui.scroll.scrollToBottom();
   %gui.scrollSwatch.setVisible(true);
+  %gui.scroll.scrollToBottom();
 }
 
 function GlassLive::messageImagePreview(%blid, %url, %type) {
@@ -2166,10 +2173,10 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window = %this.getGroup();
   %extent = %window.extent;
   %window.scroll.extent = vectorSub(%extent, "20 65");
-  %window.scrollSwatch.extent = getWord(%extent, 0)-30 SPC getWord(%window.chattext.extent, 1);
-  %window.chattext.extent = getWord(%extent, 0)-35 SPC getWord(%window.chattext.extent, 1);
+  %window.scrollSwatch.extent = getWord(%extent, 0) - 30 SPC getWord(%window.chattext.extent, 1);
+  %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
-  %window.input.extent = getWord(%extent, 0)-20 SPC getWord(%window.input.extent, 1);
+  %window.input.extent = getWord(%extent, 0) - 20 SPC getWord(%window.input.extent, 1);
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);

@@ -123,19 +123,6 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoin":
-      // too gnarly
-      // need a way for the server to know a user didn't want to join chat at all BEFORE joining it
-      // if(!GlassSettings.get("Live::RoomAutoJoin") && !$Glass::ChatroomConnect) {
-        // %obj = JettisonObject(); 
-        // %obj.set("type", "string", "roomLeave");
-        // %obj.set("id", "string", %data.id);
-
-        // GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-        // return;
-      // }
-      
-      // $Glass::ChatroomConnect = false;
-      
       GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
