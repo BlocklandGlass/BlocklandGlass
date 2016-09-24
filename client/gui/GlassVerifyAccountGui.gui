@@ -63,7 +63,7 @@ new GuiControl(GlassVerifyAccountGui) {
          text = "That\'s not me";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/button1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -85,7 +85,7 @@ new GuiControl(GlassVerifyAccountGui) {
          text = "Verify";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/button1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";

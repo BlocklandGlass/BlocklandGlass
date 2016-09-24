@@ -17,7 +17,8 @@
 // - colorset #
 // - rgb [form] # form = hex, integer
 
-$BLPrefs::Version = "1.0.0+glassbridge.2";
+// this doesn't help during debugging - Support_Preferences does this already (with the actual vers. no)
+// $BLPrefs::Version = "1.0.0+glassbridge.2";
 
 if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);
@@ -111,10 +112,16 @@ function clientCmdupdateBLPref(%varname, %value) {
 function clientCmdhasPrefSystem(%version, %permission) {
 	if($Glass::Debug)
 		echo("Server has pref system! (" @ %version @")");
-
+  
 	if(%permission) {
 		GlassServerControlC.setEnabled(true);
-	}
+	} else {
+    GlassServerControlC.setEnabled(false);
+  }
+}
+
+function clientCmdBLPAllowedUse(%permission) { // why.
+  clientCmdhasPrefSystem("", %permission);
 }
 
 function clientCmdReceiveCategory(%id, %category, %icon, %last) {

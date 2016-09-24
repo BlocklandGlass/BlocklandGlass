@@ -19,7 +19,3 @@ function glassResetAllGuis() {
   GlassModManager::setPane(1);
   GlassServerControlC::setTab(1);
 }
-
-function compressAddon(%addon) {
-  
-}

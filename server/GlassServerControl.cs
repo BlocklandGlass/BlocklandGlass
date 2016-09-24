@@ -86,46 +86,32 @@ function getAdminLevelFromBLID(%blid) {
   return false;
 }
 
-function serverCmdGlassSetAdmin(%client, %blid, %level) {
-  if(%blid == getNumKeyId()) {
+function serverCmdGlassSetAdmin(%client, %blid, %rank, %auto) {
+  if(%blid $= "") {
+    return;
+  }
+  
+  if(%blid == getNumKeyID()) {
     return; //host
   }
-
-  if(%level > 0) {
-    %sa = (%level == 2);
-    if(%sa) {
-      if(%client.isSuperAdmin) {
-        GlassServerControlS::addAutoAdmin(%blid, 1);
-      }
+  
+  if(%client.isSuperAdmin || %client.getBLID() == getNumKeyID()) {
+    if(%rank > 0) {
+      GlassServerControlS::setAdmin(%blid, %rank, %auto);
     } else {
-      if(%client.isAdmin) {
-        GlassServerControlS::addAutoAdmin(%blid, 0);
-      }
+      GlassServerControlS::removeAdmin(%blid, %auto);
     }
-  } else {
-    %theirlevel = getAdminLevelFromBLID(%blid);
-    if(%theirlevel == 2) {
-      if(%client.isSuperAdmin) {
-        GlassServerControlS::removeAutoAdmin(%blid);
-      }
-    } else if(%theirlevel == 1) {
-      if(%client.isAdmin) {
-        GlassServerControlS::removeAutoAdmin(%blid);
-      }
-    } else {
-      GlassServerControlS::removeAutoAdmin(%blid);
-    }
-  }
 
-  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    %cl = ClientGroup.getObject(%i);
-    if(%cl.isAdmin) {
-      GlassServerControlS::sendAdminData(%cl);
+    for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+      %cl = ClientGroup.getObject(%i);
+      if(%cl.isAdmin) {
+        GlassServerControlS::sendAdminData(%cl);
+      }
     }
   }
 }
 
-function servercmdgetglassusers(%client) {
+function serverCmdGetGlassUsers(%client) {
   %users = 0;
   for(%i = 0; %i < ClientGroup.getCount(); %i++) {
     %cl = ClientGroup.getObject(%i);
@@ -136,32 +122,53 @@ function servercmdgetglassusers(%client) {
   messageClient(%client, '', %users);
 }
 
-function GlassServerControlS::addAutoAdmin(%blid, %super) {
-  $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
-  $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
-
-  if(%blid == getNumKeyId()) {
-    error("Attempted to promote host to admin.");
+function GlassServerControlS::setAdmin(%blid, %rank, %auto) {
+  if(%blid == getNumKeyID()) {
     return;
   }
-
-  %client = findClientByBL_ID(%blid);
-  if(isObject(%client)) {
+  
+  if(%rank <= 0) {
+    GlassServerControlS::removeAdmin(%blid, %auto);
+    return;
+  }
+  
+  if(isObject(%client = findClientByBL_ID(%blid))) {
     %name = %client.name;
   } else {
     %name = "BLID_" @ %blid;
   }
-
-  if(%super) {
-    $Pref::Server::AutoSuperAdminList = addItemToList($Pref::Server::AutoSuperAdminList, %blid);
-    messageAll('MsgAdminForce','\c2%1 has become Super Admin (Auto)',%name);
+  
+  if(%client.isSuperAdmin && %rank == 2) {
+    return;
+  } else if((%client.isAdmin && !%client.isSuperAdmin) && %rank == 1) {
+    return;
+  }
+  
+  if(%auto) {
+    $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
+    $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+  }
+  
+  %type = %auto ? "Auto" : "Manual";
+  
+  if(%rank == 2) {
+    if(%auto) {
+      $Pref::Server::AutoSuperAdminList = addItemToList($Pref::Server::AutoSuperAdminList, %blid);
+    }
+    
+    messageAll('MsgAdminForce', '\c2%1 is now Super Admin (%2)', %name, %type);
+    
     if(isObject(%client)) {
       %client.isAdmin = true;
       %client.isSuperAdmin = true;
     }
-  } else {
-    $Pref::Server::AutoAdminList = addItemToList($Pref::Server::AutoAdminList, %blid);
-    messageAll('MsgAdminForce','\c2%1 has become Admin (Auto)',%name);
+  } else if(%rank == 1) {
+    if(%auto) {
+      $Pref::Server::AutoAdminList = addItemToList($Pref::Server::AutoAdminList, %blid);
+    }
+    
+    messageAll('MsgAdminForce', '\c2%1 is now Admin (%2)', %name, %type);
+    
     if(isObject(%client)) {
       %client.isAdmin = true;
       %client.isSuperAdmin = false;
@@ -170,41 +177,43 @@ function GlassServerControlS::addAutoAdmin(%blid, %super) {
 
   if(isObject(%client)) {
     %client.sendPlayerListUpdate();
-    if(%super) {
-      commandtoclient(%client,'setAdminLevel', 2);
-    } else {
-      commandtoclient(%client,'setAdminLevel', 1);
+    
+    if(%rank == 2) {
+      commandToClient(%client, 'setAdminLevel', 2);
+    } else if(%rank == 1) {
+      commandToClient(%client, 'setAdminLevel', 1);
     }
-    commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
+    
+    commandToClient(%client, 'hasPrefSystem', $BLPrefs::Version, %client.BLP_isAllowedUse());
   }
 }
 
 function GlassServerControlS::sendAdminData(%cl) {
   %buffer = "";
+  
   $Pref::Server::AutoSuperAdminList = trim($Pref::Server::AutoSuperAdminList);
+  
   for(%i = 0; %i < getWordCount($Pref::Server::AutoSuperAdminList); %i++) {
     %id = getWord($Pref::Server::AutoSuperAdminList, %i);
-    %client = findClientByBL_ID(%id);
-    if(isObject(%client)) {
+    if(isObject(%client = findClientByBL_ID(%id))) {
       %name = %client.name;
     } else {
       %name = "BLID_" @ %id;
     }
-
-    if(%id != getNumKeyId()) {
-      %buffer = %buffer @ %name TAB %id TAB "S\n";
-    } else {
-      %buffer = %buffer @ %name TAB %id TAB "H\n";
-    }
+    
+    %buffer = %buffer @ %name TAB %id TAB "S\n";
+    
   }
+  
   commandToClient(%cl, 'GlassAdminListing', trim(%buffer));
 
   %buffer = "";
+  
   $Pref::Server::AutoAdminList = trim($Pref::Server::AutoAdminList);
+  
   for(%i = 0; %i < getWordCount($Pref::Server::AutoAdminList); %i++) {
     %id = getWord($Pref::Server::AutoAdminList, %i);
-    %client = findClientByBL_ID(%id);
-    if(isObject(%client)) {
+    if(isObject(%client = findClientByBL_ID(%id))) {
       %name = %client.name;
     } else {
       %name = "BLID_" @ %id;
@@ -212,32 +221,48 @@ function GlassServerControlS::sendAdminData(%cl) {
 
     %buffer = %buffer @ %name TAB %id TAB "A\n";
   }
-  if(%buffer !$= "") commandToClient(%cl, 'GlassAdminListing', trim(%buffer), true);
+  
+  if(%buffer !$= "") {
+    commandToClient(%cl, 'GlassAdminListing', trim(%buffer), true);
+  }
 }
 
-function GlassServerControlS::removeAutoAdmin(%blid) {
-  $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
-  $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+function GlassServerControlS::removeAdmin(%blid, %auto) {
+  if(%auto) {
+    $Pref::Server::AutoAdminList = removeItemFromList($Pref::Server::AutoAdminList, %blid);
+    $Pref::Server::AutoSuperAdminList = removeItemFromList($Pref::Server::AutoSuperAdminList, %blid);
+  }
 
-  %client = findClientByBL_ID(%blid);
-  if(isObject(%client)) {
+  if(isObject(%client = findClientByBL_ID(%blid))) {
     %name = %client.name;
   } else {
     %name = "BLID_" @ %blid;
   }
-
-  messageAll('MsgAdminForce','\c2%1 has been demoted (Manual)',%name);
+  
+  %type = %auto ? "Auto" : "Manual";
+  
+  if(%client.isSuperAdmin) {
+    messageAll('MsgAdminForce', '\c2%1 is no longer Super Admin (%2)', %name, %type);
+  } else if(%client.isAdmin) {
+    messageAll('MsgAdminForce', '\c2%1 is no longer Admin (%2)', %name, %type);
+  } else {
+    if(isObject(%client) && !%client.isSuperAdmin && !%client.isAdmin) {
+      return;
+    }
+    messageAll('MsgAdminForce', '\c2%1 is no longer Admin (%2)', %name, %type);
+  }
+  
   if(isObject(%client)) {
     %client.isAdmin = false;
     %client.isSuperAdmin = false;
 
     %client.sendPlayerListUpdate();
-    commandtoclient(%client, 'setAdminLevel', 0);
-    commandToClient(%client, 'GlassServerControlEnable', false);
+    
+    commandToClient(%client, 'setAdminLevel', 0);
+    // commandToClient(%client, 'GlassServerControlEnable', false);
+    commandToClient(%client, 'hasPrefSystem', $BLPrefs::Version, %client.BLP_isAllowedUse());
   }
 }
-
-
 
 function GlassServerControlS::sendUpdateInfo(%client) {
   %count = updater.fileDownloader.queue.getCount();
@@ -276,7 +301,7 @@ package GlassServerControlS {
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', Glass.version);
     if(%client.isAdmin || %client.bl_id == 999999) {
-      commandToClient(%client, 'GlassServerControlEnable', true, %client.BLP_isAllowedUse());
+      commandToClient(%client, 'hasPrefSystem', $BLPrefs::Version, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
     }
 

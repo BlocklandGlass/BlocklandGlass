@@ -36,7 +36,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
@@ -78,10 +78,18 @@ function GlassLive::openSettings() {
 }
 
 function GlassLive::openChatroom() {
-  if(isObject(GlassChatroomWindow)) {
-    GlassChatroomWindow.setVisible(!GlassChatroomWindow.visible);
-  } else {
-    // $Glass::ChatroomConnect = true; // must be a better way to do this?
+  %chatFound = false;
+  
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow") {
+      %chatFound = true;
+      
+      %window.setVisible(!%window.visible);
+    }
+  }
+  
+  if(!%chatFound) {
     GlassLive::disconnect();
     GlassLive.schedule(0, connectToServer);
   }
@@ -99,6 +107,9 @@ function GlassLive::updateSetting(%setting) {
   %box = "GlassModManagerGui_Prefs_" @ %setting;
   GlassSettings.update("Live::" @ %setting, %box.getValue());
   %box.setValue(GlassSettings.get("Live::" @ %setting));
+  
+  if(strLen(%callback = GlassSettings.obj[%setting].callback))
+    call(%callback);
 }
 
 function GlassOverlayGui::onWake(%this) {
@@ -117,8 +128,14 @@ function GlassOverlayGui::onWake(%this) {
         %tab.scroll.scrollToBottom();
       }
     }
+    if(%window.getName() $= "GlassMessageGui") {
+      %window.chattext.forceReflow();
+      %window.scrollSwatch.verticalMatchChildren(0, 3);
+      %window.scrollSwatch.setVisible(true);
+      %window.scroll.scrollToBottom();
+    }
   }
-
+  
   if(!isObject(GlassOverlayResponder)) {
     new GuiTextEditCtrl(GlassOverlayResponder) {
       profile = "GuiTextEditProfile";
@@ -341,7 +358,7 @@ function GlassLive::removeFriendFromList(%blid) {
 }
 
 function GlassLive::addfriendRequestToList(%user) {
-  if((%i = wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
+  if((wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
     return;
   }
 
@@ -349,7 +366,7 @@ function GlassLive::addfriendRequestToList(%user) {
 }
 
 function GlassLive::removefriendRequestFromList(%blid) {
-  if((%i = wordPos(GlassLive.friendRequestList, %blid)) == -1) {
+  if((wordPos(GlassLive.friendRequestList, %blid)) == -1) {
     return;
   }
 
@@ -487,6 +504,14 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %obj.blid = %blid;
       %obj.raw = %raw;
     }
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = stripChars(%word, ":");
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %message = setWord(%message, %i, %word);
+      }
+    }
   }
 
   GlassLive::setMessageTyping(%blid, false);
@@ -497,9 +522,11 @@ function GlassLive::onMessage(%message, %username, %blid) {
     %val = %val @ "<br>" @ %msg;
   else
     %val = %msg;
-
+  
   %gui.chattext.setValue(%val);
-  %gui.chattext.forceReflow();
+  if(%gui.isAwake()) {
+    %gui.chattext.forceReflow();
+  }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
   %gui.scroll.scrollToBottom();
@@ -521,10 +548,12 @@ function GlassLive::onMessageNotification(%message, %blid) {
     %val = %msg;
 
   %gui.chattext.setValue(%val);
-  %gui.chattext.forceReflow();
+  if(%gui.isAwake()) {
+    %gui.chattext.forceReflow();
+  }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
-  %gui.scroll.scrollToBottom();
   %gui.scrollSwatch.setVisible(true);
+  %gui.scroll.scrollToBottom();
 }
 
 function GlassLive::messageImagePreview(%blid, %url, %type) {
@@ -1080,7 +1109,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Unfriend";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     lockAspectRatio = "0";
     alignLeft = "0";
     alignTop = "0";
@@ -1102,7 +1131,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Message";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     lockAspectRatio = "0";
     alignLeft = "0";
     alignTop = "0";
@@ -1517,6 +1546,14 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
   }
 }
 
+function GlassChatroomWindow::awakeCallback(%this, %callback) {
+  if(isObject(%this.activeTab)) {
+    %bool = GlassSettings.get(%callback) ? true : false;
+    
+    %this.activeTab.room.setAwake(%bool);
+  }
+}
+
 function GlassChatroomWindow::onWake(%this) {
   if(isObject(%this.activeTab)) {
     %this.activeTab.room.setAwake(true);
@@ -1612,7 +1649,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
       profile = "GlassBlockButtonProfile";
       extent = "48 18";
       position = "365 4";
-      bitmap = "base/client/ui/button1";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
       text = "Join";
       visible = !isObject(GlassLive.room[%room.id]);
       command = "GlassLive::joinRoom(" @ %room.id @ ");";
@@ -1687,7 +1724,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %tabSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%tabSwatch.extent, 1);
   %scroll.extent = getWord(%extent, 0) - 150 SPC getWord(%extent, 1) - 90;
   %scrollSwatch.extent = getWord(%scroll.extent, 0) SPC getWord(%scroll.extent, 1);
-  %chatText.extent = getWord(%scroll.extent, 0) SPC getWord(%chatText.extent, 1);
+  %chatText.extent = getWord(%scroll.extent, 0) - 15 SPC getWord(%chatText.extent, 1);
   %userScroll.extent = getWord(%userScroll.extent, 0) SPC getWord(%extent, 1) - 90;
   %userScroll.position = getWord(%scroll.extent, 0) + 15 SPC getWord(%userScroll.position, 1);
   %input.extent = getWord(%extent, 0) - 150 SPC getWord(%input.extent, 1);
@@ -1767,7 +1804,7 @@ function GlassLive::createChatroomView(%id) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };
@@ -1895,7 +1932,7 @@ function GlassLive::createGroupchatView(%id) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };
@@ -2025,7 +2062,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %titleLen = strLen(%dm.text);
 
   if(%titleLen > 25) {
-    %dm.extent = %titleLen * 10 SPC 180;
+    %dm.extent = %titleLen * 10.75 SPC 180; // close enough
     // %dm.minExtent = %dm.extent;
   }
 
@@ -2083,7 +2120,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    maxBitmapHeight = "-1";
+    maxBitmapHeight = "12";
     selectable = "1";
     autoResize = "1";
   };
@@ -2136,10 +2173,10 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window = %this.getGroup();
   %extent = %window.extent;
   %window.scroll.extent = vectorSub(%extent, "20 65");
-  %window.scrollSwatch.extent = getWord(%extent, 0)-30 SPC getWord(%window.chattext.extent, 1);
-  %window.chattext.extent = getWord(%extent, 0)-35 SPC getWord(%window.chattext.extent, 1);
+  %window.scrollSwatch.extent = getWord(%extent, 0) - 30 SPC getWord(%window.chattext.extent, 1);
+  %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
-  %window.input.extent = getWord(%extent, 0)-20 SPC getWord(%window.input.extent, 1);
+  %window.input.extent = getWord(%extent, 0) - 20 SPC getWord(%window.input.extent, 1);
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
@@ -2264,7 +2301,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
     text = "blocklandglass.com";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
     extent = "140 16";
     position = "31 28";
@@ -2376,29 +2413,11 @@ function GlassLive::createFriendRequest(%name, %blid) {
   return %gui;
 }
 
-
 function GlassLive::createFriendList(%friends) {
   GlassFriendGui_ScrollSwatch.deleteAll();
-  %h = GlassLive::createFriendHeader("Friends");
-  GlassFriendGui_ScrollSwatch.add(%h);
-
-  %last = %h;
-
-  for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
-    %blid = getWord(GlassLive.friendList, %i);
-    %uo = GlassLiveUser::getFromBlid(%blid);
-
-    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
-    %gui.placeBelow(%last, 5);
-
-    GlassFriendGui_ScrollSwatch.add(%gui);
-
-    %last = %gui;
-  }
-
+  
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
     %h = GlassLive::createFriendHeader("Friend Requests");
-    %h.placeBelow(%last, 10);
     GlassFriendGui_ScrollSwatch.add(%h);
 
     %last = %h;
@@ -2415,6 +2434,29 @@ function GlassLive::createFriendList(%friends) {
       %last = %gui;
     }
   }
+  
+  %h = GlassLive::createFriendHeader("Friends");
+  
+  if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
+    %h.placeBelow(%last, 10);
+  }
+  
+  GlassFriendGui_ScrollSwatch.add(%h);
+
+  %last = %h;
+
+  for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
+    %blid = getWord(GlassLive.friendList, %i);
+    %uo = GlassLiveUser::getFromBlid(%blid);
+
+    %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
+    %gui.placeBelow(%last, 5);
+
+    GlassFriendGui_ScrollSwatch.add(%gui);
+
+    %last = %gui;
+  }
+  
   GlassFriendGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendGui_ScrollSwatch.setVisible(true);
   GlassFriendGui_ScrollSwatch.getGroup().setVisible(true);

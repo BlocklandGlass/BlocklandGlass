@@ -59,7 +59,7 @@ new GuiControl(GlassModManagerGui) {
             text = "Add-Ons";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -81,7 +81,7 @@ new GuiControl(GlassModManagerGui) {
             text = "Activity";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -103,7 +103,7 @@ new GuiControl(GlassModManagerGui) {
             text = "My Add-Ons";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -125,7 +125,7 @@ new GuiControl(GlassModManagerGui) {
             text = "Colorsets";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -158,7 +158,7 @@ new GuiControl(GlassModManagerGui) {
             text = "Builds";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "./ui/button1";
+            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -10468,13 +10468,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Defaults";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "255 255 255 255";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10490,13 +10490,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Enable All";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "255 255 255 255";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10512,13 +10512,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Disable All";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "255 255 255 255";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10534,13 +10534,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Apply";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "200 255 200 255";
+                  mColor = "120 220 120 128";
                };
             };
             new GuiWindowCtrl(GlassModManagerGui_AddonSettings_Window) {
@@ -10828,13 +10828,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Default";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "255 255 255 255";
+                  mColor = "255 255 255 128";
                };
                new GuiBitmapButtonCtrl() {
                   profile = "BlockButtonProfile";
@@ -10850,13 +10850,13 @@ new GuiControl(GlassModManagerGui) {
                   text = "Apply";
                   groupNum = "-1";
                   buttonType = "PushButton";
-                  bitmap = "base/client/ui/button1";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "200 255 200 255";
+                  mColor = "120 220 120 128";
                };
                new GuiBitmapCtrl(GlassModManagerGui_ColorsetPreview) {
                   profile = "GuiDefaultProfile";

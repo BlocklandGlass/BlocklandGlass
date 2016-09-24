@@ -550,7 +550,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
     text = "Post";
     groupNum = "-1";
     buttonType = "PushButton";
-    bitmap = "base/client/ui/button1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     lockAspectRatio = "0";
     alignLeft = "0";
     alignTop = "0";

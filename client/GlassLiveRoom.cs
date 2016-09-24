@@ -189,15 +189,17 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
 }
 
 function GlassLiveRoom::setAwake(%this, %bool) {
+  if(!GlassSettings.get("Live::RoomShowAwake"))
+    %bool = false;
+  
   %this.awake = %bool;
-  if(GlassSettings.get("Live::RoomShowAwake")) {
-    %obj = JettisonObject();
-    %obj.set("type", "string", "roomAwake");
-    %obj.set("id", "string", %this.id);
-    %obj.set("bool", "string", %bool);
+  
+  %obj = JettisonObject();
+  %obj.set("type", "string", "roomAwake");
+  %obj.set("id", "string", %this.id);
+  %obj.set("bool", "string", %bool);
 
-    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  }
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
@@ -241,11 +243,17 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   if(GlassSettings.get("Live::RoomChatSound"))
     alxPlay(GlassChatroomMsgAudio);
 
-  if(%senderblid != getNumKeyId() && !%this.awake)
+  if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-      GlassNotificationManager::newNotification(%this.name, "You were mentioned by " @ %sender.username, 0);
-    } else if(GlassSettings.get("Live::RoomChatNotification"))
-      GlassNotificationManager::newNotification(%this.name, %sender.username@": "@%msg, "comment", 0);
+      if(!%this.awake)
+        GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+      
+      alxPlay(GlassUserMentionedAudio);
+    } else if(GlassSettings.get("Live::RoomChatNotification")) {
+      if(!%this.awake)
+        GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
+    }
+  }
 }
 
 function GlassLiveRoom::pushText(%this, %msg) {
@@ -255,15 +263,14 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
-    // too much potential for it to be spammed ridiculously in chat for now.
-    // if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      // %bitmap = stripChars(%word, ":");
-      // %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
-      // if(isFile(%bitmap)) {
-        // %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
-        // %msg = setWord(%msg, %i, %word);
-      // }
-    // }
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = stripChars(%word, ":");
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %msg = setWord(%msg, %i, %word);
+      }
+    }
   }
 
   if(GlassSettings.get("Live::ShowTimestamps")) {
@@ -278,8 +285,9 @@ function GlassLiveRoom::pushText(%this, %msg) {
     %val = %msg;
 
   %chatroom.chattext.setValue(%val);
-  if(GlassOverlayGui.isAwake())
+  if(GlassOverlayGui.isAwake()) {
     %chatroom.chattext.forceReflow();
+  }
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
