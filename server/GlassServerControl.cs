@@ -249,7 +249,7 @@ function GlassServerControlS::removeAdmin(%blid, %auto) {
     if(isObject(%client) && !%client.isSuperAdmin && !%client.isAdmin) {
       return;
     }
-    messageAll('MsgAdminForce', '\c2%1 is no longer Admin/Super Admin (%2)', %name, %type);
+    messageAll('MsgAdminForce', '\c2%1 is no longer Admin (%2)', %name, %type);
   }
   
   if(isObject(%client)) {

@@ -160,26 +160,34 @@ function GlassServerControlC::renderCategory(%category) {
         }
         %swatch.ctrl.setSelected(%pref.value);
 
-      case "wordlist": // not finished - using "string" code ^^
+      case "wordlist":
         %swatch = GlassServerControlC::createText();
         %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));
 
-      case "userlist":
-
+      case "userlist": // these should be done at some point
+        %swatch = "unfinished";
+        
       case "button":
-
+        %swatch = "unfinished";
+        
       case "rgb":
-
+        %swatch = "unfinished";
+        
       case "colorset":
-
+        %swatch = "unfinished";
+        
       case "datablock":
-
+        %swatch = "unfinished";
+        
       case "datablocklist":
+        %swatch = "unfinished";
     }
 
     if(!isObject(%swatch)) {
-      warn("Failed to make pref of type \"" @ %pref.type @ "\"");
+      if(%swatch !$= "unfinished") {
+        warn("Failed to make pref of type \"" @ %pref.type @ "\"");
+      }
       continue;
     }
 
