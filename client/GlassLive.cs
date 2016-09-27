@@ -1745,7 +1745,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   %scrollSwatch.verticalMatchChildren(0, 2);
   %scrollSwatch.setVisible(true);
 
-  %userSwatch.getGroup().scrollToTop();
+  // %userSwatch.getGroup().scrollToTop();
   %userSwatch.setVisible(true);
 }
 

@@ -57,6 +57,17 @@ if($Server::isDedicated) {
 	Glass::init("server");
 }
 
+function serverCmdGlassHandshake(%client, %ver) {
+  %client_ver = stripChars(%ver, ".");
+  %server_ver = stripChars(Glass.version, ".");
+  
+  if(%server_ver > %client_ver) {
+    messageClient(%client, '', "\c0You are running \c6v" @ %ver @ "\c0 of \c3Blockland Glass\c0, update to \c6v" @ Glass.version);
+  } else if(%client_ver > %server_ver) {
+    messageClient(%client, '', "\c0This server is running an outdated version of \c3Blockland Glass\c0, tell the host to update.");
+  }
+}
+
 //Zeblote
 function fastPacketFixLoop(%bool)
 {

@@ -111,16 +111,16 @@ function serverCmdGlassSetAdmin(%client, %blid, %rank, %auto) {
   }
 }
 
-function serverCmdGetGlassUsers(%client) {
-  %users = 0;
-  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    %cl = ClientGroup.getObject(%i);
-    if(%cl.hasGlass) {
-      %users++;
-    }
-  }
-  messageClient(%client, '', %users);
-}
+// function serverCmdGetGlassUsers(%client) {
+  // %users = 0;
+  // for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+    // %cl = ClientGroup.getObject(%i);
+    // if(%cl.hasGlass) {
+      // %users++;
+    // }
+  // }
+  // messageClient(%client, '', %users);
+// }
 
 function GlassServerControlS::setAdmin(%blid, %rank, %auto) {
   if(%blid == getNumKeyID()) {
@@ -292,9 +292,9 @@ function containsField(%needle, %haystack) {
   return false;
 }
 
-function serverCmdGlassUpdateSend(%client) {
-  messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
-}
+// function serverCmdGlassUpdateSend(%client) {
+  // messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
+// }
 
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {

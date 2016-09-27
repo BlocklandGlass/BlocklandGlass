@@ -146,7 +146,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
 
       %room.pushText(%motd);
-
+      
+      %room.view.userSwatch.getGroup().scrollToTop();
 
     case "messageTyping":
       GlassLive::setMessageTyping(%data.sender, %data.typing);
