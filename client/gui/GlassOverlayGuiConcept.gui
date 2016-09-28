@@ -13211,7 +13211,7 @@ new GuiControl(GlassOverlayGui) {
             rowHeight = "40";
             columnWidth = "30";
 
-            new GuiSwatchCtrl(GlassFriendGui_ScrollSwatch) {
+            new GuiSwatchCtrl(GlassFriendsGui_ScrollSwatch) {
                profile = "GuiDefaultProfile";
                horizSizing = "right";
                vertSizing = "bottom";

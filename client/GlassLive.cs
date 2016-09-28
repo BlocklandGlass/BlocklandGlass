@@ -169,8 +169,8 @@ function GlassLive::disconnect(%reason) {
 function GlassLive::cleanup() {
   GlassLiveUsers.deleteAll();
   GlassLive.friendList = "";
-  GlassFriendGui_ScrollSwatch.deleteAll();
-  GlassFriendGui_ScrollSwatch.setVisible(true);
+  GlassFriendsGui_ScrollSwatch.deleteAll();
+  GlassFriendsGui_ScrollSwatch.setVisible(true);
 
   if(isObject(GlassLiveRoomGroup)) {
     for(%i = 0; %i < GlassLiveRoomGroup.getcount(); %i++) {
@@ -2420,11 +2420,11 @@ function GlassLive::createFriendRequest(%name, %blid) {
 }
 
 function GlassLive::createFriendList(%friends) {
-  GlassFriendGui_ScrollSwatch.deleteAll();
+  GlassFriendsGui_ScrollSwatch.deleteAll();
   
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
     %h = GlassLive::createFriendHeader("Friend Requests");
-    GlassFriendGui_ScrollSwatch.add(%h);
+    GlassFriendsGui_ScrollSwatch.add(%h);
 
     %last = %h;
 
@@ -2435,7 +2435,7 @@ function GlassLive::createFriendList(%friends) {
       %gui = GlassLive::createFriendRequest(%uo.username, %blid);
       %gui.placeBelow(%last, 5);
 
-      GlassFriendGui_ScrollSwatch.add(%gui);
+      GlassFriendsGui_ScrollSwatch.add(%gui);
 
       %last = %gui;
     }
@@ -2447,7 +2447,7 @@ function GlassLive::createFriendList(%friends) {
     %h.placeBelow(%last, 10);
   }
   
-  GlassFriendGui_ScrollSwatch.add(%h);
+  GlassFriendsGui_ScrollSwatch.add(%h);
 
   %last = %h;
 
@@ -2458,14 +2458,21 @@ function GlassLive::createFriendList(%friends) {
     %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
     %gui.placeBelow(%last, 5);
 
-    GlassFriendGui_ScrollSwatch.add(%gui);
+    GlassFriendsGui_ScrollSwatch.add(%gui);
 
     %last = %gui;
   }
   
-  GlassFriendGui_ScrollSwatch.verticalMatchChildren(0, 5);
-  GlassFriendGui_ScrollSwatch.setVisible(true);
-  GlassFriendGui_ScrollSwatch.getGroup().setVisible(true);
+  GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
+  GlassFriendsGui_ScrollSwatch.setVisible(true);
+  GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
+}
+
+function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
+  GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 130");
+  GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
+  GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
+  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-60 100");
 }
 
 package GlassLivePackage {
