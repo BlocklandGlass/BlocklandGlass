@@ -481,13 +481,31 @@ function GlassLive::closeMessage(%blid) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
 
-  if(GlassLive.typing[%blid])
+  if(GlassLive.typing[%blid]) {
     GlassLive::messageTypeEnd(%blid);
+  }
 }
 
 function GlassLive::onMessage(%message, %username, %blid) {
   // TODO check friend, blocked, prefs, etc
-
+  
+  %timestamp = "[" @ getWord(getDateTime(), 1) @ "]";
+  
+  if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
+    %fo = new FileObject();
+    %fo.openForAppend(%file);
+    %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
+    %fo.close();
+    %fo.delete();
+  } else {
+    %fo = new FileObject();
+    %fo.openForWrite(%file);
+    %fo.writeLine(%timestamp @ " Beginning chat log of " @ GlassLiveUser::getFromBlid(%blid).username @ " (" @ %blid @ ")");
+    %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
+    %fo.close();
+    %fo.delete();
+  }
+  
   %gui = GlassLive::openDirectMessage(%blid, %username);
 
   GlassOverlayGui.pushToBack(%gui);
@@ -521,13 +539,14 @@ function GlassLive::onMessage(%message, %username, %blid) {
   %msg = "<color:333333><font:verdana bold:12>" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
   
   if(GlassSettings.get("Live::ShowTimestamps")) {
-    %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
+    %msg = "<font:verdana:12><color:666666>" @ %timestamp SPC %msg;
   }
   
-  if(%val !$= "")
+  if(%val !$= "") {
     %val = %val @ "<br>" @ %msg;
-  else
+  } else {
     %val = %msg;
+  }
   
   %gui.chattext.setValue(%val);
   if(%gui.isAwake()) {
@@ -540,18 +559,36 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
 function GlassLive::onMessageNotification(%message, %blid) {
   // TODO check friend, blocked, prefs, etc
-
+  
+  %timestamp = "[" @ getWord(getDateTime(), 1) @ "]";
+  
+  if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
+    %fo = new FileObject();
+    %fo.openForAppend(%file);
+    %fo.writeLine(%timestamp SPC %message);
+    %fo.close();
+    %fo.delete();
+  }
+  
   %user = GlassLiveUser::getFromBlid(%blid);
   %gui = %user.getMessageGui();
-  if(%gui == false)
+  if(%gui == false) {
     return;
+  }
 
   %val = %gui.chattext.getValue();
+  
   %msg = "<color:666666><font:verdana:12>" @ %message;
-  if(%val !$= "")
+  
+  if(GlassSettings.get("Live::ShowTimestamps")) {
+    %msg = "<font:verdana:12><color:666666>" @ %timestamp SPC %msg;
+  }
+  
+  if(%val !$= "") {
     %val = %val @ "<br>" @ %msg;
-  else
+  } else {
     %val = %msg;
+  }
 
   %gui.chattext.setValue(%val);
   if(%gui.isAwake()) {
@@ -2178,7 +2215,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
 
   %dm.resize.onResize(getWord(%dm.position, 0), getWord(%dm.position, 1), getWord(%dm.extent, 0), getWord(%dm.extent, 1));
-
+  
   return %dm;
 }
 
