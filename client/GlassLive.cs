@@ -342,7 +342,7 @@ function wordPos(%str, %word) {
 }
 
 function GlassLive::addFriendToList(%user) {
-  if((%i = wordPos(GlassLive.friendList, %user.blid)) > -1) {
+  if((wordPos(GlassLive.friendList, %user.blid)) > -1) {
     return;
   }
 
@@ -350,7 +350,7 @@ function GlassLive::addFriendToList(%user) {
 }
 
 function GlassLive::removeFriendFromList(%blid) {
-  if((%i = wordPos(GlassLive.friendList, %blid)) == -1) {
+  if((wordPos(GlassLive.friendList, %blid)) == -1) {
     return;
   }
 
@@ -505,10 +505,10 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %obj.raw = %raw;
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, ":");
+      %bitmap = stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~\";");
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
-        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %word = "<bitmap:" @ %bitmap @ ">";
         %message = setWord(%message, %i, %word);
       }
     }
@@ -707,6 +707,10 @@ function GlassLive::friendDecline(%blid) {
   %obj = JettisonObject();
   %obj.set("type", "string", "friendDecline");
   %obj.set("blid", "string", %blid);
+  
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  %obj.delete();
 
   for(%i = 0; %i < getWordCount(GlassLive.friendRequestList); %i++) {
     %blid2 = getWord(GlassLive.friendRequestList, %i);
@@ -718,23 +722,27 @@ function GlassLive::friendDecline(%blid) {
   GlassLive.friendRequestList = %newRequests;
 
   GlassLive::createFriendList();
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
 function GlassLive::removeFriend(%blid, %silent) {
-  if(%blid == getNumKeyId())
+  if(%blid == getNumKeyId()) {
     return;
-
+  }
+  
+  if((wordPos(GlassLive.friendList, %blid)) == -1) {
+    return;
+  }
+  
   if(!%silent) {
     %obj = JettisonObject();
     %obj.set("type", "string", "friendRemove");
     %obj.set("blid", "string", %blid);
 
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    
     %obj.delete();
   }
-
+  
   GlassLive::removeFriendFromList(%blid);
   GlassLive::createFriendList();
 
@@ -747,7 +755,6 @@ function GlassLive::removeFriend(%blid, %silent) {
       %room.renderUserList();
   }
 }
-
 
 function GlassLive::updateLocation(%inServer) {
 

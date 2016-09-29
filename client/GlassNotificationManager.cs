@@ -14,6 +14,19 @@ function GlassNotificationManager::refocus(%this) {
 }
 
 function GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback) {
+  for(%i = 0; %i < getWordCount(%text); %i++) {
+    %word = getWord(%text, %i);
+    
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~\";");
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:" @ %bitmap @ ">";
+        %text = setWord(%text, %i, %word);
+      }
+    }
+  }
+  
   %obj = new ScriptObject(GlassNotification) {
     title = %title;
     text = %text;
@@ -132,6 +145,7 @@ function GlassNotification::onAdd(%this) {
     extent = "172 12";
     minextent = "0 0";
     autoResize = true;
+    maxBitmapHeight = "12";
   };
 
   %swatch.mouse = new GuiMouseEventCtrl(GlassNotificationMouse) {

@@ -36,6 +36,8 @@ function GlassLiveRoom::leaveRoom(%this) {
   %obj.set("id", "string", %this.id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
 
   %this.view.window.removeTab(%this.view);
   %this.view.deleteAll();
@@ -264,10 +266,10 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %msg = setWord(%msg, %i, %word);
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, ":");
+      %bitmap = stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~\";");
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
-        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
       }
     }
