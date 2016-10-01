@@ -123,7 +123,7 @@ function GlassUpdaterSupport::updateProgressBar(%queueObj, %float) {
   %dm.setProgress(%float);
 }
 
-if(!$Server::isDedicated)
+if(!$Server::Dedicated)
   GlassModManagerGui_Prefs_Updater.setValue(GlassSettings.get("MM::UseDefault"));
 
 function GlassUpdaterSupport::updateSetting() {

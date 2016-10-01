@@ -125,13 +125,61 @@ function strcap(%str) {
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
 
-package GlassPrefs {
-	function onExit() {
-		parent::onExit();
-	}
+package GlassEnableButton {
+	function ServerSettingsGui::onWake(%this) {
+		parent::onWake(%this);
+    
+    if(isObject(ServerSettingsGui_RTBLabel) && ServerSettingsGui_RTBLabel.visible && !isObject(ServerSettingsGui_BLGLabel)) {
+      %y = getWord(ServerSettingsGui_RTBLabel.position, 1) + 40;
+    } else {
+      %y = getWord(ServerSettingsGui_AdminPasswordLabel.position, 1) + 40;
+    }
+    
+    if(!isObject(ServerSettingsGui_BLGLabel)) {
+      %label = new GuiTextCtrl(ServerSettingsGui_BLGLabel) {
+        profile = "ImpactTextProfile";
+        horizSizing = "relative";
+        vertSizing = "relative";
+        position = "0 " @ %y;
+        extent = "160 33";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        text = "BLG: ";
+        maxLength = "255";
+      };
 
-	function MM_AuthBar::blinkSuccess(%this) {
-		parent::blinkSuccess(%this);
+      %button = new GuiCheckBoxCtrl(ServerSettingsGui_UseBLG) {
+        profile = "ImpactCheckProfile";
+        horizSizing = "relative";
+        vertSizing = "relative";
+        position = "170 " @ %y;
+        extent = "168 33";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        variable = "$ServerSettingsGui::UseBLG";
+        text = "Use BLG";
+        groupNum = "-1";
+        buttonType = "ToggleButton";
+      };
+      
+      %this.add(%label);
+      %this.add(%button);
+    }
 	}
 };
-activatePackage(GlassPrefs);
+activatePackage(GlassEnableButton);
+
+// package GlassPrefs {
+	// function onExit() {
+		// parent::onExit();
+	// }
+
+	// function MM_AuthBar::blinkSuccess(%this) {
+		// parent::blinkSuccess(%this);
+	// }
+// };
+// activatePackage(GlassPrefs);

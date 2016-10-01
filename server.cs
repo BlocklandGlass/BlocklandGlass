@@ -28,7 +28,7 @@ function Glass::execServer() {
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
-	exec("./common/GlassRTBSupport.cs");
+	//exec("./common/GlassRTBSupport.cs");
 	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 
@@ -44,31 +44,17 @@ function Glass::execServer() {
 	GlassResourceManager::execResource("Support_Updater", "server");
 
 	//GlassServerControlS::init();
-	GlassAuthS::init();
 	//GlassServerInfo::connectToServer();
 	//GlassInfoServer::init();
 
 	GlassAuthS::init();
 }
 
-if($Server::isDedicated) {
+if($Server::Dedicated) {
 	Glass::init("dedicated");
 } else {
 	Glass::init("server");
 }
-
-// moved to client.cs
-
-// function serverCmdGlassHandshake(%client, %ver) {
-  // %client_ver = stripChars(%ver, ".");
-  // %server_ver = stripChars(Glass.version, ".");
-  
-  // if(%server_ver > %client_ver) {
-    // messageClient(%client, '', "\c0You are running \c6" @ %ver @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ Glass.version);
-  // } else if(%client_ver > %server_ver) {
-    // messageClient(%client, '', "\c0This server is running an outdated version of \c3Blockland Glass\c0, tell the host to update.");
-  // }
-// }
 
 //Zeblote
 function fastPacketFixLoop(%bool)

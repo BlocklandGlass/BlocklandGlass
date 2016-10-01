@@ -445,7 +445,7 @@ function GlassModManager_MyAddons::defaults() {
   $AddOn__Weapon_Spear = 1;
   $AddOn__Weapon_Sword = 1;
 
-  $AddOn__System_BlocklandGlass = 1;
+  // $AddOn__System_BlocklandGlass = 1;
 
   GlassModManager.renderMyAddons();
   export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
@@ -458,7 +458,7 @@ function GlassModManager_MyAddons::enableAll() {
     %check.setValue(true);
   }
 
-  $AddOn__System_BlocklandGlass = 1;
+  // $AddOn__System_BlocklandGlass = 1;
 }
 
 function GlassModManager_MyAddons::disableAll() {
@@ -468,7 +468,7 @@ function GlassModManager_MyAddons::disableAll() {
     %check.setValue(false);
   }
 
-  $AddOn__System_BlocklandGlass = 1;
+  // $AddOn__System_BlocklandGlass = 1;
 }
 
 function GlassModManager_MyAddons::apply() {
@@ -479,7 +479,7 @@ function GlassModManager_MyAddons::apply() {
   }
 
   GlassModManager.renderMyAddons();
-  $AddOn__System_BlocklandGlass = 1;
+  // $AddOn__System_BlocklandGlass = 1;
   export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
 }
 

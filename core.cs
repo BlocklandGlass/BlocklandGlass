@@ -8,11 +8,11 @@ function Glass::init(%context) {
 		};
 
 		//enable debug mode for me
-		if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
+		//if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
 			//Glass.dev = true;
 			//Glass.devLocal = false;
 			//Glass.address = "localhost";
-		}
+		//}
 	}
 
 	//$Glass::Debug = true;

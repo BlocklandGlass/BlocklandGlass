@@ -18,6 +18,12 @@ function openGlassSettings(%down) {
       canvas.popDialog(GlassServerControlGui);
     } else if(GlassServerControlC.enabled) {
       canvas.pushDialog(GlassServerControlGui);
+    } else {
+      if(ServerConnection.hasGlass) {
+        messageBoxOk("Uh oh", "You don't have access to Glass Server Preferences!");
+      } else {
+        messageBoxOk("Uh oh", "Glass is not running on this server.");
+      }
     }
   }
 }
