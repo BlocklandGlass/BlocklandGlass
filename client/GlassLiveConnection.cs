@@ -245,7 +245,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.online = %data.online;
       %uo.isFriend = true;
 
-      GlassLive::removefriendRequestFromList(%uo.blid);
+      GlassLive::removeFriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
 
       GlassLive::createFriendList();

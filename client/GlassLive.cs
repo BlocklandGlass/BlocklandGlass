@@ -350,7 +350,7 @@ function GlassLive::addFriendToList(%user) {
 }
 
 function GlassLive::removeFriendFromList(%blid) {
-  if((wordPos(GlassLive.friendList, %blid)) == -1) {
+  if((%i = wordPos(GlassLive.friendList, %blid)) == -1) {
     return;
   }
 
@@ -365,8 +365,8 @@ function GlassLive::addfriendRequestToList(%user) {
   GlassLive.friendRequestList = setWord(GlassLive.friendRequestList, getWordCount(GlassLive.friendRequestList), %user.blid);
 }
 
-function GlassLive::removefriendRequestFromList(%blid) {
-  if((wordPos(GlassLive.friendRequestList, %blid)) == -1) {
+function GlassLive::removeFriendRequestFromList(%blid) {
+  if((%i = wordPos(GlassLive.friendRequestList, %blid)) == -1) {
     return;
   }
 
@@ -741,6 +741,10 @@ function GlassLive::friendAccept(%blid) {
 }
 
 function GlassLive::friendDecline(%blid) {
+  if((%i = wordPos(GlassLive.friendRequestList, %blid)) == -1) {
+    return;
+  }
+  
   %obj = JettisonObject();
   %obj.set("type", "string", "friendDecline");
   %obj.set("blid", "string", %blid);
@@ -749,14 +753,7 @@ function GlassLive::friendDecline(%blid) {
   
   %obj.delete();
 
-  for(%i = 0; %i < getWordCount(GlassLive.friendRequestList); %i++) {
-    %blid2 = getWord(GlassLive.friendRequestList, %i);
-    if(%blid2 != %blid) {
-      %newRequests = trim(%newRequests @ %blid2);
-    }
-  }
-
-  GlassLive.friendRequestList = %newRequests;
+  GlassLive.friendRequestList = removeWord(GlassLive.friendRequestList, %i);
 
   GlassLive::createFriendList();
 }
