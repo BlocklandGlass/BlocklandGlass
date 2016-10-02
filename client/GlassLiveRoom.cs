@@ -293,7 +293,12 @@ function GlassLiveRoom::pushText(%this, %msg) {
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
-  %chatroom.scroll.scrollToBottom();
+  
+  %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
+  
+  if(%lp >= 10) {
+    %chatroom.scroll.scrollToBottom();
+  }
 }
 
 function GlassLiveRoom::getOrderedUserList(%this) {
