@@ -296,7 +296,7 @@ function GlassLiveRoom::pushText(%this, %msg) {
   
   %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
   
-  if(%lp >= 10) {
+  if(%lp >= -50) {
     %chatroom.scroll.scrollToBottom();
   }
 }

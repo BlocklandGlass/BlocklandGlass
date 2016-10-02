@@ -130,7 +130,7 @@ function GlassOverlayGui::onWake(%this) {
         
         // %lp = %view.getLowestPoint() - %view.scroll.getLowestPoint();
         
-        // if(%lp >= 10) {
+        // if(%lp >= -50) {
           // %view.scroll.scrollToBottom();
         // }
         
@@ -1581,9 +1581,11 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %tab.scrollSwatch.setVisible(true);
       %tab.scroll.scrollToBottom();
       //%tab.renderUserList();
-      
-      %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
     }
+  }
+  
+  if(%this.isAwake()) {
+    %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
   }
 }
 
