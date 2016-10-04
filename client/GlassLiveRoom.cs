@@ -230,7 +230,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
-    if(%word $= ("@" @ $Pref::Player::NetName)) {
+    if(%word $= $Pref::Player::NetName) {
       %mentioned = true;
       %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
     }
