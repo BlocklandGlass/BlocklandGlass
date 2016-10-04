@@ -154,3 +154,17 @@ function GuiControl::getCanvasPosition(%this) {
   }
   return %pos;
 }
+
+// **Courtesy of RTB 4.0**
+//- GuiControl::getLowestPoint (finds the lowest point within a gui)
+
+function GuiControl::getLowestPoint(%this) {
+  %lowest = 0;
+  for(%i=0;%i<%this.getCount();%i++) {
+    %obj = %this.getObject(%i);
+    %low = getWord(%obj.position,1) + getWord(%obj.extent,1);
+    if(%low > %lowest)
+      %lowest = %low;
+  }
+  return %lowest;
+}

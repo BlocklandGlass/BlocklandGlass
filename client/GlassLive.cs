@@ -525,8 +525,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %raw = %word;
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %message = setWord(%message, %i, %word);
-
-      %obj = getUrlMetadata(%word, "GlassLive::urlMetadata");
+      
+      %obj = getUrlMetadata(%raw, "GlassLive::urlMetadata");
       %obj.context = "dm";
       %obj.blid = %blid;
       %obj.raw = %raw;
@@ -563,7 +563,12 @@ function GlassLive::onMessage(%message, %username, %blid) {
   }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
-  %gui.scroll.scrollToBottom();
+  
+  %lp = %gui.getLowestPoint() - %gui.scroll.getLowestPoint();
+  
+  if(%lp >= -15) {
+    %gui.scroll.scrollToBottom();
+  }
 }
 
 function GlassLive::onMessageNotification(%message, %blid) {
@@ -605,7 +610,12 @@ function GlassLive::onMessageNotification(%message, %blid) {
   }
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
-  %gui.scroll.scrollToBottom();
+  
+  %lp = %gui.getLowestPoint() - %gui.scroll.getLowestPoint();
+  
+  if(%lp >= -15) {
+    %gui.scroll.scrollToBottom();
+  }
 }
 
 function GlassLive::messageImagePreview(%blid, %url, %type) {
@@ -641,7 +651,7 @@ function GlassLive::messageImagePreview(%blid, %url, %type) {
   %gui.scrollSwatch.add(%swat);
 
   %gui.scrollSwatch.setVisible(true);
-  %gui.scroll.scrollToBottom();
+  // %gui.scroll.scrollToBottom();
 }
 
 function GlassLive::setMessageTyping(%blid, %typing) {
@@ -924,6 +934,7 @@ function GlassLive::chatroomInputSend(%id) {
   }
 
   %chatroom.input.setValue("");
+  %chatroom.scroll.scrollToBottom();
 }
 
 function GlassLive::messageType(%blid) {
@@ -964,6 +975,7 @@ function GlassLive::messageInputSend(%id) {
   GlassLive::sendMessage(%id, %val);
   GlassLive::onMessage(%val, $Pref::Player::NetName, %id);
   %gui.input.setValue("");
+  %gui.scroll.scrollToBottom();
 }
 
 function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {
@@ -2245,7 +2257,7 @@ function GlassMessageTyping::startAnimation(%this) {
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scrollSwatch.setVisible(true);
-  %window.scroll.scrollToBottom();
+  // %window.scroll.scrollToBottom();
 
   %this.tick();
 }
@@ -2273,7 +2285,7 @@ function GlassMessageTyping::endAnimation(%this) {
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scrollSwatch.setVisible(true);
-  %window.scroll.scrollToBottom();
+  // %window.scroll.scrollToBottom();
 }
 
 if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/GlassFriendsGui.gui");
