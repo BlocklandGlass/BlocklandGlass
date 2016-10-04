@@ -126,14 +126,6 @@ function GlassOverlayGui::onWake(%this) {
         %tab.scrollSwatch.verticalMatchChildren(0, 2);
         %tab.scrollSwatch.setVisible(true);
         
-        // %view = %tab.room.view;
-        
-        // %lp = %view.getLowestPoint() - %view.scroll.getLowestPoint();
-        
-        // if(%lp >= -50) {
-          // %view.scroll.scrollToBottom();
-        // }
-        
         %tab.scroll.scrollToBottom();
       }
     }
@@ -924,8 +916,10 @@ function GlassLive::chatroomInputSend(%id) {
   %chatroom = %room.view;
   %val = trim(%chatroom.input.getValue());
   %val = stripMlControlChars(%val);
-  if(%val $= "")
+  if(%val $= "") {
+    %chatroom.input.setValue("");
     return;
+  }
 
   if(strPos(%val, "/") != 0) {
     GlassLive::sendRoomMessage(%val, %id);
@@ -934,7 +928,7 @@ function GlassLive::chatroomInputSend(%id) {
   }
 
   %chatroom.input.setValue("");
-  %chatroom.scroll.scrollToBottom();
+  %chatroom.scroll.schedule(100, "scrollToBottom");
 }
 
 function GlassLive::messageType(%blid) {
@@ -969,13 +963,15 @@ function GlassLive::messageInputSend(%id) {
   %gui = GlassLive.message[%id];
   %val = trim(%gui.input.getValue());
   %val = stripMlControlChars(%val);
-  if(%val $= "")
+  if(%val $= "") {
+    %gui.input.setValue("");
     return;
+  }
 
   GlassLive::sendMessage(%id, %val);
   GlassLive::onMessage(%val, $Pref::Player::NetName, %id);
   %gui.input.setValue("");
-  %gui.scroll.scrollToBottom();
+  %gui.scroll.schedule(100, "scrollToBottom");
 }
 
 function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {

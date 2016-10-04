@@ -208,7 +208,12 @@ function GlassLiveGroup::pushText(%this, %msg) {
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
-  %chatroom.scroll.scrollToBottom();
+  
+  %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
+  
+  if(%lp >= -50) {
+    %chatroom.scroll.scrollToBottom();
+  }
 }
 
 function GlassLiveGroup::createGui(%this) {
