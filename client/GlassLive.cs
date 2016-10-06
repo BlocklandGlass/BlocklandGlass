@@ -2573,8 +2573,6 @@ function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
   if(getWord(GlassSettingsGui_Scroll.extent, 1) > getWord(GlassSettingsGui_ScrollOverlay.extent, 1)) {
     GlassSettingsGui_ScrollOverlay.extent = GlassSettingsGui_Scroll.extent;
   }
-  
-  GlassSettingsGui_Scroll.scrollToBottom();
 }
 
 package GlassLivePackage {

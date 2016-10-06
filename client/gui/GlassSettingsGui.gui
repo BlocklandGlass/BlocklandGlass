@@ -36,7 +36,7 @@ new GuiControl(GlassSettingsGui) {
         horizSizing = "relative";
         vertSizing = "relative";
         position = "0 0";
-        extent = "300 473";
+        extent = "300 474";
         visible = "0";
       };
       
