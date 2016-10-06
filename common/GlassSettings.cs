@@ -105,7 +105,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
       %header.position = vectorAdd($Glass::GS_Last.position, "0 40");
     }
     
-    GlassSettingsGui_ScrollSwatch.add(%header);
+    GlassSettingsGui_ScrollOverlay.add(%header);
     
     $Glass::GS_Last = %header;
   }
@@ -161,11 +161,11 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
       return;
   }
   
-  GlassSettingsGui_ScrollSwatch.settingsCount++;
-  GlassSettingsGui_ScrollSwatch.add(%setting);
+  GlassSettingsGui_ScrollOverlay.settingsCount++;
+  GlassSettingsGui_ScrollOverlay.add(%setting);
   
-  if(GlassSettingsGui_ScrollSwatch.settingsCount * 45 > 425) {
-    GlassSettingsGui_ScrollSwatch.extent = getWord(GlassSettingsGui_ScrollSwatch.extent, 0) SPC (GlassSettingsGui_ScrollSwatch.settingsCount * 45) + 15;
+  if(GlassSettingsGui_ScrollOverlay.settingsCount * 45 > 425) {
+    GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
   }
 }
 

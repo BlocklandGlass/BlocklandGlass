@@ -2565,6 +2565,18 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-60 100");
 }
 
+function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
+  GlassSettingsGui_Scroll.extent = vectorSub(GlassSettingsWindow.extent, "20 45");
+  
+  GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
+  
+  if(getWord(GlassSettingsGui_Scroll.extent, 1) > getWord(GlassSettingsGui_ScrollOverlay.extent, 1)) {
+    GlassSettingsGui_ScrollOverlay.extent = GlassSettingsGui_Scroll.extent;
+  }
+  
+  GlassSettingsGui_Scroll.scrollToBottom();
+}
+
 package GlassLivePackage {
   function GlassOverlayGui::onWake(%this) {
     parent::onWake(%this);
