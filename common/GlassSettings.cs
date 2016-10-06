@@ -86,8 +86,6 @@ function GlassSettings::createSettingHeader(%name) {
 }
 
 function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
-  // GlassFriendsGui_Scroll
-  
   if(GlassSettings.get(%pref) $= "") {
     error("Non-existent setting.");
     return;
@@ -155,13 +153,18 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
       %setting.add(%checkbox);
       
     case "keybind":
-      // do nothing
+      // to do
     default:
       error("Non-existent setting type.");
       return;
   }
   
+  GlassSettingsGui_ScrollSwatch.settingsCount++;
   GlassSettingsGui_ScrollSwatch.add(%setting);
+  
+  if(GlassSettingsGui_ScrollSwatch.settingsCount * 45 > 425) {
+    GlassSettingsGui_ScrollSwatch.extent = getWord(GlassSettingsGui_ScrollSwatch.extent, 0) SPC (GlassSettingsGui_ScrollSwatch.settingsCount * 45) + 15;
+  }
 }
 
 function GlassSettings::loadData(%this, %context) {

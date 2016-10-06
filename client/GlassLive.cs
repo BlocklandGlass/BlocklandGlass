@@ -12,6 +12,11 @@ exec("./GlassLiveGroup.cs");
 //MessageSound
 //MessageAnyone
 
+// instructions for adding a setting
+// - add pref to %settings variable in glasslive::init() below.
+// - register setting in glasssettings::init() in common/glassettings.cs
+// - if setting is to be changed by the user at will via the glass settings gui, add corresponding .drawsetting() for pref in glasslive::init() below.
+
 function GlassLive::init() {
   if(!isObject(GlassLive))
     new ScriptObject(GlassLive) {
@@ -36,7 +41,7 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
-  
+  // glass pref, description/name, category, type
   GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox");
   GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
@@ -56,7 +61,9 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
   
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
+  // removed: Live::RoomAutoJoin, Live::MessageAnyone
+  
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;

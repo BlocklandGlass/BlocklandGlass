@@ -42,7 +42,7 @@ new GuiControl(GlassSettingsGui) {
          visible = "1";
          clipToParent = "1";
          willFirstRespond = "0";
-         hScrollBar = "dynamic";
+         hScrollBar = "alwaysOff";
          vScrollBar = "alwaysOn";
          constantThumbHeight = "0";
          childMargin = "0 0";
@@ -54,7 +54,7 @@ new GuiControl(GlassSettingsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 -71";
-            extent = "270 610";
+            extent = "270 425";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
