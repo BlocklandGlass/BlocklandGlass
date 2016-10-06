@@ -36,6 +36,26 @@ function GlassLive::init() {
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
 
+  
+  GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend On/Off-Line Notifications", "Live", "checkbox");
+  
+  GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
+  GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
+  
+  GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messenges", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
+  // GlassSettings.drawSetting("Live::RoomAutoJoin", "Auto Join Room", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
+  
+  GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
+  // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
+  
   %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomAutoJoin RoomShowAwake MessageNotification MessageSound MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
@@ -108,8 +128,11 @@ function GlassLive::updateSetting(%setting) {
   GlassSettings.update("Live::" @ %setting, %box.getValue());
   %box.setValue(GlassSettings.get("Live::" @ %setting));
   
-  if(strLen(%callback = GlassSettings.obj[%setting].callback))
-    call(%callback);
+  if(strLen(%callback = GlassSettings.obj[%setting].callback)) {
+    if(isFunction(%callback)) {
+      call(%callback);
+    }
+  }
 }
 
 function GlassOverlayGui::onWake(%this) {
@@ -1611,11 +1634,11 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
   }
 }
 
-function GlassChatroomWindow::awakeCallback(%this, %callback) {
-  if(isObject(%this.activeTab)) {
+function chatroomAwakeCallback(%callback) {
+  if(isObject(GlassChatroomWindow) && isObject(GlassChatroomWindow.activeTab)) {
     %bool = GlassSettings.get(%callback) ? true : false;
     
-    %this.activeTab.room.setAwake(%bool);
+    GlassChatroomWindow.activeTab.room.setAwake(%bool);
   }
 }
 

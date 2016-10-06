@@ -16,7 +16,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::RoomChatSound", false);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
-    GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "GlassChatroomWindow.awakeCallback");
+    GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
 
     GlassSettings.registerSetting("client", "Live::MessageNotification", true);
     GlassSettings.registerSetting("client", "Live::MessageSound", true);
@@ -53,6 +53,115 @@ function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %
   %this.schedule(0, "add", %obj);
 
   return %obj;
+}
+
+function GlassSettings::createSettingHeader(%name) {
+  %header = "GlassModManagerGui_Header_" @ strreplace(%name, " ", "_");
+  
+  if(isObject(%header)) {
+    return %header;
+  }
+  
+  %gui = new GuiSwatchCtrl(%header) {
+    position = "10 50";
+    extent = "250 25";
+    minExtent = "8 2";
+    color = "100 100 100 255";
+  };
+  
+  %gui.text = new GuiTextCtrl() {
+    profile = "GlassSearchResultProfile";
+    position = "5 2.5";
+    vertSizing = "center";
+    horizSizing = "center";
+    extent = "12 4";
+    text = "\c3" @ %name;
+  };
+
+  %gui.add(%gui.text);
+  
+  %gui.text.centerX();
+
+  return %gui;
+}
+
+function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
+  // GlassFriendsGui_Scroll
+  
+  if(GlassSettings.get(%pref) $= "") {
+    error("Non-existent setting.");
+    return;
+  }
+  
+  if(%category $= "") {
+    error("No category specified.");
+    return;
+  }
+  
+  if(!isObject("GlassModManagerGui_Header_" @ strreplace(%category, " ", "_"))) {
+    %header = GlassSettings::createSettingHeader(%category);
+    
+    if(isObject($Glass::GS_Last) && $Glass::GS_Last != %header) {
+      %header.position = vectorAdd($Glass::GS_Last.position, "0 40");
+    }
+    
+    GlassSettingsGui_ScrollSwatch.add(%header);
+    
+    $Glass::GS_Last = %header;
+  }
+  
+  %setting = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "250 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "230 230 230 255";
+  };
+  
+  %setting.position = vectorAdd($Glass::GS_Last.position, "0 30");
+  
+  $Glass::GS_Last = %setting;
+  
+  %ctrl = strchr(%pref, ":");
+  %ctrl = getSubStr(%ctrl, 2, strlen(%ctrl));
+  
+  if(isObject("GlassModManagerGui_Prefs_" @ %ctrl)) {
+    error("Setting already exists in GUI.");
+    return;
+  }
+  
+  switch$(%type) {
+    case "checkbox":
+      %checkbox = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %ctrl) {
+        profile = "GlassCheckBoxProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "28 -3";
+        extent = "180 30";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        command = "GlassLive::updateSetting(\"" @ %ctrl @ "\");";
+        text = %name;
+        groupNum = "-1";
+        buttonType = "ToggleButton";
+      };
+      
+      %setting.add(%checkbox);
+      
+    case "keybind":
+      // do nothing
+    default:
+      error("Non-existent setting type.");
+      return;
+  }
+  
+  GlassSettingsGui_ScrollSwatch.add(%setting);
 }
 
 function GlassSettings::loadData(%this, %context) {
