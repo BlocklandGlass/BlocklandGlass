@@ -123,7 +123,10 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoin":
-      GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+      if(GlassSettings.get("Live::RoomNotification")) {
+        GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+      }
+      
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
       %clients = %data.clients;

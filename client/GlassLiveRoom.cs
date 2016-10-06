@@ -37,8 +37,10 @@ function GlassLiveRoom::leaveRoom(%this) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
   
-  GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
-
+  if(GlassSettings.get("Live::RoomNotification")) {
+    GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
+  }
+  
   %this.view.window.removeTab(%this.view);
   %this.view.deleteAll();
   %this.view.delete();

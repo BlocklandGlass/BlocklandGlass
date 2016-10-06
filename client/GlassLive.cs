@@ -50,18 +50,19 @@ function GlassLive::init() {
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
   
+  GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messenges", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
   // GlassSettings.drawSetting("Live::RoomAutoJoin", "Auto Join Room", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
   
   GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
   
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
   
   for(%i = 0; %i < getWordCount(%settings); %i++) {
