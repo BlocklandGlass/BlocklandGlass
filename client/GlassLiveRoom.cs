@@ -249,10 +249,15 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-      if(!%this.awake)
-        GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
-      
-      alxPlay(GlassUserMentionedAudio);
+      if($Glass::LastMentioned $= "" || $Sim::Time > $Glass::LastMentioned) {
+        if(!%this.awake) {
+          GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+        }
+        
+        alxPlay(GlassUserMentionedAudio);
+        
+        $Glass::LastMentioned = $Sim::Time + 10;
+      }
     } else if(GlassSettings.get("Live::RoomChatNotification")) {
       if(!%this.awake)
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
