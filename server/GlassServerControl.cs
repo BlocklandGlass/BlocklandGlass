@@ -306,7 +306,7 @@ package GlassServerControlS {
     }
 
     if(!%client.hasGlass && GlassClientSupport.idx > 0) {
-      commandToClient(%client, 'messageBoxOk', "Recommended Mods", "This server has some optional clients you can download:<br>" @ GlassClientSupport.getLinks());
+      commandToClient(%client, 'messageBoxOk', "Recommended Mods", "<font:verdana:13>This server has some optional clients you can download:<br>" @ GlassClientSupport.getLinks());
     }
 
     return %ret;

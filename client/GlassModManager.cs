@@ -108,7 +108,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   if(strlen(%key) == 1) {
     %badChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789[]\\/{};:'\"<>,./?!@#$%^&*-_=+`~";
     if(strpos(%badChar, strupr(%key)) >= 0) {
-      GlassModManagerGui_KeybindText.setText("<font:Verdana Bold:15><just:center><color:111111>Invalid Character. <font:verdana:16>Please try again");
+      GlassModManagerGui_KeybindText.setText("<font:Verdana Bold:15><just:center><color:111111>Invalid Character <font:verdana:16><br>Please try again");
       return;
     }
   } else {
@@ -690,7 +690,7 @@ function GlassModManager::renderMyAddons(%this) {
 
 function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
   if(!%this.addon.isBLG) {
-    messageBoxOk("Add-On", %this.addon.name);
+    messageBoxOk("Add-On", "<font:verdana:13>" @ %this.addon.name);
   } else {
     jettisonReadFile("Add-Ons/" @ %this.addon.name @ "/version.json");
 	%versionData = $JSON::Value;

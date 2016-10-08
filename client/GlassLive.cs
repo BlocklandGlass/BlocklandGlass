@@ -72,8 +72,14 @@ function GlassLive::init() {
   }
 }
 
-function GlassLive_keybind() {
-  GlassLive::openOverlay();
+function GlassLive_keybind(%down) {
+  if(%down) {
+    if(!GlassOverlayGui.isAwake()) {
+      GlassLive::openOverlay();
+    } else {
+      GlassLive::closeOverlay();
+    }
+  }
 }
 
 function GlassLive::openOverlay() {
@@ -118,7 +124,7 @@ function GlassLive::openChatroom() {
   }
   
   if(!%chatFound) {
-    messageBoxYesNo("Connect", "<font:verdana:13>This will (re)connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+    messageBoxYesNo("Connect", "<font:verdana:13>This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
   }
 }
 
@@ -760,7 +766,7 @@ function GlassLive::sendFriendRequest(%blid) {
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
 
-  messageBoxOk("Friend Request Sent", "Friend request sent to BLID " @ %blid);
+  messageBoxOk("Friend Request Sent", "<font:verdana:13>Friend request sent to BLID " @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -915,12 +921,14 @@ function GlassLive::openAddDlg() {
 
 function GlassLive::addDlgSubmit() {
   if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue() || GlassFriendsGui_AddFriendBLID.getValue() < 0) {
-    messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    GlassFriendsGui_AddFriendBLID.setValue("");
+    messageBoxOk("Invalid BLID", "<font:verdana:13>That is not a valid Blockland ID!");
     return;
   }
 
   if(GlassFriendsGui_AddFriendBLID.getValue() == getNumKeyId()) {
-    messageBoxOk("Invalid BLID", "You can't friend yourself");
+    GlassFriendsGui_AddFriendBLID.setValue("");
+    messageBoxOk("Invalid BLID", "<font:verdana:13>You can't friend yourself.");
     return;
   }
 
@@ -1073,10 +1081,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
   if(%this.type $= "request") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      messageBoxOk("Ignored", "Friend Request ignored");
+      messageBoxOk("Ignored", "<font:verdana:13>Friend Request ignored.");
       GlassLive::friendDecline(%this.blid);
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-      messageBoxOk("Accepted", "Friend Request accepted");
+      messageBoxOk("Accepted", "<font:verdana:13>Friend Request accepted.");
       GlassLive::friendAccept(%this.blid);
     }
   } else {

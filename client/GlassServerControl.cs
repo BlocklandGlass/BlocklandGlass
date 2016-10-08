@@ -20,9 +20,9 @@ function openGlassSettings(%down) {
       canvas.pushDialog(GlassServerControlGui);
     } else {
       if(ServerConnection.hasGlass) {
-        messageBoxOk("Uh oh", "You don't have access to Glass Server Preferences!");
+        messageBoxOk("Uh oh", "<font:verdana:13>You don't have access to Glass Server Preferences!");
       } else {
-        messageBoxOk("Uh oh", "Glass is not running on this server.");
+        messageBoxOk("Uh oh", "<font:verdana:13>Glass is not running on this server.");
       }
     }
   }
@@ -737,7 +737,7 @@ function GlassServerControlC::addUser() {
   GlassServerControlGui_InputBLID.setValue("");
 
   if((%blid+0 !$= %blid) || %blid < 0) {
-    messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    messageBoxOk("Invalid BLID", "<font:verdana:13>That is not a valid Blockland ID!");
     return;
   }
 

@@ -80,12 +80,12 @@ function GlassUpdaterSupport::removeFromQueue(%glassObj) {
   %obj = %glassObj.addonHandler;
   if(%obj.name $= "System_BlocklandGlass") {
     //must update!
-    messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
+    messageBoxOk("Uh oh", "<font:verdana bold:13>Updates for Blockland Glass are mandatory. <font:verdana:13>It'll only take a minute!\n\nSorry about that.");
     return;
   }
   if(%obj.name $= "Support_Updater") {
     //must update!
-    messageBoxOk("Uh oh", "Updates for Support_Updater are mandatory. It'll only take a minute!\n\nSorry about that.");
+    messageBoxOk("Uh oh", "<font:verdana bold:13>Updates for Support_Updater are mandatory. <font:verdana:13>It'll only take a minute!\n\nSorry about that.");
     return;
   }
 
@@ -112,7 +112,7 @@ function GlassUpdaterSupport::close() {
 
   if(%glassUpdate && !GlassUpdatesGroup.didUpdate) {
     %ctx.inhibitClose(true);
-    messageBoxOk("Uh oh", "Updates for Blockland Glass are mandatory. It'll only take a minute!\n\nSorry about that.");
+    messageBoxOk("Uh oh", "<font:verdana bold:13>Updates for Blockland Glass are mandatory. <font:verdana:13>It'll only take a minute!\n\nSorry about that.");
   } else {
     %ctx.inhibitClose(false);
   }
