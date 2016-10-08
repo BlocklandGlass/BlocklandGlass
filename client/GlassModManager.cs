@@ -50,7 +50,7 @@ function GlassModManager::updateLiveSearch() {
   %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
 
   GlassModManager.liveSearch = %val;
-  GlassSettings.update("MM::liveSearch", %val);
+  // GlassSettings.update("MM::LiveSearch", %val);
 }
 
 function GlassModManager::setAddonStatus(%aid, %status) {

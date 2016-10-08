@@ -6,9 +6,9 @@ function GlassSettings::init(%context) {
   echo("Loading " @ %context @ " prefs");
 
   if(%context $= "client") {
-    GlassSettings.registerSetting("client", "MM::UseDefault", false);
+    GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
-    GlassSettings.registerSetting("client", "MM::LiveSearch", true);
+    GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
 
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
 
@@ -126,17 +126,18 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   
   $Glass::GS_Last = %setting;
   
-  %ctrl = strchr(%pref, ":");
-  %ctrl = getSubStr(%ctrl, 2, strlen(%ctrl));
+  %prefix = getSubStr(%pref, 0, strpos(%pref, ":"));
+  %suffix = strchr(%pref, ":");
+  %suffix = getSubStr(%suffix, 2, strlen(%suffix));
   
-  if(isObject("GlassModManagerGui_Prefs_" @ %ctrl)) {
+  if(isObject("GlassModManagerGui_Prefs_" @ %suffix)) {
     error("Setting already exists in GUI.");
     return;
   }
   
   switch$(%type) {
     case "checkbox":
-      %checkbox = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %ctrl) {
+      %checkbox = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %suffix) {
         profile = "GlassCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "center";
@@ -146,7 +147,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        command = "GlassLive::updateSetting(\"" @ %ctrl @ "\");";
+        command = "GlassLive::updateSetting(\"" @ %prefix @ "\", \"" @ %suffix @ "\");";
         text = %name;
         groupNum = "-1";
         buttonType = "ToggleButton";

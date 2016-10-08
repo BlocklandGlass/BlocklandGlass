@@ -131,10 +131,10 @@ function GlassLive::closeOverlay() {
   canvas.popDialog(GlassOverlayGui);
 }
 
-function GlassLive::updateSetting(%setting) {
+function GlassLive::updateSetting(%category, %setting) {
   %box = "GlassModManagerGui_Prefs_" @ %setting;
-  GlassSettings.update("Live::" @ %setting, %box.getValue());
-  %box.setValue(GlassSettings.get("Live::" @ %setting));
+  GlassSettings.update(%category @ "::" @ %setting, %box.getValue());
+  %box.setValue(GlassSettings.get(%category @ "::" @ %setting));
   
   if(strLen(%callback = GlassSettings.obj[%setting].callback)) {
     if(isFunction(%callback)) {
