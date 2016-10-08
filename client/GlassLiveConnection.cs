@@ -320,7 +320,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
     case "messageBox":
-      messageBoxOk(%data.title, %data.text);
+      messageBoxOk(%data.title, "<font:verdana:13>" @ %data.text);
 
     case "shutdown":
       %planned = %data.planned;
