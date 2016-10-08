@@ -54,9 +54,9 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 	}
 
 	if(%up) {
-		messageBoxOk("Settings Updated", "The server settings were updated");
+		messageBoxOk("Settings Updated", "The server settings were updated.");
 	} else {
-		messageBoxOk("No Changes!", "There was nothing to update!");
+		messageBoxOk("No Changes", "There was nothing to update!");
 	}
 }
 

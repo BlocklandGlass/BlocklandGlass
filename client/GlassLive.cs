@@ -118,8 +118,7 @@ function GlassLive::openChatroom() {
   }
   
   if(!%chatFound) {
-    GlassLive::disconnect();
-    GlassLive.schedule(0, connectToServer);
+    messageBoxYesNo("Connect", "<font:verdana:13>This will (re)connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
   }
 }
 
@@ -1400,7 +1399,7 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
 function GlassChatroomWindow::exitTab(%this) {
   %tab = %this.activeTab;
   if(isObject(%tab)) {
-    messageBoxYesNo("Leave Room?", "<font:verdana:13>Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:15>?", %tab.room.getId() @ ".leaveRoom();");
+    messageBoxYesNo("Leave Room", "<font:verdana:13>Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:15>?", %tab.room.getId() @ ".leaveRoom();");
   }
 }
 
