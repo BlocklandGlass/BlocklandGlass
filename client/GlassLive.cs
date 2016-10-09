@@ -1260,7 +1260,7 @@ function GlassLive::createChatroomWindow() {
     profile = "GlassWindowProfile";
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "135 131";
+    position = "135 130";
     extent = "475 290";
     minExtent = "475 290";
     enabled = "1";
@@ -2570,6 +2570,9 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
   GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
   GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-60 100");
+  
+  GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
+  GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
 }
 
 function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
@@ -2587,8 +2590,11 @@ package GlassLivePackage {
     parent::onWake(%this);
 
     if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
-      GlassFriendsWindow.position = (getWord(getRes(), 0) - getWord(GlassFriendsWindow.extent, 0) - 50) SPC 50;
+      GlassFriendsWindow.position = GlassSettings.get("Live::FriendsWindow_Pos");
+      GlassFriendsWindow.extent = GlassSettings.get("Live::FriendsWindow_Ext");
       GlassOverlayGui.add(GlassFriendsWindow);
+      
+      GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));
     }
   }
 

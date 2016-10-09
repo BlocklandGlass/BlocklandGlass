@@ -143,13 +143,13 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
         %text = "Kicked";
 
       case 3:
-        %text = "Connection Dropped";
+        %text = "Quit";
 
       case 4:
         %text = "Updates";
 
       default:
-        %text = "unhandled: " @ %reason;
+        %text = "Unhandled: " @ %reason;
     }
 
     %user = GlassLiveUser::getFromBlid(%blid);

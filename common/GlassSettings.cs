@@ -11,26 +11,26 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
 
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
-
+    GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
+    
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", false);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", false);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
     GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
-
+    GlassSettings.registerSetting("client", "Live::RoomNotification", true); // joined room / left room notifications
+    
+    GlassSettings.registerSetting("client", "Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
+    GlassSettings.registerSetting("client", "Live::FriendsWindow_Ext", "230 380");
+    
     GlassSettings.registerSetting("client", "Live::MessageNotification", true);
     GlassSettings.registerSetting("client", "Live::MessageSound", true);
     GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
-
-    GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
     
-    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true);
+    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true); // user connection messages in chatroom
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
-    
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
-    
-    GlassSettings.registerSetting("client", "Live::RoomNotification", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);
