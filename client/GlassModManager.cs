@@ -289,7 +289,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
         case "rtbaddon":
           Glass::debug(%this.buffer);
-          messageBoxOk("Open in browser?", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
+          messageBoxOk("Open In Browser", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
 
         case "rtb":
           %newArray = JettisonArray();

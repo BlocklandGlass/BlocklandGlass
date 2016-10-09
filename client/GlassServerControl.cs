@@ -20,9 +20,9 @@ function openGlassSettings(%down) {
       canvas.pushDialog(GlassServerControlGui);
     } else {
       if(ServerConnection.hasGlass) {
-        messageBoxOk("Uh oh", "<font:verdana:13>You don't have access to Glass Server Preferences!");
+        messageBoxOk("Glass Server Preferences", "<font:verdana:13>You don't have access to <font:verdana bold:13>Glass Server Preferences<font:verdana:13>!");
       } else {
-        messageBoxOk("Uh oh", "<font:verdana:13>Glass is not running on this server.");
+        messageBoxOk("Glass Server Preferences", "<font:verdana bold:13>Blockland Glass<font:verdana:13> is not running on this server.");
       }
     }
   }

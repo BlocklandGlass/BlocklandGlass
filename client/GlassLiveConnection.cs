@@ -331,8 +331,10 @@ function GlassLiveConnection::onLine(%this, %line) {
         %timeout = 1000;
       }
 
-      GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, (%planned ? "traffic_lights_yellow" : "traffic_lights_red"), 1);
-
+      GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "helmet", 1);
+      
+      alxPlay(GlassUserMentionedAudio);
+      
       %this.disconnect();
       %this.connected = false;
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
@@ -342,10 +344,11 @@ function GlassLiveConnection::onLine(%this, %line) {
     // 1 - other sign-in
     // 2 - barred
     if(%data.reason == 1) {
-      messageBoxOk("Uh oh", "<font:verdana:13>You logged in from somewhere else!");
+      messageBoxOk("Disconnected", "<font:verdana:13>You logged in from somewhere else!");
       %this.disconnect();
     } else if(%data.reason == 2) {
-      messageBoxOk("Uh oh", "<font:verdana:13>You have been barred from using <font:verdana bold:13>Glass Live<font:verdana:13>!");
+      messageBoxOk("Disconnected", "<font:verdana:13>You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
+      GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
     }
   }
