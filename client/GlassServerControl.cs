@@ -37,6 +37,8 @@ function GlassServerControlC::setTab(%tab) {
       %ctrl.setVisible(false);
     }
   }
+  
+  GlassServerControlGui_CursorFix.makeFirstResponder(true);
 }
 
 function GlassServerControlC::openCategory(%category) {
