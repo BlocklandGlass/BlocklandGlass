@@ -745,8 +745,6 @@ function GlassServerControlC::addUser() {
 
   %rank = GlassServerControlGui_InputRank.getValue();
 
-  GlassServerControlGui_InputRank.setValue("Admin");
-
   if(%rank $= "Super Admin") {
     %rank = 2;
   } else if(%rank $= "Admin") {
@@ -775,6 +773,9 @@ function GlassServerControlC::addSelected(%rank, %auto) {
     if(%blid !$= "") {
       GlassServerControlGui_InputBLID.setValue(%blid);
     }
+    
+    GlassServerControlGui_InputRank.setValue("Admin");
+    GlassServerControlGui_InputBLID.makeFirstResponder(true);
   } else {
     if(%blid $= "") {
       return;
