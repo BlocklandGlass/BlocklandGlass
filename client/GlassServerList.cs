@@ -158,7 +158,7 @@ package GlassServerList {
         //canvas.pushDialog(GlassServerListGui);
       }
 
-      //messageBoxYesNo("Glass Server List", "Hey there! Do you want to use the Glass server list? Here's some neat features:<br><br>+ Live updating list (no refreshing)<br>+ Detailed server information<br>+ Other stuff");
+      //glassMessageBoxYesNo("Glass Server List", "Hey there! Do you want to use the Glass server list? Here's some neat features:<br><br>+ Live updating list (no refreshing)<br>+ Detailed server information<br>+ Other stuff");
     }
 
     parent::pushDialog(%canvas, %dlg);

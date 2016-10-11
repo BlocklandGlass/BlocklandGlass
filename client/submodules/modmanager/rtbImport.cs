@@ -84,7 +84,7 @@ function GlassModManagerGui::openRTBImport(%addons) {
     %last = %swatch;
   }
 
-  messageBoxOk("RTB Reclamation", "<font:verdana:12>Some of your old RTB add-ons have updates available through Glass! We'll go ahead and fetch those for you!", "GlassModManager::doRTBImport();");
+  glassMessageBoxOk("RTB Reclamation", "<font:verdana:12>Some of your old RTB add-ons have updates available through Glass! We'll go ahead and fetch those for you!", "GlassModManager::doRTBImport();");
 
   %container.verticalMatchChildren(0, 10);
 

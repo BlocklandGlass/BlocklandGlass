@@ -424,7 +424,7 @@ function GlassScreenshotMouse::onMouseDown(%this) {
 }
 
 function GlassModManagerGui::displayAddonRating(%rating) {
-  messageBoxOk("Thanks", "<font:verdana:13>Your rating has been submitted. Thanks for the input!");
+  glassMessageBoxOk("Thanks", "Your rating has been submitted. Thanks for the input!");
   %rate = %rating;
   %x = 380;
   for(%i = 0; %i < 5; %i++) {

@@ -289,7 +289,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
         case "rtbaddon":
           Glass::debug(%this.buffer);
-          messageBoxOk("Open In Browser", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
+          glassMessageBoxOk("Open In Browser", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
 
         case "rtb":
           %newArray = JettisonArray();
@@ -690,7 +690,7 @@ function GlassModManager::renderMyAddons(%this) {
 
 function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
   if(!%this.addon.isBLG) {
-    messageBoxOk("Add-On", "<font:verdana:13>" @ %this.addon.name);
+    glassMessageBoxOk("Add-On", %this.addon.name);
   } else {
     jettisonReadFile("Add-Ons/" @ %this.addon.name @ "/version.json");
 	%versionData = $JSON::Value;
@@ -702,7 +702,7 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
 
     //GlassModManagerGui_AddonSettings_Window.setText(%this.addon.glassdata.get("title") @ " - " @ %versionData.get("version"));
     //GlassModManagerGui_AddonSettings_Window.setVisible(true);
-    messageBoxOk(%this.addon.glassdata.get("title"), "<font:verdana bold:14>Version:<font:verdana:14> " @ %versionData.get("version"));
+    glassMessageBoxOk(%this.addon.glassdata.get("title"), "<font:verdana bold:14>Version:<font:verdana:14> " @ %versionData.get("version"));
   }
 }
 

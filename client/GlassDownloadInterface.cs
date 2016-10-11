@@ -15,7 +15,7 @@ function GlassDownloadGui::onAccept(%this) {
       eval(%ctx.callback[%i] @ "(1);");
     }
   } else {
-    messageBoxOk("Error", "<font:verdana:13>Download GUI open without context. Please file a bug report");
+    glassMessageBoxOk("Error", "Download GUI open without context. Please file a bug report");
   }
 }
 

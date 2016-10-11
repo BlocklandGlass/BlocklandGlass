@@ -124,7 +124,7 @@ function GlassLive::openChatroom() {
   }
   
   if(!%chatFound) {
-    messageBoxYesNo("Connect", "<font:verdana:13>This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+    glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
   }
 }
 
@@ -358,7 +358,7 @@ function GlassLiveDrag::updatePosition(%this, %pos) {
 }
 
 function GlassLive::joinGroupPrompt(%id) {
-  messageBoxYesNo("Join Group", "<font:verdana:13>Do you want to join the group chat?", "GlassLive::joinGroup(" @ %id @ ");");
+  glassMessageBoxYesNo("Join Group", "Do you want to join the group chat?", "GlassLive::joinGroup(" @ %id @ ");");
 }
 
 function GlassLive::joinGroup(%id) {
@@ -766,7 +766,7 @@ function GlassLive::sendFriendRequest(%blid) {
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
 
-  messageBoxOk("Friend Request Sent", "<font:verdana:13>Friend request sent to BLID " @ %blid);
+  glassMessageBoxOk("Friend Request Sent", "Friend request sent to BLID " @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
@@ -922,13 +922,13 @@ function GlassLive::openAddDlg() {
 function GlassLive::addDlgSubmit() {
   if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue() || GlassFriendsGui_AddFriendBLID.getValue() < 0) {
     GlassFriendsGui_AddFriendBLID.setValue("");
-    messageBoxOk("Invalid BLID", "<font:verdana:13>That is not a valid Blockland ID!");
+    glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
     return;
   }
 
   if(GlassFriendsGui_AddFriendBLID.getValue() == getNumKeyId()) {
     GlassFriendsGui_AddFriendBLID.setValue("");
-    messageBoxOk("Invalid BLID", "<font:verdana:13>You can't friend yourself.");
+    glassMessageBoxOk("Invalid BLID", "You can't friend yourself.");
     return;
   }
 
@@ -1081,10 +1081,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
   if(%this.type $= "request") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      messageBoxOk("Ignored", "<font:verdana:13>Friend Request ignored.");
+      glassMessageBoxOk("Ignored", "Friend Request ignored.");
       GlassLive::friendDecline(%this.blid);
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-      messageBoxOk("Accepted", "<font:verdana:13>Friend Request accepted.");
+      glassMessageBoxOk("Accepted", "Friend Request accepted.");
       GlassLive::friendAccept(%this.blid);
     }
   } else {
@@ -1104,14 +1104,14 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
 function GlassLive::addFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user) {
-    messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
+    glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
   }
 }
 
 function GlassLive::removeFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user) {
-    messageBoxYesNo("Remove Friend", "<font:verdana:13>Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
+    glassMessageBoxYesNo("Remove Friend", "Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
   }
 }
 
@@ -1407,7 +1407,7 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
 function GlassChatroomWindow::exitTab(%this) {
   %tab = %this.activeTab;
   if(isObject(%tab)) {
-    messageBoxYesNo("Leave Room", "<font:verdana:13>Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:15>?", %tab.room.getId() @ ".leaveRoom();");
+    glassMessageBoxYesNo("Leave Room", "Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:15>?", %tab.room.getId() @ ".leaveRoom();");
   }
 }
 

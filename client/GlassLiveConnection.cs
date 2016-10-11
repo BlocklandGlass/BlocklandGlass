@@ -320,7 +320,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
     case "messageBox":
-      messageBoxOk(%data.title, "<font:verdana:13>" @ %data.text);
+      glassMessageBoxOk(%data.title, %data.text);
 
     case "shutdown":
       %planned = %data.planned;
@@ -344,10 +344,10 @@ function GlassLiveConnection::onLine(%this, %line) {
     // 1 - other sign-in
     // 2 - barred
     if(%data.reason == 1) {
-      messageBoxOk("Disconnected", "<font:verdana:13>You logged in from somewhere else!");
+      glassMessageBoxOk("Disconnected", "You logged in from somewhere else!");
       %this.disconnect();
     } else if(%data.reason == 2) {
-      messageBoxOk("Disconnected", "<font:verdana:13>You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Disconnected", "You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
     }

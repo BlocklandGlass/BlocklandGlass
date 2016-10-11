@@ -463,8 +463,8 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //else
     if(%this.user.blid != getNumKeyId())
       GlassLive::openUserWindow(%this.user.blid);
-      //messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
+      //glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
     else
-      messageBoxOk("Hey There", "<font:verdana:13>That's you!");
+      glassMessageBoxOk("Hey There", "That's you!");
   }
 }

@@ -31,6 +31,7 @@ function Glass::execClient() {
 
 	echo(" ===                 Loading Interface                  ===");
 	exec("./client/gui/profiles.cs");
+	exec("./client/gui/messageboxes.cs");
 	exec("./client/gui/GlassDownloadGui.gui");
 	exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
 	exec("./client/gui/GlassModManagerGui.gui");
