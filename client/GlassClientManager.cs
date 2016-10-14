@@ -8,12 +8,15 @@ function GlassClientManager::init() {
 }
 
 function GlassClientManager::scan(%this) {
-  discoverFile("*");
+  discoverFile("Add-Ons/*/glass.json");
   %pattern = "Add-ons/*/glass.json";
 	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %path = filePath(%file);
     %name = getsubstr(%path, 8, strlen(%path)-8);
+
+    if(!isFile(%path @ "/client.cs"))
+      continue;
 
     %error = jettisonReadFile(%file);
     if(%error) {
@@ -39,6 +42,10 @@ function GlassClientManager::scan(%this) {
 
 function GlassClientManager::getClients(%this) {
   return %this.addons;
+}
+
+function GlassClientManager::hasClient(%this, %id) {
+  return %this.hasAddon[%id];
 }
 
 function GlassClientManager::downloadFinished(%id) {
@@ -181,28 +188,58 @@ package GlassClientManager {
   function GameConnection::onConnectRequestRejected(%this, %reason) {
     GlassClientManager.mods = 0;
     if(getField(%reason, 0) $= "MISSING" || getField(%reason, 0) $= "MISSING_OPT") {
+      //echo(%reason);
       if(getField(%reason, 0) $= "MISSING")
         %required = true;
 
       canvas.popDialog(connectingGui);
       %mods = trim(setField(%reason, 0, ""));
+      %missing = "";
+
       for(%i = 0; %i < getFieldCount(%mods); %i++) {
         %args = strreplace(getField(%mods, %i), "^", "\t");
         %name = getField(%args, 0);
         %id = getField(%args, 1);
-        GlassClientManager.name[%i] = %name;
-        GlassClientManager.id[%i] = %id;
-        echo("Required mod: " @ %name SPC %id);
+
+        %required[%id] = true;
+
+        if(GlassClientManager.hasClient(%id)) {
+          echo("Has required mod " @ %id @ " (" @ %name @ ")");
+        } else {
+          GlassClientManager.name[%i] = %name;
+          GlassClientManager.id[%i] = %id;
+          %missing = %missing TAB getField(%mods, %i);
+          echo("Missing required mod " @ %id @ " (" @ %name @ ")");
+        }
       }
-      GlassClientManager.mods = getFieldCount(%mods);
-      GlassClientManager::populateGui(%required);
+
+      %missing = getsubstr(%missing, 1, strlen(%missing)-1);
+
+      %count = getFieldCount(%missing);
+      GlassClientManager.mods = %count;
+
+      if(%count > 0) {
+        GlassClientManager::populateGui(%missing);
+      } else {
+        %clients = GlassClientManager.getClients();
+        %hasStr = "";
+        for(%i = 0; %i < getWordCount(%clients); %i++) {
+          %args = strreplace(getWord(%clients, %i), "|", "\t");
+
+          if(%required[getField(%args, 0)]) {
+            %hasStr = %hasStr SPC getWord(%clients, %i);
+          }
+        }
+        GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
+        JoinServerGui.join();
+      }
     } else {
       parent::onConnectRequestRejected(%this, %reason);
     }
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-    parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.getClients() TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+    parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
     GlassClientManager.bypass = false;
   }
 
