@@ -500,6 +500,8 @@ function GlassLive::openDirectMessage(%blid, %username) {
     %user.setMessageGui(%gui);
 
     GlassOverlayGui.add(%gui);
+  } else {
+    GlassOverlayGui.pushToBack(%gui);
   }
 
   return %gui;
@@ -895,7 +897,7 @@ function GlassLive::urlMetadata(%tcp, %error) {
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
   if(%btn.on) {
-    GlassLive::disconnect();
+    glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect();");
   } else {
     GlassLive::connectToServer();
   }
@@ -912,11 +914,19 @@ function GlassLive::setPowerButton(%bool) {
 }
 
 function GlassLive::openAddDlg() {
-  if(!GlassLiveConnection.connected)
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to <font:verdana bold:13>Glass Live<font:verdana:13> to add friends.");
     return;
-
-  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(true);
-  GlassFriendsGui_ScrollOverlay.setVisible(true);
+  }
+  
+  %gui = GlassFriendsGui_AddFriendBLID.getGroup();
+  
+  if(!%gui.visible) {
+    %gui.setVisible(true);
+    GlassFriendsGui_ScrollOverlay.setVisible(true);
+  } else {
+    GlassLive::addDlgClose();
+  }
 }
 
 function GlassLive::addDlgSubmit() {
@@ -1119,6 +1129,11 @@ function GlassLive::openUserWindow(%blid) {
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
+    
+    if(!isObject(%window)) {
+      return;
+    }
+    
     %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid;
     %window.text.setValue(%text);
     %window.text.forceReflow();
@@ -1142,8 +1157,9 @@ function GlassLive::openUserWindow(%blid) {
 
 function GlassLive::createUserWindow(%uo) {
   if(isObject(%uo.window)) {
-    GlassOverlayGui.pushToBack(%uo.window);
-    return %uo.window;
+    // GlassOverlayGui.pushToBack(%uo.window);
+    %uo.window.delete();
+    return;
   }
 
   %window = new GuiWindowCtrl() {

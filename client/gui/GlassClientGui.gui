@@ -105,7 +105,7 @@ new GuiControl(GlassClientGui) {
          text = "Cancel";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/button2";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -128,7 +128,7 @@ new GuiControl(GlassClientGui) {
          text = "Skip";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/button2";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
