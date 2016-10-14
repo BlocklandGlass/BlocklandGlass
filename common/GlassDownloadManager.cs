@@ -92,8 +92,11 @@ function GlassDownloadTCP::onDone(%this, %error) {
 				fileDelete("Add-Ons/" @ %filename @ ".zip");
 			}
 			%cl = "Add-Ons/" @ %name @ "/client.cs";
+			discoverFile("*");
 			if(isFile(%cl))
 				exec(%cl);
+
+			GlassClientManager.downloadFinished(%this.fileData.id);
 		}
 
 		if(!$Server::Dedicated) {
