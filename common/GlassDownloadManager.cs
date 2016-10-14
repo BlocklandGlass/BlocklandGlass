@@ -95,6 +95,8 @@ function GlassDownloadTCP::onDone(%this, %error) {
 			discoverFile("*");
 			if(isFile(%cl))
 				exec(%cl);
+
+			GlassClientManager.downloadFinished(%this.fileData.id);
 		}
 
 		if(!$Server::Dedicated) {
