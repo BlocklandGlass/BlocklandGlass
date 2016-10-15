@@ -331,7 +331,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %timeout = 1000;
       }
 
-      GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "helmet", 1);
+      GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "roadworks", 1);
       
       alxPlay(GlassUserMentionedAudio);
       

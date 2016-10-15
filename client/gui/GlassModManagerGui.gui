@@ -151,7 +151,7 @@ new GuiControl(GlassModManagerGui) {
             position = "5 80";
             extent = "125 30";
             minExtent = "8 2";
-            enabled = "1";
+            enabled = "0";
             visible = "0";
             clipToParent = "1";
             command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"builds\");";

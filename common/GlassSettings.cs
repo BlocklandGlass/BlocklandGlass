@@ -9,7 +9,9 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
     GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
-
+    
+    GlassSettings.registerSetting("client", "Live::oRBsNotified", false);
+    
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
     

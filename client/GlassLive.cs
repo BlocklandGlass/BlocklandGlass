@@ -1851,6 +1851,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
 
   if(isObject(%browserSwatch)) {
     %browserSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%extent, 1) - 70;
+    // insert browser horizontal sizing here
   }
 
   %scroll.scrollToBottom();
