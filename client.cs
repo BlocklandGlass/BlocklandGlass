@@ -104,11 +104,11 @@ function clientCmdGlassHandshake(%ver) {
     echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
     
     if(%server_ver > %client_ver) {
-      NewChatSO.schedule(500, "addLine", "You are running \c6" @ Glass.version @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ %ver);
+      NewChatSO.schedule(2500, "addLine", "You are running \c6" @ Glass.version @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ %ver);
       
       echo("\c2Glass Server -> Client version mismatch, this client's Blockland Glass installation is out of date!");
     } else if(%client_ver > %server_ver) {
-      NewChatSO.schedule(500, "addLine", "This server is running an outdated version of \c3Blockland Glass\c0, please inform the host.");
+      NewChatSO.schedule(2500, "addLine", "This server is running an outdated version of \c3Blockland Glass\c0, please inform the host.");
       
       echo("\c2Glass Client -> Server version mismatch, this server's Blockland Glass installation is out of date!");
     } else if(%client_ver == %server_ver) {

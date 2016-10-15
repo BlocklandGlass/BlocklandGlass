@@ -929,15 +929,6 @@ package GlassServerControlC {
         rtbServerControlBtn.setVisible(true);
     }
 
-    // oRBs
-
-    if(isObject(orbsServerControlBtn)) {
-      if(ServerConnection.hasGlass)
-        orbsServerControlBtn.setVisible(false);
-      else
-        orbsServerControlBtn.setVisible(true);
-    }
-
     // glass (takes over BL's standard server settings btn)
 
     %serverSettingsBtn = getServerSettingsBtn();
