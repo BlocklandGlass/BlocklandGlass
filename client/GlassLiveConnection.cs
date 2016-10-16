@@ -111,10 +111,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
 
     case "message":
-      GlassLive::onMessage(%data.message, %data.sender, %data.sender_id);
+      %sender = getASCIIString(%data.sender);
+      
+      GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification"))
-        GlassNotificationManager::newNotification(%data.sender, %data.message, "comment", 0);
+        GlassNotificationManager::newNotification(%sender, %data.message, "comment", 0);
 
       if(GlassSettings.get("Live::MessageSound"))
         alxPlay(GlassUserMsgReceivedAudio);
@@ -340,17 +342,17 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
 
     case "disconnected":
-    // 0 - server shutdown
-    // 1 - other sign-in
-    // 2 - barred
-    if(%data.reason == 1) {
-      glassMessageBoxOk("Disconnected", "You logged in from somewhere else!");
-      %this.disconnect();
-    } else if(%data.reason == 2) {
-      glassMessageBoxOk("Disconnected", "You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
-      GlassSettings.update("Live::StartupConnect", false);
-      %this.disconnect();
-    }
+      // 0 - server shutdown
+      // 1 - other sign-in
+      // 2 - barred
+      if(%data.reason == 1) {
+        glassMessageBoxOk("Disconnected", "You logged in from somewhere else!");
+        %this.disconnect();
+      } else if(%data.reason == 2) {
+        glassMessageBoxOk("Disconnected", "You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
+        GlassSettings.update("Live::StartupConnect", false);
+        %this.disconnect();
+      }
   }
   //%data.delete();
 }
