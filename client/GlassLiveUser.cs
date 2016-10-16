@@ -1,7 +1,7 @@
 
 function GlassLiveUser::create(%username, %blid) {
   if(isObject(GlassLiveUsers.user[%blid])) {
-    GlassLiveUsers.user[%blid].username = %username;
+    GlassLiveUsers.user[%blid].username = getASCIIString(%username);
     return GlassLiveUsers.user[%blid];
   }
 
@@ -10,7 +10,7 @@ function GlassLiveUser::create(%username, %blid) {
 
   %user = new ScriptObject() {
     class = "GlassLiveUser";
-    username = %username;
+    username = getASCIIString(%username);
     blid = %blid;
     online = true;
   };
