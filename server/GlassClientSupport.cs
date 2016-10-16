@@ -34,7 +34,8 @@ function GlassClientSupport::registerRequiredAddon(%this, %name, %glassId, %vers
 
   if(!%optional) {
     %this.required = true;
-
+  }
+  
   %this.idx++;
 }
 
