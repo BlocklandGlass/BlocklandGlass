@@ -10,8 +10,14 @@ function GlassClientSupport::init() {
   new ScriptObject(GlassClientSupport);
 }
 
-function registerRequiredClient(%name, %glassId, %version, %optional) {
+//old : name, glassid, version, optional
+//new : name, glassid, optional
+function registerRequiredClient(%name, %glassId, %arg3, %arg4) {
   GlassClientSupport::init();
+
+  if(%arg3 != 0 && %arg3 != 1) {
+
+  }
 
   GlassClientSupport.registerRequiredAddon(%name, %glassId, %version, %optional);
 }
@@ -28,7 +34,6 @@ function GlassClientSupport::registerRequiredAddon(%this, %name, %glassId, %vers
 
   if(!%optional) {
     %this.required = true;
-  }
 
   %this.idx++;
 }
@@ -45,7 +50,7 @@ function GlassClientSupport::checkClient(%client, %mods) {
   }
 
   for(%i = 0; %i < %this.idx; %i++) {
-    if(%client._glassMod[%this.id[%i]] !$= %this.version[%i]) {
+    if(%client._glassMod[%this.id[%i]] $= "") {
       %missing = trim(%missing TAB %i);
     }
   }
