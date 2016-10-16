@@ -88,7 +88,7 @@ function Glass::execClient() {
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
 }
 
-function clientCmdGlassHandshake(%ver) {
+function clientCmdGlassHandshake(%ver, %tries) {
   %server_ver = stripChars(%ver, ".");
   
   if(%server_ver + 0 !$= %server_ver || %server_ver < 0 || strlen(%server_ver) > 3) {
@@ -101,24 +101,30 @@ function clientCmdGlassHandshake(%ver) {
 	// commandToServer('GlassHandshake', Glass.version);
   
   if(ServerConnection.hasGlass $= "") {
-    echo("\c4Glass Handshake Received...");
-    
-    echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
-    
-    if(%server_ver > %client_ver) {
-      NewChatSO.schedule(2500, "addLine", "You are running \c6" @ Glass.version @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ %ver);
+    if(isObject(NewChatSO)) {
+      echo("\c4Glass Handshake Received...");
       
-      echo("\c2Glass Server -> Client version mismatch, this client's Blockland Glass installation is out of date!");
-    } else if(%client_ver > %server_ver) {
-      NewChatSO.schedule(2500, "addLine", "This server is running an outdated version of \c3Blockland Glass\c0, please inform the host.");
+      echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
       
-      echo("\c2Glass Client -> Server version mismatch, this server's Blockland Glass installation is out of date!");
-    } else if(%client_ver == %server_ver) {
-      echo("\c4Glass Server <-> Client version match.");
+      if(%server_ver > %client_ver) {
+        NewChatSO.addLine("You are running \c6" @ Glass.version @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ %ver);
+        
+        echo("\c2Glass Server -> Client version mismatch, this client's Blockland Glass installation is out of date!");
+      } else if(%client_ver > %server_ver) {
+        NewChatSO.addLine("This server is running an outdated version of \c3Blockland Glass\c0, please inform the host.");
+        
+        echo("\c2Glass Client -> Server version mismatch, this server's Blockland Glass installation is out of date!");
+      } else if(%client_ver == %server_ver) {
+        echo("\c4Glass Server <-> Client version match.");
+      }
+      
+      ServerConnection.hasGlass = true;
+      ServerConnection._glassVersion = %ver;
+    } else {
+      if(%tries <= 5) {
+        schedule(1000, 0, clientCmdGlassHandshake, %ver, %tries++);
+      }
     }
-    
-    ServerConnection.hasGlass = true;
-    ServerConnection._glassVersion = %ver;
   }
 }
 

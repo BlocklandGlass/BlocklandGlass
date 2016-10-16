@@ -1809,7 +1809,7 @@ function GlassChatroomTab::setFlashing(%this, %bool) {
       %this.flashSchedule = %this.schedule(0, flashTick, 1);
     } else {
       if(isObject(%this.tabButton))
-        %this.tabButton.text.setText(%this.title);
+        %this.tabButton.mColor = "255 255 255 200";
       cancel(%this.flashSchedule);
     }
   }
@@ -1820,7 +1820,11 @@ function GlassChatroomTab::flashTick(%this, %bool) {
 
   %button = %this.tabButton;
   if(isObject(%button)) {
-    %button.text.setText(collapseEscape("\\c" @ %bool) @ %this.title);
+    if(%bool) {
+      %button.mColor = "255 60 60 200";
+    } else {
+      %button.mColor = "255 255 255 200";
+    }
   }
 
   %this.flashSchedule = %this.schedule(500, flashTick, !%bool);
