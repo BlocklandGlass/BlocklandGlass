@@ -231,7 +231,7 @@ package GlassClientManager {
           }
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
-        JoinServerGui.join();
+        reconnectToServer();
       }
     } else {
       parent::onConnectRequestRejected(%this, %reason);
