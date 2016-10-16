@@ -1,7 +1,7 @@
 function GlassAuth::init() {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
   GlassLive::setPowerButton(0);
-    
+
 	if(isObject(GlassAuth)) {
 		GlassAuth.delete();
 	}
@@ -27,7 +27,7 @@ function GlassAuth::heartbeat(%this) {
 function GlassAuth::check(%this) {
 	%url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
 	if(%this.ident !$= "") {
-			%url = %url @ "&ident=" @ %this.ident;
+			%url = %url @ "&ident=" @ urlenc(%this.ident);
 	}
 
 	%method = "GET";
@@ -74,11 +74,11 @@ function GlassAuth::updateInput() {
 	GlassVerifyAccount_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/cancel.png");
 }
 
-function GlassAuth::onAuthSuccess(%this) {  
-	if(!%this.firstAuth) {    
+function GlassAuth::onAuthSuccess(%this) {
+	if(!%this.firstAuth) {
     if(GlassSettings.get("Live::StartupConnect"))
       GlassLive::connectToServer();
-    
+
     GlassModManager::placeCall("rtb");
 	}
 
