@@ -199,8 +199,9 @@ function GlassLive::chatColorCheck(%this) {
 
 function GlassLive::disconnect(%reason) {
   GlassLive::cleanup();
-  if(isObject(GlassLiveConnection))
+  if(isObject(GlassLiveConnection)) {
     GlassLiveConnection.doDisconnect(%reason);
+  }
 }
 
 function GlassLive::cleanup() {
@@ -873,7 +874,9 @@ function GlassLive::updateLocation(%inServer) {
 
   //echo(jettisonStringify("object", %obj));
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  if(isObject(GlassLiveConnection)) {
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  }
 }
 
 function GlassLive::urlMetadata(%tcp, %error) {
