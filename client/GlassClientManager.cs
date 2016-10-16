@@ -26,16 +26,8 @@ function GlassClientManager::scan(%this) {
 
     %value = $JSON::Value;
 
-    %error = jettisonReadFile(%path @ "/version.json");
-    if(%error) {
-      echo("Jettison read error");
-      continue;
-    }
-
-    %version = $JSON::Value;
-
     %this.hasAddon[%value.id] = true;
-    %this.addons = %this.addons SPC %value.id @ "|" @ %version.version;
+    %this.addons = %this.addons SPC %value.id;
   }
   %this.addons = trim(%this.addons);
 }
@@ -224,14 +216,14 @@ package GlassClientManager {
         %clients = GlassClientManager.getClients();
         %hasStr = "";
         for(%i = 0; %i < getWordCount(%clients); %i++) {
-          %args = strreplace(getWord(%clients, %i), "|", "\t");
+          %id = getWord(%clients, %i);
 
-          if(%required[getField(%args, 0)]) {
-            %hasStr = %hasStr SPC getWord(%clients, %i);
+          if(%required[%id]) {
+            %hasStr = %hasStr SPC getWord(%clients, %i) @ "|0.0.0"; // only keeping the version field for backwards compat
           }
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
-        JoinServerGui.join();
+        reconnectToServer();
       }
     } else {
       parent::onConnectRequestRejected(%this, %reason);
@@ -241,6 +233,7 @@ package GlassClientManager {
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
     parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
     GlassClientManager.bypass = false;
+    GlassClientManager.requestedMods = "";
   }
 
   function GlassClientGuiProgress::setValue(%this, %val) {
