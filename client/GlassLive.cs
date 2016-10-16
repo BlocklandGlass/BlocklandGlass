@@ -1858,7 +1858,17 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
 
   if(isObject(%browserSwatch)) {
     %browserSwatch.extent = getWord(%extent, 0) - 20 SPC getWord(%extent, 1) - 70;
-    // insert browser horizontal sizing here
+    
+    for(%i = 0; %i < %browserSwatch.getCount(); %i++) {
+      %obj = %browserSwatch.getObject(%i);
+      %obj.extent = getWord(%browserSwatch.extent, 0) - 20 SPC getWord(%obj.extent, 1);
+      if(%obj.getCount() > 2) {
+        %btn = %obj.getObject(2);
+        if(%btn.buttonType $= "PushButton") {
+          %btn.position = getWord(%obj.extent, 0) - 75 SPC getWord(%btn.position, 1);
+        }
+      }
+    }
   }
 
   %scroll.scrollToBottom();
