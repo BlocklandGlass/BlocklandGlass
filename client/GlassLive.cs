@@ -124,7 +124,13 @@ function GlassLive::openChatroom() {
   }
 
   if(!%chatFound) {
-    glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+    if(isObject(GlassLiveConnection)) {
+      if(GlassLiveConnection.connected) {
+        glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+      } else {
+        glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+      }
+    }
   }
 }
 
@@ -194,7 +200,7 @@ function GlassLive::chatColorCheck(%this) {
   GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
   GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
   GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
-  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_default @  ">Pleb: <font:verdana:12><color:333333>rambling message", 0);
+  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
 }
 
 function GlassLive::disconnect(%reason) {
@@ -900,7 +906,7 @@ function GlassLive::urlMetadata(%tcp, %error) {
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
   if(%btn.on) {
-    glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect();");
+    glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
   } else {
     GlassLive::connectToServer();
   }
