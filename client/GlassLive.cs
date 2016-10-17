@@ -124,12 +124,10 @@ function GlassLive::openChatroom() {
   }
 
   if(!%chatFound) {
-    if(isObject(GlassLiveConnection)) {
-      if(GlassLiveConnection.connected) {
-        glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
-      } else {
-        glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
-      }
+    if(GlassLiveConnection.connected) {
+	  glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+    } else {
+	  glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
     }
   }
 }
