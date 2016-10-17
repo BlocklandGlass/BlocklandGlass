@@ -219,7 +219,7 @@ package GlassClientManager {
           %id = getWord(%clients, %i);
 
           if(%required[%id]) {
-            %hasStr = %hasStr SPC getWord(%clients, %i) @ "|0.0.0"; // only keeping the version field for backwards compat
+            %hasStr = %hasStr SPC getWord(%clients, %i);
           }
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
