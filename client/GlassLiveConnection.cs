@@ -21,7 +21,7 @@ function GlassLive::connectToServer() {
       debug = true;
     };
   }
-  
+
   %this.connected = false;
 
   GlassLiveConnection.connect(%server @ ":" @ %port);
@@ -29,6 +29,9 @@ function GlassLive::connectToServer() {
 
 function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
+
+  GlassLive.hideFriendRequests = false;
+  GlassLive.hideFriends = false;
 
   %this.connected = true;
   %obj = JettisonObject();
@@ -112,7 +115,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "message":
       %sender = getASCIIString(%data.sender);
-      
+
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification"))
@@ -128,7 +131,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       if(GlassSettings.get("Live::RoomNotification")) {
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
       }
-      
+
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
       %clients = %data.clients;
@@ -151,7 +154,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
 
       %room.pushText(%motd);
-      
+
       %room.view.userSwatch.getGroup().scrollToTop();
 
     case "messageTyping":
@@ -227,18 +230,18 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassLive::addfriendRequestToList(%user);
 
         GlassLive::createFriendList();
-        
+
         GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "email_add", 0);
-        
+
         alxPlay(GlassFriendRequestAudio);
       }
-      
+
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.online = %data.online;
-      
+
       GlassLive::createFriendList();
-      
+
       if(GlassSettings.get("Live::ShowFriendStatus")) {
         %sound = %uo.online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
         alxPlay(%sound);
@@ -254,30 +257,30 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::addFriendToList(%uo);
 
       GlassLive::createFriendList();
-	  
+
       if(isObject(%room = GlassChatroomWindow.activeTab.room))
         %room.renderUserList();
-      
+
       GlassNotificationManager::newNotification("Friend Added", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been added to your friends list.", "user_add", 0);
-      
+
       alxPlay(GlassFriendAddedAudio);
-      
+
     case "friendRemove":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      
+
       GlassLive::removeFriend(%data.blid, true);
-      
+
       GlassNotificationManager::newNotification("Friend Removed", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been removed from your friends list.", "user_delete", 0);
-      
+
       alxPlay(GlassFriendRemovedAudio);
-      
+
     case "friendDecline": // nothing responding here - serverside issue?
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      
+
       GlassNotificationManager::newNotification("Friend Declined", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has declined your friend request.", "cross", 0);
-      
+
       alxPlay(GlassFriendDeclinedAudio);
-      
+
     case "groupJoin":
       %group = GlassLiveGroup::create(%data.id, %data.clients);
       %group.createGui();
@@ -334,9 +337,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
       GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "roadworks", 1);
-      
+
       alxPlay(GlassUserMentionedAudio);
-      
+
       %this.disconnect();
       %this.connected = false;
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
