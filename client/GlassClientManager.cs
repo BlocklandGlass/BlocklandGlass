@@ -231,6 +231,11 @@ package GlassClientManager {
         }
       }
 
+      if(GlassClientManager.connectAttempts > 4) {
+        messageBoxOk("Failed to Connect", "There was an error in the required clients protocol. Ensure all add-ons are up-to-date.");
+        return;
+      }
+
       %missing = getsubstr(%missing, 1, strlen(%missing)-1);
 
       if(strlen(%missing) > 0) {
@@ -242,6 +247,7 @@ package GlassClientManager {
 
       if(%count > 0) {
         GlassClientManager::populateGui(%missing);
+        GlassClientManager.connectAttempts = 0;
       } else {
         %clients = GlassClientManager.getClients();
         %hasStr = "";
@@ -250,14 +256,27 @@ package GlassClientManager {
 
           if(%required[%id]) {
             %hasStr = %hasStr SPC getWord(%clients, %i);
+            if(GlassClientManager.tryLegacyNext)
+              %hasStr = %hasStr @ "|0.0.0";
           }
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
+        GlassClientManager.tryLegacyNext = !GlassClientManager.tryLegacyNext;
+        GlassClientManager.connectAttempts++;
         reconnectToServer();
       }
     } else {
       parent::onConnectRequestRejected(%this, %reason);
     }
+  }
+
+  function GameConnection::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
+    parent::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
+    if(!GlassClientManager.tryLegacyNext) {
+      warn("Connected Successfully using LEGACY Required Clients protocol");
+    }
+    GlassClientManager.connectAttempts = 0;
+    GlassClientManager.tryLegacyNext = false;
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
