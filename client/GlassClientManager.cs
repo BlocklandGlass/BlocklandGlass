@@ -162,11 +162,37 @@ function GlassClientManager::accept() {
   %container = GlassClientGui_Scroll.getObject(0);
   for(%i = 0; %i < %container.getCount(); %i++) {
     %swatch = %container.getObject(%i);
-    echo(%swatch.addonId);
-    %ret = GlassModManager::downloadAddonFromId(%swatch.addonId);
-    %ret.rtbImportProgress = %swatch.progress;
+
+    %dl = GlassDownloadManager::newDownload(%swatch.addonId, 1);
+    %dl.addHandle("progress", "GlassClientManager_DlProgress");
+    %dl.addHandle("done", "GlassClientManager_DlDone");
+    %dl.addHandle("failed", "GlassClientManager_DlDone");
+
+    %dl.progressBar = %swatch.progress;
+
+    %dl.startDownload();
   }
 }
+
+function GlassClientManager_DlProgress(%dl, %progress) {
+  %dl.progressBar.setValue(%progress);
+}
+
+function GlassClientManager_DlDone(%dl, %error) {
+  if(%error) {
+    echo("Error downloading client add-on");
+  } else {
+    %folder = getSubStr(%dl.filename, 0, strPos(%dl.filename, "."));
+
+    discoverFile("Add-Ons/" @ %dl.filename);
+    discoverFile("Add-Ons/" @ %folder @ "/*");
+
+    if(isFile("Add-Ons/" @ %folder @ "/client.cs"))
+      exec("Add-Ons/" @ %folder @ "/client.cs");
+  }
+  GlassClientManager::downloadFinished(%dl.addonId);
+}
+
 
 function GlassClientManager::skip() {
   canvas.popDialog(GlassClientGui);
@@ -207,6 +233,10 @@ package GlassClientManager {
 
       %missing = getsubstr(%missing, 1, strlen(%missing)-1);
 
+      if(strlen(%missing) > 0) {
+        %missing = getsubstr(%missing, 1, strlen(%missing)-1);
+      }
+
       %count = getFieldCount(%missing);
       GlassClientManager.mods = %count;
 
@@ -219,7 +249,7 @@ package GlassClientManager {
           %id = getWord(%clients, %i);
 
           if(%required[%id]) {
-            %hasStr = %hasStr SPC getWord(%clients, %i) @ "|0.0.0"; // only keeping the version field for backwards compat
+            %hasStr = %hasStr SPC getWord(%clients, %i);
           }
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));

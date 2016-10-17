@@ -137,18 +137,6 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 // Communications
 //====================================
 
-function GlassModManager::downloadAddonFromId(%id, %branch) {
-  %tcp = GlassModManager::placeCall("addon", "id" TAB %id);
-  %tcp.action = "download";
-  return %tcp;
-}
-
-function GlassModManager::downloadAddon(%obj, %branch) {
-  if(%branch $= "")
-    %branch = 1;
-  return GlassDownloadManager.fetchAddon(%obj, %branch);
-}
-
 function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
   if(GlassAuth.ident !$= "") {
     if(%params !$= "")
@@ -245,8 +233,8 @@ function GlassModManagerTCP::onDone(%this, %error) {
           if(%this.action $= "render") {
             GlassModManagerGui::renderAddon(%obj);
           } else if(%this.action $= "download") {
-            %ret = GlassModManager::downloadAddon(%obj);
-            %ret.rtbImportProgress = %this.rtbImportProgress;
+            echo("Action: download"); // is this used?
+            %ret = GlassModManager::downloadAddon(%ret.aid, false, %this.rtbImportProgress);
           }
 
         case "boards":
@@ -497,11 +485,11 @@ function GlassModManager::populateMyAddons(%this) {
 	%idArrayLen = 0;
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-18);
-    
+
     if(!clientIsValidAddon(%name, 0)) {
       continue;
     }
-    
+
     if(strpos(%name, "/") >= 0) { //removes sub-directories
       continue;
     }
@@ -694,7 +682,7 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
   } else {
     jettisonReadFile("Add-Ons/" @ %this.addon.name @ "/version.json");
 	%versionData = $JSON::Value;
-	
+
     //GlassModManagerGui_AddonSettings_Branch.clear();
     //GlassModManagerGui_AddonSettings_Branch.add("Stable", 1);
     //GlassModManagerGui_AddonSettings_Branch.add("Unstable", 2);
@@ -937,6 +925,70 @@ function GlassModManager_MyColorsets::renderColorset(%this, %file) {
   %x = (getWord(%parent.extent, 0)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 0)/2);
   %y = (getWord(%parent.extent, 1)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 1)/2);
   GlassModManagerGui_ColorsetPreview.position = mFloor(%x) SPC mFloor(%y);
+}
+
+//====================================
+// Downloading
+//====================================
+
+// id - addon id
+// beta - bool
+// progressBar - additional progress bar to update other than mod manager
+function GlassModManager::downloadAddon(%id, %beta, %progressBar) {
+  if(!isObject(GlassModManagerQueue)) {
+    new ScriptGroup(GlassModManagerQueue);
+  }
+
+  %dl = GlassDownloadManager::newDownload(%id, %beta ? 2 : 1);
+  %dl.progressBar = %progressBar;
+  %dl.addHandle("done", "GlassModManagerQueue_Done");
+  %dl.addHandle("progress", "GlassModManagerQueue_Progress");
+  %dl.addHandle("failed", "GlassModManagerQueue_Failed");
+
+  GlassModManagerQueue.add(%dl);
+  GlassModManagerQueue.next();
+}
+
+function GlassModManagerQueue::next(%this) {
+  if(isObject(%this.current) && %this.isMember(%this.current))
+    return; //downloading
+
+  if(%this.getCount() == 0) {
+    GlassModManagerGui::setProgress(1, "All Downloads Finished");
+  	GlassModManagerGui.progressSch = GlassModManagerGui.schedule(2000, setProgress);
+    return;
+  }
+
+  %this.current = %this.getObject(0);
+  %this.current.startDownload();
+
+  GlassModManagerGui::setProgress(0, "Connecting..." @ " (" @ GlassModManagerQueue.getCount() @ " remaining)");
+}
+
+function GlassModManagerQueue_Done(%this) {
+  echo("Downloaded " @ %this.filename);
+
+  %name = "GlassModManagerGui_DlButton_" @ %this.addonId @ "_" @ %this.branchId;
+  if(isObject(%name))
+    %name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
+
+	GlassModManager::setAddonStatus(%this.filedata.id, "installed");
+
+  GlassModManagerQueue.remove(%this);
+  GlassModManagerQueue.next();
+}
+
+function GlassModManagerQueue_Progress(%this, %float) {
+  cancel(GlassModManagerGui.progressSch);
+
+  GlassModManager::setAddonStatus(%this.addonId, "downloading");
+  GlassModManagerGui::setProgress(%float, "Downloading " @ %this.filename @ " (" @ GlassModManagerQueue.getCount() @ " remaining)");
+}
+
+function GlassModManagerQueue_Failed(%this, %error) {
+  error("Failed to download add-on " @ %this.addonId @ " (branch " @ %this.branchId @ ")");
+  GlassModManagerQueue.remove(%this);
+  GlassModManagerQueue.next();
 }
 
 package GlassModManager {

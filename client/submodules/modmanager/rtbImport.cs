@@ -101,7 +101,6 @@ function GlassModManager::doRTBImport() {
   %container = GlassModManagerGui_MainDisplay.getObject(0);
   for(%i = 0; %i < %container.getCount(); %i++) {
     %swatch = %container.getObject(%i);
-    %ret = GlassModManager::downloadAddonFromId(%swatch.import.glass_id);
-    %ret.rtbImportProgress = %swatch.progress;
+    GlassModManager::downloadAddon(%swatch.import.glass_id, false, %swatch.progress);
   }
 }

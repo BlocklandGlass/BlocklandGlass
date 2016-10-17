@@ -53,7 +53,7 @@ function GlassModManagerGui::loadContext(%context) {
 function GlassModManagerGui::setLoading(%bool) {
   if($Server::Dedicated)
     return;
-  
+
   GlassModManagerGui_LoadingAnimation.setVisible(false);
   return;
   if(%bool) {
@@ -149,13 +149,7 @@ function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c
   %this.swatch.info.setValue("<font:Verdana Bold:15><just:center>Queued..<br><font:verdana:14>" @ strcap(%this.branch));
   //something about redrawing the button?
 
-  if(isObject(%this.obj))
-    %tcp = GlassModManager::downloadAddon(%this.obj);
-  else
-    %tcp = GlassModManager::downloadAddonFromId(%this.aid);
-
-  %tcp.button = %this.swatch;
-  %tcp.branchName = %this.branch;
+  %tcp = GlassModManager::downloadAddon(%this.aid);
 }
 
 function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {

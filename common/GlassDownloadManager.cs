@@ -6,68 +6,79 @@ function GlassDownloadManager::init() {
 	GlassDownloadManager.queue = GlassDownloadManagerQueue;
 }
 
+function GlassDownloadManager::newDownload(%id, %branchId) {
+	%obj = new ScriptObject() {
+		class = "GlassDownload";
 
-function GlassDownloadManager::fetchAddon(%this, %addonHandler, %branch) {
-	%addonHandler.download_branch = %branch;
-	echo("Fetching: " @ %addonHandler.name);
-	%this.queue.add(%addonHandler);
-	%this.queue.fetchNext();
-
-	if(%this.queue.getCount() == 1) { //we just added the first
-		GlassModManagerGui::setProgress(0, "Connecting...");
-	}
-
-	return %addonHandler;
-}
-
-function GlassDownloadManager::fakeDownload(%duration) {
-	%obj = new ScriptObject(GlassDownloadTCP) {
-
+		addonId = %id;
+		branchId = %branchId;
 	};
-	%steps = mceil(%duration/50);
-	for(%i = 0; %i <= %steps; %i++) {
-		%obj.schedule(%i*50, setProgressBar, (%i*50)/%duration);
-	}
-	%obj.schedule(%duration+50, onDone, false);
 
 	return %obj;
 }
 
-function GlassDownloadManagerQueue::fetchNext(%this) {
-	if(%this.busy || %this.getCount() == 0)
-		return;
-
-	%this.busy = true;
-
-	%fileData = %this.getObject(0);
-
-	%url = "http://" @ Glass.netAddress @ "/api/2/download.php?type=addon_download&id=" @ %fileData.id @ "&branch=" @ %fileData.download_branch;
-
-	%method = "GET";
-	%downloadPath = "Add-Ons/" @ %fileData.filename;
-	%className = "GlassDownloadTCP";
-
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-	//%tcp = GlassDownloadManager::fakeDownload(getRandom(2000, 5000));
-	%tcp.fileData = %fileData;
-//	%tcp.path = "/addons/6_1";
-
-	return %tcp;
+function GlassDownload::addHandle(%this, %event, %call) {
+	//handles:
+	// failed
+	// progress
+	// done
+	%this.handler[%event] = %call;
 }
 
-function GlassDownloadManagerQueue::fetchFinished(%this) {
-	%this.remove(%this.getObject(0));
-	%this.busy = false;
-	%this.fetchNext();
+function GlassDownload::startDownload(%this) {
+	%this.connecting = true;
+
+	%this._fetch();
 }
 
-function GlassDownloadTCP::onLine(%this, %line) { // a little shortcut because AWS is touchy w/ arguments
-	if(%this.redirected && !%this.redirectCleaned) {
-		%this.query = "";
+function GlassDownload::_fetch(%this) {
+	%url = "http://" @ Glass.netAddress @ "/api/2/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
 
-		%this.redirectCleaned = true;
+	%tcp = connectToURL(%url, "GET", "", "GlassDownloadTCP");
+	%tcp.downloadObject = %this;
+
+	%this.tcp = %tcp;
+}
+
+function GlassDownloadTCP::onConnected(%this) {
+	%this.connecting = false;
+	%this.connected = true;
+}
+
+function GlassDownloadTCP::onLine(%this, %line) {
+	echo(%line);
+	%head = getWord(%line, 0);
+	if(%head $= "Content-Disposition:") {
+		%filename = getSubStr(%line, strPos(%line, "filename="), strlen(%line));
+		%filename = getSubStr(%filename, 9, strlen(%filename));
+		%filename = getSubStr(%filename, 1, strlen(%filename)-2);
+		%this.downloadObject.filename = %filename;
+		%this.savePath = "Add-Ons/" @ %filename;
 	}
 }
+
+function GlassDownloadTCP::setProgressBar(%tcp, %float) {
+	%this = %tcp.downloadObject;
+
+	if(isFunction(%this.handler["progress"]))
+		call(%this.handler["progress"], %this, %float);
+}
+
+function GlassDownloadTCP::onDone(%tcp, %error) {
+	%this = %tcp.downloadObject;
+
+	if(%error) {
+		if(isFunction(%this.handler["failed"]))
+			call(%this.handler["failed"], %this, %error);
+	} else {
+		if(isFunction(%this.handler["done"]))
+			call(%this.handler["done"], %this, %error);
+	}
+
+	%this.schedule(1, delete);
+}
+
+return;
 
 function GlassDownloadTCP::onDone(%this, %error) {
 	if(%error) {
@@ -116,8 +127,6 @@ function GlassDownloadTCP::onDone(%this, %error) {
 	}
 
 	GlassDownloadManagerQueue.fetchFinished();
-	if(!$Server::Dedicated)
-		GlassModManagerGui.sch = GlassModManagerGui.schedule(2000, setProgress);
 }
 
 function GlassDownloadTCP::setProgressBar(%this, %float) {
