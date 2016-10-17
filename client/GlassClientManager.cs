@@ -232,7 +232,7 @@ package GlassClientManager {
       }
 
       if(GlassClientManager.connectAttempts > 4) {
-        messageBoxOk("Failed to Connect", "There was an error in the required clients protocol. Ensure all add-ons are up-to-date.");
+        glassMessageBoxOk("Failed to Connect", "There was an error in the required clients protocol.<br><br>Ensure all add-ons are up-to-date.");
         return;
       }
 
