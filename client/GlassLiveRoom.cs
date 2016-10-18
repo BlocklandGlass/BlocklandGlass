@@ -231,9 +231,14 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
+    for(%o = 0; %o < GlassChatroomWindow.activeTab.userSwatch.getCount(); %o++) {
+      %user = GlassChatroomWindow.activeTab.userSwatch.getObject(%o);
+      if(%word $= ("@" @ %user.text.rawtext)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      }
+    }
     if(%word $= ("@" @ $Pref::Player::NetName)) {
       %mentioned = true;
-      %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
     }
   }
 
