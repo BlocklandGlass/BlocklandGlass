@@ -270,7 +270,7 @@ package GlassClientManager {
     }
   }
 
-  function GameConnection::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
+  function GameConnection::onConnectAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
     parent::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
     if(!GlassClientManager.tryLegacyNext) {
       warn("Connected Successfully using LEGACY Required Clients protocol");

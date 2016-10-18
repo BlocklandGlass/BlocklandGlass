@@ -54,6 +54,13 @@ function GlassDownloadTCP::onLine(%this, %line) {
 		%filename = getSubStr(%filename, 1, strlen(%filename)-2);
 		%this.downloadObject.filename = %filename;
 		%this.savePath = "Add-Ons/" @ %filename;
+
+		if(!isWriteableFilename(%this.savePath)) {
+			%this.disconnect();
+
+			if(isFunction(%this.handler["unwritable"]))
+				call(%this.handler["unwritable"], %this, %float);
+		}
 	}
 }
 
