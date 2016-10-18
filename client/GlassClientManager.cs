@@ -236,8 +236,6 @@ package GlassClientManager {
         return;
       }
 
-      %missing = getsubstr(%missing, 1, strlen(%missing)-1);
-
       if(strlen(%missing) > 0) {
         %missing = getsubstr(%missing, 1, strlen(%missing)-1);
       }
