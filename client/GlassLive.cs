@@ -2696,6 +2696,16 @@ function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
   }
 }
 
+function GlassSettingsGui_ScrollOverlay::onWake(%this) {
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %o = %this.getObject(%i);
+
+    if(isObject(%o.text)) {
+      %o.text.forceCenter();
+    }
+  }
+}
+
 package GlassLivePackage {
   function GlassOverlayGui::onWake(%this) {
     parent::onWake(%this);

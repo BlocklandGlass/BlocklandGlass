@@ -9,26 +9,26 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
     GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
-    
+
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false);
-    
+
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
-    
+
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", false);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", false);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
     GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
     GlassSettings.registerSetting("client", "Live::RoomNotification", true); // joined room / left room notifications
-    
+
     GlassSettings.registerSetting("client", "Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
     GlassSettings.registerSetting("client", "Live::FriendsWindow_Ext", "230 380");
-    
+
     GlassSettings.registerSetting("client", "Live::MessageNotification", true);
     GlassSettings.registerSetting("client", "Live::MessageSound", true);
     GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
-    
+
     GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true); // user connection messages in chatroom
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
@@ -61,18 +61,18 @@ function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %
 
 function GlassSettings::createSettingHeader(%name) {
   %header = "GlassModManagerGui_Header_" @ strreplace(%name, " ", "_");
-  
+
   if(isObject(%header)) {
     return %header;
   }
-  
+
   %gui = new GuiSwatchCtrl(%header) {
     position = "10 50";
     extent = "250 25";
     minExtent = "8 2";
     color = "100 100 100 255";
   };
-  
+
   %gui.text = new GuiTextCtrl() {
     profile = "GlassSearchResultProfile";
     position = "5 2.5";
@@ -83,7 +83,6 @@ function GlassSettings::createSettingHeader(%name) {
   };
 
   %gui.add(%gui.text);
-  
   %gui.text.centerX();
 
   return %gui;
@@ -94,24 +93,24 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     error("Non-existent setting.");
     return;
   }
-  
+
   if(%category $= "") {
     error("No category specified.");
     return;
   }
-  
+
   if(!isObject("GlassModManagerGui_Header_" @ strreplace(%category, " ", "_"))) {
     %header = GlassSettings::createSettingHeader(%category);
-    
+
     if(isObject($Glass::GS_Last) && $Glass::GS_Last != %header) {
       %header.position = vectorAdd($Glass::GS_Last.position, "0 40");
     }
-    
+
     GlassSettingsGui_ScrollOverlay.add(%header);
-    
+
     $Glass::GS_Last = %header;
   }
-  
+
   %setting = new GuiSwatchCtrl() {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
@@ -123,20 +122,20 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     clipToParent = "1";
     color = "230 230 230 255";
   };
-  
+
   %setting.position = vectorAdd($Glass::GS_Last.position, "0 30");
-  
+
   $Glass::GS_Last = %setting;
-  
+
   %prefix = getSubStr(%pref, 0, strpos(%pref, ":"));
   %suffix = strchr(%pref, ":");
   %suffix = getSubStr(%suffix, 2, strlen(%suffix));
-  
+
   if(isObject("GlassModManagerGui_Prefs_" @ %suffix)) {
     error("Setting already exists in GUI.");
     return;
   }
-  
+
   switch$(%type) {
     case "checkbox":
       %checkbox = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %suffix) {
@@ -154,22 +153,24 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
         groupNum = "-1";
         buttonType = "ToggleButton";
       };
-      
+
       %setting.add(%checkbox);
-      
+
     case "keybind":
       // to do
     default:
       error("Non-existent setting type.");
       return;
   }
-  
+
   GlassSettingsGui_ScrollOverlay.settingsCount++;
   GlassSettingsGui_ScrollOverlay.add(%setting);
-  
-  if(GlassSettingsGui_ScrollOverlay.settingsCount * 45 > 425) {
-    GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
-  }
+
+  GlassSettingsGui_ScrollOverlay.verticalMatchChildren(425, 10);
+
+  //if(GlassSettingsGui_ScrollOverlay.settingsCount * 45 > 425) {
+  //  GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
+  //}
 }
 
 function GlassSettings::loadData(%this, %context) {
