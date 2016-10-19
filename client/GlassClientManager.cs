@@ -48,7 +48,7 @@ function GlassClientManager::downloadFinished(%id) {
     GlassClientManager.downloads = 0;
     GlassClientManager.mods = 0;
     GlassClientManager.scan();
-    JoinServerGui.join();
+    reconnectToServer();
   }
 }
 
@@ -199,7 +199,7 @@ function GlassClientManager::skip() {
   GlassClientManager.downloads = 0;
   GlassClientManager.mods = 0;
   GlassClientManager.bypass = true;
-  JoinServerGui.join();
+  reconnectToServer();
 }
 
 package GlassClientManager {
@@ -268,8 +268,8 @@ package GlassClientManager {
     }
   }
 
-  function GameConnection::onConnectAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
-    parent::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
+  function GameConnection::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
+    parent::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
     if(!GlassClientManager.tryLegacyNext) {
       warn("Connected Successfully using LEGACY Required Clients protocol");
     }

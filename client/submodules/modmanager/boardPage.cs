@@ -60,7 +60,7 @@ function _glassPageNav(%board, %id) {
 function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
   $Glass::MM_PreviousBoard = %bid;
   $Glass::MM_PreviousPage = %page;
-  
+
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
