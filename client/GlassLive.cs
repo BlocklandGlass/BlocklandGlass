@@ -1097,9 +1097,6 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
 function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
   if(%reset) {
-    //first
-    echo("first");
-    echo("origin:" @ %text.position);
     %this._scrollOrigin = %text.position;
     %this._scrollOffset = 0;
     %this._scrollRange = getWord(%text.extent, 0)-getWord(%this.extent, 0)+getWord(%text.position, 0)+50;
@@ -1117,7 +1114,6 @@ function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
 }
 
 function GlassHighlightMouse::scrollEnd(%this, %text) {
-  echo("Ended!");
   cancel(%this.scrollTick);
   %text.position = %this._scrollOrigin;
   %this.scrollTick = "";

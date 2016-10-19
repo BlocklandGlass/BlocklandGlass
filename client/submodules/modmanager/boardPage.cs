@@ -31,8 +31,8 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
   for(%i = 0; %i < getLineCount(%listings); %i++) {
     %line = getLine(%listings, %i);
     %id = getField(%line, 0);
-    %name = getField(%line, 1);
-    %author = getField(%line, 2);
+    %name = getASCIIString(getField(%line, 1));
+    %author = getASCIIString(getField(%line, 2));
     %rating = getField(%line, 3);
     %downloads = getField(%line, 4);
 
