@@ -193,6 +193,9 @@ function GlassLiveGroup::pushText(%this, %msg) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
+      } else {
+        %word = " ";
+        %msg = setWord(%msg, %i, %word);
       }
     }
   }

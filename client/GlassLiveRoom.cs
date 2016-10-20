@@ -281,6 +281,9 @@ function GlassLiveRoom::pushText(%this, %msg) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
+      } else {
+        %word = " ";
+        %msg = setWord(%msg, %i, %word);
       }
     }
   }
@@ -475,6 +478,70 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
 
 function GlassLiveUserListSwatch::onRightMouseUp(%this) {
   if(isObject(%input = GlassChatroomWindow.activeTab.input) && %this.user.blid != getNumKeyId()) {
-    %input.setValue(trim(%input.getValue() SPC "@" @ %this.user.username));
+    %len = strlen(%input.getValue());
+    if(%len > 0 && getsubstr(%input.getValue(), %len - 1, %len) $= " ") {
+      %input.setValue(%input.getValue() @ "@" @ %this.user.username @ " ");
+    } else {
+      %input.setValue(ltrim(%input.getValue() SPC "@" @ %this.user.username @ " "));
+    }
+  }
+}
+
+// From Crown's (2143) "Name Completion" Add-On
+// Adapted for use with Glass
+
+function GlassChatroomGui_Input::fixCasesByName(%this, %name) 
+{
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++) 
+	{
+		%compare = %this.getGroup().userSwatch.getObject(%i).text.rawtext;
+		if(%name $= %compare)
+			return %compare;
+	}
+	return -1;
+}
+
+function GlassChatroomGui_Input::findPartialName(%this, %partialName) 
+{
+	%partialName = strLwr(%partialName);
+	%bestName = -1;
+	%bestPos = -1;
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++) 
+	{
+    %user = %this.getGroup().userSwatch.getObject(%i);
+		%name = strLwr(%user.text.rawtext);
+    
+		%pos = strStr(%name, %partialName);
+		if(%pos > %bestPos) 
+		{
+			%bestPos = %pos;
+			%bestName = %name;
+		}
+	}
+	if(%bestName == -1)
+		return -1;
+	return %this.fixCasesByName(%bestName);
+}
+
+function GlassChatroomGui_Input::onTabComplete(%this) {
+  %text = %this.getValue();
+  
+  %last = getWord(%text, getWordCount(%text) - 1);
+  %closeName = %this.findPartialName(%last);
+  
+  if(strLen(%last) < 2 || %closeName == -1) 
+  {
+    return;
+  }
+  
+  if(%closeName != -1)
+  {
+    %text = removeWord(%text, getWordCount(%text) - 1);
+    %closeName = "@" @ %closeName @ " ";
+    if(getWordCount(%text) >= 1)
+      %text = %text SPC %closeName;
+    else
+      %text = %text @ %closeName;
+    %this.setValue(%text);
   }
 }

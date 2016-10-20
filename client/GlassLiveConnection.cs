@@ -1,7 +1,8 @@
-$Glass::DisconnectManual = 1;
-//$Glass::DisconnectKicked = 2;
-//$Glass::DisconnectConnectionDropped = 3;
-$Glass::DisconnectUpdate = 4;
+$Glass::Disconnect["Left"] = 0; // [Left]
+$Glass::Disconnect["Manual"] = 1; // [Disconnected]
+//$Glass::Disconnect["Kicked"] = 2; // [Kicked]
+$Glass::Disconnect["Quit"] = 3; // [Quit]
+$Glass::Disconnect["Update"] = 4; // [Updates]
 
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
@@ -376,7 +377,7 @@ package GlassLiveConnectionPackage {
   function messageCallback(%this, %call) {
     if(updater.restartRequired) {
       if(%call $= "quit();") {
-        GlassLive::disconnect($Glass::DisconnectUpdate);
+        GlassLive::disconnect($Glass::Disconnect["Update"]);
       }
     }
     parent::messageCallback(%this, %call);
@@ -386,7 +387,7 @@ package GlassLiveConnectionPackage {
     parent::onDisconnect(%this);
     
     if(GlassLiveConnection.connected) {
-      GlassLive::disconnect($Glass::DisconnectManual);
+      GlassLive::disconnect($Glass::Disconnect["Manual"]);
       
       GlassAuth.schedule(0, init);
       GlassAuth.schedule(100, heartbeat);

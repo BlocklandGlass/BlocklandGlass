@@ -133,7 +133,7 @@ function GlassLive::openChatroom() {
       }
     } else {
       if(GlassLiveConnection.connected) {
-        GlassLive::disconnect($Glass::DisconnectManual);
+        GlassLive::disconnect($Glass::Disconnect["Manual"]);
         GlassLive.schedule(100, connectToServer);
       } else {
         GlassLive.schedule(0, connectToServer);
@@ -582,6 +582,9 @@ function GlassLive::onMessage(%message, %username, %blid) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %message = setWord(%message, %i, %word);
+      } else {
+        %word = " ";
+        %message = setWord(%message, %i, %word);
       }
     }
   }
@@ -917,7 +920,7 @@ function GlassLive::powerButtonPress() {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
       glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
     } else {
-      GlassLive::disconnect($Glass::DisconnectManual);
+      GlassLive::disconnect($Glass::Disconnect["Manual"]);
     }
   } else {
     GlassLive::connectToServer();
@@ -2030,7 +2033,7 @@ function GlassLive::createChatroomView(%id) {
     color = "0 0 0 0";
   };
 
-  %chatroom.input = new GuiTextEditCtrl() {
+  %chatroom.input = new GuiTextEditCtrl(GlassChatroomGui_Input) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -2045,7 +2048,7 @@ function GlassLive::createChatroomView(%id) {
     maxLength = "255";
     historySize = "0";
     password = "0";
-    tabComplete = "0";
+    tabComplete = "1";
     sinkAllKeyEvents = "0";
   };
   %chatroom.add(%chatroom.scroll);
@@ -2171,7 +2174,7 @@ function GlassLive::createGroupchatView(%id) {
     color = "0 0 0 0";
   };
 
-  %chatroom.input = new GuiTextEditCtrl() {
+  %chatroom.input = new GuiTextEditCtrl(GlassChatroomGui_Input) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -2186,7 +2189,7 @@ function GlassLive::createGroupchatView(%id) {
     maxLength = "255";
     historySize = "0";
     password = "0";
-    tabComplete = "0";
+    tabComplete = "1";
     sinkAllKeyEvents = "0";
   };
 
