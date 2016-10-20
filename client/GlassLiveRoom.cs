@@ -235,9 +235,13 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %user = %this.view.userSwatch.getObject(%o);
       if(%word $= ("@" @ %user.text.rawtext)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      } else if(%word $= ("@" @ %user.text.blid)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
       }
     }
     if(%word $= ("@" @ $Pref::Player::NetName)) {
+      %mentioned = true;
+    } else if(%word $= ("@" @ getNumKeyId())) {
       %mentioned = true;
     }
   }
@@ -413,6 +417,7 @@ function GlassLiveRoom::renderUserList(%this) {
       profile = "GlassFriendTextProfile";
       text = collapseEscape("\\c" @ %colorCode) @ %user.username;
       rawtext = %user.username;
+      blid = %user.blid;
       extent = "45 18";
       position = "22 12";
     };

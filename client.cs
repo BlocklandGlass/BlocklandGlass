@@ -144,7 +144,7 @@ package GlassMainMenu {
         profile = "BlockWindowProfile";
         horizSizing = "relative";
         vertSizing = "relative";
-        position = "5 74";
+        position = "5 75";
         extent = "165 20";
         minExtent = "8 2";
         enabled = "1";
