@@ -464,10 +464,17 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-    if(%this.user.blid != getNumKeyId())
+    if(%this.user.blid != getNumKeyId()) {
       GlassLive::openUserWindow(%this.user.blid);
       //glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
-    else
-      glassMessageBoxOk("Hey There", "That's you!");
+    } else {
+      glassMessageBoxOk("Hey There", "That's you.");
+    }
+  }
+}
+
+function GlassLiveUserListSwatch::onRightMouseUp(%this) {
+  if(isObject(%input = GlassChatroomWindow.activeTab.input) && %this.user.blid != getNumKeyId()) {
+    %input.setValue(trim(%input.getValue() SPC "@" @ %this.user.username));
   }
 }

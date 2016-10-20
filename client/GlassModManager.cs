@@ -209,16 +209,16 @@ function GlassModManagerTCP::onDone(%this, %error) {
             class = "GlassAddonData";
 
             id = %ret.aid;
-            name = %ret.name;
+            name = GetASCIIString(%ret.name);
             filename = %ret.filename;
             board = %ret.board;
-            description = %ret.description;
+            description = GetASCIIString(%ret.description);
 
             rating = %ret.rating;
 
             screenshots = %ret.screenshots;
 
-            author = %author;
+            author = GetASCIIString(%author);
 
             buffer = %this.buffer;
           };
@@ -233,7 +233,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
           if(%this.action $= "render") {
             GlassModManagerGui::renderAddon(%obj);
           } else if(%this.action $= "download") {
-            echo("Action: download"); // is this used?
+            // echo("Action: download"); // is this used?
             %ret = GlassModManager::downloadAddon(%ret.aid, false, %this.rtbImportProgress);
           }
 
@@ -481,7 +481,7 @@ function GlassModManager::populateMyAddons(%this) {
 
   //rtbInfo.txt
   //server.cs
-  %pattern = "Add-ons/*/server.cs";
+  %pattern = "Add-Ons/*/server.cs";
 	%idArrayLen = 0;
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-18);
@@ -494,7 +494,7 @@ function GlassModManager::populateMyAddons(%this) {
       continue;
     }
 
-    if(%name $= "System_BlocklandGlass") {
+    if(%name $= "System_BlocklandGlass" || %name $= "Support_Preferences") {
       continue;
     }
 
@@ -545,9 +545,9 @@ function GlassModManager::renderMyAddons(%this) {
 
     %text = "<font:Verdana Bold:15>" @ %addon.name;
 
-    if(%addon.isBLG) {
-      %text = "<font:Verdana Bold:15>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
-    }
+    // if(%addon.isBLG) {
+      // %text = "<font:Verdana Bold:15>" @ %addon.glassdata.get("title") @ " <font:verdana:14>" @ %addon.name;
+    // }
 
     %gui = new GuiSwatchCtrl("GlassModManager_AddonListing_" @ %i) {
       profile = "GuiDefaultProfile";
@@ -632,6 +632,26 @@ function GlassModManager::renderMyAddons(%this) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "center";
+        position = "291 7";
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = %addon.isBLG;
+        clipToParent = "1";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo.png";
+        wrap = "0";
+        lockAspectRatio = "0";
+        alignLeft = "0";
+        alignTop = "0";
+        overflowImage = "0";
+        keepCached = "0";
+        mColor = "255 255 255 255";
+        mMultiply = "0";
+     };
+     new GuiBitmapCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "center";
         position = "312 7";
         extent = "16 16";
         minExtent = "8 2";
@@ -676,12 +696,12 @@ function GlassModManager::renderMyAddons(%this) {
   GlassModManagerGui_MyAddons.getGroup().scrollToTop();
 }
 
-function GlassModManagerGui_AddonSettings::onMouseDown(%this) {
+function GlassModManagerGui_AddonSettings::onMouseDown(%this) { // to-do: create add-on info gui
   if(!%this.addon.isBLG) {
     glassMessageBoxOk("Add-On", %this.addon.name);
   } else {
     jettisonReadFile("Add-Ons/" @ %this.addon.name @ "/version.json");
-	%versionData = $JSON::Value;
+    %versionData = $JSON::Value;
 
     //GlassModManagerGui_AddonSettings_Branch.clear();
     //GlassModManagerGui_AddonSettings_Branch.add("Stable", 1);
@@ -967,13 +987,15 @@ function GlassModManagerQueue::next(%this) {
 
 function GlassModManagerQueue_Done(%this) {
   echo("Downloaded " @ %this.filename);
-
+  
+  GlassModManager::setAddonStatus(%this.addonId, "installed");
+  
   %name = "GlassModManagerGui_DlButton_" @ %this.addonId @ "_" @ %this.branchId;
-  if(isObject(%name))
+  if(isObject(%name)) {
     %name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
-
-	GlassModManager::setAddonStatus(%this.filedata.id, "installed");
-
+    GlassModManagerGui::fetchAndRenderAddon(%this.addonId).action = "render";
+  }
+  
   GlassModManagerQueue.remove(%this);
   GlassModManagerQueue.next();
 }

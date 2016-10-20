@@ -41,7 +41,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:24><just:left>" @ GetASCIIString(%obj.name);
+    text = "<font:verdana bold:24><just:left>" @ %obj.name;
     position = "102 30";
     extent = "300 24";
     minextent = "0 0";
@@ -51,7 +51,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:13><just:left>by " @ GetASCIIString(%obj.author);
+    text = "<font:verdana:13><just:left>by " @ %obj.author;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -79,7 +79,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left>" @ getASCIIString(%obj.description);
+    text = "<font:verdana:16><just:left>" @ %obj.description;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";

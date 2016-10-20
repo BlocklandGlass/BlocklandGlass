@@ -134,6 +134,33 @@ function strcap(%str) {
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
 
+package GlassMainMenu {
+  
+  function Canvas::setContent(%this, %content) {
+    parent::setContent(%this, %content);
+    
+    if(!isObject(MM_GlassVersion)) {
+      %mm = new GuiTextCtrl(MM_GlassVersion) {
+        profile = "BlockWindowProfile";
+        horizSizing = "relative";
+        vertSizing = "relative";
+        position = "5 74";
+        extent = "165 20";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        text = "Glass" SPC Glass.version;
+        maxLength = "255";
+      };
+      
+      MainMenuButtonsGui.add(%mm);
+    }
+  }
+  
+};
+activatePackage(GlassMainMenu);
+
 // package GlassPrefs {
 	// function onExit() {
 		// parent::onExit();

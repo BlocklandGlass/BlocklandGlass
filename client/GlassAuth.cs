@@ -95,7 +95,7 @@ function GlassAuthTCP::onDone(%this) {
 			GlassAuth.ident = %object.get("ident");
 
 			if(%object.get("status") $= "error") {
-				error("error authenticating: " @ %object.get("error"));
+				error("Error authenticating: " @ %object.get("error"));
 			}
 
 			if(%object.get("status") $= "success") {

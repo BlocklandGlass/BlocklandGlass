@@ -101,7 +101,7 @@ function GlassLiveConnection::onLine(%this, %line) {
   Glass::debug(%line);
   %error = jettisonParse(%line);
   if(%error) {
-    Glass::debug("error");
+    Glass::debug("Parse error - " @ $JSON::Error);
     return;
   }
 
