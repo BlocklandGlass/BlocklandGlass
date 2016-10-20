@@ -5,6 +5,11 @@ $Glass::DisconnectUpdate = 4;
 
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
+  
+  if(GlassLiveConnection.lastConnected !$= "" && getSimTime() < GlassLiveConnection.lastConnected + 2500) {
+    glassMessageBoxOk("Slow Down", "You're trying to connect too fast!");
+    return;
+  }
 
   %server = Glass.address;
   %port = 27002;
@@ -23,6 +28,7 @@ function GlassLive::connectToServer() {
   }
 
   %this.connected = false;
+  GlassLiveConnection.lastConnected = getSimTime();
 
   GlassLiveConnection.connect(%server @ ":" @ %port);
 }
@@ -47,7 +53,7 @@ function GlassLiveConnection::onConnected(%this) {
 function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
+  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
 
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
@@ -59,7 +65,7 @@ function GlassLiveConnection::onDNSFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
+  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
 }
 
 function GlassLiveConnection::onConnectFailed(%this) {
@@ -67,7 +73,7 @@ function GlassLiveConnection::onConnectFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(1000+getRandom(0, 1000), "connectToServer");
+  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
 }
 
 function GlassLiveConnection::doDisconnect(%this, %reason) {
@@ -332,8 +338,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       %reason = %data.reason;
       %timeout = %data.timeout;
 
-      if(%timeout < 1000) {
-        %timeout = 1000;
+      if(%timeout < 5000) {
+        %timeout = 5000;
       }
 
       GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "roadworks", 1);
@@ -374,6 +380,17 @@ package GlassLiveConnectionPackage {
       }
     }
     parent::messageCallback(%this, %call);
+  }
+  
+  function authTCPobj_Client::onDisconnect(%this) {
+    parent::onDisconnect(%this);
+    
+    if(GlassLiveConnection.connected) {
+      GlassLive::disconnect($Glass::DisconnectManual);
+      
+      GlassAuth.schedule(0, init);
+      GlassAuth.schedule(100, heartbeat);
+    }
   }
 };
 activatePackage(GlassLiveConnectionPackage);

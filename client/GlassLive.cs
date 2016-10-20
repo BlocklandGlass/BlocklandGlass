@@ -46,6 +46,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend On/Off-Line Notifications", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
@@ -62,7 +63,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -124,10 +125,19 @@ function GlassLive::openChatroom() {
   }
 
   if(!%chatFound) {
-    if(GlassLiveConnection.connected) {
-	  glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
+      if(GlassLiveConnection.connected) {
+      glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+      } else {
+      glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+      }
     } else {
-	  glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+      if(GlassLiveConnection.connected) {
+        GlassLive::disconnect($Glass::DisconnectManual);
+        GlassLive.schedule(100, connectToServer);
+      } else {
+        GlassLive.schedule(0, connectToServer);
+      }
     }
   }
 }
@@ -904,7 +914,11 @@ function GlassLive::urlMetadata(%tcp, %error) {
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
   if(%btn.on) {
-    glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
+    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
+      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
+    } else {
+      GlassLive::disconnect($Glass::DisconnectManual);
+    }
   } else {
     GlassLive::connectToServer();
   }

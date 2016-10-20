@@ -79,7 +79,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left>" @ %obj.description;
+    text = "<font:verdana:16><just:left>" @ getASCIIString(%obj.description);
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";

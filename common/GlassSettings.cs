@@ -14,6 +14,7 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl m");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", false);
+    GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", true);
 
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", false);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", false);
