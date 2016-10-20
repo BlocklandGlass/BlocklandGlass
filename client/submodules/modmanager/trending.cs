@@ -50,9 +50,9 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
 
     for(%i = 0; %i < %uploads.length; %i++) {
       %u = %uploads.value[%i];
-      %name = %u.name;
+      %name = GetASCIIString(%u.name);
       %id = %u.id;
-      %author = %u.author;
+      %author = GetASCIIString(%u.author);
 
       %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> by <font:verdana bold:13>" @ %author @ "<br>";
 
