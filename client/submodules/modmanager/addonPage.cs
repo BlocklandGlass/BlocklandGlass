@@ -35,7 +35,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     profile = "GlassModManagerMLProfile";
     text = "<color:333333><font:verdana:16><just:left>" @ %link;
     position = "10 10";
-    extent = "485 45";
+    extent = "75 25";
   };
 
   %container.title = new GuiMLTextCtrl() {

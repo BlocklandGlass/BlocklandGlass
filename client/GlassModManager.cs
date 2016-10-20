@@ -511,9 +511,9 @@ function GlassModManager::populateMyAddons(%this) {
       %fo.openforread("Add-Ons/" @ %name @ "/glass.json");
       while(!%fo.isEOF()) {
         if(%buffer !$= "") {
-          %buffer = %buffer NL %fo.readLine();
+          %buffer = %buffer NL getASCIIString(%fo.readLine());
         } else {
-          %buffer = %fo.readLine();
+          %buffer = getASCIIString(%fo.readLine());
         }
       }
       %fo.close();
@@ -976,6 +976,7 @@ function GlassModManagerQueue::next(%this) {
   if(%this.getCount() == 0) {
     GlassModManagerGui::setProgress(1, "All Downloads Finished");
   	GlassModManagerGui.progressSch = GlassModManagerGui.schedule(2000, setProgress);
+    CustomGameGui.populateAddOnList();
     return;
   }
 
@@ -994,6 +995,14 @@ function GlassModManagerQueue_Done(%this) {
   if(isObject(%name)) {
     %name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
     GlassModManagerGui::fetchAndRenderAddon(%this.addonId).action = "render";
+  }
+  
+  %file = getsubstr(%this.filename, 0, strlen(%this.filename) - 4);
+  
+  setModPaths(getModPaths());
+  
+  if(getsubstr(%file, 0, 7) $= "Client_") {
+    exec("Add-Ons/" @ %file @ "/client.cs");
   }
   
   GlassModManagerQueue.remove(%this);
