@@ -43,7 +43,7 @@ package GlassResourceManager {
     parent::onAdd(%this);
 
     %version["Support_Updater"] = "0.12.1+release-20160619";
-    %version["Support_Preferences"] = "1.1.2+beta";
+    %version["Support_Preferences"] = "1.2.0";
     %channel["Support_Updater"] = "release";
     %channel["Support_Preferences"] = "stable";
     %repourl["Support_Updater"] = "mods.greek2me.us";
@@ -56,6 +56,10 @@ package GlassResourceManager {
     for(%i = 0; %i < GlassResourceManager.fakes; %i++) {
       %resource = GlassResourceManager.fake[%i];
       echo("\c5> GLASS FAKE: " @ %resource);
+
+      //for debug purposes
+      Glass.fakedResource[%resource] = true;
+
       %addonHandler = %this.addons;
       %addonHandler.storeFileInfo(%resource, %version[%resource], %channel[%resource], %repoURL[%resource], %format[%resource], %id[%resource], false, "");
     }
