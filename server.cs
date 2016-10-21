@@ -28,24 +28,16 @@ function Glass::execServer() {
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
-	//exec("./common/GlassRTBSupport.cs");
-	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
-	//exec("./server/GlassServerInfo.cs");
 	exec("./server/GlassClientSupport.cs");
-	//exec("./server/GlassInfoServer.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
-
-	//GlassServerControlS::init();
-	//GlassServerInfo::connectToServer();
-	//GlassInfoServer::init();
 
 	GlassAuthS::init();
 }
@@ -55,17 +47,3 @@ if($Server::Dedicated) {
 } else {
 	Glass::init("server");
 }
-
-//Zeblote
-function fastPacketFixLoop(%bool)
-{
-   cancel($FastPacketFixSchedule);
-   $Pref::Net::FastPackets = %bool;
-
-   if(%bool)
-      $FastPacketFixSchedule = schedule(8000, 0, fastPacketFixLoop, !%bool);
-   else
-      $FastPacketFixSchedule = schedule(600, 0, fastPacketFixLoop, !%bool);
-}
-
-fastPacketFixLoop(true);

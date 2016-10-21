@@ -9,7 +9,6 @@ function GlassUpdaterSupport::pushItem(%item) {
   };
 
   GlassUpdatesGroup.add(%up);
-  GlassUpdaterSupport::pushGlassUpdater(false);
 }
 
 function GlassUpdaterSupport::downloadGui(%code) {
@@ -23,7 +22,7 @@ function GlassUpdaterSupport::downloadGui(%code) {
 function GlassUpdaterSupport::pushGlassUpdater(%force) {
   if(isObject(GlassUpdatesGroup.ctx)) return;
 
-  %ctx = GlassDownloadInterface::openContext("Add-On Updates", "Updates are available! Click on an add-on to view it's change-log, or right click to prevent it from updating.");
+  %ctx = GlassDownloadInterface::openContext("Add-On Updates", "<font:verdana bold:15>Updates are available!<font:verdana:15> Click on an add-on to view its change-log, or right click to prevent it from updating.");
   %ctx.registerCallback("GlassUpdaterSupport::downloadGui");
   GlassUpdatesGroup.ctx = %ctx;
 
@@ -54,7 +53,7 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
         %boardImage = GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]");
       }
     } else {
-      %text = "<font:arial bold:16>" @ %name;
+      %text = "<font:verdana bold:15>" @ %name;
       %boardImage = "";
     }
 
@@ -70,7 +69,12 @@ function GlassUpdaterSupport::interact(%obj, %right) {
   if(%right) {
     GlassUpdaterSupport::removeFromQueue(%obj.queueObj);
   } else {
-    GlassDownloadGui_Text.setText("<just:center><font:arial bold:20>" @ %obj.queueObj.name @ "<just:left><font:arial:12><br><br>" @ %obj.queueObj.updateChangeLogText);
+    %text = %obj.queueObj.updateChangeLogText;
+    if(strlen(trim(stripMlControlChars(%text))) == 0) {
+      %text = "<just:center>No change-log available!";
+    }
+
+    GlassDownloadGui_Text.setText("<just:center><font:verdana bold:20>" @ %obj.queueObj.name @ "<just:left><font:verdana:12><br><br>" @ %text);
     GlassDownloadGui_Text.setVisible(true);
     GlassDownloadGui_Text.getGroup().scrollToTop();
   }
@@ -86,6 +90,11 @@ function GlassUpdaterSupport::removeFromQueue(%glassObj) {
   if(%obj.name $= "Support_Updater") {
     //must update!
     glassMessageBoxOk("", "<font:verdana bold:13>Updates for Support_Updater are mandatory. <font:verdana:13>It'll only take a minute!\n\nSorry about that.");
+    return;
+  }
+  if(%obj.name $= "Support_Preferences") {
+    //must update!
+    glassMessageBoxOk("", "<font:verdana bold:13>Updates for Support_Preferences are mandatory. <font:verdana:13>It'll only take a minute!\n\nSorry about that.");
     return;
   }
 
@@ -138,6 +147,11 @@ function GlassUpdaterSupport::updateSetting() {
 }
 
 package GlassUpdaterSupportPackage {
+  function updater::checkForUpdates(%this, %a, %b, %c) {
+    GlassUpdatesGroup.delete();
+    return parent::checkForUpdates(%this, %a, %b, %c);
+  }
+
   function updaterInterfacePushItem(%item) {
     if(!GlassSettings.get("MM::UseDefault"))
       GlassUpdaterSupport::pushItem(%item);
