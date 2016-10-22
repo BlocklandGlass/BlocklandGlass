@@ -331,6 +331,7 @@ function GlassLiveDrag::onMouseUp(%this, %a, %pos) {
       continue;
 
     %newWindow = %window;
+    break;
   }
 
   if(%newWindow $= "") {
@@ -1428,7 +1429,11 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
   %this.setTabsVisible(true);
   %this.renderTabs();
 
-  %this.openTab(%this.tabId[%tabObj]);
+  if(%this.tabs > 1) {
+
+  } else {
+    %this.openTab(0);
+  }
 }
 
 function GlassChatroomWindow::removeTab(%this, %tabObj) {
