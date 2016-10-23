@@ -147,13 +147,18 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
     %word = getWord(%msg, %i);
     for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
       %user = %this.view.userSwatch.getObject(%o);
-      if(%word $= ("@" @ %user.text.rawtext)) {
+      %name = strreplace(%user.text.rawtext, " ", "_");
+      %blid = %user.text.blid;
+      if(%word $= ("@" @ %name)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
-      } else if(%word $= ("@" @ %user.text.blid)) {
+      } else if(%word $= ("@" @ %blid)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
       }
     }
-    if(%word $= ("@" @ $Pref::Player::NetName)) {
+    
+    %name = strreplace($Pref::Player::NetName, " ", "_");
+    
+    if(%word $= ("@" @ %name)) {
       %mentioned = true;
     } else if(%word $= ("@" @ getNumKeyId())) {
       %mentioned = true;

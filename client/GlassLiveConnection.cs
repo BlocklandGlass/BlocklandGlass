@@ -158,6 +158,11 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %motd = %data.motd;
       %motd = strreplace(%motd, "\n", "<br> * ");
+      %motd = strreplace(%motd, "[name]", $Pref::Player::NetName);
+      %motd = strreplace(%motd, "[vers]", Glass.version);
+      %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
+      %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
+
       %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
 
       %room.pushText(%motd);
@@ -181,8 +186,15 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomText":
       %room = GlassLiveRoom::getFromId(%data.id);
-      if(isObject(%room))
+      
+      if(isObject(%room)) {
+        %data.text = strreplace(%data.text, "[name]", $Pref::Player::NetName);
+        %data.text = strreplace(%data.text, "[vers]", Glass.version);
+        %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
+        %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
+        
         %room.pushText(%data.text);
+      }
 
     case "roomUserJoin":
       %user = GlassLiveUser::create(%data.username, %data.blid);
@@ -388,10 +400,10 @@ package GlassLiveConnectionPackage {
     
     if(GlassLiveConnection.connected) {
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
-      
-      GlassAuth.schedule(0, init);
-      GlassAuth.schedule(100, heartbeat);
     }
+      
+    GlassAuth.schedule(0, init);
+    GlassAuth.schedule(100, heartbeat);
   }
 };
 activatePackage(GlassLiveConnectionPackage);

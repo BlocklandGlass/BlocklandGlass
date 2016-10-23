@@ -233,13 +233,18 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     %word = getWord(%msg, %i);
     for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
       %user = %this.view.userSwatch.getObject(%o);
-      if(%word $= ("@" @ %user.text.rawtext)) {
+      %name = strreplace(%user.text.rawtext, " ", "_");
+      %blid = %user.text.blid;
+      if(%word $= ("@" @ %name)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
-      } else if(%word $= ("@" @ %user.text.blid)) {
+      } else if(%word $= ("@" @ %blid)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
       }
     }
-    if(%word $= ("@" @ $Pref::Player::NetName)) {
+    
+    %name = strreplace($Pref::Player::NetName, " ", "_");
+    
+    if(%word $= ("@" @ %name)) {
       %mentioned = true;
     } else if(%word $= ("@" @ getNumKeyId())) {
       %mentioned = true;
@@ -284,9 +289,6 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
-        %msg = setWord(%msg, %i, %word);
-      } else {
-        %word = " ";
         %msg = setWord(%msg, %i, %word);
       }
     }
@@ -484,10 +486,11 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
 function GlassLiveUserListSwatch::onRightMouseUp(%this) {
   if(isObject(%input = GlassChatroomWindow.activeTab.input) && %this.user.blid != getNumKeyId()) {
     %len = strlen(%input.getValue());
+    %name = strreplace(%this.user.username, " ", "_");
     if(%len > 0 && getsubstr(%input.getValue(), %len - 1, %len) $= " ") {
-      %input.setValue(%input.getValue() @ "@" @ %this.user.username @ " ");
+      %input.setValue(%input.getValue() @ "@" @ %name @ " ");
     } else {
-      %input.setValue(ltrim(%input.getValue() SPC "@" @ %this.user.username @ " "));
+      %input.setValue(ltrim(%input.getValue() SPC "@" @ %name @ " "));
     }
   }
 }
@@ -542,7 +545,7 @@ function GlassChatroomGui_Input::onTabComplete(%this) {
   if(%closeName != -1)
   {
     %text = removeWord(%text, getWordCount(%text) - 1);
-    %closeName = "@" @ %closeName @ " ";
+    %closeName = "@" @ strreplace(%closeName, " ", "_") @ " ";
     if(getWordCount(%text) >= 1)
       %text = %text SPC %closeName;
     else
