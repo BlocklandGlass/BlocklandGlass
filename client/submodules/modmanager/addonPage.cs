@@ -70,7 +70,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   
   for(%i = 0; %i < getWordCount(%obj.description); %i++) {
     %word = getWord(%obj.description, %i);
-    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %obj.description = setWord(%obj.description, %i, %word);
     }

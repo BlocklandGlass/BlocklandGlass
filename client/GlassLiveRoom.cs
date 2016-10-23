@@ -280,15 +280,18 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
-    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~\";");
+      %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
+        %msg = setWord(%msg, %i, %word);
+      } else {
+        %word = " ";
         %msg = setWord(%msg, %i, %word);
       }
     }

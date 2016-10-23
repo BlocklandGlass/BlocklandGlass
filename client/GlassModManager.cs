@@ -494,7 +494,7 @@ function GlassModManager::populateMyAddons(%this) {
       continue;
     }
 
-    if(%name $= "System_BlocklandGlass" || %name $= "Support_Preferences") {
+    if(%name $= "System_BlocklandGlass" || %name $= "Support_Preferences" || %name $= "Support_Updater") {
       continue;
     }
 
@@ -1025,22 +1025,32 @@ function GlassModManagerQueue_Failed(%this, %error) {
 package GlassModManager {
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") == 0) {
+      %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*-=+`~;");
       %link = getsubstr(%url, 8, strlen(%url)-8);
       if(%link $= "boards") {
         GlassModManagerGui::loadContext("addons");
+        
       } else if(%link $= "home") {
         GlassModManagerGui::loadContext("home");
+        
       } else if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
-        %b = getsubstr(%link, 6, strpos(%link, "&")-6);
-        %p = getsubstr(%link, 12+strlen(%b), strlen(%link)-12-strlen(%b));
-        GlassModManagerGui::fetchBoard(%b, %p);
-      } else if(strpos(%link, "aid-") == 0) {
+        %board = getsubstr(%link, 6, strpos(%link, "&")-6);
+        %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
+        
+        if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
+          GlassModManagerGui::fetchBoard(%board, %page);
+        }
+      } else if(strpos(%link, "aid-") != -1) {
         $Glass::MM_PreviousPage = -1;
         $Glass::MM_PreviousBoard = -1;
         %id = getsubstr(%link, 4, strlen(%link)-4);
-        %o = GlassModManagerGui::fetchAndRenderAddon(%id);
-        %o.action = "render";
+        
+        if(%id+0 $= %id || %id > 0) {
+          %o = GlassModManagerGui::fetchAndRenderAddon(%id);
+          %o.action = "render";
+        }
       }
+      GlassModManagerGui_Window.setVisible(true);
     } else {
       return parent::onURL(%this, %url);
     }
