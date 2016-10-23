@@ -1025,7 +1025,7 @@ function GlassModManagerQueue_Failed(%this, %error) {
 package GlassModManager {
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") == 0) {
-      %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*-=+`~;");
+      %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
       if(%link $= "boards") {
         GlassModManagerGui::loadContext("addons");
