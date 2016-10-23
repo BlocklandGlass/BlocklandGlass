@@ -1479,6 +1479,8 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
         %this.openTab(%this.tabs-1);
       else
         %this.openTab(%id);
+    } else if(%this.activeTabId >= %id) {
+      %this.activeTabId--;
     }
     %this.renderTabs();
   }
@@ -1691,7 +1693,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %button.mouseCtrl.setUse(true);
 
     if(%tab.getName() $= "GlassChatroomTab") {
-      %this.text = "Chatroom - " @ %tab.title;
+      %this.text = "Chatroom - " @ %tab.title; // @ " - " @ %this.getId();
       %this.setText(%this.text);
 
       %tab.room.setAwake(true);
