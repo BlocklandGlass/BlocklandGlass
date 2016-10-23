@@ -305,12 +305,21 @@ function GlassLiveDrag::onMouseUp(%this, %a, %pos) {
   %dropX = getWord(%pos, 0);
   %dropY = getWord(%pos, 1);
 
+  //this loop is used to exit all windows from Drop Mode
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
     if(%window.getName() !$= "GlassChatroomWindow")
       continue;
 
     %window.setDropMode(false);
+  }
+
+
+  //this loop is used specifically to detect the whether to open a new window or add
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() !$= "GlassChatroomWindow")
+      continue;
 
     %posX = getWord(%window.position, 0);
     %posY = getWord(%window.position, 1);
@@ -1429,11 +1438,8 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
   %this.setTabsVisible(true);
   %this.renderTabs();
 
-  if(%this.tabs > 1) {
-
-  } else {
-    %this.openTab(0);
-  }
+  //always open to the added tab
+  %this.openTab(%this.tabId[%tabObj]);
 }
 
 function GlassChatroomWindow::removeTab(%this, %tabObj) {
