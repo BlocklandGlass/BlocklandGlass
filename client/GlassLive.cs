@@ -575,7 +575,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
   for(%i = 0; %i < getWordCount(%message); %i++) {
     %word = getWord(%message, %i);
-    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
       %raw = %word;
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %message = setWord(%message, %i, %word);
@@ -586,7 +586,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %obj.raw = %raw;
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~\";");
+      %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
