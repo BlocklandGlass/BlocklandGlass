@@ -6,14 +6,14 @@ $Glass::Disconnect["Update"] = 4; // [Updates]
 
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
-  
+
   if(GlassLiveConnection.lastConnected !$= "" && getSimTime() < GlassLiveConnection.lastConnected + 2500) {
     glassMessageBoxOk("Slow Down", "You're trying to connect too fast!");
     return;
   }
 
-  %server = Glass.address;
-  %port = 27002;
+  %server = Glass.liveAddress;
+  %port = Glass.livePort;
 
   //warn("Connecting to notification server...");
 
@@ -44,6 +44,7 @@ function GlassLiveConnection::onConnected(%this) {
   %obj = JettisonObject();
   %obj.set("type", "string", "auth");
   %obj.set("ident", "string", GlassAuth.ident);
+  %obj.set("blid", "string", getNumKeyId());
   %obj.set("version", "string", Glass.version);
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
@@ -111,6 +112,7 @@ function GlassLiveConnection::onLine(%this, %line) {
   switch$(%data.value["type"]) {
     case "auth":
       echo("Glass Live: " @ %data.status);
+      // TODO handle failure
 
     case "notification":
       %title = %data.title;
@@ -133,6 +135,42 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "messageNotification":
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
+
+    case "roomJoinAuto":
+      // TODO just mimic roomJoin for now
+      if(GlassSettings.get("Live::RoomNotification")) {
+        GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+      }
+
+      %room = GlassLiveRooms::create(%data.id, %data.title);
+
+      %clients = %data.clients;
+      for(%i = 0; %i < %clients.length; %i++) {
+        %cl = %clients.value[%i];
+
+        %user = GlassLiveUser::create(%cl.username, %cl.blid);
+
+
+        %user.setAdmin(%cl.admin);
+        %user.setMod(%cl.mod);
+
+        %room.addUser(%user.blid);
+      }
+
+      %room.createView();
+
+      %motd = %data.motd;
+      %motd = strreplace(%motd, "\n", "<br> * ");
+      %motd = strreplace(%motd, "[name]", $Pref::Player::NetName);
+      %motd = strreplace(%motd, "[vers]", Glass.version);
+      %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
+      %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
+
+      %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
+
+      %room.pushText(%motd);
+
+      %room.view.userSwatch.getGroup().scrollToTop();
 
     case "roomJoin":
       if(GlassSettings.get("Live::RoomNotification")) {
@@ -186,13 +224,13 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomText":
       %room = GlassLiveRoom::getFromId(%data.id);
-      
+
       if(isObject(%room)) {
         %data.text = strreplace(%data.text, "[name]", $Pref::Player::NetName);
         %data.text = strreplace(%data.text, "[vers]", Glass.version);
         %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
-        
+
         %room.pushText(%data.text);
       }
 
@@ -394,14 +432,14 @@ package GlassLiveConnectionPackage {
     }
     parent::messageCallback(%this, %call);
   }
-  
+
   function authTCPobj_Client::onDisconnect(%this) {
     parent::onDisconnect(%this);
-    
+
     if(GlassLiveConnection.connected) {
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
     }
-      
+
     GlassAuth.schedule(0, init);
     GlassAuth.schedule(100, heartbeat);
   }
