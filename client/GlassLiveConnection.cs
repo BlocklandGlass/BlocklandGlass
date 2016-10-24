@@ -243,10 +243,18 @@ function GlassLiveConnection::onLine(%this, %line) {
       if(isObject(%room))
         %room.onUserJoin(%user.blid);
 
-    case "roomUserLeave":
+    case "roomUserLeave": //other user got removed
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.onUserLeave(%data.blid, %data.reason);
+
+    case "roomKicked": //we got removed from a room
+      warn("TODO: roomKicked for reason " @ %data.reason);
+      glassMessageBoxOk("Kicked", "You've been kicked from -room name-:<br><br>" @ %data.reason);
+
+    case "roomBanned": //we got banned from a room
+      warn("TODO: roomBanned for reason " @ %data.reason);
+      glassMessageBoxOk("Kicked", "You've been banned from -room name- for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
 
     case "roomAwake":
       %room = GlassLiveRoom::getFromId(%data.id);
@@ -413,6 +421,13 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassSettings.update("Live::StartupConnect", false);
         %this.disconnect();
       }
+
+    case "kicked": //we got kicked from all service
+      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>" @ %data.reason);
+
+    case "banned":
+      glassMessageBoxOk("Kicked", "You've been banned from Glass Live for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
+
   }
   //%data.delete();
 }
