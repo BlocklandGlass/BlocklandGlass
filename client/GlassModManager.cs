@@ -1030,9 +1030,11 @@ package GlassModManager {
       if(%link $= "boards") {
         GlassModManagerGui::loadContext("addons");
         
+        %openMM = true;
       } else if(%link $= "home") {
         GlassModManagerGui::loadContext("home");
         
+        %openMM = true;
       } else if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
         %board = getsubstr(%link, 6, strpos(%link, "&")-6);
         %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
@@ -1049,10 +1051,26 @@ package GlassModManager {
           %o = GlassModManagerGui::fetchAndRenderAddon(%id);
           %o.action = "render";
         }
+        
+        %openMM = true;
       }
-      GlassModManagerGui_Window.setVisible(true);
+    } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=")) {
+      $Glass::MM_PreviousPage = -1;
+      $Glass::MM_PreviousBoard = -1;
+      %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
+      
+      if(%id+0 $= %id || %id > 0) {
+        %o = GlassModManagerGui::fetchAndRenderAddon(%id);
+        %o.action = "render";
+      }
+      
+      %openMM = true;
     } else {
       return parent::onURL(%this, %url);
+    }
+    
+    if(%openMM) {
+      GlassModManagerGui_Window.setVisible(true);
     }
   }
 };
