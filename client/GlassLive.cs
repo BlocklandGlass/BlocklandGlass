@@ -361,7 +361,7 @@ function GlassLiveDrag::onMouseUp(%this, %a, %pos) {
 
   %newWindow.extent = %extX SPC %extY;
 
-  %newWindow.schedule(0, "resize", getWord(%newWindow.position, 0), getWord(%newWindow.position, 1), getWord(%newWindow.extent, 0), getWord(%newWindow.extent, 1));
+  %newWindow.schedule(0, resize, getWord(%newWindow.position, 0), getWord(%newWindow.position, 1), getWord(%newWindow.extent, 0), getWord(%newWindow.extent, 1));
 
   if(isObject(%this.dragObj))
     %this.dragObj.delete();
@@ -464,7 +464,7 @@ function GlassLive::joinRoom(%id) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  GlassChatroomWindow.schedule(0, "openRoomBrowser");
+  // GlassChatroomWindow.schedule(0, openRoomBrowser);
 }
 
 function GlassLive::viewLocation(%blid) {
@@ -1420,8 +1420,9 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
     return;
   }
 
-  if(%this.isAwake())
-    %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
+  if(%this.isAwake()) {
+    %this.schedule(0, resize, getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
+  }
 
   if(isObject(%tabObj.window)) {
     %tabObj.window.removeTab(%tabObj);
@@ -1713,7 +1714,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
   }
 
   if(%this.isAwake()) {
-    %this.schedule(0, "resize", getWord(%this.position, 0), getWord(%this.position, 1), getWord(%this.extent, 0), getWord(%this.extent, 1));
+    %this.resize.schedule(0, onResize);
   }
 }
 
