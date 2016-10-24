@@ -270,7 +270,8 @@ function GlassLiveConnection::onLine(%this, %line) {
         %friend = %data.friends.value[%i];
         %user = GlassLiveUser::create(%friend.username, %friend.blid);
         %user.setFriend(true);
-        %user.online = %friend.online;
+        %user.online = (%friend.status $= "offline" ? false : true);
+        %user.status = %friend.status;
 
         GlassLive::addFriendToList(%user);
       }
@@ -428,6 +429,12 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "banned":
       glassMessageBoxOk("Kicked", "You've been banned from Glass Live for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
 
+    case "error":
+      if(%data.showDialog) {
+        glassMessageBoxOk("Glass Live Error", %data.message);
+      } else {
+        echo("Glass Live Error: " @ %data.message);
+      }
   }
   //%data.delete();
 }
