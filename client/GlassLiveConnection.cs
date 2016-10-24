@@ -55,7 +55,10 @@ function GlassLiveConnection::onConnected(%this) {
 function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
+  
+  if(!GlassLive.noReconnect) {
+    GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
+  }
 
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
@@ -67,7 +70,10 @@ function GlassLiveConnection::onDNSFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
+  
+  if(!GlassLive.noReconnect) {
+    GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
+  }
 }
 
 function GlassLiveConnection::onConnectFailed(%this) {
@@ -75,7 +81,10 @@ function GlassLiveConnection::onConnectFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), "connectToServer");
+  
+  if(!GlassLive.noReconnect) {
+    GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
+  }
 }
 
 function GlassLiveConnection::doDisconnect(%this, %reason) {
@@ -409,7 +418,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %this.disconnect();
       %this.connected = false;
-      GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), "connectToServer");
+      GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), connectToServer);
 
     case "disconnected":
       // 0 - server shutdown
@@ -425,10 +434,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
     case "kicked": //we got kicked from all service
+      GlassLive.noReconnect = true;
       glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>" @ %data.reason);
 
     case "banned":
-      glassMessageBoxOk("Kicked", "You've been banned from Glass Live for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
+      GlassLive.noReconnect = true;
+      glassMessageBoxOk("Banned", "You've been banned from Glass Live for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
 
     case "error":
       if(%data.showDialog) {
