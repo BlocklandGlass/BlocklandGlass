@@ -304,7 +304,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      %uo.online = %data.online;
+      %uo.online = (%data.status $= "offline" ? false : true);
+      %uo.setStatus(%data.status);
 
       GlassLive::createFriendList();
 
