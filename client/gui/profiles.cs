@@ -214,9 +214,10 @@ if(!isObject(GlassUserListButtonProfile)) new GuiControlProfile(GlassUserListBut
   fontSize = 13;
   fontColor = "220 220 220 255";
   justify = "left";
-  fontColors[0] = "0 0 0 255";
-  fontColors[1] = "255 255 255 255";
-  fontColors[2] = "100 100 100 255";
+  fontColors[0] = "0 0 0 255"; // user
+  fontColors[1] = "60 245 0 255"; // friend
+  fontColors[2] = "245 184 0 255"; // mod
+  fontColors[3] = "245 102 0 255"; // admin
 };
 
 if(!isObject(GlassChatroomTabProfile)) new GuiControlProfile(GlassChatroomTabProfile : GuiCenterTextProfile) {
