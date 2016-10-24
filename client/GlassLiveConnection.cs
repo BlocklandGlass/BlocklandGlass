@@ -7,7 +7,7 @@ $Glass::Disconnect["Update"] = 4; // [Updates]
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
-  if(GlassLiveConnection.lastConnected !$= "" && getSimTime() < GlassLiveConnection.lastConnected + 2500) {
+  if(GlassLive.lastConnected !$= "" && getSimTime() < GlassLive.lastConnected + 2500) {
     glassMessageBoxOk("Slow Down", "You're trying to connect too fast!"); // **make sure to implement this server-side as well + get rid of this afterwards**
     return;
   }
@@ -29,7 +29,6 @@ function GlassLive::connectToServer() {
   }
 
   %this.connected = false;
-  GlassLiveConnection.lastConnected = getSimTime();
 
   GlassLiveConnection.connect(%server @ ":" @ %port);
 }
@@ -37,6 +36,8 @@ function GlassLive::connectToServer() {
 function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
 
+  GlassLive.noReconnect = false;
+  GlassLive.lastConnected = getSimTime();
   GlassLive.hideFriendRequests = false;
   GlassLive.hideFriends = false;
 
