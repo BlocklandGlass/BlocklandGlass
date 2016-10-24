@@ -8,7 +8,7 @@ function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
   if(GlassLiveConnection.lastConnected !$= "" && getSimTime() < GlassLiveConnection.lastConnected + 2500) {
-    glassMessageBoxOk("Slow Down", "You're trying to connect too fast!");
+    glassMessageBoxOk("Slow Down", "You're trying to connect too fast!"); // **make sure to implement this server-side as well + get rid of this afterwards**
     return;
   }
 

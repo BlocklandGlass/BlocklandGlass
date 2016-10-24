@@ -213,6 +213,7 @@ function GlassLive::chatColorCheck(%this) {
 
 function GlassLive::disconnect(%reason) {
   GlassLive::cleanup();
+  
   if(isObject(GlassLiveConnection)) {
     GlassLiveConnection.doDisconnect(%reason);
   }
@@ -248,6 +249,10 @@ function GlassLive::cleanup() {
       %i--;
     }
   }
+  
+  GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
+  GlassFriendsGui_ScrollSwatch.setVisible(true);
+  GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
 }
 
 function GlassLive::showUserStatus() {

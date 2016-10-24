@@ -28,9 +28,10 @@ function GlassModManagerGui::renderHome(%data) {
   }
 
   %container.verticalMatchChildren(498, 0);
-  GlassModManagerGui_MainDisplay.setVisible(true);
+  
   GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+  GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
 function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
