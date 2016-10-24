@@ -184,6 +184,8 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
 }
 
 function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
+  return;
+  
   %this.awake[%blid] = %awake;
   %text = %this.userListSwatch[%blid].text;
   if(isObject(%text)) {
@@ -193,6 +195,8 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
 }
 
 function GlassLiveRoom::setAwake(%this, %bool) {
+  return;
+  
   if(!GlassSettings.get("Live::RoomShowAwake"))
     %bool = false;
   
@@ -391,10 +395,12 @@ function GlassLiveRoom::renderUserList(%this) {
       %ext = "16 16";
     }
 
-    if(%this.awake[%user.blid])
-      %colorCode = 0;
-    else
-      %colorCode = 2;
+    // if(%this.awake[%user.blid])
+      // %colorCode = 0;
+    // else
+      // %colorCode = 2;
+    
+    %colorCode = 0;
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {

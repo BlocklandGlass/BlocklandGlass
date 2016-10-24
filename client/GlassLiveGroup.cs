@@ -363,10 +363,12 @@ function GlassLiveGroup::renderUserList(%this) {
     %pos = "1 3";
     %ext = "16 16";
 
-    if(%this.awake[%user.blid])
-      %colorCode = 0;
-    else
-      %colorCode = 2;
+    // if(%this.awake[%user.blid])
+      // %colorCode = 0;
+    // else
+      // %colorCode = 2;
+    
+    %colorCode = 0;
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
