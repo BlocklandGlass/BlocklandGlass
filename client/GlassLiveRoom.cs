@@ -36,11 +36,11 @@ function GlassLiveRoom::leaveRoom(%this) {
   %obj.set("id", "string", %this.id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   if(GlassSettings.get("Live::RoomNotification")) {
     GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
   }
-  
+
   %this.view.window.removeTab(%this.view);
   %this.view.deleteAll();
   %this.view.delete();
@@ -161,7 +161,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
     %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
     %this.pushText(%text);
   }
-  
+
   %this.renderUserList();
 }
 
@@ -187,16 +187,16 @@ function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
   %this.awake[%blid] = %awake;
   %icon = %this.userListSwatch[%blid].icon;
   if(isObject(%icon)) {
-    %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "status_online.png" : "status_away.png"));
+    %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "user.png" : "user_yellow.png"));
   }
 }
 
 function GlassLiveRoom::setAwake(%this, %bool) {
   if(!GlassSettings.get("Live::RoomShowAwake"))
     %bool = false;
-  
+
   %this.awake = %bool;
-  
+
   %obj = JettisonObject();
   %obj.set("type", "string", "roomAwake");
   %obj.set("id", "string", %this.id);
@@ -240,9 +240,9 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
       }
     }
-    
+
     %name = strreplace($Pref::Player::NetName, " ", "_");
-    
+
     if(%word $= ("@" @ %name)) {
       %mentioned = true;
     } else if(%word $= ("@" @ getNumKeyId())) {
@@ -264,9 +264,9 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         if(!%this.awake) {
           GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
         }
-        
+
         alxPlay(GlassUserMentionedAudio);
-        
+
         $Glass::LastMentioned = $Sim::Time + 10;
       }
     } else if(GlassSettings.get("Live::RoomChatNotification")) {
@@ -314,9 +314,9 @@ function GlassLiveRoom::pushText(%this, %msg) {
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
-  
+
   %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
-  
+
   if(%lp >= -50) {
     %chatroom.scroll.scrollToBottom();
   }
@@ -327,7 +327,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   %mods = new GuiTextListCtrl();
   %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
-  
+
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
     if(%user.isAdmin()) {
@@ -355,11 +355,11 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   for(%i = 0; %i < %mods.rowCount(); %i++) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
-  
+
   for(%i = 0; %i < %friends.rowCount(); %i++) {
     %idList = %idList SPC %friends.getRowId(%i);
   }
-  
+
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
@@ -502,9 +502,9 @@ function GlassLiveUserListSwatch::onRightMouseUp(%this) {
 // From Crown's (2143) "Name Completion" Add-On
 // Adapted for use with Glass
 
-function GlassChatroomGui_Input::fixCasesByName(%this, %name) 
+function GlassChatroomGui_Input::fixCasesByName(%this, %name)
 {
-	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++) 
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++)
 	{
 		%compare = %this.getGroup().userSwatch.getObject(%i).text.rawtext;
 		if(%name $= %compare)
@@ -513,18 +513,18 @@ function GlassChatroomGui_Input::fixCasesByName(%this, %name)
 	return -1;
 }
 
-function GlassChatroomGui_Input::findPartialName(%this, %partialName) 
+function GlassChatroomGui_Input::findPartialName(%this, %partialName)
 {
 	%partialName = strLwr(%partialName);
 	%bestName = -1;
 	%bestPos = -1;
-	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++) 
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++)
 	{
     %user = %this.getGroup().userSwatch.getObject(%i);
 		%name = strLwr(%user.text.rawtext);
-    
+
 		%pos = strStr(%name, %partialName);
-		if(%pos > %bestPos) 
+		if(%pos > %bestPos)
 		{
 			%bestPos = %pos;
 			%bestName = %name;
@@ -537,15 +537,15 @@ function GlassChatroomGui_Input::findPartialName(%this, %partialName)
 
 function GlassChatroomGui_Input::onTabComplete(%this) {
   %text = %this.getValue();
-  
+
   %last = getWord(%text, getWordCount(%text) - 1);
   %closeName = %this.findPartialName(%last);
-  
-  if(strLen(%last) < 2 || %closeName == -1) 
+
+  if(strLen(%last) < 2 || %closeName == -1)
   {
     return;
   }
-  
+
   if(%closeName != -1)
   {
     %text = removeWord(%text, getWordCount(%text) - 1);

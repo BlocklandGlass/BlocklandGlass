@@ -163,6 +163,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
         %user.status = %cl.status;
+        %user.icon = %cl.icon;
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
@@ -198,6 +199,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
         %user.status = %cl.status;
+        %user.icon = %cl.icon;
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
@@ -253,6 +255,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %user.setAdmin(%data.admin);
       %user.setMod(%data.mod);
       %user.status = %data.status;
+      %user.icon = %data.icon;
 
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
@@ -265,6 +268,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomUserStatus":
       %user.status = %data.status;
+      %room = GlassLiveRoom::getFromId(%data.id);
+      if(isObject(%room))
+        %room.renderUserList();
+
+    case "roomUserIcon":
+      %user.icon = %data.icon;
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.renderUserList();
@@ -293,6 +302,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %user.setFriend(true);
         %user.online = (%friend.status $= "offline" ? false : true);
         %user.status = %friend.status;
+        %user.icon = %friend.icon;
 
         GlassLive::addFriendToList(%user);
       }
@@ -340,11 +350,18 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassNotificationManager::newNotification(%uo.username, "is now " @ %data.status @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
       }
 
+    case "friendIcon":
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      %uo.icon = %data.icon;
+
+      GlassLive::createFriendList();
+
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.online = %data.online;
       %uo.isFriend = true;
       %uo.status = %data.status;
+      %uo.icon = %data.icon;
 
       GlassLive::removeFriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
