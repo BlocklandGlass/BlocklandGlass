@@ -183,6 +183,10 @@ if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultP
 if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfile : GuiTextProfile) {
   fontType = "Verdana Bold";
   fontSize = "13";
+  fontColors[0] = "0 0 0 255"; // user
+  fontColors[1] = "75 215 30 255"; // friend
+  fontColors[2] = "245 155 0 255"; // mod
+  fontColors[3] = "245 100 0 255"; // admin
 };
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
@@ -214,10 +218,9 @@ if(!isObject(GlassUserListButtonProfile)) new GuiControlProfile(GlassUserListBut
   fontSize = 13;
   fontColor = "220 220 220 255";
   justify = "left";
-  fontColors[0] = "0 0 0 255"; // user
-  fontColors[1] = "60 245 0 255"; // friend
-  fontColors[2] = "245 184 0 255"; // mod
-  fontColors[3] = "245 102 0 255"; // admin
+  fontColors[0] = "0 0 0 255";
+  fontColors[1] = "255 255 255 255";
+  fontColors[2] = "100 100 100 255";
 };
 
 if(!isObject(GlassChatroomTabProfile)) new GuiControlProfile(GlassChatroomTabProfile : GuiCenterTextProfile) {

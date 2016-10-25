@@ -1027,50 +1027,48 @@ package GlassModManager {
     if(strpos(%url, "glass://") == 0) {
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
-      if(%link $= "boards") {
-        GlassModManagerGui::loadContext("addons");
-        
-        %openMM = true;
-      } else if(%link $= "home") {
-        GlassModManagerGui::loadContext("home");
-        
-        %openMM = true;
-      } else if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
+      
+      if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
         %board = getsubstr(%link, 6, strpos(%link, "&")-6);
         %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
-        
-        if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
-          GlassModManagerGui::fetchBoard(%board, %page);
-        }
       } else if(strpos(%link, "aid-") != -1) {
         $Glass::MM_PreviousPage = -1;
         $Glass::MM_PreviousBoard = -1;
+        
         %id = getsubstr(%link, 4, strlen(%link)-4);
-        
-        if(%id+0 $= %id || %id > 0) {
-          %o = GlassModManagerGui::fetchAndRenderAddon(%id);
-          %o.action = "render";
-        }
-        
-        %openMM = true;
       }
     } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=")) {
       $Glass::MM_PreviousPage = -1;
       $Glass::MM_PreviousBoard = -1;
+      
       %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
-      
-      if(%id+0 $= %id || %id > 0) {
-        %o = GlassModManagerGui::fetchAndRenderAddon(%id);
-        %o.action = "render";
-      }
-      
-      %openMM = true;
     } else {
       return parent::onURL(%this, %url);
     }
-    
-    if(%openMM) {
+  
+    if(GlassModManagerGui.getCount() > 0) {
+      GlassModManagerGui.firstWake = true;
+      GlassOverlayGui.add(GlassModManagerGui_Window);
+      GlassModManagerGui_Window.forceCenter();
+      GlassModManagerGui_Window.visible = true;
+    } else {
       GlassModManagerGui_Window.setVisible(true);
+    }
+
+    GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
+    
+    if(%id+0 $= %id || %id > 0) {
+      GlassModManagerGui::fetchAndRenderAddon(%id).action = "render";
+    }
+    
+    if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
+      GlassModManagerGui::fetchBoard(%board, %page);
+    }
+    
+    if(%link $= "home") {
+      GlassModManagerGui::loadContext("home");
+    } else if(%link $= "boards") {
+      GlassModManagerGui::loadContext("addons");
     }
   }
 };

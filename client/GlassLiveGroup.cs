@@ -329,22 +329,50 @@ function GlassLiveGroup::getUser(%this, %idx) {
 }
 
 function GlassLiveGroup::getOrderedUserList(%this) {
-  %users = new GuiTextListCtrl();
   %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
-
+  %friends = new GuiTextListCtrl();
+  %users = new GuiTextListCtrl();
+  
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
-    %users.addRow(%i, %user.username);
+    if(%user.isAdmin()) {
+      %admins.addRow(%i, %user.username);
+    } else if(%user.isMod()) {
+      %mods.addRow(%i, %user.username);
+    } else if(%user.isFriend()) {
+      %friends.addRow(%i, %user.username);
+    } else {
+      %users.addRow(%i, %user.username);
+    }
   }
 
+  %admins.sort(0);
+  %mods.sort(0);
+  %friends.sort(0);
   %users.sort(0);
 
   %idList = "";
+
+  for(%i = 0; %i < %admins.rowCount(); %i++) {
+    %idList = %idList SPC %admins.getRowId(%i);
+  }
+
+  for(%i = 0; %i < %mods.rowCount(); %i++) {
+    %idList = %idList SPC %mods.getRowId(%i);
+  }
+  
+  for(%i = 0; %i < %friends.rowCount(); %i++) {
+    %idList = %idList SPC %friends.getRowId(%i);
+  }
+  
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
+  %admins.delete();
+  %mods.delete();
+  %friends.delete();
   %users.delete();
 
   return trim(%idList);
@@ -358,17 +386,22 @@ function GlassLiveGroup::renderUserList(%this) {
 
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
-
-    %icon = "user";
-    %pos = "1 3";
-    %ext = "16 16";
-
-    // if(%this.awake[%user.blid])
-      // %colorCode = 0;
-    // else
-      // %colorCode = 2;
     
-    %colorCode = 0;
+    if(%user.isAdmin()) {
+      %colorCode = 3;
+    } else if(%user.isMod()) {
+      %colorCode = 2;
+    } else if(%user.isFriend()) {
+      %colorCode = 1;
+    } else {
+      %colorCode = 0;
+    }
+    
+    if(%this.awake[%user.blid]) {
+      %icon = "status_online";
+    } else {
+      %icon = "status_away";
+    }
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
@@ -387,8 +420,8 @@ function GlassLiveGroup::renderUserList(%this) {
     %swatch.icon = new GuiBitmapCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      extent = %ext;
-      position = %pos;
+      extent = "16 16";
+      position = "1 3";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
     };
 
