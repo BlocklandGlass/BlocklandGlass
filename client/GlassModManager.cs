@@ -1024,7 +1024,7 @@ function GlassModManagerQueue_Failed(%this, %error) {
 
 package GlassModManager {
   function GuiMLTextCtrl::onURL(%this, %url) {
-    if(strpos(%url, "glass://") == 0) {
+    if(strpos(%url, "glass://") != -1) {
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
       
@@ -1037,7 +1037,7 @@ package GlassModManager {
         
         %id = getsubstr(%link, 4, strlen(%link)-4);
       }
-    } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=")) {
+    } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=") != -1) {
       $Glass::MM_PreviousPage = -1;
       $Glass::MM_PreviousBoard = -1;
       
