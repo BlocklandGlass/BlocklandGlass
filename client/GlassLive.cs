@@ -2338,7 +2338,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     extent = "24 6";
     position = "5 0";
     visible = 0;
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "user.png" : "user_gray.png");
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "status_online.png" : "status_offline.png");
     mcolor = "255 255 255 64";
   };
 
@@ -2508,7 +2508,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
     vertSizing = "bottom";
     extent = "16 16";
     position = "5 5";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "user.png" : "user_gray.png");
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "status_online.png" : "status_offline.png");
   };
 
   %gui.chaticon = new GuiBitmapCtrl() {
@@ -2595,7 +2595,7 @@ function GlassLive::createFriendRequest(%name, %blid) {
     vertSizing = "bottom";
     extent = "16 16";
     position = "5 5";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ "user_gray.png";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ "status_offline.png";
   };
 
   %gui.decline = new GuiBitmapCtrl() {

@@ -184,19 +184,14 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
 }
 
 function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
-  return;
-  
   %this.awake[%blid] = %awake;
-  %text = %this.userListSwatch[%blid].text;
-  if(isObject(%text)) {
-    %colorCode = %awake ? 0 : 2;
-    %text.setValue(collapseEscape("\\c" @ %colorCode) @ %text.rawtext);
+  %icon = %this.userListSwatch[%blid].icon;
+  if(isObject(%icon)) {
+    %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "status_online.png" : "status_away.png"));
   }
 }
 
 function GlassLiveRoom::setAwake(%this, %bool) {
-  return;
-  
   if(!GlassSettings.get("Live::RoomShowAwake"))
     %bool = false;
   
@@ -328,24 +323,28 @@ function GlassLiveRoom::pushText(%this, %msg) {
 }
 
 function GlassLiveRoom::getOrderedUserList(%this) {
-  %users = new GuiTextListCtrl();
   %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
-
+  %friends = new GuiTextListCtrl();
+  %users = new GuiTextListCtrl();
+  
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
     if(%user.isAdmin()) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
+    } else if(%user.isFriend()) {
+      %friends.addRow(%i, %user.username);
     } else {
       %users.addRow(%i, %user.username);
     }
   }
 
-  %users.sort(0);
   %admins.sort(0);
   %mods.sort(0);
+  %friends.sort(0);
+  %users.sort(0);
 
   %idList = "";
 
@@ -356,13 +355,18 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   for(%i = 0; %i < %mods.rowCount(); %i++) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
-
+  
+  for(%i = 0; %i < %friends.rowCount(); %i++) {
+    %idList = %idList SPC %friends.getRowId(%i);
+  }
+  
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
   %admins.delete();
   %mods.delete();
+  %friends.delete();
   %users.delete();
 
   return trim(%idList);
@@ -378,29 +382,20 @@ function GlassLiveRoom::renderUserList(%this) {
     %user = %this.getUser(getWord(%orderedList, %i));
 
     if(%user.isAdmin()) {
-      %icon = "crown_gold";
-      %pos = "2 4";
-      %ext = "14 14";
+      %colorCode = 3;
     } else if(%user.isMod()) {
-      %icon = "crown_silver";
-      %pos = "2 4";
-      %ext = "14 14";
+      %colorCode = 2;
     } else if(%user.isFriend()) {
-      %icon = "user_green";
-      %pos = "1 3";
-      %ext = "16 16";
+      %colorCode = 1;
     } else {
-      %icon = "user";
-      %pos = "1 3";
-      %ext = "16 16";
+      %colorCode = 0;
     }
 
-    // if(%this.awake[%user.blid])
-      // %colorCode = 0;
-    // else
-      // %colorCode = 2;
-    
-    %colorCode = 0;
+    if(%this.awake[%user.blid]) {
+      %icon = "status_online";
+    } else {
+      %icon = "status_away";
+    }
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
@@ -419,8 +414,8 @@ function GlassLiveRoom::renderUserList(%this) {
     %swatch.icon = new GuiBitmapCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      extent = %ext;
-      position = %pos;
+      extent = "16 16";
+      position = "1 3";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
     };
 
