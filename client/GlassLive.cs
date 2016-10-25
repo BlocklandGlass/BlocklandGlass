@@ -213,7 +213,7 @@ function GlassLive::chatColorCheck(%this) {
 
 function GlassLive::disconnect(%reason) {
   GlassLive::cleanup();
-  
+
   if(isObject(GlassLiveConnection)) {
     GlassLiveConnection.doDisconnect(%reason);
   }
@@ -249,7 +249,7 @@ function GlassLive::cleanup() {
       %i--;
     }
   }
-  
+
   GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
@@ -437,6 +437,36 @@ function GlassLive::removeFriendRequestFromList(%blid) {
   }
 
   GlassLive.friendRequestList = removeWord(GlassLive.friendRequestList, %i);
+}
+
+//================================================================
+//= 3.2.0 things that i'll organize later                        =
+//================================================================
+
+function GlassLive::setStatus(%status) {
+  if(%status !$= "online" || %status !$= "away" || %status !$= "busy")
+    return;
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "setStatus");
+  %obj.set("status", "string", strlwr(%status));
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
+}
+
+function GlassLive::setIcon(%icon) {
+  if(!isFile("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png"))
+    return;
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "setIcon");
+  %obj.set("icon", "string", strlwr(%icon));
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 //================================================================
