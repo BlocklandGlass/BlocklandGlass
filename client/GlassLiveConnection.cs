@@ -367,13 +367,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       alxPlay(GlassFriendRemovedAudio);
 
-    case "friendDecline": // nothing responding here - serverside issue?
-      %uo = GlassLiveUser::getFromBlid(%data.blid);
-
-      GlassNotificationManager::newNotification("Friend Declined", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has declined your friend request.", "cross", 0);
-
-      alxPlay(GlassFriendDeclinedAudio);
-
     case "groupJoin":
       %group = GlassLiveGroup::create(%data.id, %data.clients);
       %group.createGui();
