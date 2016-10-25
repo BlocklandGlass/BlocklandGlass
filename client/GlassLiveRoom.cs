@@ -391,11 +391,7 @@ function GlassLiveRoom::renderUserList(%this) {
       %colorCode = 0;
     }
 
-    if(%this.awake[%user.blid]) {
-      %icon = "status_online";
-    } else {
-      %icon = "status_away";
-    }
+    %icon = %user.icon;
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
