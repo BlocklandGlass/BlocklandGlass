@@ -56,7 +56,7 @@ function GlassLiveConnection::onConnected(%this) {
 function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   %this.connected = false;
-  
+
   if(!GlassLive.noReconnect) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
@@ -71,7 +71,7 @@ function GlassLiveConnection::onDNSFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  
+
   if(!GlassLive.noReconnect) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
@@ -82,7 +82,7 @@ function GlassLiveConnection::onConnectFailed(%this) {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
-  
+
   if(!GlassLive.noReconnect) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
@@ -251,6 +251,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %user = GlassLiveUser::create(%data.username, %data.blid);
       %user.setAdmin(%data.admin);
       %user.setMod(%data.mod);
+      %user.status = %data.status;
 
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
@@ -260,6 +261,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.onUserLeave(%data.blid, %data.reason);
+
+    case "roomUserStatus":
+      %user.status = %data.status;
+      %room = GlassLiveRoom::getFromId(%data.id);
+      if(isObject(%room))
+        %room.renderUserList();
 
     case "roomKicked": //we got removed from a room
       warn("TODO: roomKicked for reason " @ %data.reason);
