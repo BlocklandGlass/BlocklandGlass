@@ -184,9 +184,9 @@ if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfi
   fontType = "Verdana Bold";
   fontSize = "13";
   fontColors[0] = "0 0 0 255"; // user
-  fontColors[1] = "75 215 30 255"; // friend
-  fontColors[2] = "245 155 0 255"; // mod
-  fontColors[3] = "245 100 0 255"; // admin
+  fontColors[1] = "0 214 37 255"; // friend
+  fontColors[2] = "255 159 0 255"; // mod
+  fontColors[3] = "255 19 0 255"; // admin
 };
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
@@ -287,12 +287,6 @@ if(!isObject(GlassFriendAddedAudio)) new AudioProfile(GlassFriendAddedAudio) {
 };
 
 if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendDeclinedAudio)) new AudioProfile(GlassFriendDeclinedAudio) {
   filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;

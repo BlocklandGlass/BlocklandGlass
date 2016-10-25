@@ -20,11 +20,11 @@ exec("./GlassLiveGroup.cs");
 function GlassLive::init() {
   if(!isObject(GlassLive))
     new ScriptObject(GlassLive) {
-      color_friend = "33cc44";
-      color_default = "444444";
-      color_self = "6688ff";
-      color_admin = "ffaa00";
-      color_mod = "ee6600";
+      color_default = "000000";
+      color_self = "0B58C3";
+      color_friend = "00D625";
+      color_mod = "FF9F00";
+      color_admin = "FF1300";
     };
 
   if(!isObject(GlassLiveUsers))
