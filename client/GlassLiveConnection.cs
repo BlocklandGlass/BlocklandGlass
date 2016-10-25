@@ -267,12 +267,14 @@ function GlassLiveConnection::onLine(%this, %line) {
         %room.onUserLeave(%data.blid, %data.reason);
 
     case "roomUserStatus":
+      %user = GlassLiveUser::getFromBlid(%data.blid);
       %user.status = %data.status;
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.renderUserList();
 
     case "roomUserIcon":
+      %user = GlassLiveUser::getFromBlid(%data.blid);
       %user.icon = %data.icon;
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
