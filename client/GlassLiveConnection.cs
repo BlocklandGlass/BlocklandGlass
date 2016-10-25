@@ -125,6 +125,8 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "message":
       %sender = getASCIIString(%data.sender);
 
+      // TODO create GlassLiveUser ?
+
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification"))
@@ -134,6 +136,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         alxPlay(GlassUserMsgReceivedAudio);
 
     case "messageNotification":
+      // TODO create GlassLiveUser ? data.chat_username is sent now
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoinAuto":
@@ -310,9 +313,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::createFriendList();
 
       if(GlassSettings.get("Live::ShowFriendStatus")) {
-        %sound = %uo.online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
+        %sound = %data.status $= "online" ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
         alxPlay(%sound);
-        GlassNotificationManager::newNotification(%uo.username, "is now " @ (%uo.online ? "online" : "offline") @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
+        GlassNotificationManager::newNotification(%uo.username, "is now " @ %data.status @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
       }
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?
