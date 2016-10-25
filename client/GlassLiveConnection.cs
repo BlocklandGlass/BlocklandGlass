@@ -162,7 +162,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %cl = %clients.value[%i];
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
-
+        %user.status = %cl.status;
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
@@ -197,12 +197,13 @@ function GlassLiveConnection::onLine(%this, %line) {
         %cl = %clients.value[%i];
 
         %user = GlassLiveUser::create(%cl.username, %cl.blid);
-
+        %user.status = %cl.status;
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
 
         %room.addUser(%user.blid);
+
       }
 
       %room.createView();
