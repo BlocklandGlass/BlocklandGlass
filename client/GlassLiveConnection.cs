@@ -307,6 +307,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         GlassLive::addfriendRequestToList(%user);
       }
+
+      if(%data.requests.length == 0)
+        GlassLive.friendRequestList = "";
+
       GlassLive::createFriendList();
 
     case "friendRequest":
@@ -340,6 +344,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.online = %data.online;
       %uo.isFriend = true;
+      %uo.status = %data.status;
 
       GlassLive::removeFriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
