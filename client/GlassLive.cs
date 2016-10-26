@@ -462,7 +462,7 @@ function GlassLive::setIcon(%icon) {
 
   %obj = JettisonObject();
   %obj.set("type", "string", "setIcon");
-  %obj.set("icon", "string", strlwr(%icon));
+  %obj.set("icon", "string", %icon);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
