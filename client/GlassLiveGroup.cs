@@ -136,7 +136,11 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 
   if(%senderblid == getNumKeyId()) {
     %color = GlassLive.color_self;
-  } else if(GlassLive.isFriend[%senderblid]) {
+  } else if(%sender.isAdmin()) {
+    %color = GlassLive.color_admin;
+  } else if(%sender.isMod()) {
+    %color = GlassLive.color_mod;
+  } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
     %color = GlassLive.color_default;
@@ -388,20 +392,18 @@ function GlassLiveGroup::renderUserList(%this) {
     %user = %this.getUser(getWord(%orderedList, %i));
     
     if(%user.isAdmin()) {
-      %colorCode = 3;
+      %colorCode = 4;
     } else if(%user.isMod()) {
-      %colorCode = 2;
+      %colorCode = 3;
     } else if(%user.isFriend()) {
+      %colorCode = 2;
+    } else if(%user.blid == getNumKeyId()) {
       %colorCode = 1;
     } else {
       %colorCode = 0;
     }
-    
-    if(%this.awake[%user.blid]) {
-      %icon = "status_online";
-    } else {
-      %icon = "status_away";
-    }
+
+    %icon = %user.icon;
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {

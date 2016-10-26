@@ -286,7 +286,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomBanned": //we got banned from a room
       warn("TODO: roomBanned for reason " @ %data.reason);
-      glassMessageBoxOk("Kicked", "You've been banned from -room name- for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
+      glassMessageBoxOk("Banned", "You've been banned from -room name- for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
 
     case "roomAwake":
       %room = GlassLiveRoom::getFromId(%data.id);
@@ -341,15 +341,31 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      %uo.online = (%data.status $= "offline" ? false : true);
-      %uo.setStatus(%data.status);
+
+      GlassLive::setStatus(%data.status, %data.blid);
 
       GlassLive::createFriendList();
 
       if(GlassSettings.get("Live::ShowFriendStatus")) {
-        %sound = %data.status $= "online" ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio";
-        alxPlay(%sound);
-        GlassNotificationManager::newNotification(%uo.username, "is now " @ %data.status @ ".", (%uo.online ? "world_add" : "world_delete"), 0);
+        if(%data.status $= "online" || %data.status $= "offline") {
+          %online = (%data.status $= "offline" ? false : true);
+          %sound = (%online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio");
+
+          alxPlay(%sound);
+        }
+
+        switch$(%data.status) {
+          case "online":
+            %icon = "status_online";
+          case "busy":
+            %icon = "status_busy";
+          case "away":
+            %icon = "status_away";
+          case "offline":
+            %icon = "status_offline";
+        }
+        
+        GlassNotificationManager::newNotification(%uo.username, "is now " @ %data.status @ ".", %icon, 0);
       }
 
     case "friendIcon":

@@ -21,10 +21,10 @@ function GlassLive::init() {
   if(!isObject(GlassLive))
     new ScriptObject(GlassLive) {
       color_default = "000000";
-      color_self = "0B58C3";
-      color_friend = "00D625";
-      color_mod = "FF9F00";
-      color_admin = "FF1300";
+      color_self = "0099CC";
+      color_friend = "00CC66";
+      color_mod = "FFCC33";
+      color_admin = "FF6666";
     };
 
   if(!isObject(GlassLiveUsers))
@@ -443,17 +443,24 @@ function GlassLive::removeFriendRequestFromList(%blid) {
 //= 3.2.0 things that i'll organize later                        =
 //================================================================
 
-function GlassLive::setStatus(%status) {
-  if(%status !$= "online" || %status !$= "away" || %status !$= "busy")
-    return;
+function GlassLive::setStatus(%status, %blid) {
+  %status = strlwr(%status);
+  
+  if(%status !$= "online" || %status !$= "away" || %status !$= "busy") {
+    if(%blid $= "" || %blid == getNumKeyId()) {
+      %obj = JettisonObject();
+      %obj.set("type", "string", "setStatus");
+      %obj.set("status", "string", %status);
 
-  %obj = JettisonObject();
-  %obj.set("type", "string", "setStatus");
-  %obj.set("status", "string", strlwr(%status));
+      GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  %obj.delete();
+      %obj.delete();
+    } else {
+      %uo = GlassLiveUser::getFromBlid(%blid);
+      
+      %uo.status = %status;
+    }
+  }
 }
 
 function GlassLive::setIcon(%icon) {
@@ -1235,8 +1242,19 @@ function GlassLive::openUserWindow(%blid) {
     if(!isObject(%window)) {
       return;
     }
+    
+    switch$(%uo.status) {
+      case "online":
+        %status = "<color:33CC33>Online";
+      case "busy":
+        %status = "<color:FF3300>Busy";
+      case "away":
+        %status = "<color:FF751A>Away";
+      case "offline":
+        %status = "<color:404040>Offline";
+    }
 
-    %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid;
+    %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><font:verdana bold:12>" @ %status;
     %window.text.setValue(%text);
     %window.text.forceReflow();
     %window.text.centerY();
@@ -1269,7 +1287,7 @@ function GlassLive::createUserWindow(%uo) {
     horizSizing = "center";
     vertSizing = "center";
     position = "235 157";
-    extent = "170 166";
+    extent = "170 176";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1290,7 +1308,7 @@ function GlassLive::createUserWindow(%uo) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "10 35";
-    extent = "150 50";
+    extent = "150 60";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1320,7 +1338,7 @@ function GlassLive::createUserWindow(%uo) {
     profile = "GlassBlockButtonProfile";
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "10 125";
+    position = "10 135";
     extent = "150 30";
     minExtent = "8 2";
     enabled = "1";
@@ -1342,7 +1360,7 @@ function GlassLive::createUserWindow(%uo) {
     profile = "GlassBlockButtonProfile";
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "10 90";
+    position = "10 100";
     extent = "150 30";
     minExtent = "8 2";
     enabled = "1";
@@ -2368,7 +2386,6 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     extent = "24 6";
     position = "5 0";
     visible = 0;
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "status_online.png" : "status_offline.png");
     mcolor = "255 255 255 64";
   };
 
@@ -2506,14 +2523,26 @@ function GlassLive::createFriendHeader(%name, %isOpen) {
 }
 
 
-function GlassLive::createFriendSwatch(%name, %blid, %online) {
-  if(%online) {
+function GlassLive::createFriendSwatch(%name, %blid, %status) {
+  if(%status $= "online") {
     %color = "210 220 255 255";
-    %hcolor = "220 230 255 255";
+    %hcolor = "230 240 255 255";
+  } else if(%status $= "away") {
+    %color = "255 244 210 255";
+    %hcolor = "255 255 230 255";
+  } else if(%status $= "busy") {
+    %color = "255 210 210 255";
+    %hcolor = "255 230 230 255";
   } else {
     %color = "210 210 210 255";
     %hcolor = "230 230 230 255";
   }
+  
+  %online = (%status $= "offline" ? false : true);
+  
+  %icon = GlassLiveUser::getFromBlid(%blid).icon;
+  if(%icon $= "") // get icon of offline user??
+    %icon = "help";
 
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -2538,7 +2567,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %online) {
     vertSizing = "bottom";
     extent = "16 16";
     position = "5 5";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%online ? "status_online.png" : "status_offline.png");
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
   };
 
   %gui.chaticon = new GuiBitmapCtrl() {
@@ -2719,7 +2748,7 @@ function GlassLive::createFriendList() {
       %blid = getWord(GlassLive.friendList, %i);
       %uo = GlassLiveUser::getFromBlid(%blid);
 
-      %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.online, %uo.isFriend());
+      %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.status, %uo.isFriend());
       %gui.placeBelow(%last, 5);
 
       GlassFriendsGui_ScrollSwatch.add(%gui);

@@ -184,9 +184,10 @@ if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfi
   fontType = "Verdana Bold";
   fontSize = "13";
   fontColors[0] = "0 0 0 255"; // user
-  fontColors[1] = "0 214 37 255"; // friend
-  fontColors[2] = "255 159 0 255"; // mod
-  fontColors[3] = "255 19 0 255"; // admin
+  fontColors[1] = "0 153 204 255"; // self
+  fontColors[2] = "0 204 102 255"; // friend
+  fontColors[3] = "255 204 51 255"; // mod
+  fontColors[4] = "255 102 102 255"; // admin
 };
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {

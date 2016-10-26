@@ -221,7 +221,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     %color = GlassLive.color_admin;
   } else if(%sender.isMod()) {
     %color = GlassLive.color_mod;
-  } else if(GlassLive.isFriend[%senderblid]) {
+  } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
     %color = GlassLive.color_default;
@@ -325,7 +325,7 @@ function GlassLiveRoom::pushText(%this, %msg) {
 function GlassLiveRoom::getOrderedUserList(%this) {
   %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
-  %friends = new GuiTextListCtrl();
+  // %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
 
   for(%i = 0; %i < %this.getCount(); %i++) {
@@ -334,8 +334,8 @@ function GlassLiveRoom::getOrderedUserList(%this) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
-    } else if(%user.isFriend()) {
-      %friends.addRow(%i, %user.username);
+    // } else if(%user.isFriend()) {
+      // %friends.addRow(%i, %user.username);
     } else {
       %users.addRow(%i, %user.username);
     }
@@ -343,7 +343,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 
   %admins.sort(0);
   %mods.sort(0);
-  %friends.sort(0);
+  // %friends.sort(0);
   %users.sort(0);
 
   %idList = "";
@@ -356,9 +356,9 @@ function GlassLiveRoom::getOrderedUserList(%this) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
 
-  for(%i = 0; %i < %friends.rowCount(); %i++) {
-    %idList = %idList SPC %friends.getRowId(%i);
-  }
+  // for(%i = 0; %i < %friends.rowCount(); %i++) {
+    // %idList = %idList SPC %friends.getRowId(%i);
+  // }
 
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
@@ -366,7 +366,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 
   %admins.delete();
   %mods.delete();
-  %friends.delete();
+  // %friends.delete();
   %users.delete();
 
   return trim(%idList);
@@ -382,10 +382,12 @@ function GlassLiveRoom::renderUserList(%this) {
     %user = %this.getUser(getWord(%orderedList, %i));
 
     if(%user.isAdmin()) {
-      %colorCode = 3;
+      %colorCode = 4;
     } else if(%user.isMod()) {
-      %colorCode = 2;
+      %colorCode = 3;
     } else if(%user.isFriend()) {
+      %colorCode = 2;
+    } else if(%user.blid == getNumKeyId()) {
       %colorCode = 1;
     } else {
       %colorCode = 0;
