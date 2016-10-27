@@ -20,11 +20,12 @@ exec("./GlassLiveGroup.cs");
 function GlassLive::init() {
   if(!isObject(GlassLive))
     new ScriptObject(GlassLive) {
-      color_default = "000000";
-      color_self = "0099CC";
-      color_friend = "00CC66";
-      color_mod = "FFCC33";
-      color_admin = "FF6666";
+      color_default = "222222";
+      color_self = "55acee";
+      color_friend = "2ecc71";
+      color_mod = "e67e22";
+      color_admin = "e74c3c";
+      color_bot = "9b59b6";
     };
 
   if(!isObject(GlassLiveUsers))
@@ -205,10 +206,14 @@ function GlassOverlayGui::onWake(%this) {
 }
 
 function GlassLive::chatColorCheck(%this) {
-  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
-  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
-  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
-  GlassLive::pushMessage("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
+  %room = GlassLiveRoom::getFromId(0);
+
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_mod @  ">Moderator: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_bot @  ">Bot: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
 }
 
 function GlassLive::disconnect(%reason) {
@@ -1236,7 +1241,7 @@ function GlassLive::openUserWindow(%blid) {
     if(!isObject(%window)) {
       return;
     }
-    
+
     switch$(%uo.getStatus()) {
       case "online":
         %status = "<color:33CC33>Online";
@@ -1783,7 +1788,7 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
 
 function chatroomAwakeCallback(%callback) {
   return;
-  
+
   if(isObject(GlassChatroomWindow) && isObject(GlassChatroomWindow.activeTab)) {
     %bool = GlassSettings.get(%callback) ? true : false;
 
@@ -2535,9 +2540,9 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
     %color = "210 210 210 255";
     %hcolor = "230 230 230 255";
   }
-  
+
   %online = (%status $= "offline" ? false : true);
-  
+
   %icon = GlassLiveUser::getFromBlid(%blid).icon;
   if(%icon $= "")
     %icon = "help";

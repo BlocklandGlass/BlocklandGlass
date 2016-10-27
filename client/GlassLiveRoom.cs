@@ -217,6 +217,8 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   if(%senderblid == getNumKeyId()) {
     %color = GlassLive.color_self;
+  } else if(%sender.blid < 0) {
+    %color = GlassLive.color_bot;
   } else if(%sender.isAdmin()) {
     %color = GlassLive.color_admin;
   } else if(%sender.isMod()) {
@@ -381,7 +383,9 @@ function GlassLiveRoom::renderUserList(%this) {
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
 
-    if(%user.isAdmin()) {
+    if(%user.blid < 0) {
+      %colorCode = 5;
+    } else if(%user.isAdmin()) {
       %colorCode = 4;
     } else if(%user.isMod()) {
       %colorCode = 3;

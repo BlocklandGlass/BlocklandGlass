@@ -1,6 +1,6 @@
-blue #55acee
-green #2ecc71
-red #e74c3c
-purple #9b59b6
-orange #e67e22
-yellow #f1c40f
+blue #55acee 85 172 238
+green #2ecc71 46 204 113
+red #e74c3c 231 76 60
+purple #9b59b6 155 89 182
+orange #e67e22 230 126 34
+yellow #f1c40f 241 196 15
