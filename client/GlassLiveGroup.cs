@@ -333,20 +333,20 @@ function GlassLiveGroup::getUser(%this, %idx) {
 }
 
 function GlassLiveGroup::getOrderedUserList(%this) {
-  %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
+  %admins = new GuiTextListCtrl();
   %bots = new GuiTextListCtrl();
   // %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
   
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
-    if(%user.isAdmin()) {
+    if(%user.isBot()) {
+      %bots.addRow(%i, %user.username);
+    } else if(%user.isAdmin()) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
-    } else if(%user.isBot()) {
-      %bots.addRow(%i, %user.username);
     // } else if(%user.isFriend()) {
       // %friends.addRow(%i, %user.username);
     } else {
@@ -354,9 +354,9 @@ function GlassLiveGroup::getOrderedUserList(%this) {
     }
   }
 
+  %bots.sort(0);
   %admins.sort(0);
   %mods.sort(0);
-  %bots.sort(0);
   // %friends.sort(0);
   %users.sort(0);
 
@@ -382,9 +382,9 @@ function GlassLiveGroup::getOrderedUserList(%this) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
+  %bots.delete();
   %admins.delete();
   %mods.delete();
-  %bots.delete();
   // %friends.delete();
   %users.delete();
 

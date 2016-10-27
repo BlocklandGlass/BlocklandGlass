@@ -352,6 +352,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.setStatus(%data.status);
 
+      GlassLive.schedule(100, createFriendList);
+
       if(GlassSettings.get("Live::ShowFriendStatus")) {
         if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
           %online = (%uo.getStatus() $= "offline" ? false : true);
@@ -370,11 +372,9 @@ function GlassLiveConnection::onLine(%this, %line) {
           case "offline":
             %icon = "status_offline";
         }
-        
+
         GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
       }
-
-      GlassLive::createFriendList();
 
     case "friendIcon":
       %uo = GlassLiveUser::getFromBlid(%data.blid);

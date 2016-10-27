@@ -118,6 +118,10 @@ function GlassLiveUser::canSendMessage(%this) {
 function GlassLiveUser::setStatus(%this, %status) {
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %this.status = %status;
+    
+    if(%this.blid == getNumKeyId()) {
+      GlassLive.status = %status;
+    }
   }
 }
 
