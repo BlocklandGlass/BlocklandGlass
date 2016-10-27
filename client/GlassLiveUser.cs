@@ -67,6 +67,14 @@ function GlassLiveUser::isFriend(%this) {
   return %this.isFriend;
 }
 
+function GlassLiveUser::setBot(%this, %bool) {
+  %this.isBot = %bool == 1;
+}
+
+function GlassLiveUser::isBot(%this) {
+  return %this.isBot;
+}
+
 function GlassLiveUser::setFriendRequest(%this, %bool) {
   %this.isFriendRequest = %bool == 1;
 }
@@ -92,17 +100,17 @@ function GlassLiveUser::canSendMessage(%this) {
   //privacy settings
   //blocked users
 
-  %friendsOnly = GlassLive::getSetting("GL::FriendOnly");
+  //%friendsOnly = GlassLive::getSetting("GL::FriendOnly");
   %blocked = %this.blocked;
 
-  if(%this.isAdmin() || %this.isMod())
+  if(%this.isAdmin() || %this.isMod() || %this.isBot())
     return true;
 
   if(%blocked)
     return false;
 
-  if(%friendsOnly && !%this.isFriend())
-    return false;
+  // if(%friendsOnly && !%this.isFriend())
+    // return false;
 
   return true;
 }

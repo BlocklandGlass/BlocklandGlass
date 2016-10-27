@@ -167,6 +167,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
+        
+        if(%cl.blid < 0) {
+          %user.setBot(true);
+        }
 
         %room.addUser(%user.blid);
       }
@@ -203,9 +207,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
+        
+        if(%cl.blid < 0) {
+          %user.setBot(true);
+        }
 
         %room.addUser(%user.blid);
-
       }
 
       %room.createView();
@@ -254,6 +261,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       %user = GlassLiveUser::create(%data.username, %data.blid);
       %user.setAdmin(%data.admin);
       %user.setMod(%data.mod);
+      if(%user.blid < 0) {
+        %user.setBot(true);
+      }
       %user.status = %data.status;
       %user.icon = %data.icon;
 
@@ -325,7 +335,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::createFriendList();
 
     case "friendRequest":
-      if(strStr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
+      if(strstr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
         %username = %data.sender;
         %user = GlassLiveUser::create(%username, %blid);
 
@@ -341,8 +351,6 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.setStatus(%data.status);
-
-      GlassLive::createFriendList();
 
       if(GlassSettings.get("Live::ShowFriendStatus")) {
         if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
@@ -365,6 +373,8 @@ function GlassLiveConnection::onLine(%this, %line) {
         
         GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
       }
+
+      GlassLive::createFriendList();
 
     case "friendIcon":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
@@ -467,21 +477,26 @@ function GlassLiveConnection::onLine(%this, %line) {
       // 1 - other sign-in
       // 2 - barred
       if(%data.reason == 1) {
+        GlassLive.noReconnect = true;
         glassMessageBoxOk("Disconnected", "You logged in from somewhere else!");
         %this.disconnect();
       } else if(%data.reason == 2) {
-        glassMessageBoxOk("Disconnected", "You are barred from using the <font:verdana bold:13>Glass Live<font:verdana:13> service!<br><br>Sorry for the inconvenience.");
+        GlassLive.noReconnect = true;
+        glassMessageBoxOk("Disconnected", "You are barred from using <font:verdana bold:13>Glass Live<font:verdana:13>!<br><br>Sorry for the inconvenience.");
         GlassSettings.update("Live::StartupConnect", false);
         %this.disconnect();
       }
 
     case "kicked": //we got kicked from all service
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>" @ %data.reason);
+      glassMessageBoxOk("Kicked", "You've been kicked from <font:verdana bold:13>Glass Live<font:verdana:13>:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      %this.disconnect();
 
     case "banned":
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Banned", "You've been banned from Glass Live for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
+      glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>Glass Live<font:verdana:13> for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      GlassSettings.update("Live::StartupConnect", false);
+      %this.disconnect();
 
     case "error":
       if(%data.showDialog) {

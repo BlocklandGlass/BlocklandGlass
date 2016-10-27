@@ -217,7 +217,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   if(%senderblid == getNumKeyId()) {
     %color = GlassLive.color_self;
-  } else if(%sender.blid < 0) {
+  } else if(%sender.isBot()) {
     %color = GlassLive.color_bot;
   } else if(%sender.isAdmin()) {
     %color = GlassLive.color_admin;
@@ -231,10 +231,10 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
-    %word = getWord(%msg, %i);
+    %word = getASCIIString(getWord(%msg, %i));
     for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
       %user = %this.view.userSwatch.getObject(%o);
-      %name = strreplace(%user.text.rawtext, " ", "_");
+      %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
       %blid = %user.text.blid;
       if(%word $= ("@" @ %name)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
@@ -243,7 +243,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       }
     }
 
-    %name = strreplace($Pref::Player::NetName, " ", "_");
+    %name = getASCIIString(strreplace($Pref::Player::NetName, " ", "_"));
 
     if(%word $= ("@" @ %name)) {
       %mentioned = true;
@@ -327,15 +327,18 @@ function GlassLiveRoom::pushText(%this, %msg) {
 function GlassLiveRoom::getOrderedUserList(%this) {
   %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
+  %bots = new GuiTextListCtrl();
   // %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
-
+  
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
     if(%user.isAdmin()) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
+    } else if(%user.isBot()) {
+      %bots.addRow(%i, %user.username);
     // } else if(%user.isFriend()) {
       // %friends.addRow(%i, %user.username);
     } else {
@@ -345,6 +348,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 
   %admins.sort(0);
   %mods.sort(0);
+  %bots.sort(0);
   // %friends.sort(0);
   %users.sort(0);
 
@@ -358,6 +362,10 @@ function GlassLiveRoom::getOrderedUserList(%this) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
 
+  for(%i = 0; %i < %bots.rowCount(); %i++) {
+    %idList = %idList SPC %bots.getRowId(%i);
+  }
+
   // for(%i = 0; %i < %friends.rowCount(); %i++) {
     // %idList = %idList SPC %friends.getRowId(%i);
   // }
@@ -368,6 +376,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 
   %admins.delete();
   %mods.delete();
+  %bots.delete();
   // %friends.delete();
   %users.delete();
 
@@ -383,7 +392,7 @@ function GlassLiveRoom::renderUserList(%this) {
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
 
-    if(%user.blid < 0) {
+    if(%user.isBot()) {
       %colorCode = 5;
     } else if(%user.isAdmin()) {
       %colorCode = 4;

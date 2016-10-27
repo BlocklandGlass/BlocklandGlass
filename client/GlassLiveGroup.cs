@@ -148,10 +148,10 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
-    %word = getWord(%msg, %i);
+    %word = getASCIIString(getWord(%msg, %i));
     for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
       %user = %this.view.userSwatch.getObject(%o);
-      %name = strreplace(%user.text.rawtext, " ", "_");
+      %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
       %blid = %user.text.blid;
       if(%word $= ("@" @ %name)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
@@ -159,9 +159,9 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
       }
     }
-    
-    %name = strreplace($Pref::Player::NetName, " ", "_");
-    
+
+    %name = getASCIIString(strreplace($Pref::Player::NetName, " ", "_"));
+
     if(%word $= ("@" @ %name)) {
       %mentioned = true;
     } else if(%word $= ("@" @ getNumKeyId())) {
@@ -335,7 +335,8 @@ function GlassLiveGroup::getUser(%this, %idx) {
 function GlassLiveGroup::getOrderedUserList(%this) {
   %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
-  %friends = new GuiTextListCtrl();
+  %bots = new GuiTextListCtrl();
+  // %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
   
   for(%i = 0; %i < %this.getCount(); %i++) {
@@ -344,8 +345,10 @@ function GlassLiveGroup::getOrderedUserList(%this) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
-    } else if(%user.isFriend()) {
-      %friends.addRow(%i, %user.username);
+    } else if(%user.isBot()) {
+      %bots.addRow(%i, %user.username);
+    // } else if(%user.isFriend()) {
+      // %friends.addRow(%i, %user.username);
     } else {
       %users.addRow(%i, %user.username);
     }
@@ -353,7 +356,8 @@ function GlassLiveGroup::getOrderedUserList(%this) {
 
   %admins.sort(0);
   %mods.sort(0);
-  %friends.sort(0);
+  %bots.sort(0);
+  // %friends.sort(0);
   %users.sort(0);
 
   %idList = "";
@@ -365,18 +369,23 @@ function GlassLiveGroup::getOrderedUserList(%this) {
   for(%i = 0; %i < %mods.rowCount(); %i++) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
-  
-  for(%i = 0; %i < %friends.rowCount(); %i++) {
-    %idList = %idList SPC %friends.getRowId(%i);
+
+  for(%i = 0; %i < %bots.rowCount(); %i++) {
+    %idList = %idList SPC %bots.getRowId(%i);
   }
-  
+
+  // for(%i = 0; %i < %friends.rowCount(); %i++) {
+    // %idList = %idList SPC %friends.getRowId(%i);
+  // }
+
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
   %admins.delete();
   %mods.delete();
-  %friends.delete();
+  %bots.delete();
+  // %friends.delete();
   %users.delete();
 
   return trim(%idList);

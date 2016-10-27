@@ -106,11 +106,14 @@ function GlassLive::closeModManager() {
 }
 
 function GlassLive::openSettings() {
-  if(isObject(GlassSettingsWindow))
+  if(isObject(GlassSettingsWindow)) {
     GlassSettingsWindow.setVisible(!GlassSettingsWindow.visible);
+    GlassSettingsGui_ScrollOverlay.setVisible(true);
+  }
 
-  if(GlassSettingsWindow.visible)
+  if(GlassSettingsWindow.visible) {
     GlassOverlayGui.pushToBack(GlassSettingsWindow);
+  }
 }
 
 function GlassLive::openChatroom() {
@@ -831,6 +834,11 @@ function GlassLive::sendMessage(%blid, %msg) {
 function GlassLive::sendFriendRequest(%blid) {
   if(%blid == getNumKeyId())
     return;
+  
+  if((%blid+0 !$= %blid) || %blid < 0) {
+    glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    return;
+  }
 
   %obj = JettisonObject();
   %obj.set("type", "string", "friendRequest");
@@ -1377,8 +1385,8 @@ function GlassLive::createUserWindow(%uo) {
     overflowImage = "0";
     mKeepCached = "0";
     mColor = "255 255 255 200";
-    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); " @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();";
-  };
+    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}";
+  }; // move to a function ^^
 
   %window.add(%window.textcontainer);
   %window.textcontainer.add(%window.text);
