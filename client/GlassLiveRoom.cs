@@ -183,27 +183,27 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
-function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
-  %this.awake[%blid] = %awake;
-  %icon = %this.userListSwatch[%blid].icon;
-  if(isObject(%icon)) {
-    %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "user.png" : "user_yellow.png"));
-  }
-}
+// function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
+  // %this.awake[%blid] = %awake;
+  // %icon = %this.userListSwatch[%blid].icon;
+  // if(isObject(%icon)) {
+    // %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "user.png" : "user_yellow.png"));
+  // }
+// }
 
-function GlassLiveRoom::setAwake(%this, %bool) {
-  if(!GlassSettings.get("Live::RoomShowAwake"))
-    %bool = false;
+// function GlassLiveRoom::setAwake(%this, %bool) {
+  // if(!GlassSettings.get("Live::RoomShowAwake"))
+    // %bool = false;
 
-  %this.awake = %bool;
+  // %this.awake = %bool;
 
-  %obj = JettisonObject();
-  %obj.set("type", "string", "roomAwake");
-  %obj.set("id", "string", %this.id);
-  %obj.set("bool", "string", %bool);
+  // %obj = JettisonObject();
+  // %obj.set("type", "string", "roomAwake");
+  // %obj.set("id", "string", %this.id);
+  // %obj.set("bool", "string", %bool);
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
+  // GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+// }
 
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();
@@ -394,6 +394,8 @@ function GlassLiveRoom::renderUserList(%this) {
     }
 
     %icon = %user.icon;
+    if(%icon $= "")
+      %icon = "help";
 
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {

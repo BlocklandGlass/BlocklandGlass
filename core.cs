@@ -7,7 +7,7 @@ function Glass::init(%context) {
 			enableCLI = true;
 
 			liveAddress = "test.blocklandglass.com";
-			livePort = 27005; //27005 is dev
+			livePort = 27005; //27005 is dev, 27002 is stable/public
 		};
 
 		//enable debug mode for me

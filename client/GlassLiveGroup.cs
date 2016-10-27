@@ -404,7 +404,9 @@ function GlassLiveGroup::renderUserList(%this) {
     }
 
     %icon = %user.icon;
-
+    if(%icon $= "")
+      %icon = "help";
+    
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
       profile = "GuiDefaultProfile";

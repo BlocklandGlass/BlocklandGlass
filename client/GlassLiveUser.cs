@@ -14,6 +14,7 @@ function GlassLiveUser::create(%username, %blid) {
     blid = %blid;
     online = true;
   };
+
   GlassLiveUsers.add(%user);
   GlassLiveUsers.user[%blid] = %user;
   return %user;
@@ -104,6 +105,20 @@ function GlassLiveUser::canSendMessage(%this) {
     return false;
 
   return true;
+}
+
+function GlassLiveUser::setStatus(%this, %status) {
+  if(%status $= "online" || %status $= "away" || %status $= "busy") {
+    %this.status = %status;
+  }
+}
+
+function GlassLiveUser::getStatus(%this) {
+  if(%this.status $= "") {
+    return (%this.online ? "online" : "offline");
+  }
+
+  return %this.status;
 }
 
 function GlassLiveUser::disconnected(%this) {

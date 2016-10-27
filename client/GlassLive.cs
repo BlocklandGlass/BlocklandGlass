@@ -443,23 +443,17 @@ function GlassLive::removeFriendRequestFromList(%blid) {
 //= 3.2.0 things that i'll organize later                        =
 //================================================================
 
-function GlassLive::setStatus(%status, %blid) {
+function GlassLive::setStatus(%status) {
   %status = strlwr(%status);
-  
-  if(%status !$= "online" || %status !$= "away" || %status !$= "busy") {
-    if(%blid $= "" || %blid == getNumKeyId()) {
-      %obj = JettisonObject();
-      %obj.set("type", "string", "setStatus");
-      %obj.set("status", "string", %status);
 
-      GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  if(%status $= "online" || %status $= "away" || %status $= "busy") {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "setStatus");
+    %obj.set("status", "string", %status);
 
-      %obj.delete();
-    } else {
-      %uo = GlassLiveUser::getFromBlid(%blid);
-      
-      %uo.status = %status;
-    }
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+    %obj.delete();
   }
 }
 
@@ -1243,7 +1237,7 @@ function GlassLive::openUserWindow(%blid) {
       return;
     }
     
-    switch$(%uo.status) {
+    switch$(%uo.getStatus()) {
       case "online":
         %status = "<color:33CC33>Online";
       case "busy":
@@ -1252,6 +1246,8 @@ function GlassLive::openUserWindow(%blid) {
         %status = "<color:FF751A>Away";
       case "offline":
         %status = "<color:404040>Offline";
+      default:
+        %status = "<color:404040>Unknown";
     }
 
     %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><font:verdana bold:12>" @ %status;
@@ -1376,7 +1372,7 @@ function GlassLive::createUserWindow(%uo) {
     overflowImage = "0";
     mKeepCached = "0";
     mColor = "255 255 255 200";
-    command = "GlassLive::openDirectMessage(" @ %uo.blid @ ");";
+    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); " @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();";
   };
 
   %window.add(%window.textcontainer);
@@ -1729,7 +1725,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %button.mouseCtrl.setUse(false);
 
     %current.setVisible(false);
-    %current.room.setAwake(false);
+    // %current.room.setAwake(false);
   }
 
   if(isObject(%this.browserSwatch)) {
@@ -1750,7 +1746,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %this.text = "Chatroom - " @ %tab.title; // @ " - " @ %this.getId();
       %this.setText(%this.text);
 
-      %tab.room.setAwake(true);
+      // %tab.room.setAwake(true);
       %tab.setFlashing(false);
     } else {
       %this.text = "Groupchat - " @ %tab.title;
@@ -1786,6 +1782,8 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
 }
 
 function chatroomAwakeCallback(%callback) {
+  return;
+  
   if(isObject(GlassChatroomWindow) && isObject(GlassChatroomWindow.activeTab)) {
     %bool = GlassSettings.get(%callback) ? true : false;
 
@@ -1793,17 +1791,17 @@ function chatroomAwakeCallback(%callback) {
   }
 }
 
-function GlassChatroomWindow::onWake(%this) {
-  if(isObject(%this.activeTab)) {
-    %this.activeTab.room.setAwake(true);
-  }
-}
+// function GlassChatroomWindow::onWake(%this) {
+  // if(isObject(%this.activeTab)) {
+    // %this.activeTab.room.setAwake(true);
+  // }
+// }
 
-function GlassChatroomWindow::onSleep(%this) {
-  if(isObject(%this.activeTab)) {
-    %this.activeTab.room.setAwake(false);
-  }
-}
+// function GlassChatroomWindow::onSleep(%this) {
+  // if(isObject(%this.activeTab)) {
+    // %this.activeTab.room.setAwake(false);
+  // }
+// }
 
 function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
   if(!isObject(%rooms)) {
@@ -2541,7 +2539,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
   %online = (%status $= "offline" ? false : true);
   
   %icon = GlassLiveUser::getFromBlid(%blid).icon;
-  if(%icon $= "") // get icon of offline user??
+  if(%icon $= "")
     %icon = "help";
 
   %gui = new GuiSwatchCtrl() {
@@ -2766,7 +2764,7 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 130");
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
   GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
-  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-60 100");
+  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-65 100");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);

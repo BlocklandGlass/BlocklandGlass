@@ -288,10 +288,10 @@ function GlassLiveConnection::onLine(%this, %line) {
       warn("TODO: roomBanned for reason " @ %data.reason);
       glassMessageBoxOk("Banned", "You've been banned from -room name- for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
 
-    case "roomAwake":
-      %room = GlassLiveRoom::getFromId(%data.id);
-      if(isObject(%room))
-        %room.setUserAwake(%data.user, %data.awake);
+    // case "roomAwake":
+      // %room = GlassLiveRoom::getFromId(%data.id);
+      // if(isObject(%room))
+        // %room.setUserAwake(%data.user, %data.awake);
 
     case "roomList":
       %window = GlassLive.pendingRoomList;
@@ -302,7 +302,6 @@ function GlassLiveConnection::onLine(%this, %line) {
         %friend = %data.friends.value[%i];
         %user = GlassLiveUser::create(%friend.username, %friend.blid);
         %user.setFriend(true);
-        %user.online = (%friend.status $= "offline" ? false : true);
         %user.status = %friend.status;
         %user.icon = %friend.icon;
 
@@ -341,20 +340,19 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "friendStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-
-      GlassLive::setStatus(%data.status, %data.blid);
+      %uo.setStatus(%data.status);
 
       GlassLive::createFriendList();
 
       if(GlassSettings.get("Live::ShowFriendStatus")) {
-        if(%data.status $= "online" || %data.status $= "offline") {
-          %online = (%data.status $= "offline" ? false : true);
+        if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
+          %online = (%uo.getStatus() $= "offline" ? false : true);
           %sound = (%online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio");
 
           alxPlay(%sound);
         }
 
-        switch$(%data.status) {
+        switch$(%uo.getStatus()) {
           case "online":
             %icon = "status_online";
           case "busy":
@@ -365,7 +363,7 @@ function GlassLiveConnection::onLine(%this, %line) {
             %icon = "status_offline";
         }
         
-        GlassNotificationManager::newNotification(%uo.username, "is now " @ %data.status @ ".", %icon, 0);
+        GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
       }
 
     case "friendIcon":
@@ -376,7 +374,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
-      %uo.online = %data.online;
       %uo.isFriend = true;
       %uo.status = %data.status;
       %uo.icon = %data.icon;
