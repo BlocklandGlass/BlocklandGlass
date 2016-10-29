@@ -267,7 +267,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
           GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
         }
 
-        alxPlay(GlassUserMentionedAudio);
+        alxPlay(GlassBellAudio);
 
         $Glass::LastMentioned = $Sim::Time + 10;
       }
@@ -472,11 +472,17 @@ function GlassLiveRoom::renderUserList(%this) {
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
   %this.swatch.color = "220 220 220 255";
+
+  if(getWord(%this.swatch.text.extent, 0) > getWord(vectorSub(%this.swatch.extent, %this.swatch.pos), 0) - 20)
+    if(%this.swatch.scrollTick $= "")
+      %this.swatch.scrollTick = %this.scrollLoop(%this.swatch.text, true);
 }
 
 function GlassLiveUserListSwatch::onMouseLeave(%this) {
   %this.swatch.color = "160 160 160 0";
   %this.down = false;
+
+  %this.scrollEnd(%this.swatch.text);
 }
 
 function GlassLiveUserListSwatch::onMouseDown(%this) {
@@ -491,12 +497,10 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-    if(%this.user.blid != getNumKeyId()) {
+    if(%this.user.blid != getNumKeyId())
       GlassLive::openUserWindow(%this.user.blid);
-      //glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
-    } else {
+    else
       glassMessageBoxOk("Hey There", "That's you.");
-    }
   }
 }
 
@@ -510,6 +514,33 @@ function GlassLiveUserListSwatch::onRightMouseUp(%this) {
       %input.setValue(ltrim(%input.getValue() SPC "@" @ %name @ " "));
     }
   }
+}
+
+function GlassLiveUserListSwatch::scrollLoop(%this, %text, %reset) {
+  if(%reset) {
+    %this.swatch._scrollOrigin = %this.swatch.text.position;
+    %this.swatch._scrollOrigin_Icon = %this.swatch.icon.position;
+    %this.swatch._scrollOffset = 0;
+    %this.swatch._scrollRange = getWord(%this.swatch.text.extent, 0)-getWord(%this.swatch.extent, 0)+getWord(%this.swatch.text.position, 0) + 5;
+  }
+
+  %this.swatch.text.position = vectorSub(%this.swatch._scrollOrigin, %this.swatch._scrollOffset);
+  %this.swatch.icon.position = vectorSub(%this.swatch._scrollOrigin_Icon, %this.swatch._scrollOffset);
+
+  if(%this.swatch._scrollOffset >= %this.swatch._scrollRange) {
+    %this.swatch._scrollOffset = 0;
+    // %this.swatch.scrollTick = %this.schedule(2000, scrollLoop, %text);
+  } else {
+    %this.swatch._scrollOffset++;
+    %this.swatch.scrollTick = %this.schedule(25, scrollLoop, %text);
+  }
+}
+
+function GlassLiveUserListSwatch::scrollEnd(%this, %text) {
+  cancel(%this.swatch.scrollTick);
+  %this.swatch.text.position = %this.swatch._scrollOrigin;
+  %this.swatch.icon.position = %this.swatch._scrollOrigin_Icon;
+  %this.swatch.scrollTick = "";
 }
 
 // From Crown's (2143) "Name Completion" Add-On

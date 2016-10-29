@@ -27,6 +27,15 @@ function GlassLiveUser::getFromBlid(%blid) {
     return false;
 }
 
+function GlassLiveUser::getFromName(%name) {
+  for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
+    %user = GlassLiveUsers.getObject(%i);
+    if(strpos(%user.username, %name) != -1)
+      return %user;
+  }
+  return false;
+}
+
 function GlassLiveUser::addRoom(%this, %id) {
   if(%this.inRoom[%id])
     return;
@@ -88,11 +97,10 @@ function GlassLiveUser::setMessageGui(%this, %obj) {
 }
 
 function GlassLiveUser::getMessageGui(%this) {
-  if(isObject(%this.messageGui)) {
+  if(isObject(%this.messageGui))
     return %this.messageGui;
-  } else {
+  else
     return false;
-  }
 }
 
 function GlassLiveUser::canSendMessage(%this) {
@@ -119,17 +127,12 @@ function GlassLiveUser::setStatus(%this, %status) {
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %this.status = %status;
     
-    if(%this.blid == getNumKeyId()) {
+    if(%this.blid == getNumKeyId())
       GlassLive.status = %status;
-    }
   }
 }
 
 function GlassLiveUser::getStatus(%this) {
-  if(%this.status $= "") {
-    return (%this.online ? "online" : "offline");
-  }
-
   return %this.status;
 }
 

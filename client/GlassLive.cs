@@ -45,6 +45,7 @@ function GlassLive::init() {
   // glass pref, description/name, category, type
   GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox");
   GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend On/Off-Line Notifications", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
@@ -64,7 +65,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -408,15 +409,14 @@ function GlassLive::joinGroup(%id) {
 }
 
 function wordPos(%str, %word) {
-  for(%i = 0; %i < getWordCount(%str); %i++) {
+  for(%i = 0; %i < getWordCount(%str); %i++)
     if(getWord(%str, %i) $= %word)
       return %i;
-  }
   return -1;
 }
 
 function GlassLive::addFriendToList(%user) {
-  if((wordPos(GlassLive.friendList, %user.blid)) > -1) {
+  if(wordPos(GlassLive.friendList, %user.blid) != -1) {
     return;
   }
 
@@ -431,8 +431,8 @@ function GlassLive::removeFriendFromList(%blid) {
   GlassLive.friendList = removeWord(GlassLive.friendList, %i);
 }
 
-function GlassLive::addfriendRequestToList(%user) {
-  if((wordPos(GlassLive.friendRequestList, %user.blid)) > -1) {
+function GlassLive::addFriendRequestToList(%user) {
+  if(wordPos(GlassLive.friendRequestList, %user.blid) != -1) {
     return;
   }
 
@@ -447,9 +447,49 @@ function GlassLive::removeFriendRequestFromList(%blid) {
   GlassLive.friendRequestList = removeWord(GlassLive.friendRequestList, %i);
 }
 
+function GlassLive::checkPendingFriendRequests() {
+  if(GlassSettings.get("Live::PendingReminder")) {
+    if(%pending = getWordCount(GlassLive.friendRequestList) > 0) {
+      GlassNotificationManager::newNotification("Pending Friend Requests", "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).", "new_email", 0, "GlassLive::openOverlay();");
+
+      alxPlay(GlassBellAudio);
+    }
+  }
+}
+
 //================================================================
-//= 3.2.0 things that i'll organize later                        =
+//= 3.2.0 things that we'll organize later                        =
 //================================================================
+
+function GlassLive::friendOnline(%this, %blid, %status) {
+  %uo = GlassLiveUser::getFromBlid(%blid);
+
+  GlassLive::createFriendList();
+
+  %uo.setStatus(%status);
+
+  if(GlassSettings.get("Live::ShowFriendStatus")) {
+    if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
+      %online = (%uo.getStatus() $= "offline" ? false : true);
+      %sound = (%online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio");
+
+      alxPlay(%sound);
+    }
+
+    switch$(%uo.getStatus()) {
+      case "online":
+        %icon = "status_online";
+      case "busy":
+        %icon = "status_busy";
+      case "away":
+        %icon = "status_away";
+      case "offline":
+        %icon = "status_offline";
+    }
+
+    GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
+  }
+}
 
 function GlassLive::setStatus(%status) {
   %status = strlwr(%status);
@@ -840,6 +880,16 @@ function GlassLive::sendFriendRequest(%blid) {
     return;
   }
 
+  if(wordPos(GlassLive.blockedList, %blid) != -1) {
+    glassMessageBoxOk("Blocked", "You have blocked this user, unblock them before attempting to send a friend request.");
+    return;
+  }
+
+  if(wordPos(GlassLive.friendRequestList, %blid) != -1) {
+    GlassLive::friendAccept(%blid);
+    return;
+  }
+  
   %obj = JettisonObject();
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
@@ -847,6 +897,30 @@ function GlassLive::sendFriendRequest(%blid) {
   glassMessageBoxOk("Friend Request Sent", "Friend request sent to BLID " @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+}
+
+function GlassLive::friendBlock(%blid) {
+  return;
+  
+  %obj = JettisonObject();
+  %obj.set("type", "string", "friendBlock");
+  %obj.set("blid", "string", %blid);
+  
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  %obj.delete();
+}
+
+function GlassLive::friendUnblock(%blid) {
+  return;
+  
+  %obj = JettisonObject();
+  %obj.set("type", "string", "friendUnblock");
+  %obj.set("blid", "string", %blid);
+  
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  %obj.delete();
 }
 
 function GlassLive::friendAccept(%blid) {
@@ -863,6 +937,8 @@ function GlassLive::friendAccept(%blid) {
   }
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  
+  %obj.delete();
 }
 
 function GlassLive::friendDecline(%blid) {
@@ -888,7 +964,7 @@ function GlassLive::removeFriend(%blid, %silent) {
     return;
   }
 
-  if((wordPos(GlassLive.friendList, %blid)) == -1) {
+  if(wordPos(GlassLive.friendList, %blid) == -1) {
     return;
   }
 
@@ -1143,6 +1219,8 @@ function GlassHighlightMouse::onMouseLeave(%this) {
   if(%this.type $= "request") {
     %this.getGroup().decline.setVisible(false);
     %this.getGroup().accept.setVisible(false);
+  } else if(%this.type $= "blocked") {
+    %this.getGroup().unblock.setVisible(false);
   } else if(%this.online) {
     %this.getGroup().chaticon.setVisible(false);
   }
@@ -1160,14 +1238,15 @@ function GlassHighlightMouse::onMouseEnter(%this) {
   if(%this.type $= "request") {
     %this.getGroup().decline.setVisible(true);
     %this.getGroup().accept.setVisible(true);
+  } else if(%this.type $= "blocked") {
+    %this.getGroup().unblock.setVisible(true);
   } else if(%this.online) {
     %this.getGroup().chaticon.setVisible(true);
   }
 
-  if(getWord(%this.getGroup().text.extent, 0) > getWord(vectorSub(%this.extent, %this.pos), 0)) {
+  if(getWord(%this.getGroup().text.extent, 0) > getWord(vectorSub(%this.extent, %this.pos), 0))
     if(%this.scrollTick $= "")
       %this.scrollTick = %this.scrollLoop(%this.getGroup().text, true);
-  }
 }
 
 function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
@@ -1181,10 +1260,10 @@ function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
 
   if(%this._scrollOffset >= %this._scrollRange) {
     %this._scrollOffset = 0;
-    %this.scrollTick = %this.schedule(2000, scrollLoop, %text);
+    // %this.scrollTick = %this.schedule(2000, scrollLoop, %text);
   } else {
     %this._scrollOffset++;
-    %this.scrollTick = %this.schedule(50, scrollLoop, %text);
+    %this.scrollTick = %this.schedule(25, scrollLoop, %text);
   }
 }
 
@@ -1204,11 +1283,18 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
   if(%this.type $= "request") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      glassMessageBoxOk("Ignored", "Friend Request ignored.");
+      glassMessageBoxOk("Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
       GlassLive::friendDecline(%this.blid);
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-      glassMessageBoxOk("Accepted", "Friend Request accepted.");
+      glassMessageBoxOk("Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
       GlassLive::friendAccept(%this.blid);
+    // } else {
+      // GlassLive::openUserWindow(%this.blid);
+    }
+  } else if(%this.type $= "blocked") {
+    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+      glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been unblocked.");
+      GlassLive::friendUnblock(%this.blid);
     }
   } else if(%this.type $= "toggle") {
     eval(%this.toggleVar @ " = !" @ %this.toggleVar @ ";");
@@ -1229,16 +1315,14 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
 
 function GlassLive::addFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  if(%user) {
+  if(%user)
     glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
-  }
 }
 
 function GlassLive::removeFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  if(%user) {
+  if(%user)
     glassMessageBoxYesNo("Remove Friend", "Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
-  }
 }
 
 function GlassLive::openUserWindow(%blid) {
@@ -2485,12 +2569,12 @@ function GlassMessageTyping::endAnimation(%this) {
 
 if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/GlassFriendsGui.gui");
 
-function GlassLive::createFriendHeader(%name, %isOpen) {
+function GlassLive::createFriendHeader(%name, %isOpen, %color) {
   %gui = new GuiSwatchCtrl() {
     extent = "190 26";
     position = "5 5";
-    color = "120 160 225 255";
-    hcolor = "120 160 225 255";
+    color = %color;
+    hcolor = %color;
   };
 
   %gui.text = new GuiTextCtrl() {
@@ -2621,6 +2705,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
     clipToParent = "1";
     lockMouse = "0";
 
+    username = %name;
     blid = %blid;
     online = %online;
   };
@@ -2657,16 +2742,16 @@ function GlassLive::createFriendRequest(%name, %blid) {
     profile = "GlassFriendTextProfile";
     text = %name @ " (" @ %blid @ ")";
     extent = "31 18";
-    position = "24 10";
+    position = "10 10";
   };
 
-  %gui.icon = new GuiBitmapCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    extent = "16 16";
-    position = "5 5";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ "status_offline.png";
-  };
+  // %gui.icon = new GuiBitmapCtrl() {
+    // horizSizing = "right";
+    // vertSizing = "bottom";
+    // extent = "16 16";
+    // position = "5 5";
+    // bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ GlassLiveUser::getFromBlid(%blid).icon;
+  // };
 
   %gui.decline = new GuiBitmapCtrl() {
     horizSizing = "right";
@@ -2698,18 +2783,75 @@ function GlassLive::createFriendRequest(%name, %blid) {
     clipToParent = "1";
     lockMouse = "0";
 
+    username = %name;
     blid = %blid;
     type = "request";
   };
 
   %gui.add(%gui.text);
-  %gui.add(%gui.icon);
+  // %gui.add(%gui.icon);
   %gui.add(%gui.decline);
   %gui.add(%gui.accept);
   %gui.add(%gui.mouse);
 
   %gui.text.centerY();
-  %gui.icon.centerY();
+  // %gui.icon.centerY();
+
+  return %gui;
+}
+
+function GlassLive::createBlockedSwatch(%name, %blid) {
+  %color = "210 210 210 255";
+  %hcolor = "230 230 230 255";
+
+  %gui = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "180 26";
+    position = "10 5";
+    color = %color;
+    hcolor = %hcolor;
+  };
+
+  %gui.text = new GuiTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    profile = "GlassFriendTextProfile";
+    text = %name @ " (" @ %blid @ ")";
+    extent = "31 18";
+    position = "10 10";
+  };
+
+  %gui.unblock = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = %gui.extent-22 SPC 5;
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/delete.png";
+    visible = "0";
+  };
+
+  %gui.mouse = new GuiMouseEventCtrl(GlassHighlightMouse) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = %gui.extent;
+    position = "0 0";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lockMouse = "0";
+
+    username = %name;
+    blid = %blid;
+    type = "blocked";
+  };
+
+  %gui.add(%gui.text);
+  %gui.add(%gui.unblock);
+  %gui.add(%gui.mouse);
+
+  %gui.text.centerY();
 
   return %gui;
 }
@@ -2720,9 +2862,9 @@ function GlassLive::createFriendList() {
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
     %txt = "Friend Requests";
     if(GlassLive.hideFriendRequests) {
-      %txt = %txt SPC "\c5(" @ getWordCount(GlassLive.friendRequestList) @ ")";
+      %txt = %txt SPC "\c4(" @ getWordCount(GlassLive.friendRequestList) @ ")";
     }
-    %h = GlassLive::createFriendHeader(%txt, !GlassLive.hideFriendRequests);
+    %h = GlassLive::createFriendHeader(%txt, !GlassLive.hideFriendRequests, "85 172 238 255");
     %h.mouse.toggleVar = "GlassLive.hideFriendRequests";
     GlassFriendsGui_ScrollSwatch.add(%h);
     %last = %h;
@@ -2742,7 +2884,7 @@ function GlassLive::createFriendList() {
     }
   }
 
-  %h = GlassLive::createFriendHeader("Friends", !GlassLive.hideFriends);
+  %h = GlassLive::createFriendHeader("Friends", !GlassLive.hideFriends, "46 204 113 255");
   %h.mouse.toggleVar = "GlassLive.hideFriends";
 
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
@@ -2765,6 +2907,32 @@ function GlassLive::createFriendList() {
       GlassFriendsGui_ScrollSwatch.add(%gui);
 
       %last = %gui;
+    }
+  }
+
+  if(getWordCount(trim(GlassLive.blockedList)) > 0) {
+    %h = GlassLive::createFriendHeader("Blocked", !GlassLive.hideBlocked, "231 76 60 255");
+    %h.mouse.toggleVar = "GlassLive.hideBlocked";
+
+    %h.placeBelow(%last, 10);
+
+    %last = %h;
+
+    GlassFriendsGui_ScrollSwatch.add(%h);
+
+    if(!GlassLive.hideBlocked) {
+
+      for(%i = 0; %i < getWordCount(GlassLive.blockedList); %i++) {
+        %blid = getWord(GlassLive.blockedList, %i);
+        %uo = GlassLiveUser::getFromBlid(%blid);
+
+        %gui = GlassLive::createBlockedSwatch(%uo.username, %blid);
+        %gui.placeBelow(%last, 5);
+
+        GlassFriendsGui_ScrollSwatch.add(%gui);
+
+        %last = %gui;
+      }
     }
   }
 

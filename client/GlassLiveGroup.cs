@@ -182,7 +182,7 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
           GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
         }
         
-        alxPlay(GlassUserMentionedAudio);
+        alxPlay(GlassBellAudio);
         
         $Glass::LastMentioned = $Sim::Time + 10;
       }

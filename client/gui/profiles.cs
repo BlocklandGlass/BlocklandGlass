@@ -265,8 +265,8 @@ if(!isObject(GlassUserMsgReceivedAudio)) new AudioProfile(GlassUserMsgReceivedAu
   preload = true;
 };
 
-if(!isObject(GlassUserMentionedAudio)) new AudioProfile(GlassUserMentionedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/userMentioned.wav"; // Attrib: http://www.narfstuff.co.uk
+if(!isObject(GlassBellAudio)) new AudioProfile(GlassBellAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/bell.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;
 };

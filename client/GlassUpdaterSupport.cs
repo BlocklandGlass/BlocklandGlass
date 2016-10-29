@@ -148,7 +148,8 @@ function GlassUpdaterSupport::updateSetting() {
 
 package GlassUpdaterSupportPackage {
   function updater::checkForUpdates(%this, %a, %b, %c) {
-    GlassUpdatesGroup.delete();
+    if(isObject(GlassUpdatesGroup))
+      GlassUpdatesGroup.delete();
     return parent::checkForUpdates(%this, %a, %b, %c);
   }
 

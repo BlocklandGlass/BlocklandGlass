@@ -69,7 +69,7 @@ function GlassCompatibility::oRBs_find() {
     // if(getFileCRC("Add-Ons/System_oRBs.zip") == -2099294939) {
     if(isFile("Add-Ons/System_oRBs.zip")) {
       schedule(2500, 0, eval, "GlassNotificationManager::newNotification(\"oRBs Warning\", \"Blockland Glass has stopped supporting oRBs, click here for further information.\", \"warning\", 1, \"GlassCompatibility::oRBs_warning();\");");
-      schedule(2500, 0, "alxPlay", GlassUserMentionedAudio);
+      schedule(2500, 0, "alxPlay", GlassBellAudio);
     }
   }
 }
