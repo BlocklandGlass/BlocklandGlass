@@ -874,7 +874,7 @@ function GlassLive::sendMessage(%blid, %msg) {
 function GlassLive::sendFriendRequest(%blid) {
   if(%blid == getNumKeyId())
     return;
-  
+
   if((%blid+0 !$= %blid) || %blid < 0) {
     glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
     return;
@@ -889,7 +889,7 @@ function GlassLive::sendFriendRequest(%blid) {
     GlassLive::friendAccept(%blid);
     return;
   }
-  
+
   %obj = JettisonObject();
   %obj.set("type", "string", "friendRequest");
   %obj.set("target", "string", %blid);
@@ -901,25 +901,25 @@ function GlassLive::sendFriendRequest(%blid) {
 
 function GlassLive::friendBlock(%blid) {
   return;
-  
+
   %obj = JettisonObject();
   %obj.set("type", "string", "friendBlock");
   %obj.set("blid", "string", %blid);
-  
+
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   %obj.delete();
 }
 
 function GlassLive::friendUnblock(%blid) {
   return;
-  
+
   %obj = JettisonObject();
   %obj.set("type", "string", "friendUnblock");
   %obj.set("blid", "string", %blid);
-  
+
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   %obj.delete();
 }
 
@@ -937,7 +937,7 @@ function GlassLive::friendAccept(%blid) {
   }
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  
+
   %obj.delete();
 }
 
@@ -2856,6 +2856,46 @@ function GlassLive::createBlockedSwatch(%name, %blid) {
   return %gui;
 }
 
+function GlassLive::sortFriendList(%list) {
+  %friends = new GuiTextListCtrl();
+
+  for(%i = 0; %i < getWordCount(%list); %i++) {
+    %blid = getWord(%list, %i);
+    %uo = GlassLiveUser::getFromBlid(%blid);
+
+    switch$(%uo.getStatus()) {
+      case "online":
+        %priority = 4;
+
+      case "away":
+        %priority = 3;
+
+      case "busy":
+        %priority = 2;
+
+      case "offline":
+        %priority = 1;
+
+      default:
+        %priority = 0;
+    }
+
+    %friends.addRow(%blid, %uo.username TAB %priority);
+  }
+
+  %friends.sort(0, true);
+  %friends.sortNumerical(1, false);
+
+  %newList = "";
+  for(%i = 0; %i < %friends.rowCount(); %i++) {
+    %newList = %newList SPC %friends.getRowId(%i);
+  }
+
+  %newList = getSubStr(%newList, 1, strLen(%newList)-1);
+
+  return %newList;
+}
+
 function GlassLive::createFriendList() {
   GlassFriendsGui_ScrollSwatch.deleteAll();
 
@@ -2864,7 +2904,7 @@ function GlassLive::createFriendList() {
     if(GlassLive.hideFriendRequests) {
       %txt = %txt SPC "\c4(" @ getWordCount(GlassLive.friendRequestList) @ ")";
     }
-    %h = GlassLive::createFriendHeader(%txt, !GlassLive.hideFriendRequests, "85 172 238 255");
+    %h = GlassLive::createFriendHeader(%txt, !GlassLive.hideFriendRequests, "131 195 243 255");
     %h.mouse.toggleVar = "GlassLive.hideFriendRequests";
     GlassFriendsGui_ScrollSwatch.add(%h);
     %last = %h;
@@ -2884,7 +2924,7 @@ function GlassLive::createFriendList() {
     }
   }
 
-  %h = GlassLive::createFriendHeader("Friends", !GlassLive.hideFriends, "46 204 113 255");
+  %h = GlassLive::createFriendHeader("Friends", !GlassLive.hideFriends, "84 217 140 255");
   %h.mouse.toggleVar = "GlassLive.hideFriends";
 
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
@@ -2897,8 +2937,10 @@ function GlassLive::createFriendList() {
 
   if(!GlassLive.hideFriends) {
 
-    for(%i = 0; %i < getWordCount(GlassLive.friendList); %i++) {
-      %blid = getWord(GlassLive.friendList, %i);
+    %sorted = GlassLive::sortFriendList(GlassLive.friendList);
+
+    for(%i = 0; %i < getWordCount(%sorted); %i++) {
+      %blid = getWord(%sorted, %i);
       %uo = GlassLiveUser::getFromBlid(%blid);
 
       %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.status, %uo.isFriend());
@@ -2911,7 +2953,7 @@ function GlassLive::createFriendList() {
   }
 
   if(getWordCount(trim(GlassLive.blockedList)) > 0) {
-    %h = GlassLive::createFriendHeader("Blocked", !GlassLive.hideBlocked, "231 76 60 255");
+    %h = GlassLive::createFriendHeader("Blocked", !GlassLive.hideBlocked, "237 118 105 255");
     %h.mouse.toggleVar = "GlassLive.hideBlocked";
 
     %h.placeBelow(%last, 10);
