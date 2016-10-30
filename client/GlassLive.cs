@@ -1566,7 +1566,6 @@ function GlassLive::createChatroomWindow() {
   %chatroom.add(%chatroom.tabSwatch);
   %chatroom.add(%chatroom.dropText);
   GlassOverlayGui.add(%chatroom);
-  echo(%chatroom.extent);
   return %chatroom;
 }
 
