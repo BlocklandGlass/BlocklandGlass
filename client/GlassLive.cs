@@ -516,20 +516,6 @@ function GlassLive::setIcon(%icon) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   %obj.delete();
-}
-
-
-function GlassLive::setIcon(%icon) {
-  if(!isFile("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png"))
-    return;
-
-  %obj = JettisonObject();
-  %obj.set("type", "string", "setIcon");
-  %obj.set("icon", "string", %icon);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  %obj.delete();
   
   GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
 } 
@@ -577,7 +563,6 @@ function GlassLive::updateIconPicker(%this) {
   		position = %position;
   		extent = "16 16";
   		command = "GlassLive::setIcon(" @ %line @ ");";
-  		testing = "hey there";
   	};
   	GlassIconSelectorGui_swatch.add(%bitmap);
   	GlassIconSelectorGui_swatch.add(%button);
