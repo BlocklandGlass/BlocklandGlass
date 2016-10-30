@@ -56,8 +56,8 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatNotificationNew", "Chat Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatSoundNew", "Chat Sounds", "Chatroom", "checkbox");
   // GlassSettings.drawSetting("Live::RoomAutoJoin", "Auto Join Room", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
 
@@ -65,7 +65,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
+  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -449,7 +449,7 @@ function GlassLive::removeFriendRequestFromList(%blid) {
 
 function GlassLive::checkPendingFriendRequests() {
   if(GlassSettings.get("Live::PendingReminder")) {
-    if(%pending = getWordCount(GlassLive.friendRequestList) > 0) {
+    if((%pending = getWordCount(GlassLive.friendRequestList)) > 0) {
       GlassNotificationManager::newNotification("Pending Friend Requests", "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).", "new_email", 0, "GlassLive::openOverlay();");
 
       alxPlay(GlassBellAudio);
@@ -1050,9 +1050,6 @@ function GlassLive::urlMetadata(%tcp, %error) {
 
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
-  
-  if(!%btn.ready)
-    return;
 
   if(%btn.on) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
@@ -1246,20 +1243,26 @@ function GlassHighlightMouse::onMouseEnter(%this) {
     %this.getGroup().chaticon.setVisible(true);
   }
 
-  if(getWord(%this.getGroup().text.extent, 0) > getWord(vectorSub(%this.extent, %this.pos), 0))
+  if(getWord(%this.getGroup().text.extent, 0) > getWord(vectorSub(%this.extent, %this.pos), 0)-20)
     if(%this.scrollTick $= "")
       %this.scrollTick = %this.scrollLoop(%this.getGroup().text, true);
 }
 
 function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
+  %icon = %text.getGroup().icon;
+
   if(%reset) {
     %this._scrollOrigin = %text.position;
+    if(isObject(%icon))
+      %this._scrollOrigin_Icon = %icon.position;
     %this._scrollOffset = 0;
     %this._scrollRange = getWord(%text.extent, 0)-getWord(%this.extent, 0)+getWord(%text.position, 0)+50;
   }
 
   %text.position = vectorSub(%this._scrollOrigin, %this._scrollOffset);
-
+  if(isObject(%icon))
+    %icon.position = vectorSub(%this._scrollOrigin_Icon, %this._scrollOffset);
+  
   if(%this._scrollOffset >= %this._scrollRange) {
     %this._scrollOffset = 0;
     // %this.scrollTick = %this.schedule(2000, scrollLoop, %text);
@@ -1272,6 +1275,11 @@ function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
 function GlassHighlightMouse::scrollEnd(%this, %text) {
   cancel(%this.scrollTick);
   %text.position = %this._scrollOrigin;
+
+  %icon = %text.getGroup().icon;
+  if(isObject(%icon))
+    %icon.position = %this._scrollOrigin_Icon;
+
   %this.scrollTick = "";
 }
 
@@ -1492,8 +1500,8 @@ function GlassLive::createChatroomWindow() {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "135 130";
-    extent = "475 290";
-    minExtent = "475 290";
+    extent = "568 460";
+    minExtent = "568 460";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
@@ -1558,6 +1566,7 @@ function GlassLive::createChatroomWindow() {
   %chatroom.add(%chatroom.tabSwatch);
   %chatroom.add(%chatroom.dropText);
   GlassOverlayGui.add(%chatroom);
+  echo(%chatroom.extent);
   return %chatroom;
 }
 

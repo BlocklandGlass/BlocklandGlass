@@ -7,8 +7,13 @@ $Glass::Disconnect["Update"] = 4; // [Updates]
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
+  if(!GlassLive.ready) {
+    glassMessageBoxOk("Wait", "You haven't fully authed yet!");
+    return;
+  }
+
   if(GlassLive.lastConnected !$= "" && getSimTime() < GlassLive.lastConnected + 2500) {
-    glassMessageBoxOk("Slow Down", "You're trying to connect too fast!"); // **make sure to implement this server-side as well + get rid of this afterwards**
+    glassMessageBoxOk("Wait", "You're trying to connect too fast!"); // **make sure to implement this server-side as well so we can get rid of this afterwards**
     return;
   }
 

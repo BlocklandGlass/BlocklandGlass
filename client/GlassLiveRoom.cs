@@ -257,7 +257,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   %this.view.setFlashing(true);
 
-  if(GlassSettings.get("Live::RoomChatSound"))
+  if(GlassSettings.get("Live::RoomChatSoundNew"))
     alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId()) {
@@ -271,7 +271,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
         $Glass::LastMentioned = $Sim::Time + 10;
       }
-    } else if(GlassSettings.get("Live::RoomChatNotification")) {
+    } else if(GlassSettings.get("Live::RoomChatNotificationNew")) {
       if(!%this.awake)
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
     }
@@ -473,7 +473,7 @@ function GlassLiveRoom::renderUserList(%this) {
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
   %this.swatch.color = "220 220 220 255";
 
-  if(getWord(%this.swatch.text.extent, 0) > getWord(vectorSub(%this.swatch.extent, %this.swatch.pos), 0) - 20)
+  if(getWord(%this.swatch.text.extent, 0) > getWord(vectorSub(%this.swatch.extent, %this.swatch.pos), 0)-20)
     if(%this.swatch.scrollTick $= "")
       %this.swatch.scrollTick = %this.scrollLoop(%this.swatch.text, true);
 }
@@ -521,7 +521,7 @@ function GlassLiveUserListSwatch::scrollLoop(%this, %text, %reset) {
     %this.swatch._scrollOrigin = %this.swatch.text.position;
     %this.swatch._scrollOrigin_Icon = %this.swatch.icon.position;
     %this.swatch._scrollOffset = 0;
-    %this.swatch._scrollRange = getWord(%this.swatch.text.extent, 0)-getWord(%this.swatch.extent, 0)+getWord(%this.swatch.text.position, 0) + 5;
+    %this.swatch._scrollRange = getWord(%this.swatch.text.extent, 0)-getWord(%this.swatch.extent, 0)+getWord(%this.swatch.text.position, 0)+5;
   }
 
   %this.swatch.text.position = vectorSub(%this.swatch._scrollOrigin, %this.swatch._scrollOffset);

@@ -16,8 +16,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
     GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", true);
 
-    GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
-    GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
+    GlassSettings.registerSetting("client", "Live::RoomChatNotificationNew", true);
+    GlassSettings.registerSetting("client", "Live::RoomChatSoundNew", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
     GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
