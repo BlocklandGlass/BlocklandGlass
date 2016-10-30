@@ -560,15 +560,16 @@ function GlassLive::updateIconPicker(%this) {
   		extent = "16 16";
   	};
   	%button = new GuiButtonBaseCtrl() {
-  		position = %position;
+  		position = %position; 
   		extent = "16 16";
-  		command = "GlassLive::setIcon(" @ %line @ ");";
+		command = "GlassIconSelectorGui_preview.setBitmap(\"Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ "\");";
   	};
   	GlassIconSelectorGui_swatch.add(%bitmap);
   	GlassIconSelectorGui_swatch.add(%button);
   }
   GlassIconSelectorGui_swatch.extent = getWord(GlassIconSelectorGui_swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
-}
+} 
+GlassLive::updateIconPicker();
 
 function GlassIconSelectorGui::onWake(%this) {
   GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ GlassLiveUser::getFromBlid(getNumKeyId()).icon);
