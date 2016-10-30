@@ -3048,19 +3048,21 @@ function GlassLive::createFriendList() {
   GlassFriendsGui_ScrollSwatch.add(%h);
 
   if(!GlassLive.hideFriends) {
+    
+    if(getWordCount(trim(GlassLive.friendList)) > 0) {
+      %sorted = GlassLive::sortFriendList(GlassLive.friendList);
 
-    %sorted = GlassLive::sortFriendList(GlassLive.friendList);
+      for(%i = 0; %i < getWordCount(%sorted); %i++) {
+        %blid = getWord(%sorted, %i);
+        %uo = GlassLiveUser::getFromBlid(%blid);
 
-    for(%i = 0; %i < getWordCount(%sorted); %i++) {
-      %blid = getWord(%sorted, %i);
-      %uo = GlassLiveUser::getFromBlid(%blid);
+        %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.status, %uo.isFriend());
+        %gui.placeBelow(%last, 5);
 
-      %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.status, %uo.isFriend());
-      %gui.placeBelow(%last, 5);
+        GlassFriendsGui_ScrollSwatch.add(%gui);
 
-      GlassFriendsGui_ScrollSwatch.add(%gui);
-
-      %last = %gui;
+        %last = %gui;
+      }
     }
   }
 
