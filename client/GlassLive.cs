@@ -1050,12 +1050,15 @@ function GlassLive::urlMetadata(%tcp, %error) {
 
 function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
+  
+  if(!%btn.ready)
+    return;
+
   if(%btn.on) {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
+    if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
       glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
-    } else {
+    else
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
-    }
   } else {
     GlassLive::connectToServer();
   }
@@ -1064,11 +1067,10 @@ function GlassLive::powerButtonPress() {
 function GlassLive::setPowerButton(%bool) {
   %btn = GlassFriendsGui_PowerButton;
   %btn.on = %bool;
-  if(%btn.on) {
+  if(%btn.on)
     %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
-  } else {
+  else
     %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
-  }
 }
 
 function GlassLive::openAddDlg() {

@@ -142,8 +142,9 @@ function GlassAuthTCP::handleText(%this, %line) {
 
 package GlassAuthPackage {
 	function MM_AuthBar::blinkSuccess(%this) {
+    parent::blinkSuccess(%this);
 		GlassAuth.heartbeat();
-		parent::blinkSuccess(%this);
+    GlassFriendsGui_PowerButton.ready = true;
 	}
 };
 activatePackage(GlassAuthPackage);
