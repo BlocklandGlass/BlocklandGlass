@@ -54,7 +54,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
 
   GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::ShowJoinLeaveNew", "User Connection Messages", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatNotificationNew", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSoundNew", "Chat Sounds", "Chatroom", "checkbox");
@@ -65,7 +65,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
+  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeaveNew StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
