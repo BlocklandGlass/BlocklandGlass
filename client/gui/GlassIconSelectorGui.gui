@@ -49,8 +49,8 @@ new GuiControl(GlassIconSelectorGui) {
          childMargin = "0 0";
          rowHeight = "40";
          columnWidth = "30";
-
-         new GuiSwatchCtrl(GlassIconSelectorGui_swatch) {
+		 
+	   new GuiSwatchCtrl(GlassIconSelectorGui_swatch) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -63,6 +63,7 @@ new GuiControl(GlassIconSelectorGui) {
             color = "0 0 0 0";
          };
       };
+	  
       new GuiBitmapButtonCtrl() {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
@@ -73,8 +74,8 @@ new GuiControl(GlassIconSelectorGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "canvas.popDialog(GlassIconSelectorGui);";
-         text = "Done";
+         command = "GlassLive::setIcon(strReplace(GlassIconSelectorGui_Preview.bitmap, \"Add-Ons/System_BlocklandGlass/image/icon/\", \"\"));canvas.popDialog(GlassIconSelectorGui);";
+         text = "Confirm";
          groupNum = "-1";
          buttonType = "PushButton";
          bitmap = "~/System_BlocklandGlass/image/gui/btn";
@@ -98,7 +99,7 @@ new GuiControl(GlassIconSelectorGui) {
          lineSpacing = "2";
          allowColorChars = "0";
          maxChars = "-1";
-         text = "<font:verdana bold:14>\c7Current:";
+         text = "<font:verdana bold:14>\c7Preview:";
          maxBitmapHeight = "-1";
          selectable = "1";
          autoResize = "1";
@@ -107,7 +108,7 @@ new GuiControl(GlassIconSelectorGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "66 184";
+         position = "70 184";
          extent = "16 16";
          minExtent = "8 2";
          enabled = "1";
