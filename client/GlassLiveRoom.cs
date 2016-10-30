@@ -496,10 +496,14 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-    if(%this.user.blid != getNumKeyId())
-      GlassLive::openUserWindow(%this.user.blid);
-    else
+    if(%this.user.blid != getNumKeyId()) {
+      if(isObject(%this.user.window))
+        %this.user.window.delete();
+      else
+        GlassLive::openUserWindow(%this.user.blid);
+    } else {
       glassMessageBoxOk("Hey There", "That's you.");
+    }
   }
 }
 

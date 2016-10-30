@@ -1436,8 +1436,8 @@ function GlassLive::openUserWindow(%blid) {
 
 function GlassLive::createUserWindow(%uo) {
   if(isObject(%uo.window)) {
-    // GlassOverlayGui.pushToBack(%uo.window);
-    %uo.window.delete();
+    GlassOverlayGui.pushToBack(%uo.window);
+    //%uo.window.delete();
     return;
   }
 
