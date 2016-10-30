@@ -516,6 +516,62 @@ function GlassLive::setIcon(%icon) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   %obj.delete();
+  
+  GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+} 
+
+function GlassLive::updateIconPicker(%this) {
+  %allowed = "Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt";
+  if(!isFile(%allowed)) {
+  	warn(%allowed SPC "not found, unable to create icon list.");
+  	return;
+  }
+  %swatch = GlassIconSelectorGui_swatch;
+  
+  if(!isObject(%swatch)) {
+  	warn("Could not find icon list swatch.");
+  	return;
+  }
+  
+  %path = "Add-Ons/System_BlocklandGlass/image/icon/";
+  %iconCount = -1;
+  
+  %file = new FileObject();
+  %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt");
+  while(!%file.isEOF()) {
+  	%line = %file.readLine();
+  	%icon = %path @ %line;
+	
+  	if(!isFile(%icon @ ".png"))
+  		continue;
+  	
+  	%iconCount++;
+  	
+  	if(%iconCount % 14 == 0)
+  		%column = 0;
+  	
+  	%row = mFloor(%iconCount / 14);
+  	%position = (20 * %column) + 3 SPC (%row * 20) + 3;
+  	%column++;
+  	
+  	%bitmap = new GuiBitmapCtrl() {
+  		bitmap = %icon;
+  		position = %position;
+  		extent = "16 16";
+  	};
+  	%button = new GuiButtonBaseCtrl() {
+  		position = %position;
+  		extent = "16 16";
+  		command = "GlassLive::setIcon(" @ %line @ ");";
+  	};
+  	GlassIconSelectorGui_swatch.add(%bitmap);
+  	GlassIconSelectorGui_swatch.add(%button);
+  }
+  GlassIconSelectorGui_swatch.extent = getWord(GlassIconSelectorGui_swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
+}
+
+function GlassIconSelectorGui::onWake(%this) {
+  GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ GlassLiveUser::getFromBlid(getNumKeyId()).icon);
 }
 
 //================================================================
