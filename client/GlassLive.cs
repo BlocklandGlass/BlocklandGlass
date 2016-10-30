@@ -37,10 +37,15 @@ function GlassLive::init() {
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassOverlayGui.gui");
   exec("Add-Ons/System_BlocklandGlass/client/gui/GlassSettingsGui.gui");
 
-
   //GlassOverlayGui.add(GlassFriendsGui.getObject(0));
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
+
+  exec("Add-Ons/System_BlocklandGlass/client/gui/GlassIconSelectorGui.gui");
+
+  GlassIconSelectorWindow.setVisible(false);
+  GlassOverlayGui.add(GlassIconSelectorWindow);
+  GlassIconSelectorWindow.updateIcons();
 
   // glass pref, description/name, category, type
   GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox");
@@ -63,9 +68,10 @@ function GlassLive::init() {
 
   GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeaveNew StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder";
+  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeaveNew StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -117,6 +123,25 @@ function GlassLive::openSettings() {
   }
 }
 
+function GlassLive::closeSettings() {
+  GlassSettingsWindow.setVisible(false);
+}
+
+function GlassLive::openIconSelector() {
+  if(isObject(GlassIconSelectorWindow)) {
+    GlassIconSelectorWindow.onWake();
+    GlassIconSelectorWindow.setVisible(!GlassIconSelectorWindow.visible);
+  }
+
+  if(GlassIconSelectorWindow.visible) {
+    GlassOverlayGui.pushToBack(GlassIconSelectorWindow);
+  }
+}
+
+function GlassLive::closeIconSelector() {
+  GlassIconSelectorWindow.setVisible(false);
+}
+
 function GlassLive::openChatroom() {
   %chatFound = false;
 
@@ -147,10 +172,6 @@ function GlassLive::openChatroom() {
   }
 }
 
-function GlassLive::closeSettings() {
-  GlassSettingsWindow.setVisible(false);
-}
-
 function GlassLive::closeOverlay() {
   canvas.popDialog(GlassOverlayGui);
 }
@@ -169,8 +190,8 @@ function GlassLive::updateSetting(%category, %setting) {
 
 function GlassOverlayGui::onWake(%this) {
   %x = getWord(getRes(), 0);
-	%y = getWord(getRes(), 1);
-	GlassOverlay.resize(0, 0, %x, %y);
+  %y = getWord(getRes(), 1);
+  GlassOverlay.resize(0, 0, %x, %y);
 
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
@@ -516,63 +537,77 @@ function GlassLive::setIcon(%icon) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   %obj.delete();
-  
-  GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
-} 
 
-function GlassLive::updateIconPicker(%this) {
+  GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+}
+
+function GlassIconSelectorWindow::updateIcons(%this) {
   %allowed = "Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt";
   if(!isFile(%allowed)) {
-  	warn(%allowed SPC "not found, unable to create icon list.");
-  	return;
+    warn(%allowed SPC "not found, unable to create icon list.");
+    return;
   }
-  %swatch = GlassIconSelectorGui_swatch;
-  
+  %swatch = GlassIconSelectorWindow_Swatch;
+
   if(!isObject(%swatch)) {
-  	warn("Could not find icon list swatch.");
-  	return;
+    warn("Could not find icon list swatch.");
+    return;
   }
-  
+
   %path = "Add-Ons/System_BlocklandGlass/image/icon/";
   %iconCount = -1;
-  
+
   %file = new FileObject();
   %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt");
   while(!%file.isEOF()) {
-  	%line = %file.readLine();
-  	%icon = %path @ %line;
-	
-  	if(!isFile(%icon @ ".png"))
-  		continue;
-  	
-  	%iconCount++;
-  	
-  	if(%iconCount % 14 == 0)
-  		%column = 0;
-  	
-  	%row = mFloor(%iconCount / 14);
-  	%position = (20 * %column) + 3 SPC (%row * 20) + 3;
-  	%column++;
-  	
-  	%bitmap = new GuiBitmapCtrl() {
-  		bitmap = %icon;
-  		position = %position;
-  		extent = "16 16";
-  	};
-  	%button = new GuiButtonBaseCtrl() {
-  		position = %position; 
-  		extent = "16 16";
-		command = "GlassIconSelectorGui_preview.setBitmap(\"Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ "\");";
-  	};
-  	GlassIconSelectorGui_swatch.add(%bitmap);
-  	GlassIconSelectorGui_swatch.add(%button);
-  }
-  GlassIconSelectorGui_swatch.extent = getWord(GlassIconSelectorGui_swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
-} 
-GlassLive::updateIconPicker();
+    %line = %file.readLine();
+    %icon = %path @ %line;
 
-function GlassIconSelectorGui::onWake(%this) {
-  GlassIconSelectorGui_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ GlassLiveUser::getFromBlid(getNumKeyId()).icon);
+    if(!isFile(%icon @ ".png"))
+      continue;
+
+    %iconCount++;
+
+    if(%iconCount % 14 == 0)
+      %column = 0;
+
+    %row = mFloor(%iconCount / 14);
+    %position = (20 * %column) + 3 SPC (%row * 20) + 3;
+    %column++;
+
+    %bitmap = new GuiBitmapCtrl() {
+      bitmap = %icon;
+      position = %position;
+      extent = "16 16";
+    };
+    %button = new GuiButtonBaseCtrl() {
+      position = %position;
+      extent = "16 16";
+      command = "GlassIconSelectorWindow_Preview.setBitmap(\"Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ "\");";
+    };
+    GlassIconSelectorWindow_Swatch.add(%bitmap);
+    GlassIconSelectorWindow_Swatch.add(%button);
+  }
+  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
+}
+
+function GlassIconSelectorWindow::selectIcon(%this) {
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to <font:verdana bold:13>Glass Live<font:verdana:13> to change your icon.");
+    return;
+  }
+
+  GlassLive::setIcon(strreplace(GlassIconSelectorWindow_Preview.bitmap, "Add-Ons/System_BlocklandGlass/image/icon/", ""));
+  GlassLive::closeIconSelector();
+}
+
+function GlassIconSelectorWindow::onWake(%this) {
+  %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
+
+  if(%icon $= "")
+    %icon = "help";
+
+  GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
 }
 
 //================================================================
@@ -695,19 +730,21 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
   %timestamp = "[" @ getWord(getDateTime(), 1) @ "]";
 
-  if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
-    %fo = new FileObject();
-    %fo.openForAppend(%file);
-    %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
-    %fo.close();
-    %fo.delete();
-  } else {
-    %fo = new FileObject();
-    %fo.openForWrite(%file);
-    %fo.writeLine(%timestamp @ " Beginning chat log of " @ GlassLiveUser::getFromBlid(%blid).username @ " (" @ %blid @ ")");
-    %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
-    %fo.close();
-    %fo.delete();
+  if(GlassSettings.get("Live::MessageLogging")) {
+    if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
+      %fo = new FileObject();
+      %fo.openForAppend(%file);
+      %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
+      %fo.close();
+      %fo.delete();
+    } else {
+      %fo = new FileObject();
+      %fo.openForWrite(%file);
+      %fo.writeLine(%timestamp @ " Beginning chat log of " @ GlassLiveUser::getFromBlid(%blid).username @ " (" @ %blid @ ")");
+      %fo.writeLine(%timestamp @ " " @ %username @ ": " @ %message);
+      %fo.close();
+      %fo.delete();
+    }
   }
 
   %gui = GlassLive::openDirectMessage(%blid, %username);
@@ -774,12 +811,14 @@ function GlassLive::onMessageNotification(%message, %blid) {
 
   %timestamp = "[" @ getWord(getDateTime(), 1) @ "]";
 
-  if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
-    %fo = new FileObject();
-    %fo.openForAppend(%file);
-    %fo.writeLine(%timestamp SPC %message);
-    %fo.close();
-    %fo.delete();
+  if(GlassSettings.get("Live::MessageLogging")) {
+    if(isFile(%file = "config/client/BLG/chat_log/DMs/" @ %blid @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt")) {
+      %fo = new FileObject();
+      %fo.openForAppend(%file);
+      %fo.writeLine(%timestamp SPC %message);
+      %fo.close();
+      %fo.delete();
+    }
   }
 
   %user = GlassLiveUser::getFromBlid(%blid);
@@ -1319,7 +1358,7 @@ function GlassHighlightMouse::scrollLoop(%this, %text, %reset) {
   %text.position = vectorSub(%this._scrollOrigin, %this._scrollOffset);
   if(isObject(%icon))
     %icon.position = vectorSub(%this._scrollOrigin_Icon, %this._scrollOffset);
-  
+
   if(%this._scrollOffset >= %this._scrollRange) {
     %this._scrollOffset = 0;
     // %this.scrollTick = %this.schedule(2000, scrollLoop, %text);

@@ -15,11 +15,12 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
     GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", true);
+    GlassSettings.registerSetting("client", "Live::PendingReminder", true);
 
     GlassSettings.registerSetting("client", "Live::RoomChatNotificationNew", true);
     GlassSettings.registerSetting("client", "Live::RoomChatSoundNew", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
-    GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
+    // GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
     GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
     GlassSettings.registerSetting("client", "Live::RoomNotification", true); // joined room / left room notifications
 
@@ -28,14 +29,13 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::MessageNotification", true);
     GlassSettings.registerSetting("client", "Live::MessageSound", true);
-    GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
+    GlassSettings.registerSetting("client", "Live::MessageLogging", true);
+    // GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
 
     GlassSettings.registerSetting("client", "Live::ShowJoinLeaveNew", false); // user connection messages in chatroom
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
-    
-    GlassSettings.registerSetting("client", "Live::PendingReminder", true);
   } else if(%context $= "server") {
     GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     GlassSettings.registerSetting("server", "SC::AEditRank", 2);
