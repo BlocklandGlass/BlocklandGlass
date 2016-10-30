@@ -602,6 +602,9 @@ function GlassIconSelectorWindow::selectIcon(%this) {
 }
 
 function GlassIconSelectorWindow::onWake(%this) {
+  %this.centerX();
+  %this.centerY();
+
   %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
 
   if(%icon $= "")
@@ -1410,7 +1413,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
       if(%this.online)
         GlassLive::openDirectMessage(%this.blid);
     } else {
-      GlassLive::openUserWindow(%this.blid);
+      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+        %window.delete();
+      else
+        GlassLive::openUserWindow(%this.blid);
     }
   }
 }
