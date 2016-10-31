@@ -41,10 +41,6 @@ function GlassLive::connectToServer() {
 function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
 
-  GlassLive_StatusPopUp.setVisible(true);
-  GlassLive_StatusPopUp.setValue("Online");
-  GlassLive_StatusPopUp.updateStatus();
-
   GlassLive.noReconnect = false;
   GlassLive.lastConnected = getSimTime();
   GlassLive.hideFriendRequests = false;
@@ -59,7 +55,9 @@ function GlassLiveConnection::onConnected(%this) {
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e67e22>Connecting...");
+  GlassFriendsGui_HeaderText.forceReflow();
+  GlassFriendsGui_HeaderText.forceCenter();
 
   GlassLive.schedule(500, checkPendingFriendRequests);
 }
@@ -75,14 +73,18 @@ function GlassLiveConnection::onDisconnect(%this) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.forceReflow();
+  GlassFriendsGui_HeaderText.forceCenter();
 
   GlassLive::cleanUp();
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.forceReflow();
+  GlassFriendsGui_HeaderText.forceCenter();
 
   %this.connected = false;
 
@@ -93,7 +95,9 @@ function GlassLiveConnection::onDNSFailed(%this) {
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.forceReflow();
+  GlassFriendsGui_HeaderText.forceCenter();
 
   %this.connected = false;
 
@@ -115,7 +119,7 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   GlassLive_StatusPopUp.setVisible(false);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
 }
 
 function GlassLiveConnection::placeCall(%this, %call) {
@@ -137,7 +141,27 @@ function GlassLiveConnection::onLine(%this, %line) {
 
   switch$(%data.value["type"]) {
     case "auth":
-      echo("Glass Live: " @ %data.status);
+      echo("Auth call!");
+      switch$(%data.status) {
+        case "failed":
+          %this.doDisconnect();
+          echo("Glass Live auth failed");
+          if(%data.action $= "reident") {
+            GlassAuth.ident = "";
+            GlassAuth.heartbeat();
+          }
+
+          if(%data.timeout !$= "" && %data.timeout > 0) {
+            GlassLive.reconnect = GlassLive.schedule(%data.timeout+getRandom(0, 1000), connectToServer);
+          }
+
+        case "success":
+          echo("Glass Live auth success");
+          GlassLive::onAuthSuccess();
+
+        default:
+          echo("\c2Glass Live received an unknown auth response: " @ %data.status);
+      }
       // TODO handle failure
 
     case "notification":

@@ -98,6 +98,15 @@ function GlassLive_keybind(%down) {
   }
 }
 
+function GlassLive::onAuthSuccess() {
+  GlassLive_StatusPopUp.setVisible(true);
+  GlassLive_StatusPopUp.setValue("Online");
+  GlassLive_StatusPopUp.updateStatus();
+
+  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
+  GlassFriendsGui_HeaderText.position = "10 5";
+}
+
 function GlassLive::openOverlay() {
   canvas.pushDialog(GlassOverlayGui);
   GlassNotificationManager.dismissAll();
