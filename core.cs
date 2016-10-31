@@ -1,7 +1,7 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "3.1.4";
+			version = "3.2.0-alpha+indev";
 			address = "api.blocklandglass.com";
 			netAddress = "blocklandglass.com";
 			enableCLI = true;
@@ -9,16 +9,7 @@ function Glass::init(%context) {
 			liveAddress = "test.blocklandglass.com";
 			livePort = 27005; //27005 is dev, 27002 is stable/public
 		};
-
-		//enable debug mode for me
-		//if($Pref::Player::NetName $= "Jincux" || $Pref::Player::NetName $= "BLG") {
-			//Glass.dev = true;
-			//Glass.devLocal = false;
-			//Glass.address = "localhost";
-		//}
 	}
-
-	//$Glass::Debug = true;
 
 	if(%context $= "client") {
 		Glass::execClient();

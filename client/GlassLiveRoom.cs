@@ -329,7 +329,7 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   %bots = new GuiTextListCtrl();
   // %friends = new GuiTextListCtrl();
   %users = new GuiTextListCtrl();
-  
+
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
     if(%user.isBot()) {
@@ -496,13 +496,15 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-    if(%this.user.blid != getNumKeyId()) {
+    if(%this.user.blid == getNumKeyId()) {
+      glassMessageBoxOk("Hey There", "That's you.");
+    } else if(%this.user.blid < 0) {
+      glassMessageBoxOk("Robots!", "That's a bot! Probably not very friendly...");
+    } else {
       if(isObject(%this.user.window))
         %this.user.window.delete();
       else
         GlassLive::openUserWindow(%this.user.blid);
-    } else {
-      glassMessageBoxOk("Hey There", "That's you.");
     }
   }
 }

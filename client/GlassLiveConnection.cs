@@ -335,8 +335,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       glassMessageBoxOk("Kicked", "You've been kicked from -room name-:<br><br>" @ %data.reason);
 
     case "roomBanned": //we got banned from a room
-      warn("TODO: roomBanned for reason " @ %data.reason);
-      glassMessageBoxOk("Banned", "You've been banned from -room name- for " @ %data.duration @ " seconds:<br><br>" @ %data.reason);
+      if(%data.all) {
+        //we got banned from all rooms
+        glassMessageBoxOk("Banned", "You've been banned from all chatrooms for <font:verdana bold:13>" @ %data.duration @ "<font:verdana:13> seconds:<br><br><font:verdana bold:13>" @ %data.reason);
+      } else {
+        %room = GlassLiveRoom::getFromId(%data.id);
+        glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>" @ %room.name @ "<font:verdana:13> for <font:verdana bold:13>" @ %data.duration @ "<font:verdana:13> seconds:<br><br><font:verdana bold:13>" @ %data.reason);
+      }
+
 
     // case "roomAwake":
       // %room = GlassLiveRoom::getFromId(%data.id);
@@ -525,9 +531,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       glassMessageBoxOk("Kicked", "You've been kicked from <font:verdana bold:13>Glass Live<font:verdana:13>:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
       %this.disconnect();
 
-    case "banned":
+    case "barred": //we're not allowed to use glass live
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>Glass Live<font:verdana:13> for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Barred", "You've been barred from all <font:verdana bold:13>Glass Live<font:verdana:13> service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
 
