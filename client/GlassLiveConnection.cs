@@ -41,6 +41,10 @@ function GlassLive::connectToServer() {
 function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
 
+  GlassLive_StatusPopUp.setVisible(true);
+  GlassLive_StatusPopUp.setValue("Online");
+  GlassLive_StatusPopUp.updateStatus();
+
   GlassLive.noReconnect = false;
   GlassLive.lastConnected = getSimTime();
   GlassLive.hideFriendRequests = false;
@@ -62,20 +66,23 @@ function GlassLiveConnection::onConnected(%this) {
 
 function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
+  GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
+  GlassLive_StatusPopUp.setVisible(false);
+
   %this.connected = false;
 
   if(!GlassLive.noReconnect) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
 
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
 
   GlassLive::cleanUp();
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
 
@@ -86,7 +93,7 @@ function GlassLiveConnection::onDNSFailed(%this) {
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
 
   %this.connected = false;
 
@@ -106,7 +113,9 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
   %this.connected = false;
 
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
+  GlassLive_StatusPopUp.setVisible(false);
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:cc0000>Disconnected");
 }
 
 function GlassLiveConnection::placeCall(%this, %call) {
@@ -174,7 +183,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
-        
+
         if(%cl.blid < 0) {
           %user.setBot(true);
         }
@@ -214,7 +223,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %user.setAdmin(%cl.admin);
         %user.setMod(%cl.mod);
-        
+
         if(%cl.blid < 0) {
           %user.setBot(true);
         }

@@ -31,6 +31,8 @@ function GlassLive::init() {
     GlassLive_StatusPopUp.add("Online", 1);
     GlassLive_StatusPopUp.add("Away", 2);
     GlassLive_StatusPopUp.add("Busy", 3);
+
+    GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
 
   if(!isObject(GlassLiveUsers))

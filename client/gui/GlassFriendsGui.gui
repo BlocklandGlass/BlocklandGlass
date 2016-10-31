@@ -300,6 +300,7 @@ new GuiControl(GlassFriendsGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
             on = "1";
+         text = " ";
       };
       new GuiBitmapButtonCtrl(GlassFriendsGui_AddButton) {
          profile = "GuiDefaultProfile";
@@ -322,6 +323,7 @@ new GuiControl(GlassFriendsGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
             on = "1";
+         text = " ";
       };
    };
 };
