@@ -14,8 +14,8 @@ new GuiControl(GlassFriendsGui) {
       profile = "GlassWindowProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "1 1";
-      extent = "230 379";
+      position = "10 10";
+      extent = "230 380";
       minExtent = "230 198";
       enabled = "1";
       visible = "1";
@@ -29,17 +29,25 @@ new GuiControl(GlassFriendsGui) {
       canMinimize = "0";
       canMaximize = "0";
       minSize = "50 50";
-      
-      new GuiMLTextCtrl(GlassFriendsResize) {
-        profile = "GuiMLTextProfile";
-        horizSizing = "relative";
-        vertSizing = "relative";
-        position = "0 0";
-        extent = "230 379";
-        visible = "0";
-      };
 
-      new GuiSwatchCtrl() {
+      new GuiMLTextCtrl(GlassFriendsResize) {
+         profile = "GuiMLTextProfile";
+         horizSizing = "relative";
+         vertSizing = "relative";
+         position = "0 0";
+         extent = "230 14";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "0";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+      new GuiSwatchCtrl(GlassFriendsGui_InfoSwatch) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -49,14 +57,14 @@ new GuiControl(GlassFriendsGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         color = "230 230 230 255";
+         color = "210 220 255 255";
 
          new GuiMLTextCtrl(GlassFriendsGui_HeaderText) {
             profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 5";
-            extent = "190 26";
+            extent = "190 14";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -68,8 +76,23 @@ new GuiControl(GlassFriendsGui) {
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
+               alignLeft = "1";
+               maxLength = "255";
+         };
+         new GuiPopUpMenuCtrl(GlassLive_StatusPopUp) {
+            profile = "GuiPopUpMenuProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "10 36";
+            extent = "64 14";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassLive_StatusPopUp::updateStatus(GlassLive_StatusPopUp);";
+            text = "Status";
             maxLength = "255";
-            alignLeft = "1";
+            maxPopupHeight = "200";
          };
       };
       new GuiScrollCtrl(GlassFriendsGui_Scroll) {
@@ -95,12 +118,99 @@ new GuiControl(GlassFriendsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 1";
-            extent = "200 245";
+            extent = "200 36";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
             color = "0 0 0 0";
+
+            new GuiSwatchCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "5 5";
+               extent = "190 26";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               color = "84 217 140 255";
+                  mouse = "23025";
+                  flare = "23026";
+                  bullet = "23024";
+                  ocolor = "84 217 140 255";
+                  text = "23023";
+                  hcolor = "84 217 140 255";
+
+               new GuiBitmapCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "-90 -128";
+                  extent = "256 256";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "0";
+                  clipToParent = "1";
+                  bitmap = "~/System_BlocklandGlass/image/gui/glare.png";
+                  wrap = "0";
+                  lockAspectRatio = "0";
+                  alignLeft = "0";
+                  alignTop = "0";
+                  overflowImage = "1";
+                  keepCached = "0";
+                  mColor = "255 255 255 90";
+                  mMultiply = "0";
+               };
+               new GuiTextCtrl() {
+                  profile = "GlassFriendTextProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "10 4";
+                  extent = "49 17";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  text = "Friends";
+                  maxLength = "255";
+               };
+               new GuiBitmapCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "169 5";
+                  extent = "16 16";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  bitmap = "~/System_BlocklandGlass/image/icon/bullet_arrow_right.png";
+                  wrap = "0";
+                  lockAspectRatio = "0";
+                  alignLeft = "0";
+                  alignTop = "0";
+                  overflowImage = "0";
+                  keepCached = "0";
+                  mColor = "255 255 255 255";
+                  mMultiply = "0";
+               };
+               new GuiMouseEventCtrl(GlassHighlightMouse) {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "0 0";
+                  extent = "190 26";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  lockMouse = "0";
+                     toggleVar = "GlassLive.hideFriends";
+                     type = "toggle";
+               };
+            };
          };
       };
       new GuiSwatchCtrl(GlassFriendsGui_ScrollOverlay) {
@@ -173,13 +283,12 @@ new GuiControl(GlassFriendsGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "195 348";
+         position = "195 350";
          extent = "24 24";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-		 text = "";
          command = "GlassLive::powerButtonPress();";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -196,7 +305,7 @@ new GuiControl(GlassFriendsGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "145 348";
+         position = "145 350";
          extent = "24 24";
          minExtent = "8 2";
          enabled = "1";
@@ -206,7 +315,6 @@ new GuiControl(GlassFriendsGui) {
          groupNum = "-1";
          buttonType = "PushButton";
          bitmap = "~/System_BlocklandGlass/image/gui/btn_add";
-         text = "";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";

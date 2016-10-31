@@ -18,7 +18,7 @@ exec("./GlassLiveGroup.cs");
 // - if setting is to be changed by the user at will via the glass settings gui, add corresponding .drawsetting() for pref in glasslive::init() below.
 
 function GlassLive::init() {
-  if(!isObject(GlassLive))
+  if(!isObject(GlassLive)) {
     new ScriptObject(GlassLive) {
       color_default = "222222";
       color_self = "55acee";
@@ -27,6 +27,11 @@ function GlassLive::init() {
       color_admin = "e74c3c";
       color_bot = "9b59b6";
     };
+
+    GlassLive_StatusPopUp.add("Online", 1);
+    GlassLive_StatusPopUp.add("Away", 2);
+    GlassLive_StatusPopUp.add("Busy", 3);
+  }
 
   if(!isObject(GlassLiveUsers))
     new ScriptGroup(GlassLiveUsers);
@@ -481,6 +486,26 @@ function GlassLive::checkPendingFriendRequests() {
 //================================================================
 //= 3.2.0 things that we'll organize later                        =
 //================================================================
+
+function GlassLive_StatusPopUp::updateStatus(%this) {
+  GlassLive::setStatus(%this.getValue());
+
+  %status = %this.getValue();
+  if(%status $= "online") {
+    %color = "210 220 255 255";
+    %hcolor = "230 240 255 255";
+  } else if(%status $= "away") {
+    %color = "255 244 210 255";
+    %hcolor = "255 255 230 255";
+  } else if(%status $= "busy") {
+    %color = "255 210 210 255";
+    %hcolor = "255 230 230 255";
+  } else {
+    %color = "210 210 210 255";
+    %hcolor = "230 230 230 255";
+  }
+  GlassFriendsGui_InfoSwatch.color = %color;
+}
 
 function GlassLive::friendOnline(%this, %blid, %status) {
   %uo = GlassLiveUser::getFromBlid(%blid);
@@ -3048,7 +3073,7 @@ function GlassLive::createFriendList() {
   GlassFriendsGui_ScrollSwatch.add(%h);
 
   if(!GlassLive.hideFriends) {
-    
+
     if(getWordCount(trim(GlassLive.friendList)) > 0) {
       %sorted = GlassLive::sortFriendList(GlassLive.friendList);
 
