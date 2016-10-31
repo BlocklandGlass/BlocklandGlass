@@ -649,6 +649,51 @@ function GlassIconSelectorWindow::onWake(%this) {
   GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
 }
 
+function GlassLive::userBlock(%blid) {
+  if(%blid+0 !$= %blid || %blid < 0 || mfloor(%blid) !$= %blid)
+    return;
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "block");
+  %obj.set("blid", "string", %blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
+
+  for(%i = 0; %i < getWordCount(GlassLive.blockedList); %i++) {
+    if(getWord(GlassLive.blockedList, %i) == %blid) {
+      return;
+    }
+  }
+
+  GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
+  GlassLive::createFriendList();
+}
+
+function GlassLive::userUnblock(%blid) {
+  if(%blid+0 !$= %blid || %blid < 0 || mfloor(%blid) !$= %blid)
+    return;
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "unblock");
+  %obj.set("blid", "string", %blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
+
+
+  for(%i = 0; %i < getWordCount(GlassLive.blockedList); %i++) {
+    if(getWord(GlassLive.blockedList, %i) == %blid) {
+      GlassLive.blockedList = removeWord(GlassLive.blockedList, %i);
+      break;
+    }
+  }
+
+  GlassLive::createFriendList();
+}
+
 //================================================================
 //= Communication                                                =
 //================================================================
@@ -1439,7 +1484,7 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   } else if(%this.type $= "blocked") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
       glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been unblocked.");
-      GlassLive::friendUnblock(%this.blid);
+      GlassLive::userUnblock(%this.blid);
     }
   } else if(%this.type $= "toggle") {
     eval(%this.toggleVar @ " = !" @ %this.toggleVar @ ";");

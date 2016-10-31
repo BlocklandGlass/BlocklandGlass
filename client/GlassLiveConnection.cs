@@ -467,6 +467,24 @@ function GlassLiveConnection::onLine(%this, %line) {
       return;
       GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
+
+    case "blockedList":
+      %list = "";
+      for(%i = 0; %i < %data.blocked.length; %i++) {
+        %userData = %data.blocked.value[%i];
+        echo("blocked: " @ %userData.blid);
+        %list = %list SPC %userData.blid;
+
+        %user = GlassLiveUser::create(%userData.username, %userData.blid);
+        %user.blocked = true;
+      }
+
+      if(strlen(%list) > 0)
+        %list = getSubStr(%list, 1, strlen(%list)-1);
+
+      GlassLive.blockedList = %list;
+      GlassLive::createFriendList();
+
     case "messageBox":
       glassMessageBoxOk(%data.title, %data.text);
 

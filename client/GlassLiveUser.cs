@@ -103,6 +103,14 @@ function GlassLiveUser::getMessageGui(%this) {
     return false;
 }
 
+function GlassLiveUser::block(%this) {
+  GlassLive::userBlock(%this.blid);
+}
+
+function GlassLiveUser::unblock(%this) {
+  GlassLive::userUnblock(%this.blid);
+}
+
 function GlassLiveUser::canSendMessage(%this) {
   //can we show a message from them?
   //privacy settings
