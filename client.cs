@@ -88,16 +88,12 @@ function Glass::execClient() {
 }
 
 function clientCmdGlassHandshake(%ver, %tries) {
-  %server_ver = stripChars(%ver, ".");
+  %server_ver = getsubstr(stripChars(%ver, "."), 0, 3);
 
-  if(%server_ver + 0 !$= %server_ver || %server_ver < 0 || strlen(%server_ver) > 3) {
-    return;
-  }
+  // if(%server_ver + 0 !$= %server_ver || %server_ver < 0)
+    // return;
 
-  %client_ver = stripChars(Glass.version, ".");
-
-  // uncomment this when it's needed
-	// commandToServer('GlassHandshake', Glass.version);
+  %client_ver = getsubstr(stripChars(Glass.version, "."), 0, 3);
 
   if(ServerConnection.hasGlass $= "") {
     if(isObject(NewChatSO)) {
@@ -119,6 +115,8 @@ function clientCmdGlassHandshake(%ver, %tries) {
 
       ServerConnection.hasGlass = true;
       ServerConnection._glassVersion = %ver;
+
+      commandToServer('GlassHandshake', Glass.version);
     } else {
       if(%tries <= 5) {
         schedule(1000, 0, clientCmdGlassHandshake, %ver, %tries++);

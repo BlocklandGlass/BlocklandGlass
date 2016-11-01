@@ -497,9 +497,12 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //  %this.group.displayUserOptions(%this.user);
     //else
     if(%this.user.blid == getNumKeyId()) {
-      glassMessageBoxOk("Hey There", "That's you.");
-    } else if(%this.user.blid < 0) {
-      glassMessageBoxOk("Robots!", "That's a bot! Probably not very friendly...");
+      if(GlassIconSelectorWindow.visible)
+        GlassLive::closeIconSelector();
+      else
+        GlassLive::openIconSelector();
+    } else if(%this.user.isBot()) {
+      glassMessageBoxOk("Robots", "That's a bot!<br>Probably not very friendly...");
     } else {
       if(isObject(%this.user.window))
         %this.user.window.delete();

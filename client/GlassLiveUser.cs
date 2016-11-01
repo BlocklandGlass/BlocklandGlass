@@ -103,6 +103,10 @@ function GlassLiveUser::getMessageGui(%this) {
     return false;
 }
 
+function GlassLiveUser::isBlocked(%this) {
+  return %this.blocked;
+}
+
 function GlassLiveUser::block(%this) {
   GlassLive::userBlock(%this.blid);
 }
