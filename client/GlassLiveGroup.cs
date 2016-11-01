@@ -172,7 +172,7 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
   %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender.username @ ":<font:verdana:12><color:333333> " @ %msg;
   %this.pushText(%text);
 
-  if(GlassSettings.get("Live::RoomChatSoundNew"))
+  if(GlassSettings.get("Live::RoomChatSound"))
     alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId()) {
@@ -185,7 +185,7 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
         
         $Glass::LastMentioned = $Sim::Time + 10;
       }
-    } else if(GlassSettings.get("Live::RoomChatNotificationNew")) {
+    } else if(GlassSettings.get("Live::RoomChatNotification")) {
       if(!%this.view.isAwake())
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
     }

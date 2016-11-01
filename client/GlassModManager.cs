@@ -5,10 +5,10 @@ function GlassModManager::init() {
   }
 
   new ScriptObject(GlassModManager) {
-    liveSearch = GlassSettings.get("MM::LiveSearch");
+    // liveSearch = GlassSettings.get("MM::LiveSearch");
   };
 
-  GlassModManagerGui_Prefs_LiveSearch.setValue(GlassModManager.liveSearch);
+  // GlassModManagerGui_Prefs_LiveSearch.setValue(GlassModManager.liveSearch);
 
   GlassModManager::catalogAddons();
   GlassModManager::scanForRTB();
@@ -46,12 +46,12 @@ function GlassModManagerImageMouse::onMouseDown(%this) {
   canvas.popDialog(GlassModManagerImage);
 }
 
-function GlassModManager::updateLiveSearch() {
-  %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
+// function GlassModManager::updateLiveSearch() {
+  // %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
 
-  GlassModManager.liveSearch = %val;
-  // GlassSettings.update("MM::LiveSearch", %val);
-}
+  // GlassModManager.liveSearch = %val;
+  // // GlassSettings.update("MM::LiveSearch", %val);
+// }
 
 function GlassModManager::setAddonStatus(%aid, %status) {
   // status:

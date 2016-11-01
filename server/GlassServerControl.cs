@@ -6,37 +6,37 @@ $Glass::Modules::Prefs = true;
 // Admin
 //====================================
 
-function updateGlassPref(%value, %client, %pso) {
-  if(%pso.title $= "Who can manage super-admins?") {
-    GlassSettings.update("SC::SAEditRank", %value);
-  } else if(%pso.title $= "Who can manage admins?") {
-    GlassSettings.update("SC::AEditRank", %value);
-  } else if(%pso.title $= "Required Client Add-Ons") {
-    GlassSettings.update("SC::RequiredClients", %value);
-    %value = strreplace(%value, ",", "\t");
-    messageAll('MsgAdminForce', "\c6 + \c3" @ %client.netname @ "\c6 has updated the required mods.");
-    for(%i = 0; %i < getFieldCount(%value); %i++) {
-      %mid = trim(getField(%value, %i));
-      messageAll('', "\c6 ++ Required: \c3" @ GlassSettings.cacheFetch("AddonName_" @ %mid));
-    }
+// function updateGlassPref(%value, %client, %pso) {
+  // if(%pso.title $= "Who can manage super-admins?") {
+    // GlassSettings.update("SC::SAEditRank", %value);
+  // } else if(%pso.title $= "Who can manage admins?") {
+    // GlassSettings.update("SC::AEditRank", %value);
+  // } else if(%pso.title $= "Required Client Add-Ons") {
+    // GlassSettings.update("SC::RequiredClients", %value);
+    // %value = strreplace(%value, ",", "\t");
+    // messageAll('MsgAdminForce', "\c6 + \c3" @ %client.netname @ "\c6 has updated the required mods.");
+    // for(%i = 0; %i < getFieldCount(%value); %i++) {
+      // %mid = trim(getField(%value, %i));
+      // messageAll('', "\c6 ++ Required: \c3" @ GlassSettings.cacheFetch("AddonName_" @ %mid));
+    // }
 
-  }
-}
+  // }
+// }
 
 function serverCmdglassNameCacheAdd(%client, %id, %name) {
   if(%client.isSuperAdmin)
     GlassSettings.cachePut("AddonName_" @ %id, %name);
 }
 
-function GameConnection::checkPermissionLevel(%this, %perm) {
-  if(%perm == 3) {
-    return %this.bl_id == getNumKeyId() || %this.bl_id == 999999;
-  } else if(%perm == 2) {
-    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.bl_id == 999999);
-  } else if(%perm == 1) {
-    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.bl_id == 999999);
-  }
-}
+// function GameConnection::checkPermissionLevel(%this, %perm) {
+  // if(%perm == 3) {
+    // return %this.bl_id == getNumKeyId() || %this.bl_id == 999999;
+  // } else if(%perm == 2) {
+    // return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.bl_id == 999999);
+  // } else if(%perm == 1) {
+    // return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.bl_id == 999999);
+  // }
+// }
 
 function removeItemFromList(%list, %item) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
