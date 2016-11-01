@@ -1200,14 +1200,21 @@ function GlassLive::updateLocation(%inServer) {
 
   if(%action $= "playing") {
     %location = ServerConnection.getRawIP() SPC ServerConnection.getPort();
-    %obj.set("location", "string", %location);
+    %name = NPL_Window.getValue();
+    %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
+
+    %obj.set("serverIp", "string", %location);
+    %obj.set("serverName", "string", %name);
+    echo("playing" TAB %location TAB %name);
   }
 
   //echo(jettisonStringify("object", %obj));
 
-  if(isObject(GlassLiveConnection)) {
+  if(isObject(GlassLiveConnection) && GlassLiveConnection.connected) {
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
   }
+
+  %obj.delete();
 }
 
 function GlassLive::urlMetadata(%tcp, %error) {
