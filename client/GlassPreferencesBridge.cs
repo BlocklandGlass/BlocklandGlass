@@ -110,7 +110,7 @@ function clientCmdupdateBLPref(%varname, %value) {
 }
 
 function clientCmdhasPrefSystem(%version, %permission) {
-	if($Glass::Debug)
+	if(Glass.dev)
 		echo("Server has pref system! (" @ %version @")");
   
 	if(%permission) {

@@ -116,7 +116,7 @@ function GlassLiveRoom::createView(%this, %window) {
 
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  if(GlassSettings.get("Live::ShowJoinLeaveNew")) {
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
     %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
     %this.pushText(%text);
   }
@@ -128,7 +128,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
 
   %this.removeUser(%blid);
 
-  if(GlassSettings.get("Live::ShowJoinLeaveNew")) {
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
     switch(%reason) {
       case -1:
         %text = "No Reason";
@@ -257,7 +257,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   %this.view.setFlashing(true);
 
-  if(GlassSettings.get("Live::RoomChatSoundNew"))
+  if(GlassSettings.get("Live::RoomChatSound"))
     alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId()) {
@@ -270,7 +270,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
         $Glass::LastMentioned = $Sim::Time + 10;
       }
-    } else if(GlassSettings.get("Live::RoomChatNotificationNew")) {
+    } else if(GlassSettings.get("Live::RoomChatNotification")) {
       if(!%this.view.isAwake())
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
     }

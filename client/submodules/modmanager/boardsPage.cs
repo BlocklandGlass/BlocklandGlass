@@ -205,11 +205,11 @@ function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
     GlassModManagerGui_AddonDisplay.setVisible(true);
   }
 
-  if(!%this.filler) {
-    if(GlassModManager.liveSearch) {
-      GlassModManagerGui_SearchBar.search();
-    }
-  }
+  // if(!%this.filler) {
+    // if(GlassModManager.liveSearch) {
+      // GlassModManagerGui_SearchBar.search();
+    // }
+  // }
 }
 
 function GlassModManagerGui_SearchBar::search(%this) {

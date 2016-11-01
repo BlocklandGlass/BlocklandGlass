@@ -59,17 +59,17 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
   GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend On/Off-Line Notifications", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
-  GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
+  // GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
 
   GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::ShowJoinLeaveNew", "User Connection Messages", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomChatNotificationNew", "Chat Notifications", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomChatSoundNew", "Chat Sounds", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
   // GlassSettings.drawSetting("Live::RoomAutoJoin", "Auto Join Room", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
 
@@ -78,7 +78,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotificationNew RoomChatSoundNew RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeaveNew StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -578,7 +578,7 @@ function GlassLive::setIcon(%icon) {
 }
 
 function GlassIconSelectorWindow::updateIcons(%this) {
-  %allowed = "Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt";
+  %allowed = "Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt";
   if(!isFile(%allowed)) {
     warn(%allowed SPC "not found, unable to create icon list.");
     return;
@@ -594,7 +594,7 @@ function GlassIconSelectorWindow::updateIcons(%this) {
   %iconCount = -1;
 
   %file = new FileObject();
-  %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icon_allowed.txt");
+  %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt");
   while(!%file.isEOF()) {
     %line = %file.readLine();
     %icon = %path @ %line;
@@ -3220,8 +3220,18 @@ package GlassLivePackage {
     parent::onWake(%this);
 
     if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
-      GlassFriendsWindow.position = GlassSettings.get("Live::FriendsWindow_Pos");
-      GlassFriendsWindow.extent = GlassSettings.get("Live::FriendsWindow_Ext");
+      %pos = GlassSettings.get("Live::FriendsWindow_Pos");
+      %ext = GlassSettings.get("Live::FriendsWindow_Ext");
+      
+      if(%pos > getWord(getRes(), 0))
+        %pos = (getWord(getRes(), 0) - 280) SPC 50;
+      
+      if(%ext > getWord(getRes(), 1))
+        %ext = "230 380";
+
+      GlassFriendsWindow.position = %pos;
+      GlassFriendsWindow.extent = %ext;
+
       GlassOverlayGui.add(GlassFriendsWindow);
 
       GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));

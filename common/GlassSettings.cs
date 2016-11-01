@@ -8,7 +8,7 @@ function GlassSettings::init(%context) {
   if(%context $= "client") {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
-    GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
+    // GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
 
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
@@ -17,8 +17,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", true);
     GlassSettings.registerSetting("client", "Live::PendingReminder", true);
 
-    GlassSettings.registerSetting("client", "Live::RoomChatNotificationNew", true);
-    GlassSettings.registerSetting("client", "Live::RoomChatSoundNew", true);
+    GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
+    GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     // GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
     GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
@@ -32,25 +32,26 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::MessageLogging", true);
     // GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
 
-    GlassSettings.registerSetting("client", "Live::ShowJoinLeaveNew", false); // user connection messages in chatroom
+    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", false); // user connection messages in chatroom
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
-  } else if(%context $= "server") {
-    GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
-    GlassSettings.registerSetting("server", "SC::AEditRank", 2);
-    GlassSettings.registerSetting("server", "SC::RequiredClients", "");
+  // } else if(%context $= "server") {
+    // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
+    // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
+    // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
   }
 
   GlassSettings.loadData(%context);
 }
 
-function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %callback) {
+function GlassSettings::registerSetting(%this, %context, %name, %value, %callback) {
   %obj = new ScriptObject() {
     class = "GlassSetting";
 
     name = %name;
-    value = %defaultValue;
+    value = %value;
+    defaultValue = %value;
     callback = %callback;
 
     context = %context;
@@ -60,6 +61,38 @@ function GlassSettings::registerSetting(%this, %context, %name, %defaultValue, %
   %this.schedule(0, "add", %obj);
 
   return %obj;
+}
+
+function GlassSettings::resetToDefaults(%this, %context) {
+  if(%context $= "") {
+    error("No context specified.");
+    return;
+  }
+
+  if(%context $= "server" || %context $= "client") {
+    for(%i = 0; %i < %this.getCount(); %i++) {
+      %setting = %this.getObject(%i);
+
+      if(%setting.context !$= %context)
+        continue;
+      
+      if(%setting.name $= "Live::Keybind")
+        continue;
+
+      %this.update(%setting.name, %setting.defaultValue);
+
+      %name = getsubstr(%setting.name, strpos(%setting.name, "::") + 2, strlen(%setting.name));
+      %box = "GlassModManagerGui_Prefs_" @ %name;
+
+      if(isObject(%box)) {
+        %box.setValue(%setting.defaultValue);
+      }
+    }
+
+    warn("All Glass Settings have been reset!");
+  } else {
+    error("Invalid context.");
+  }
 }
 
 function GlassSettings::createSettingHeader(%name) {
@@ -105,13 +138,13 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   if(!isObject("GlassModManagerGui_Header_" @ strreplace(%category, " ", "_"))) {
     %header = GlassSettings::createSettingHeader(%category);
 
-    if(isObject($Glass::GS_Last) && $Glass::GS_Last != %header) {
-      %header.position = vectorAdd($Glass::GS_Last.position, "0 40");
+    if(isObject(%this.last) && %this.last != %header) {
+      %header.position = vectorAdd(%this.last.position, "0 40");
     }
 
     GlassSettingsGui_ScrollOverlay.add(%header);
 
-    $Glass::GS_Last = %header;
+    %this.last = %header;
   }
 
   %setting = new GuiSwatchCtrl() {
@@ -126,9 +159,9 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     color = "230 230 230 255";
   };
 
-  %setting.position = vectorAdd($Glass::GS_Last.position, "0 30");
+  %setting.position = vectorAdd(%this.last.position, "0 30");
 
-  $Glass::GS_Last = %setting;
+  %this.last = %setting;
 
   %prefix = getSubStr(%pref, 0, strpos(%pref, ":"));
   %suffix = strchr(%pref, ":");
@@ -170,10 +203,6 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   GlassSettingsGui_ScrollOverlay.add(%setting);
 
   GlassSettingsGui_ScrollOverlay.verticalMatchChildren(425, 10);
-
-  //if(GlassSettingsGui_ScrollOverlay.settingsCount * 45 > 425) {
-  //  GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
-  //}
 }
 
 function GlassSettings::loadData(%this, %context) {
@@ -198,7 +227,7 @@ function GlassSettings::loadData(%this, %context) {
       %value = collapseEscape(getField(%line, 3));
 
       if(%created+%ttl < getRealTime() && %ttl != 0) {
-        if($Glass::Debug)
+        if(Glass.dev)
           warn("Cached value [" @ %name @ "] has expired! [ " @ %created @ " | " @ %ttl @ " ]");
       } else {
         %this.cacheCreate(%name, %value, %ttl, %created);
@@ -239,7 +268,7 @@ function GlassSettings::saveData(%this, %context) {
 function GlassSettings::loadSetting(%this, %name, %value) {
   %obj = GlassSettings.obj[%name];
   if(isObject(%obj)) {
-    if($Glass::Debug) {
+    if(Glass.dev) {
       echo(" + Loaded pref " @ getField(%line, 0));
     }
     %obj.value = %value; //only do that if loading!
