@@ -55,9 +55,11 @@ function GlassLiveConnection::onConnected(%this) {
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e67e22>Connecting...");
-  GlassFriendsGui_HeaderText.forceReflow();
-  GlassFriendsGui_HeaderText.forceCenter();
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e67e22>Connecting...");
+  if(GlassFriendsGui_HeaderText.visible) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
 
   GlassLive.schedule(500, checkPendingFriendRequests);
 }
@@ -73,18 +75,22 @@ function GlassLiveConnection::onDisconnect(%this) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
   }
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
-  GlassFriendsGui_HeaderText.forceReflow();
-  GlassFriendsGui_HeaderText.forceCenter();
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  if(GlassFriendsGui_HeaderText.visible) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
 
   GlassLive::cleanUp();
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
-  GlassFriendsGui_HeaderText.forceReflow();
-  GlassFriendsGui_HeaderText.forceCenter();
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  if(GlassFriendsGui_HeaderText.visible) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
 
   %this.connected = false;
 
@@ -95,9 +101,11 @@ function GlassLiveConnection::onDNSFailed(%this) {
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
-  GlassFriendsGui_HeaderText.forceReflow();
-  GlassFriendsGui_HeaderText.forceCenter();
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  if(GlassFriendsGui_HeaderText.visible) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
 
   %this.connected = false;
 
@@ -119,7 +127,10 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   GlassLive_StatusPopUp.setVisible(false);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:14><color:e74c3c>Disconnected");
+  
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.forceReflow();
+  GlassFriendsGui_HeaderText.forceCenter();
 }
 
 function GlassLiveConnection::placeCall(%this, %call) {
@@ -478,7 +489,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %list = "";
       for(%i = 0; %i < %data.blocked.length; %i++) {
         %userData = %data.blocked.value[%i];
-        echo("blocked: " @ %userData.blid);
+        // echo("blocked: " @ %userData.blid);
         %list = %list SPC %userData.blid;
 
         %user = GlassLiveUser::create(%userData.username, %userData.blid);
@@ -521,19 +532,19 @@ function GlassLiveConnection::onLine(%this, %line) {
         %this.disconnect();
       } else if(%data.reason == 2) {
         GlassLive.noReconnect = true;
-        glassMessageBoxOk("Disconnected", "You are barred from using <font:verdana bold:13>Glass Live<font:verdana:13>!<br><br>Sorry for the inconvenience.");
+        glassMessageBoxOk("Disconnected", "You are barred from using Glass Live!<br><br>Sorry for the inconvenience.");
         GlassSettings.update("Live::StartupConnect", false);
         %this.disconnect();
       }
 
     case "kicked": //we got kicked from all service
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Kicked", "You've been kicked from <font:verdana bold:13>Glass Live<font:verdana:13>:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
       %this.disconnect();
 
     case "barred": //we're not allowed to use glass live
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Barred", "You've been barred from all <font:verdana bold:13>Glass Live<font:verdana:13> service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Barred", "You've been barred from all Glass Live service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
 

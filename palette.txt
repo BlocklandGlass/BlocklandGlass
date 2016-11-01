@@ -13,3 +13,7 @@ http://www.colorhexa.com/
 green #54d98c 84 217 140
 red #ed7669 237 118 105
 blue #83c3f3 131 195 243
+
+ALT:
+
+orange #edb869 237 184 105

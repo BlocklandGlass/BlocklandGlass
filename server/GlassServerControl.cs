@@ -30,11 +30,11 @@ function serverCmdglassNameCacheAdd(%client, %id, %name) {
 
 // function GameConnection::checkPermissionLevel(%this, %perm) {
   // if(%perm == 3) {
-    // return %this.bl_id == getNumKeyId() || %this.bl_id == 999999;
+    // return %this.getBLID() == getNumKeyId() || %this.getBLID() == 999999;
   // } else if(%perm == 2) {
-    // return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.bl_id == 999999);
+    // return (%this.getBLID() == getNumKeyId() || %this.isSuperAdmin || %this.getBLID() == 999999);
   // } else if(%perm == 1) {
-    // return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.bl_id == 999999);
+    // return (%this.getBLID() == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.getBLID() == 999999);
   // }
 // }
 
@@ -296,7 +296,7 @@ package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', Glass.version);
-    if(%client.isAdmin || %client.bl_id == 999999) {
+    if(%client.isAdmin || %client.getBLID() == 999999) {
       commandToClient(%client, 'hasPrefSystem', $BLPrefs::Version, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
     }

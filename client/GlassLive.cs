@@ -31,6 +31,7 @@ function GlassLive::init() {
     GlassLive_StatusPopUp.add("Online", 1);
     GlassLive_StatusPopUp.add("Away", 2);
     GlassLive_StatusPopUp.add("Busy", 3);
+    GlassLive_StatusPopUp.add("Offline", 4);
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
@@ -65,7 +66,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   // GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
 
-  GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
+  // GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
@@ -173,9 +174,9 @@ function GlassLive::openChatroom() {
   if(!%chatFound) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
       if(GlassLiveConnection.connected) {
-      glassMessageBoxYesNo("Reconnect", "This will reconnect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+      glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
       } else {
-      glassMessageBoxYesNo("Connect", "This will connect you to <font:verdana bold:13>Glass Live<font:verdana:13>, continue?", "GlassLive.schedule(0, connectToServer);");
+      glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
       }
     } else {
       if(GlassLiveConnection.connected) {
@@ -499,8 +500,6 @@ function GlassLive::checkPendingFriendRequests() {
 //================================================================
 
 function GlassLive_StatusPopUp::updateStatus(%this) {
-  GlassLive::setStatus(%this.getValue());
-
   %status = %this.getValue();
   if(%status $= "online") {
     %color = "210 220 255 255";
@@ -511,11 +510,18 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
   } else if(%status $= "busy") {
     %color = "255 210 210 255";
     %hcolor = "255 230 230 255";
-  } else {
-    %color = "210 210 210 255";
-    %hcolor = "230 230 230 255";
+  } else if(%status $= "offline" || %status $= "") {
+    if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
+      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
+    else
+      GlassLive::disconnect($Glass::Disconnect["Manual"]);
+
+    return;
   }
+
   GlassFriendsGui_InfoSwatch.color = %color;
+
+  GlassLive::setStatus(%this.getValue());
 }
 
 function GlassLive::friendOnline(%this, %blid, %status) {
@@ -629,7 +635,7 @@ function GlassIconSelectorWindow::updateIcons(%this) {
 
 function GlassIconSelectorWindow::selectIcon(%this) {
   if(!GlassLiveConnection.connected) {
-    glassMessageBoxOk("No Connection", "You must be connected to <font:verdana bold:13>Glass Live<font:verdana:13> to change your icon.");
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to change your icon.");
     return;
   }
 
@@ -638,8 +644,7 @@ function GlassIconSelectorWindow::selectIcon(%this) {
 }
 
 function GlassIconSelectorWindow::onWake(%this) {
-  %this.centerX();
-  %this.centerY();
+  %this.forceCenter();
 
   %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
 
@@ -1060,12 +1065,12 @@ function GlassLive::sendFriendRequest(%blid) {
     return;
   }
 
-  if(wordPos(GlassLive.blockedList, %blid) != -1) {
+  if(wordPos(GlassLive.blockedList, %blid) != -1) { // insert %user.blocked here
     glassMessageBoxOk("Blocked", "You have blocked this user, unblock them before attempting to send a friend request.");
     return;
   }
 
-  if(wordPos(GlassLive.friendRequestList, %blid) != -1) {
+  if(wordPos(GlassLive.friendRequestList, %blid) != -1) { // insert has friend request here if exists in glassliveuser as func?
     GlassLive::friendAccept(%blid);
     return;
   }
@@ -1077,30 +1082,6 @@ function GlassLive::sendFriendRequest(%blid) {
   glassMessageBoxOk("Friend Request Sent", "Friend request sent to BLID " @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
-
-function GlassLive::friendBlock(%blid) {
-  return;
-
-  %obj = JettisonObject();
-  %obj.set("type", "string", "friendBlock");
-  %obj.set("blid", "string", %blid);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  %obj.delete();
-}
-
-function GlassLive::friendUnblock(%blid) {
-  return;
-
-  %obj = JettisonObject();
-  %obj.set("type", "string", "friendUnblock");
-  %obj.set("blid", "string", %blid);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  %obj.delete();
 }
 
 function GlassLive::friendAccept(%blid) {
@@ -1233,7 +1214,7 @@ function GlassLive::powerButtonPress() {
 
   if(%btn.on) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
-      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from <font:verdana bold:13>Glass Live<font:verdana:13>?", "GlassLive::disconnect(1);");
+      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
     else
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
   } else {
@@ -1252,7 +1233,7 @@ function GlassLive::setPowerButton(%bool) {
 
 function GlassLive::openAddDlg() {
   if(!GlassLiveConnection.connected) {
-    glassMessageBoxOk("No Connection", "You must be connected to <font:verdana bold:13>Glass Live<font:verdana:13> to add friends.");
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to add friends.");
     return;
   }
 
@@ -1555,6 +1536,16 @@ function GlassLive::openUserWindow(%blid) {
       %window.friendButton.text = "Add Friend";
     }
 
+    if(%uo.isBlocked()) {
+      %window.blockButton.mcolor = "237 184 105 200";
+      %window.blockButton.command = "GlassLive::userUnblock(" @ %uo.blid @ ");";
+      %window.blockButton.text = "Unblock";
+    } else {
+      %window.blockButton.mcolor = "237 118 105 200";
+      %window.blockButton.command = "GlassLive::userBlock(" @ %uo.blid @ ");";
+      %window.blockButton.text = "Block";
+    }
+    
     %window.messageButton.enabled = true;
 
     %window.forceCenter();
@@ -1573,7 +1564,7 @@ function GlassLive::createUserWindow(%uo) {
     horizSizing = "center";
     vertSizing = "center";
     position = "235 157";
-    extent = "170 176";
+    extent = "170 211";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1620,28 +1611,6 @@ function GlassLive::createUserWindow(%uo) {
    autoResize = "1";
   };
 
-  %window.friendButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "10 135";
-    extent = "150 30";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    text = "Unfriend";
-    groupNum = "-1";
-    buttonType = "PushButton";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    lockAspectRatio = "0";
-    alignLeft = "0";
-    alignTop = "0";
-    overflowImage = "0";
-    mKeepCached = "0";
-    mColor = "255 200 200 200";
-  };
-
   %window.messageButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     horizSizing = "right";
@@ -1665,10 +1634,55 @@ function GlassLive::createUserWindow(%uo) {
     command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}";
   }; // move to a function ^^
 
+  %window.friendButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 135";
+    extent = "150 30";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Unfriend";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "255 200 200 200";
+  };
+  
+  %window.blockButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 170";
+    extent = "150 30";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Block";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "237 118 105 200";
+  };
+
   %window.add(%window.textcontainer);
   %window.textcontainer.add(%window.text);
   %window.add(%window.messageButton);
   %window.add(%window.friendButton);
+  %window.add(%window.blockButton);
 
   %window.closeCommand = %window.getId() @ ".delete();";
 
@@ -2071,15 +2085,13 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
   }
 }
 
-function chatroomAwakeCallback(%callback) {
-  return;
+// function chatroomAwakeCallback(%callback) {
+  // if(isObject(GlassChatroomWindow) && isObject(GlassChatroomWindow.activeTab)) {
+    // %bool = GlassSettings.get(%callback) ? true : false;
 
-  if(isObject(GlassChatroomWindow) && isObject(GlassChatroomWindow.activeTab)) {
-    %bool = GlassSettings.get(%callback) ? true : false;
-
-    GlassChatroomWindow.activeTab.room.setAwake(%bool);
-  }
-}
+    // GlassChatroomWindow.activeTab.room.setAwake(%bool);
+  // }
+// }
 
 // function GlassChatroomWindow::onWake(%this) {
   // if(isObject(%this.activeTab)) {

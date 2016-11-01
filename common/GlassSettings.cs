@@ -14,15 +14,15 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
-    GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", true);
+    GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", false);
     GlassSettings.registerSetting("client", "Live::PendingReminder", true);
 
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     // GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
-    GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
-    GlassSettings.registerSetting("client", "Live::RoomNotification", true); // joined room / left room notifications
+    // GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
+    GlassSettings.registerSetting("client", "Live::RoomNotification", false); // joined room / left room notifications
 
     GlassSettings.registerSetting("client", "Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
     GlassSettings.registerSetting("client", "Live::FriendsWindow_Ext", "230 380");

@@ -47,3 +47,18 @@ if($Server::Dedicated) {
 } else {
 	Glass::init("server");
 }
+
+function serverCmdGlassHandshake(%client, %ver) {
+  if(%ver $= "")
+    return;
+
+  // %client_ver = getsubstr(stripChars(%ver, "."), 0, 3);
+
+  // if(%client_ver + 0 !$= %client_ver || %client_ver < 0)
+    // return;
+
+  if(%client.hasGlass $= "") {
+    %client.hasGlass = true;
+    %client._glassVersion = %ver;
+  }
+}
