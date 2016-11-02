@@ -72,7 +72,7 @@ new GuiControl(GlassFriendsGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana bold:14><color:cc0000>Disconnected";
+            text = "<just:center><font:verdana bold:30><color:e74c3c>Disconnected";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -124,93 +124,6 @@ new GuiControl(GlassFriendsGui) {
             visible = "1";
             clipToParent = "1";
             color = "0 0 0 0";
-
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "5 5";
-               extent = "190 26";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "84 217 140 255";
-                  mouse = "23025";
-                  flare = "23026";
-                  bullet = "23024";
-                  ocolor = "84 217 140 255";
-                  text = "23023";
-                  hcolor = "84 217 140 255";
-
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "-90 -128";
-                  extent = "256 256";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "0";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/gui/glare.png";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "1";
-                  keepCached = "0";
-                  mColor = "255 255 255 90";
-                  mMultiply = "0";
-               };
-               new GuiTextCtrl() {
-                  profile = "GlassFriendTextProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "10 4";
-                  extent = "49 17";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "Friends";
-                  maxLength = "255";
-               };
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "169 5";
-                  extent = "16 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/icon/bullet_arrow_right.png";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 255";
-                  mMultiply = "0";
-               };
-               new GuiMouseEventCtrl(GlassHighlightMouse) {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "190 26";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  lockMouse = "0";
-                     toggleVar = "GlassLive.hideFriends";
-                     type = "toggle";
-               };
-            };
          };
       };
       new GuiSwatchCtrl(GlassFriendsGui_ScrollOverlay) {

@@ -90,8 +90,8 @@ function Glass::execClient() {
 function clientCmdGlassHandshake(%ver, %tries) {
   %server_ver = getsubstr(stripChars(%ver, "."), 0, 3);
 
-  // if(%server_ver + 0 !$= %server_ver || %server_ver < 0)
-    // return;
+  if(%server_ver + 0 !$= %server_ver || %server_ver < 0)
+    return;
 
   %client_ver = getsubstr(stripChars(Glass.version, "."), 0, 3);
 

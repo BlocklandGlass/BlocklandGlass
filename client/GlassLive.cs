@@ -79,8 +79,8 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowAwake MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
-  // removed: Live::RoomAutoJoin, Live::MessageAnyone
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
+  // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
@@ -1697,8 +1697,10 @@ function GlassLive::createChatroomWindow() {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "135 130";
-    extent = "568 460";
-    minExtent = "568 460";
+    // extent = "475 290";
+    // minExtent = "475 290";
+    extent = "604 476";
+    minExtent = "475 290";
     enabled = "1";
     visible = "1";
     clipToParent = "1";

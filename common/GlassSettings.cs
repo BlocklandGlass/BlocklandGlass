@@ -166,6 +166,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   %prefix = getSubStr(%pref, 0, strpos(%pref, ":"));
   %suffix = strchr(%pref, ":");
   %suffix = getSubStr(%suffix, 2, strlen(%suffix));
+  %command = "GlassLive::updateSetting(\"" @ %prefix @ "\", \"" @ %suffix @ "\");";
 
   if(isObject("GlassModManagerGui_Prefs_" @ %suffix)) {
     error("Setting already exists in GUI.");
@@ -174,7 +175,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
 
   switch$(%type) {
     case "checkbox":
-      %checkbox = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %suffix) {
+      %ctrl = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %suffix) {
         profile = "GlassCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "center";
@@ -184,20 +185,23 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        command = "GlassLive::updateSetting(\"" @ %prefix @ "\", \"" @ %suffix @ "\");";
+        command = %command;
         text = %name;
         groupNum = "-1";
         buttonType = "ToggleButton";
       };
-
-      %setting.add(%checkbox);
-
+    case "slider":
+      // to do
+    case "button":
+      // to do
     case "keybind":
       // to do
     default:
       error("Non-existent setting type.");
       return;
   }
+
+  %setting.add(%ctrl);
 
   GlassSettingsGui_ScrollOverlay.settingsCount++;
   GlassSettingsGui_ScrollOverlay.add(%setting);
