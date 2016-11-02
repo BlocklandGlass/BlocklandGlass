@@ -586,13 +586,13 @@ function GlassLive::setIcon(%icon) {
 function GlassIconSelectorWindow::updateIcons(%this) {
   %allowed = "Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt";
   if(!isFile(%allowed)) {
-    warn(%allowed SPC "not found, unable to create icon list.");
+    error(%allowed SPC "not found, unable to create icon list.");
     return;
   }
   %swatch = GlassIconSelectorWindow_Swatch;
 
   if(!isObject(%swatch)) {
-    warn("Could not find icon list swatch.");
+    error("Could not find icon list swatch.");
     return;
   }
 
@@ -630,7 +630,8 @@ function GlassIconSelectorWindow::updateIcons(%this) {
     GlassIconSelectorWindow_Swatch.add(%bitmap);
     GlassIconSelectorWindow_Swatch.add(%button);
   }
-  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
+  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
+  GlassIconSelectorWindow_Swatch.setVisible(true);
 }
 
 function GlassIconSelectorWindow::selectIcon(%this) {
