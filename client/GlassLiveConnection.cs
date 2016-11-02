@@ -56,7 +56,7 @@ function GlassLiveConnection::onConnected(%this) {
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e67e22>Connecting...");
-  if(GlassFriendsGui_HeaderText.visible) {
+  if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
@@ -76,7 +76,7 @@ function GlassLiveConnection::onDisconnect(%this) {
   }
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
-  if(GlassFriendsGui_HeaderText.visible) {
+  if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
@@ -87,7 +87,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
-  if(GlassFriendsGui_HeaderText.visible) {
+  if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
@@ -102,7 +102,7 @@ function GlassLiveConnection::onDNSFailed(%this) {
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
-  if(GlassFriendsGui_HeaderText.visible) {
+  if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
@@ -129,8 +129,10 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
   GlassLive_StatusPopUp.setVisible(false);
   
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
-  GlassFriendsGui_HeaderText.forceReflow();
-  GlassFriendsGui_HeaderText.forceCenter();
+  if(GlassFriendsGui_HeaderText.isAwake()) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
 }
 
 function GlassLiveConnection::placeCall(%this, %call) {
