@@ -138,6 +138,9 @@ function GlassLiveUser::canSendMessage(%this) {
 function GlassLiveUser::setStatus(%this, %status) {
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %this.status = %status;
+    
+    if(isObject(%this.window))
+      GlassLive::openUserWindow(%this.blid);
   }
 }
 

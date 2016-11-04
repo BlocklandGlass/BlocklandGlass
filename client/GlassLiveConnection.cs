@@ -7,13 +7,26 @@ $Glass::Disconnect["Update"] = 4; // [Updates]
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  if(GlassFriendsGui_HeaderText.isAwake()) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
+
   if(!GlassLive.ready) {
     glassMessageBoxOk("Wait", "You haven't fully authed yet!");
     return;
   }
 
   if(GlassLive.lastConnected !$= "" && getSimTime() < GlassLive.lastConnected + 2500) {
-    glassMessageBoxOk("Wait", "You're trying to connect too fast!"); // **make sure to implement this server-side as well so we can get rid of this afterwards**
+    glassMessageBoxOk("Wait", "You're reconnecting too fast!"); // **make sure to implement this server-side as well so we can get rid of this afterwards**
+    return;
+  }
+
+  if(GlassLive.connectionTries > 4) {
+    %minutes = 5;
+    GlassLive.reconnect = GlassLive.schedule((%minutes * 60 * 1000) | 0, connectToServer);
+    GlassLive.connectionTries = 0;
     return;
   }
 
@@ -35,6 +48,14 @@ function GlassLive::connectToServer() {
 
   %this.connected = false;
 
+  GlassLive::setPowerButton(0);
+
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e67e22>Connecting...");
+  if(GlassFriendsGui_HeaderText.isAwake()) {
+    GlassFriendsGui_HeaderText.forceReflow();
+    GlassFriendsGui_HeaderText.forceCenter();
+  }
+
   GlassLiveConnection.connect(%server @ ":" @ %port);
 }
 
@@ -43,6 +64,7 @@ function GlassLiveConnection::onConnected(%this) {
 
   GlassLive.noReconnect = false;
   GlassLive.lastConnected = getSimTime();
+  GlassLive.connectionTries = 0;
   GlassLive.hideFriendRequests = false;
   GlassLive.hideFriends = false;
 
@@ -55,7 +77,7 @@ function GlassLiveConnection::onConnected(%this) {
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e67e22>Connecting...");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:2ecc71>Connected");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
@@ -71,9 +93,8 @@ function GlassLiveConnection::onDisconnect(%this) {
 
   %this.connected = false;
 
-  if(!GlassLive.noReconnect) {
+  if(!GlassLive.noReconnect)
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
-  }
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
   if(GlassFriendsGui_HeaderText.isAwake()) {
@@ -86,32 +107,32 @@ function GlassLiveConnection::onDisconnect(%this) {
 
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Failed");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
   %this.connected = false;
+  GlassLive.connectionTries++;
 
-  if(!GlassLive.noReconnect) {
+  if(!GlassLive.noReconnect)
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
-  }
 }
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Failed");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
   %this.connected = false;
+  GlassLive.connectionTries++;
 
-  if(!GlassLive.noReconnect) {
+  if(!GlassLive.noReconnect)
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
-  }
 }
 
 function GlassLiveConnection::doDisconnect(%this, %reason) {
@@ -154,23 +175,24 @@ function GlassLiveConnection::onLine(%this, %line) {
 
   switch$(%data.value["type"]) {
     case "auth":
-      echo("Auth call!");
+      // echo("Auth call!");
       switch$(%data.status) {
         case "failed":
           %this.doDisconnect();
-          echo("Glass Live auth failed");
+          echo("Glass Live Authentication: FAILED");
           if(%data.action $= "reident") {
             GlassAuth.ident = "";
             GlassAuth.heartbeat();
           }
 
-          if(%data.timeout !$= "" && %data.timeout > 0) {
-            GlassLive.reconnect = GlassLive.schedule(%data.timeout+getRandom(0, 1000), connectToServer);
-          }
+          if(%data.timeout < 5000)
+            %data.timeout = 5000;
+
+          GlassLive.reconnect = GlassLive.schedule(%data.timeout+getRandom(0, 1000), connectToServer);
 
         case "success":
-          echo("Glass Live auth success");
-          GlassLive::onAuthSuccess();
+          echo("Glass Live Authentication: SUCCESS");
+          GlassLive.onAuthSuccess();
 
         default:
           echo("\c2Glass Live received an unknown auth response: " @ %data.status);
@@ -204,9 +226,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomJoinAuto":
       // TODO just mimic roomJoin for now
-      if(GlassSettings.get("Live::RoomNotification")) {
+      if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
-      }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
@@ -214,18 +235,17 @@ function GlassLiveConnection::onLine(%this, %line) {
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
 
-        %user = GlassLiveUser::create(%cl.username, %cl.blid);
-        %user.status = %cl.status;
-        %user.icon = %cl.icon;
+        %uo = GlassLiveUser::create(%cl.username, %cl.blid);
+        %uo.setStatus(%cl.status);
+        %uo.icon = %cl.icon;
 
-        %user.setAdmin(%cl.admin);
-        %user.setMod(%cl.mod);
+        %uo.setAdmin(%cl.admin);
+        %uo.setMod(%cl.mod);
 
-        if(%cl.blid < 0) {
-          %user.setBot(true);
-        }
+        if(%cl.blid < 0)
+          %uo.setBot(true);
 
-        %room.addUser(%user.blid);
+        %room.addUser(%uo.blid);
       }
 
       %room.createView();
@@ -244,9 +264,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       %room.view.userSwatch.getGroup().scrollToTop();
 
     case "roomJoin":
-      if(GlassSettings.get("Live::RoomNotification")) {
+      if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
-      }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
@@ -254,18 +273,17 @@ function GlassLiveConnection::onLine(%this, %line) {
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
 
-        %user = GlassLiveUser::create(%cl.username, %cl.blid);
-        %user.status = %cl.status;
-        %user.icon = %cl.icon;
+        %uo = GlassLiveUser::create(%cl.username, %cl.blid);
+        %uo.setStatus(%cl.status);
+        %uo.icon = %cl.icon;
 
-        %user.setAdmin(%cl.admin);
-        %user.setMod(%cl.mod);
+        %uo.setAdmin(%cl.admin);
+        %uo.setMod(%cl.mod);
 
-        if(%cl.blid < 0) {
-          %user.setBot(true);
-        }
+        if(%cl.blid < 0)
+          %uo.setBot(true);
 
-        %room.addUser(%user.blid);
+        %room.addUser(%uo.blid);
       }
 
       %room.createView();
@@ -311,18 +329,18 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
     case "roomUserJoin":
-      %user = GlassLiveUser::create(%data.username, %data.blid);
-      %user.setAdmin(%data.admin);
-      %user.setMod(%data.mod);
-      if(%user.blid < 0) {
-        %user.setBot(true);
+      %uo = GlassLiveUser::create(%data.username, %data.blid);
+      %uo.setAdmin(%data.admin);
+      %uo.setMod(%data.mod);
+      if(%uo.blid < 0) {
+        %uo.setBot(true);
       }
-      %user.status = %data.status;
-      %user.icon = %data.icon;
+      %uo.setStatus(%data.status);
+      %uo.icon = %data.icon;
 
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
-        %room.onUserJoin(%user.blid);
+        %room.onUserJoin(%uo.blid);
 
     case "roomUserLeave": //other user got removed
       %room = GlassLiveRoom::getFromId(%data.id);
@@ -330,15 +348,15 @@ function GlassLiveConnection::onLine(%this, %line) {
         %room.onUserLeave(%data.blid, %data.reason);
 
     case "roomUserStatus":
-      %user = GlassLiveUser::getFromBlid(%data.blid);
-      %user.status = %data.status;
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      %uo.setStatus(%data.status);
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.renderUserList();
 
     case "roomUserIcon":
-      %user = GlassLiveUser::getFromBlid(%data.blid);
-      %user.icon = %data.icon;
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      %uo.icon = %data.icon;
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.renderUserList();
@@ -369,12 +387,12 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendsList":
       for(%i = 0; %i < %data.friends.length; %i++) {
         %friend = %data.friends.value[%i];
-        %user = GlassLiveUser::create(%friend.username, %friend.blid);
-        %user.setFriend(true);
-        %user.status = %friend.status;
-        %user.icon = %friend.icon;
+        %uo = GlassLiveUser::create(%friend.username, %friend.blid);
+        %uo.setFriend(true);
+        %uo.setStatus(%friend.status);
+        %uo.icon = %friend.icon;
 
-        GlassLive::addFriendToList(%user);
+        GlassLive::addFriendToList(%uo);
       }
       GlassLive::createFriendList();
 
@@ -382,10 +400,10 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendRequests":
       for(%i = 0; %i < %data.requests.length; %i++) {
         %friend = %data.requests.value[%i];
-        %user = GlassLiveUser::create(%friend.username, %friend.blid);
-        %user.setFriendRequest(true);
+        %uo = GlassLiveUser::create(%friend.username, %friend.blid);
+        %uo.setFriendRequest(true);
 
-        GlassLive::addfriendRequestToList(%user);
+        GlassLive::addfriendRequestToList(%uo);
       }
 
       if(%data.requests.length == 0)
@@ -396,13 +414,13 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendRequest":
       if(strstr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
         %username = %data.sender;
-        %user = GlassLiveUser::create(%username, %blid);
+        %uo = GlassLiveUser::create(%username, %blid);
 
-        GlassLive::addfriendRequestToList(%user);
+        GlassLive::addfriendRequestToList(%uo);
 
         GlassLive::createFriendList();
 
-        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %user.username @ " (" @ %blid @ ")", "email_add", 0);
+        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ")", "email_add", 0);
 
         alxPlay(GlassFriendRequestAudio);
       }
@@ -419,7 +437,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
       %uo.isFriend = true;
-      %uo.status = %data.status;
+      %uo.setStatus(%data.status);
       %uo.icon = %data.icon;
 
       GlassLive::removeFriendRequestFromList(%uo.blid);

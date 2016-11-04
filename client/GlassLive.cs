@@ -511,11 +511,7 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
     %color = "255 210 210 255";
     %hcolor = "255 230 230 255";
   } else if(%status $= "offline" || %status $= "") {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
-      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
-    else
-      GlassLive::disconnect($Glass::Disconnect["Manual"]);
-
+    GlassLive::disconnect($Glass::Disconnect["Manual"]);
     return;
   }
 
@@ -1505,10 +1501,6 @@ function GlassLive::openUserWindow(%blid) {
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
 
-    if(!isObject(%window)) {
-      return;
-    }
-
     switch$(%uo.getStatus()) {
       case "online":
         %status = "<color:33CC33>Online";
@@ -1549,7 +1541,10 @@ function GlassLive::openUserWindow(%blid) {
     
     %window.messageButton.enabled = true;
 
-    %window.forceCenter();
+    if(!%window.centered) {
+      %window.forceCenter();
+      %window.centered = true;
+    }
   }
 }
 
@@ -1557,7 +1552,7 @@ function GlassLive::createUserWindow(%uo) {
   if(isObject(%uo.window)) {
     GlassOverlayGui.pushToBack(%uo.window);
     //%uo.window.delete();
-    return;
+    return %uo.window;
   }
 
   %window = new GuiWindowCtrl() {
