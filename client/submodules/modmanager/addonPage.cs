@@ -51,7 +51,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:13><just:left>by " @ %obj.author;
+    text = "<font:verdana:13><just:left>Uploaded by " @ %obj.author;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -61,7 +61,7 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/accept_button.png> Approved";
+    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/email_authentication.png> This add-on was inspected by a Glass Reviewer";
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";

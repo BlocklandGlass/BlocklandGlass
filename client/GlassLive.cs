@@ -511,11 +511,7 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
     %color = "255 210 210 255";
     %hcolor = "255 230 230 255";
   } else if(%status $= "offline" || %status $= "") {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
-      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
-    else
-      GlassLive::disconnect($Glass::Disconnect["Manual"]);
-
+    GlassLive::disconnect($Glass::Disconnect["Manual"]);
     return;
   }
 
@@ -586,13 +582,13 @@ function GlassLive::setIcon(%icon) {
 function GlassIconSelectorWindow::updateIcons(%this) {
   %allowed = "Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt";
   if(!isFile(%allowed)) {
-    warn(%allowed SPC "not found, unable to create icon list.");
+    error(%allowed SPC "not found, unable to create icon list.");
     return;
   }
   %swatch = GlassIconSelectorWindow_Swatch;
 
   if(!isObject(%swatch)) {
-    warn("Could not find icon list swatch.");
+    error("Could not find icon list swatch.");
     return;
   }
 
@@ -630,7 +626,8 @@ function GlassIconSelectorWindow::updateIcons(%this) {
     GlassIconSelectorWindow_Swatch.add(%bitmap);
     GlassIconSelectorWindow_Swatch.add(%button);
   }
-  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 3) + 3;
+  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
+  GlassIconSelectorWindow_Swatch.setVisible(true);
 }
 
 function GlassIconSelectorWindow::selectIcon(%this) {
@@ -1511,10 +1508,6 @@ function GlassLive::openUserWindow(%blid) {
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
 
-    if(!isObject(%window)) {
-      return;
-    }
-
     switch$(%uo.getStatus()) {
       case "online":
         %status = "<color:33CC33>Online";
@@ -1555,7 +1548,10 @@ function GlassLive::openUserWindow(%blid) {
     
     %window.messageButton.enabled = true;
 
-    %window.forceCenter();
+    if(!%window.centered) {
+      %window.forceCenter();
+      %window.centered = true;
+    }
   }
 }
 
@@ -1563,7 +1559,7 @@ function GlassLive::createUserWindow(%uo) {
   if(isObject(%uo.window)) {
     GlassOverlayGui.pushToBack(%uo.window);
     //%uo.window.delete();
-    return;
+    return %uo.window;
   }
 
   %window = new GuiWindowCtrl() {

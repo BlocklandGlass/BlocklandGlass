@@ -212,7 +212,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
             name = GetASCIIString(%ret.name);
             filename = %ret.filename;
             board = %ret.board;
-            description = GetASCIIString(%ret.description);
+            description = %ret.description;
 
             rating = %ret.rating;
 

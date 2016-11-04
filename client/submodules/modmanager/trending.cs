@@ -55,7 +55,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
       %id = %u.id;
       %author = GetASCIIString(%u.author);
 
-      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> by <font:verdana bold:13>" @ %author @ "<br>";
+      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a><br>";
 
     }
   } else {
@@ -74,7 +74,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
       %id = %u.id;
       %version = %u.version;
 
-      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> to version <font:verdana bold:13>" @ %version @ "<br>";
+      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> -> <font:verdana bold:13>" @ %version @ "<br>";
 
     }
   } else {

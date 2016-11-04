@@ -147,7 +147,7 @@ package GlassMainMenu {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        text = "Glass" SPC Glass.version;
+        text = "Glass v" @ Glass.version;
         maxLength = "255";
       };
 

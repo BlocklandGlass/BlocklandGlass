@@ -116,7 +116,7 @@ function GlassAuthTCP::onDone(%this) {
 					GlassVerifyAccount_Input.setText("");
 					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
-					echo("Glass auth success");
+					// echo("Glass auth success");
 					GlassAuth.onAuthSuccess();
 				}
 
