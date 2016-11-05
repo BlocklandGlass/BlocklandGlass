@@ -107,11 +107,8 @@ function GlassLiveConnection::onDisconnect(%this) {
 
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
-<<<<<<< HEAD
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
-=======
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Failed");
->>>>>>> 00ce9300f5e075ceb57122ecd81432239f1a7797
+
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>DNS Failed");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
@@ -126,11 +123,8 @@ function GlassLiveConnection::onDNSFailed(%this) {
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
-<<<<<<< HEAD
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
-=======
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Failed");
->>>>>>> 00ce9300f5e075ceb57122ecd81432239f1a7797
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Connect Failed");
+
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
