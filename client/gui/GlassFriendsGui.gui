@@ -83,7 +83,7 @@ new GuiControl(GlassFriendsGui) {
             profile = "GuiPopUpMenuProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "10 36";
+            position = "136 5";
             extent = "64 14";
             minExtent = "8 2";
             enabled = "1";
