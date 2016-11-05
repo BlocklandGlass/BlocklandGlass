@@ -23,6 +23,7 @@ function Glass::execServer() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
+	// exec("./support/Support_SemVer.cs");
 	exec("./support/jettison.cs");
 
 	echo(" ===              Executing Important Stuff             ===");
@@ -52,12 +53,9 @@ function serverCmdGlassHandshake(%client, %ver) {
   if(%ver $= "")
     return;
 
-  %client_ver = getsubstr(stripChars(%ver, "."), 0, 3);
-
-  if(%client_ver + 0 !$= %client_ver || %client_ver < 0)
-    return;
-
   if(%client.hasGlass $= "") {
+    %ver = expandEscape(stripMlControlChars(%ver));
+
     %client.hasGlass = true;
     %client._glassVersion = %ver;
   }

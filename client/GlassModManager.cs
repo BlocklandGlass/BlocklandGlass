@@ -214,6 +214,9 @@ function GlassModManagerTCP::onDone(%this, %error) {
             board = %ret.board;
             description = %ret.description;
 
+            date = %ret.date;
+            downloads = %ret.downloads;
+
             rating = %ret.rating;
 
             screenshots = %ret.screenshots;
@@ -647,6 +650,20 @@ function GlassModManager::renderMyAddons(%this) {
         keepCached = "0";
         mColor = "255 255 255 255";
         mMultiply = "0";
+
+        new GuiMouseEventCtrl("GlassModManagerGui_AddonRedirect") {
+          addon = %addon;
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "0 0";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lockMouse = "0";
+        };
      };
      new GuiBitmapCtrl() {
         profile = "GuiDefaultProfile";
@@ -712,6 +729,10 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) { // to-do: create
     //GlassModManagerGui_AddonSettings_Window.setVisible(true);
     glassMessageBoxOk(%this.addon.glassdata.get("title"), "<font:verdana bold:14>Version:<font:verdana:14> " @ %versionData.get("version"));
   }
+}
+
+function GlassModManagerGui_AddonRedirect::onMouseDown(%this) {
+  // add redirect MM to add-on page here
 }
 
 function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {

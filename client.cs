@@ -27,6 +27,7 @@ function Glass::execClient() {
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_MetaTCP.cs");
 	exec("./support/Support_Markdown.cs");
+	exec("./support/Support_SemVer.cs");
 	exec("./support/DynamicGui.cs");
 
 	echo(" ===                 Loading Interface                  ===");
@@ -88,29 +89,30 @@ function Glass::execClient() {
 }
 
 function clientCmdGlassHandshake(%ver, %tries) {
-  %server_ver = getsubstr(stripChars(%ver, "."), 0, 3);
-
-  if(%server_ver + 0 !$= %server_ver || %server_ver < 0)
+  if(%ver $= "")
     return;
-
-  %client_ver = getsubstr(stripChars(Glass.version, "."), 0, 3);
 
   if(ServerConnection.hasGlass $= "") {
     if(isObject(NewChatSO)) {
       echo("\c4Glass Handshake Received...");
 
+      %ver = expandEscape(stripMlControlChars(%ver));
+
       echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
 
-      if(%server_ver > %client_ver) {
-        NewChatSO.schedule(500, addLine, "You are running \c6" @ Glass.version @ "\c0 of \c3Blockland Glass\c0, update to \c6" @ %ver);
+      %semver = semanticVersionCompare(%ver, Glass.version);
 
-        echo("\c2Glass Server -> Client version mismatch, this client's Blockland Glass installation is out of date!");
-      } else if(%client_ver > %server_ver) {
-        NewChatSO.schedule(500, addLine, "This server is running an outdated version of \c3Blockland Glass\c0, please inform the host.");
+      switch(%semver) {
+        case 0:
+          echo("\c4Glass Server <-> Glass Client version match.");
+        case 1:
+          NewChatSO.schedule(500, addLine, "Your version of \c3Blockland Glass\c0 is more older than the server's - consider checking for updates.");
 
-        echo("\c2Glass Client -> Server version mismatch, this server's Blockland Glass installation is out of date!");
-      } else if(%client_ver == %server_ver) {
-        echo("\c4Glass Server <-> Client version match.");
+          echo("\c2Glass Server -> Glass Client version mismatch.");
+        case 2:
+          NewChatSO.schedule(500, addLine, "Your version of \c3Blockland Glass\c0 is more recent than the server's - consider informing the host.");
+
+          echo("\c2Glass Client -> Glass Server version mismatch.");
       }
 
       ServerConnection.hasGlass = true;
@@ -118,9 +120,8 @@ function clientCmdGlassHandshake(%ver, %tries) {
 
       commandToServer('GlassHandshake', Glass.version);
     } else {
-      if(%tries <= 5) {
+      if(%tries <= 3)
         schedule(1000, 0, clientCmdGlassHandshake, %ver, %tries++);
-      }
     }
   }
 }

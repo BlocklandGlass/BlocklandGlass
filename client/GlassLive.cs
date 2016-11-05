@@ -856,8 +856,10 @@ function GlassLive::onMessage(%message, %username, %blid) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %message = setWord(%message, %i, %word);
       } else {
-        %word = " ";
-        %message = setWord(%message, %i, %word);
+        if(!GlassLiveUser::getFromName(":" @ %bitmap @ ":")) {
+          %word = " ";
+          %message = setWord(%msg, %i, %word);
+        }
       }
     }
   }

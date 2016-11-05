@@ -291,8 +291,10 @@ function GlassLiveRoom::pushText(%this, %msg) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
       } else {
-        %word = " ";
-        %msg = setWord(%msg, %i, %word);
+        if(!GlassLiveUser::getFromName(":" @ %bitmap @ ":")) {
+          %word = " ";
+          %msg = setWord(%msg, %i, %word);
+        }
       }
     }
   }

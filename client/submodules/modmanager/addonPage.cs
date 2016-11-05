@@ -58,10 +58,22 @@ function GlassModManagerGui::renderAddon(%obj) {
     autoResize = true;
   };
 
+  %downloads = %obj.downloads;
+
+  %dlStr = "";
+  for(%i = strlen(%downloads); %i >= 0; %i--) {
+    %dlStr = getsubstr(%downloads, %i, 1) @ %dlStr;
+    if(mfloor((strlen(%downloads)-%i)/3) == (strlen(%downloads)-%i)/3) {
+      %dlStr = "," @ %dlStr;
+    }
+  }
+  %dlStr = getsubstr(%dlStr, 0, strlen(%dlstr)-1);
+  if(strpos(%dlStr, ",") == 0) %dlStr = getsubstr(%dlStr, 1, strlen(%dlstr));
+
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/email_authentication.png> This add-on was inspected by a Glass Reviewer";
+    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/email_authentication.png> This add-on was inspected by a Glass Reviewer<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/time.png> " @ %obj.date @ "<br><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %dlStr;
     position = "102 30";
     extent = "300 16";
     minextent = "0 0";
@@ -594,8 +606,14 @@ function GlassModManagerGui::renderAddonComments(%data) {
   } else {
     %offset = 0;
     %dark = 1;
-    for(%i = 0; %i < %data.length; %i++) {
+    // for(%i = 0; %i < %data.length; %i++) {
+      // echo(%data.value[%i].author);
+    // }
+    for(%i = %data.length - 1; %i > -1; %i--) {
       %comment = %data.value[%i];
+
+      echo(%comment.author);
+
       %swat = new GuiSwatchCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
@@ -609,7 +627,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
       %auth = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:14>" @ %comment.author @ "<br><font:verdana:13>" @ %comment.authorblid @ "<br><br><font:verdana:10>" @ %comment.date;
+        text = "<font:verdana bold:14>" @ getsubstr(%comment.author, 0, 15) @ "<br><font:verdana:13>" @ %comment.authorblid @ "<br><br><font:verdana:10>" @ %comment.date;
         position = "10 10";
         extent = "125 16";
         minextent = "0 0";
@@ -637,7 +655,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
       %swat.verticalMatchChildren(0, 10);
       %offset += getWord(%swat.extent, 1);
 
-      if(%i == 0) {
+      if(%i == %data.length - 1) {
         %swat.placeBelow(%newCommentButton, 10);
       } else {
         %swat.placeBelow(%lastSwat);
