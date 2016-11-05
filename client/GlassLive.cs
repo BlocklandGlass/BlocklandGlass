@@ -552,6 +552,9 @@ function GlassLive::friendOnline(%this, %blid, %status) {
 
 function GlassLive::setStatus(%status) {
   %status = strlwr(%status);
+  
+  if(%status $= GlassLiveUser::getFromBlid(getNumKeyId()).status)
+    return;
 
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %obj = JettisonObject();
@@ -1460,10 +1463,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
   if(%this.type $= "request") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      glassMessageBoxOk("Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
+      glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
       GlassLive::friendDecline(%this.blid);
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-      glassMessageBoxOk("Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
+      glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
       GlassLive::friendAccept(%this.blid);
     // } else {
       // GlassLive::openUserWindow(%this.blid);

@@ -30,7 +30,7 @@ function GlassLiveUser::getFromBlid(%blid) {
 function GlassLiveUser::getFromName(%name) {
   for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
     %user = GlassLiveUsers.getObject(%i);
-    if(strpos(%user.username, %name) != -1)
+    if(strpos(strlwr(%user.username), strlwr(%name)) != -1)
       return %user;
   }
   return false;
@@ -136,6 +136,9 @@ function GlassLiveUser::canSendMessage(%this) {
 }
 
 function GlassLiveUser::setStatus(%this, %status) {
+  if(%status $= GlassLiveUser::getFromBlid(%this.blid).status)
+    return;
+
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %this.status = %status;
     

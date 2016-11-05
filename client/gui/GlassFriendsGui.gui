@@ -72,7 +72,7 @@ new GuiControl(GlassFriendsGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<just:center><font:verdana bold:30><color:e74c3c>Disconnected";
+            text = "<just:center><font:verdana:22><color:e74c3c>Disconnected";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";

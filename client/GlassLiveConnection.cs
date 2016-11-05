@@ -7,7 +7,7 @@ $Glass::Disconnect["Update"] = 4; // [Updates]
 function GlassLive::connectToServer() {
   cancel(GlassLive.reconnect);
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e74c3c>Disconnected");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
@@ -50,7 +50,7 @@ function GlassLive::connectToServer() {
 
   GlassLive::setPowerButton(0);
 
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana bold:30><color:e67e22>Connecting...");
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e67e22>Connecting...");
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
