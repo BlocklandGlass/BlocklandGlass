@@ -327,7 +327,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
 
-        %room.pushText(%data.text);
+        %room.pushText("<color:333333>" @ %data.text);
       }
 
     case "roomUserJoin":
@@ -558,6 +558,12 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassSettings.update("Live::StartupConnect", false);
         %this.disconnect();
       }
+
+    case "connectTimeout":
+      %message = %data.message;
+      %time = %data.timeout;
+      glassMessageBoxOk("Connecting Timeout!", %message @ "<br><br>Please wait " @ mCeil(%time/1000) @ " seconds");
+      %this.disconnect();
 
     case "kicked": //we got kicked from all service
       GlassLive.noReconnect = true;
