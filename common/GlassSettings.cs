@@ -65,7 +65,7 @@ function GlassSettings::registerSetting(%this, %context, %name, %value, %callbac
 
 function GlassSettings::resetToDefaults(%this, %context) {
   if(%context $= "") {
-    error("No context specified.");
+    error("Specify \"client\" or \"server\" settings to reset.");
     return;
   }
 

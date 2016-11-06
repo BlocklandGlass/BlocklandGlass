@@ -529,8 +529,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       glassMessageBoxOk(%data.title, %data.text);
 
     case "glassUpdate":
-      GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass has been released!", "glassLogo", 1);
-      alxPlay(GlassBellAudio);
+      if(semanticVersionCompare(Glass.version, %data.version) == 2 && !Glass.updateNotified) {
+        GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass has been released!", "glassLogo", 1, "updater.checkForUpdates();");
+        alxPlay(GlassBellAudio);
+
+        Glass.updateNotified = true;
+      }
 
     case "shutdown":
       %planned = %data.planned;

@@ -816,7 +816,7 @@ function GlassLive::openDirectMessage(%blid, %username) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  if(%user.isBlocked()) {
+  if(!%user.canSendMessage()) {
     glassMessageBoxOk("Blocked", "You have blocked this user, unblock them before attempting to send them a message.");
     return;
   }
@@ -1553,6 +1553,12 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
 
 function GlassLive::addFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
+
+  if(%user.isBlocked()) {
+    glassMessageBoxOk("Blocked", "You have blocked this user, unblock them before attempting to send a friend request.");
+    return;
+  }
+
   if(%user)
     glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
 }
