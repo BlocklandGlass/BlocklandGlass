@@ -316,7 +316,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %senderblid = %data.sender_id;
 
         %senderUser = GlassLiveUser::getFromBlid(%senderblid);
-        
+
         if(%senderUser.isBlocked())
           return;
 
@@ -332,7 +332,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
 
-        %room.pushText("<color:333333>" @ %data.text);
+        %room.pushText("<spush>" @ %data.text @ "<spop>");
       }
 
     case "roomUserJoin":
