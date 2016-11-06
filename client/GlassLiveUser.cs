@@ -103,8 +103,12 @@ function GlassLiveUser::getMessageGui(%this) {
     return false;
 }
 
+function GlassLiveUser::setBlocked(%this, %bool) {
+  %this.isBlocked = %bool == 1;
+}
+
 function GlassLiveUser::isBlocked(%this) {
-  return %this.blocked;
+  return %this.isBlocked;
 }
 
 function GlassLiveUser::block(%this) {

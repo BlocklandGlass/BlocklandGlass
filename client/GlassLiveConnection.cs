@@ -516,7 +516,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %list = %list SPC %userData.blid;
 
         %user = GlassLiveUser::create(%userData.username, %userData.blid);
-        %user.blocked = true;
+        %user.setBlocked(true);
       }
 
       if(strlen(%list) > 0)

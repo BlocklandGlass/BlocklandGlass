@@ -690,7 +690,7 @@ function GlassLive::userBlock(%blid) {
     }
   }
 
-  %user.blocked = true;
+  %user.setBlocked(true);
 
   GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
 
@@ -732,7 +732,7 @@ function GlassLive::userUnblock(%blid) {
     }
   }
 
-  %user.blocked = false;
+  %user.setBlocked(false);
 
   if(isObject(%user.window))
     GlassLive::openUserWindow(%blid);
