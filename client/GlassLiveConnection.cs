@@ -332,7 +332,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
 
-        %room.pushText("<spush>" @ %data.text @ "<spop>");
+        %room.pushText("<spush><color:666666>" @ %data.text @ "<spop>");
       }
 
     case "roomUserJoin":
