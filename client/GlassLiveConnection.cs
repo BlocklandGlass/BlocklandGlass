@@ -18,11 +18,6 @@ function GlassLive::connectToServer() {
     return;
   }
 
-  if(GlassLive.lastConnected !$= "" && getSimTime() < GlassLive.lastConnected + 2500) {
-    glassMessageBoxOk("Wait", "You're reconnecting too fast!"); // **make sure to implement this server-side as well so we can get rid of this afterwards**
-    return;
-  }
-
   if(GlassLive.connectionTries > 4) {
     %minutes = 5;
     GlassLive.reconnect = GlassLive.schedule((%minutes * 60 * 1000) | 0, connectToServer);
@@ -63,7 +58,6 @@ function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
 
   GlassLive.noReconnect = false;
-  GlassLive.lastConnected = getSimTime();
   GlassLive.connectionTries = 0;
   GlassLive.hideFriendRequests = false;
   GlassLive.hideFriends = false;
