@@ -528,6 +528,10 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "messageBox":
       glassMessageBoxOk(%data.title, %data.text);
 
+    case "glassUpdate":
+      GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass has been released!", "glassLogo", 1);
+      alxPlay(GlassBellAudio);
+
     case "shutdown":
       %planned = %data.planned;
       %reason = %data.reason;
