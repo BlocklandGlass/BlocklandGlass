@@ -18,11 +18,6 @@ function GlassLive::connectToServer() {
     return;
   }
 
-  if(GlassLive.lastConnected !$= "" && getSimTime() < GlassLive.lastConnected + 2500) {
-    glassMessageBoxOk("Wait", "You're reconnecting too fast!"); // **make sure to implement this server-side as well so we can get rid of this afterwards**
-    return;
-  }
-
   if(GlassLive.connectionTries > 4) {
     %minutes = 5;
     GlassLive.reconnect = GlassLive.schedule((%minutes * 60 * 1000) | 0, connectToServer);
@@ -63,7 +58,6 @@ function GlassLiveConnection::onConnected(%this) {
   GlassLive::setPowerButton(1);
 
   GlassLive.noReconnect = false;
-  GlassLive.lastConnected = getSimTime();
   GlassLive.connectionTries = 0;
   GlassLive.hideFriendRequests = false;
   GlassLive.hideFriends = false;
@@ -210,9 +204,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
 
     case "message":
-      %sender = getASCIIString(%data.sender);
+      %user = GlassLiveUser::getFromBlid(%data.sender_id);
 
-      // TODO create GlassLiveUser ?
+      if(!%user.canSendMessage())
+        return;
+
+      %sender = getASCIIString(%data.sender);
 
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
@@ -239,7 +236,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %uo = GlassLiveUser::create(%cl.username, %cl.blid);
         %uo.setStatus(%cl.status);
-        %uo.icon = %cl.icon;
+        %uo.setIcon(%cl.icon);
 
         %uo.setAdmin(%cl.admin);
         %uo.setMod(%cl.mod);
@@ -277,7 +274,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %uo = GlassLiveUser::create(%cl.username, %cl.blid);
         %uo.setStatus(%cl.status);
-        %uo.icon = %cl.icon;
+        %uo.setIcon(%cl.icon);
 
         %uo.setAdmin(%cl.admin);
         %uo.setMod(%cl.mod);
@@ -304,6 +301,11 @@ function GlassLiveConnection::onLine(%this, %line) {
       %room.view.userSwatch.getGroup().scrollToTop();
 
     case "messageTyping":
+      %user = GlassLiveUser::getFromBlid(%data.sender);
+
+      if(!%user.canSendMessage())
+        return;
+
       GlassLive::setMessageTyping(%data.sender, %data.typing);
 
     case "roomMessage":
@@ -314,6 +316,9 @@ function GlassLiveConnection::onLine(%this, %line) {
         %senderblid = %data.sender_id;
 
         %senderUser = GlassLiveUser::getFromBlid(%senderblid);
+        
+        if(%senderUser.isBlocked())
+          return;
 
         %room.pushMessage(%senderUser, %msg, %data);
       }
@@ -338,7 +343,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %uo.setBot(true);
       }
       %uo.setStatus(%data.status);
-      %uo.icon = %data.icon;
+      %uo.setIcon(%data.icon);
 
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
@@ -358,10 +363,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomUserIcon":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      %uo.icon = %data.icon;
-      %room = GlassLiveRoom::getFromId(%data.id);
-      if(isObject(%room))
-        %room.renderUserList();
+      %uo.setIcon(%data.icon, %data.id);
 
     case "roomKicked": //we got removed from a room
       warn("TODO: roomKicked for reason " @ %data.reason);
@@ -392,7 +394,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %uo = GlassLiveUser::create(%friend.username, %friend.blid);
         %uo.setFriend(true);
         %uo.setStatus(%friend.status);
-        %uo.icon = %friend.icon;
+        %uo.setIcon(%friend.icon);
 
         GlassLive::addFriendToList(%uo);
       }
@@ -403,6 +405,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       for(%i = 0; %i < %data.requests.length; %i++) {
         %friend = %data.requests.value[%i];
         %uo = GlassLiveUser::create(%friend.username, %friend.blid);
+
         %uo.setFriendRequest(true);
 
         GlassLive::addfriendRequestToList(%uo);
@@ -432,15 +435,13 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "friendIcon":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
-      %uo.icon = %data.icon;
-
-      GlassLive::createFriendList();
+      %uo.setIcon(%data.icon);
 
     case "friendAdd": // create all-encompassing ::addFriend function for this?
       %uo = GlassLiveUser::create(%data.username, %data.blid);
-      %uo.isFriend = true;
+      %uo.setFriend(true);
       %uo.setStatus(%data.status);
-      %uo.icon = %data.icon;
+      %uo.setIcon(%data.icon);
 
       GlassLive::removeFriendRequestFromList(%uo.blid);
       GlassLive::addFriendToList(%uo);
