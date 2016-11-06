@@ -739,54 +739,59 @@ function isDefaultAddOn(%file) {
 }
 
 function GlassModManager::deleteAddOn(%this, %addon) {
-  if(isDefaultAddon(%addon)) {
+  %name = %addon.name;
+
+  if(isDefaultAddon(%name)) {
     error("Will not delete default add-ons.");
     return;
   }
 
-  if((strlwr(%addon) $= "system_blocklandglass") || (strlwr(%addon) $= "support_preferences") || (strlwr(%addon) $= "support_updater")) {
+  if((%name $= "System_BlocklandGlass") || (%name $= "Support_Preferences") || (%name $= "Support_Updater")) {
     error("Will not delete essential add-ons.");
     return;
   }
 
   %dir = "Add-Ons/";
 
-  if(!isFile(%dir @ %addon @ ".zip")) {
-    if(getFileCount(%dir @ %addon @ "/*.cs"))
+  if(!isFile(%dir @ %name @ ".zip")) {
+    if(getFileCount(%dir @ %name @ "/*.cs"))
       error("Will not delete folders.");
     else
-      error(%dir @ %addon @ ".zip not found.");
+      error(%dir @ %name @ ".zip not found.");
     return;
   }
 
-  fileDelete(%dir @ %addon @ ".zip");
+  fileDelete(%dir @ %name @ ".zip");
+  GlassModManager::setAddonStatus(%addon.glassdata.id, "");
 
-  glassMessageBoxOk("Add-On Deleted", "<font:verdana bold:13>" @ %addon @ "<font:verdana:13> has been deleted.");
+  glassMessageBoxOk("Add-On Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
 
-  GlassModManager.schedule(10, populateMyAddons);
+  GlassModManager.schedule(1, populateMyAddons);
 }
 
 function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
-  if(isDefaultAddon(%this.addon.name)) {
+  %name = %this.addon.name;
+
+  if(isDefaultAddon(%name)) {
     glassMessageBoxOk("Delete Add-On", "Sorry, you may not delete default add-ons from the Glass Mod Manager.");
     return;
   }
 
-  if((strlwr(%addon) $= "system_blocklandglass") || (strlwr(%addon) $= "support_preferences") || (strlwr(%addon) $= "support_updater")) {
+  if((%name $= "System_BlocklandGlass") || (%name $= "Support_Preferences") || (%name $= "Support_Updater")) {
     glassMessageBoxOk("Delete Add-On", "Sorry, you may not delete essential add-ons required for Blockland Glass' operation from the Glass Mod Manager.");
     return;
   }
 
   %dir = "Add-Ons/";
 
-  if(!isFile(%dir @ %this.addon.name @ ".zip")) {
-    if(getFileCount(%dir @ %this.addon.name @ "/*.cs")) {
+  if(!isFile(%dir @ %name @ ".zip")) {
+    if(getFileCount(%dir @ %name @ "/*.cs")) {
       glassMessageBoxOk("Delete Add-On", "Sorry, you may not delete add-ons packaged as folders from the Glass Mod Manager.");
     }
     return;
   }
 
-  glassMessageBoxYesNo("Delete Add-On", "Are you sure you want to delete <font:verdana bold:13>" @ %this.addon.name, "GlassModManager.deleteAddon(\"" @ %this.addon.name @ "\");");
+  glassMessageBoxYesNo("Delete Add-On", "Are you sure you want to delete <font:verdana bold:13>" @ %name, "GlassModManager.deleteAddon(\"" @ %this.addon @ "\");");
 }
 
 function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
