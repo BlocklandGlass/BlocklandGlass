@@ -571,39 +571,15 @@ function GlassModManagerGui::renderAddonComments(%data) {
     mColor = "220 220 220 255";
   };
 
-  %newCommentDiv = new GuiSwatchCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "128 128 128 255";
-    position = "10 10";
-    extent = "465 1";
-  };
-
   %newCommentScroll.add(%newCommentSwat);
   %newCommentSwat.add(%newCommentEdit);
   %swatch.add(%newCommentScroll);
   %swatch.add(%newCommentButton);
-  %swatch.add(%newCommentDiv);
   %newCommentButton.centerX();
   %newCommentButton.placeBelow(%newCommentScroll, 10);
-  %newCommentDiv.placeBelow(%newCommentButton, 10);
   %swatch.verticalMatchChildren(10, 10);
 
-  if(%data.length == 0) {
-    %text = new GuiMLTextCtrl() {
-      horizSizing = "center";
-      vertSizing = "center";
-      text = "<font:verdana bold:14><just:center>No Comments!";
-      position = "10 10";
-      extent = "300 14";
-      minextent = "0 0";
-      autoResize = true;
-    };
-    %swatch.add(%text);
-    %text.centerX();
-    %text.placeBelow(%newCommentDiv, 10);
-    %swatch.verticalMatchChildren(10, 10);
-  } else {
+  if(%data.length > 0) {
     %offset = 0;
     %dark = 1;
     for(%i = %data.length - 1; %i > -1; %i--) {
@@ -636,7 +612,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
         vertSizing = "bottom";
         text = "<font:verdana:13>" @ %comment.text;
         position = "115 10";
-        extent = "360 16";
+        extent = "355 16";
         minextent = "0 0";
         autoResize = true;
       };
@@ -668,22 +644,6 @@ function GlassModManagerGui::renderAddonComments(%data) {
   %scroll.add(GlassModManagerGui_MainDisplay);
   GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
   GlassModManagerGui_MainDisplay.getGroup().makeFirstResponder(1);
-}
-
-function GlassModManagerGui_newComment::onResize(%this, %thisx, %thisy) {
-  %x = getWord(%this.getGroup().extent, 0);
-  %y = %thisY + 10;
-
-  if(%y < 97) {
-    %y = 97;
-  }
-
-  if(%this.getGroup().extent !$= (%x SPC %y)) {
-    %this.getGroup().extent = %x SPC %y;
-    %this.getGroup().setVisible(true);
-    %this.makeFirstResponder(1);
-    %this.getGroup().getGroup().scrollToBottom();
-  }
 }
 
 function GlassModManagerGui::submitComment() {
