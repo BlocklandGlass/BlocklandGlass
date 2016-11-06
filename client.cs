@@ -120,7 +120,7 @@ function clientCmdGlassHandshake(%ver, %tries) {
 
       commandToServer('GlassHandshake', Glass.version);
     } else {
-      if(%tries <= 3)
+      if(%tries <= 5)
         schedule(1000, 0, clientCmdGlassHandshake, %ver, %tries++);
     }
   }
@@ -154,6 +154,13 @@ package GlassMainMenu {
 
       MainMenuButtonsGui.add(%mm);
     }
+  }
+
+  function DDS_BackgroundCtrl::onMouseDown(%this) {
+    if(%this.ddsControl.getName() $= "GlassLive_StatusPopUp")
+      %this.ddsControl.open = false;
+
+    parent::onMouseDown(%this);
   }
 
 };

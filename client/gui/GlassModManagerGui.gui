@@ -247,7 +247,7 @@ new GuiControl(GlassModManagerGui) {
                         lineSpacing = "2";
                         allowColorChars = "0";
                         maxChars = "-1";
-                        text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>We\'ve got some new uploads for you!<br><br><br><font:verdana:13>On top of that, there\'s been a few recent updates<br><br><font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-11>Blockland Glass</a> to version <font:verdana bold:13>2.1.0<br><font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-289>Undertale Decals</a> to version <font:verdana bold:13>1.7<br><font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-291>Gun Game</a> to version <font:verdana bold:13>0.1.1<br><br><br>- ModBot<br><font:verdana:10><just:right>6/20/2016 2:30pm";
+                        text = "";
                         maxBitmapHeight = "-1";
                         selectable = "1";
                         autoResize = "1";

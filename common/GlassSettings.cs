@@ -32,7 +32,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::MessageLogging", true);
     // GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
 
-    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", false); // user connection messages in chatroom
+    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true); // user connection messages in chatroom
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);

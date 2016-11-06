@@ -713,7 +713,7 @@ function GlassModManager::renderMyAddons(%this) {
   GlassModManagerGui_MyAddons.getGroup().scrollToTop();
 }
 
-function GlassModManagerGui_AddonSettings::onMouseDown(%this) { // to-do: create add-on info gui
+function GlassModManagerGui_AddonSettings::onMouseUp(%this) { // to-do: create add-on info gui
   if(!%this.addon.isBLG) {
     glassMessageBoxOk("Add-On", %this.addon.name);
   } else {
@@ -731,8 +731,9 @@ function GlassModManagerGui_AddonSettings::onMouseDown(%this) { // to-do: create
   }
 }
 
-function GlassModManagerGui_AddonRedirect::onMouseDown(%this) {
-  // add redirect MM to add-on page here
+function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
+  GlassModManagerGui::setPane(1);
+  GlassModManagerGui::fetchAndRenderAddon(%this.addon.glassdata.id).action = "render";
 }
 
 function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {

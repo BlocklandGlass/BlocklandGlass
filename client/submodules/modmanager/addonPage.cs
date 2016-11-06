@@ -606,13 +606,8 @@ function GlassModManagerGui::renderAddonComments(%data) {
   } else {
     %offset = 0;
     %dark = 1;
-    // for(%i = 0; %i < %data.length; %i++) {
-      // echo(%data.value[%i].author);
-    // }
     for(%i = %data.length - 1; %i > -1; %i--) {
       %comment = %data.value[%i];
-
-      echo(%comment.author);
 
       %swat = new GuiSwatchCtrl() {
         horizSizing = "right";

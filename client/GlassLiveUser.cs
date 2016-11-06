@@ -116,23 +116,42 @@ function GlassLiveUser::unblock(%this) {
 }
 
 function GlassLiveUser::canSendMessage(%this) {
-  //can we show a message from them?
-  //privacy settings
-  //blocked users
-
-  //%friendsOnly = GlassLive::getSetting("GL::FriendOnly");
-  %blocked = %this.blocked;
-
   if(%this.isAdmin() || %this.isMod() || %this.isBot())
     return true;
 
-  if(%blocked)
+  if(%this.isBlocked())
     return false;
 
-  // if(%friendsOnly && !%this.isFriend())
-    // return false;
-
   return true;
+}
+
+function GlassLiveUser::setIcon(%this, %icon, %roomid) {
+  %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
+  %blockedIcon = "wall";
+  
+  if(isFile(%bitmap)) {
+    if(%icon !$= %blockedIcon)
+      %this.realIcon = %icon;
+
+    if(%this.isBlocked()) {
+      %this.icon = %blockedIcon;
+    } else {
+      %this.icon = %icon;
+    }
+
+    if(%roomid !$= "") {
+      %room = GlassLiveRoom::getFromId(%roomid);
+      if(isObject(%room))
+        %room.renderUserList();
+    } else {
+      %room = GlassLiveRoom::getFromId(GlassChatroomWindow.activeTab.id);
+      if(isObject(%room))
+        %room.renderUserList();
+    }
+
+    if(%this.isFriend())
+      GlassLive::createFriendList();
+  }
 }
 
 function GlassLiveUser::setStatus(%this, %status) {
