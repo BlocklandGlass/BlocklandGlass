@@ -229,7 +229,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoinAuto":
-      // TODO just mimic roomJoin for now
+      if(!GlassSettings.get("Live::AutoJoinRoom"))
+        return;
+
       if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
 

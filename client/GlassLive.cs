@@ -62,6 +62,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   // GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
@@ -79,7 +80,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
   // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -527,7 +528,7 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
   GlassFriendsGui_InfoSwatch.color = %color;
 
   GlassLive::setStatus(%this.getValue());
-  
+
   schedule(150, 0, eval, GlassLive_StatusPopUp @ ".open = false;");
 }
 
@@ -563,7 +564,7 @@ function GlassLive::friendOnline(%this, %blid, %status) {
 
 function GlassLive::setStatus(%status) {
   %status = strlwr(%status);
-  
+
   if(%status $= GlassLiveUser::getFromBlid(getNumKeyId()).status)
     return;
 
@@ -719,7 +720,7 @@ function GlassLive::userUnblock(%blid) {
       return;
 
     %user.setBlocked(false);
-    
+
     if(isObject(%user.window))
       GlassLive::openUserWindow(%blid);
 
@@ -1615,7 +1616,7 @@ function GlassLive::openUserWindow(%blid) {
       %window.blockButton.command = "GlassLive::userBlock(" @ %uo.blid @ ");";
       %window.blockButton.text = "Block";
     }
-    
+
     %window.messageButton.enabled = true;
 
     if(!%window.centered) {
@@ -1728,7 +1729,7 @@ function GlassLive::createUserWindow(%uo) {
     mKeepCached = "0";
     mColor = "255 200 200 200";
   };
-  
+
   %window.blockButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     horizSizing = "right";
@@ -1760,7 +1761,7 @@ function GlassLive::createUserWindow(%uo) {
   %window.closeCommand = %window.getId() @ ".delete();";
 
   GlassOverlayGui.add(%window);
-  
+
   %window.setName("GlassUserGui");
   %uo.window = %window;
   return %window;
@@ -3288,12 +3289,7 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
 
 function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
   GlassSettingsGui_Scroll.extent = vectorSub(GlassSettingsWindow.extent, "20 45");
-
-  GlassSettingsGui_ScrollOverlay.extent = getWord(GlassSettingsGui_ScrollOverlay.extent, 0) SPC (GlassSettingsGui_ScrollOverlay.settingsCount * 45) + 15;
-
-  if(getWord(GlassSettingsGui_Scroll.extent, 1) > getWord(GlassSettingsGui_ScrollOverlay.extent, 1)) {
-    GlassSettingsGui_ScrollOverlay.extent = GlassSettingsGui_Scroll.extent;
-  }
+  GlassSettingsGui_ScrollOverlay.verticalMatchChildren(getWord(GlassSettingsGui_Scroll.extent, 1), 10);
 }
 
 function GlassSettingsGui_ScrollOverlay::onWake(%this) {
@@ -3313,10 +3309,10 @@ package GlassLivePackage {
     if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
       %pos = GlassSettings.get("Live::FriendsWindow_Pos");
       %ext = GlassSettings.get("Live::FriendsWindow_Ext");
-      
+
       if(%pos > getWord(getRes(), 0))
         %pos = (getWord(getRes(), 0) - 280) SPC 50;
-      
+
       if(%ext > getWord(getRes(), 1))
         %ext = "230 380";
 

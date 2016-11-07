@@ -20,7 +20,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
-    // GlassSettings.registerSetting("client", "Live::RoomAutoJoin", true);
+    GlassSettings.registerSetting("client", "Live::AutoJoinRoom", true);
     // GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
     GlassSettings.registerSetting("client", "Live::RoomNotification", false); // joined room / left room notifications
 
@@ -75,7 +75,7 @@ function GlassSettings::resetToDefaults(%this, %context) {
 
       if(%setting.context !$= %context)
         continue;
-      
+
       if(%setting.name $= "Live::Keybind")
         continue;
 
@@ -111,7 +111,7 @@ function GlassSettings::createSettingHeader(%name) {
 
   %gui.text = new GuiTextCtrl() {
     profile = "GlassSearchResultProfile";
-    position = "5 2.5";
+    position = "5 2";
     vertSizing = "center";
     horizSizing = "center";
     extent = "12 4";
@@ -139,7 +139,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     %header = GlassSettings::createSettingHeader(%category);
 
     if(isObject(%this.last) && %this.last != %header) {
-      %header.position = vectorAdd(%this.last.position, "0 40");
+      %header.placeBelow(%this.last, 15);
     }
 
     GlassSettingsGui_ScrollOverlay.add(%header);
@@ -151,6 +151,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "bottom";
+    position = "10 0";
     extent = "250 25";
     minExtent = "8 2";
     enabled = "1";
@@ -159,7 +160,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
     color = "230 230 230 255";
   };
 
-  %setting.position = vectorAdd(%this.last.position, "0 30");
+  %setting.placeBelow(%this.last, 5);
 
   %this.last = %setting;
 
@@ -206,7 +207,8 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   GlassSettingsGui_ScrollOverlay.settingsCount++;
   GlassSettingsGui_ScrollOverlay.add(%setting);
 
-  GlassSettingsGui_ScrollOverlay.verticalMatchChildren(425, 10);
+  GlassSettingsGui_ScrollOverlay.verticalMatchChildren(40, 10);
+  GlassSettingsGui_ScrollOverlay.setVisible(true);
 }
 
 function GlassSettings::loadData(%this, %context) {
