@@ -619,7 +619,7 @@ function GlassModManager::renderMyAddons(%this) {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = %addon.isRTB;
+        visible = %addon.isRTB && !%addon.isBLG;
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
         wrap = "0";
@@ -675,7 +675,7 @@ function GlassModManager::renderMyAddons(%this) {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bin_empty.png";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/cross.png";
         wrap = "0";
         lockAspectRatio = "0";
         alignLeft = "0";

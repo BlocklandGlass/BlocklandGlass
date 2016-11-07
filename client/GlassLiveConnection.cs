@@ -131,6 +131,11 @@ function GlassLiveConnection::onConnectFailed(%this) {
     GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
 }
 
+function GlassLiveConnection::disconnect(%this) {
+  parent::disconnect(%this);
+  %this.onDisconnect();
+}
+
 function GlassLiveConnection::doDisconnect(%this, %reason) {
   %obj = JettisonObject();
   %obj.set("type", "string", "disconnect");
@@ -512,7 +517,6 @@ function GlassLiveConnection::onLine(%this, %line) {
       %list = "";
       for(%i = 0; %i < %data.blocked.length; %i++) {
         %userData = %data.blocked.value[%i];
-        // echo("blocked: " @ %userData.blid);
         %list = %list SPC %userData.blid;
 
         %user = GlassLiveUser::create(%userData.username, %userData.blid);
@@ -530,7 +534,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "glassUpdate":
       if(semanticVersionCompare(Glass.version, %data.version) == 2 && !Glass.updateNotified) {
-        GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass has been released!", "glassLogo", 1, "updater.checkForUpdates();");
+        GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass is now available!", "glassLogo", 1, "updater.checkForUpdates();");
         alxPlay(GlassBellAudio);
 
         Glass.updateNotified = true;
@@ -563,25 +567,26 @@ function GlassLiveConnection::onLine(%this, %line) {
         %this.disconnect();
       } else if(%data.reason == 2) {
         GlassLive.noReconnect = true;
-        glassMessageBoxOk("Disconnected", "You are barred from using Glass Live!<br><br>Sorry for the inconvenience.");
+        glassMessageBoxOk("Disconnected", "You've been barred from the Glass Live service.");
         GlassSettings.update("Live::StartupConnect", false);
         %this.disconnect();
       }
 
     case "connectTimeout":
+      GlassLive.noReconnect = true;
       %message = %data.message;
       %time = %data.timeout;
-      glassMessageBoxOk("Connecting Timeout!", %message @ "<br><br>Please wait " @ mCeil(%time/1000) @ " seconds");
+      glassMessageBoxOk("Disconnected", %message @ "<br><br>Please wait " @ mCeil(%time/1000) @ " seconds.");
       %this.disconnect();
 
     case "kicked": //we got kicked from all service
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>\"" @ %data.reason @ "\"");
       %this.disconnect();
 
     case "barred": //we're not allowed to use glass live
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Barred", "You've been barred from all Glass Live service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"<br><br>Sorry for the inconvenience.");
+      glassMessageBoxOk("Barred", "You've been barred from the Glass Live service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"");
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
 
@@ -589,7 +594,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       if(%data.showDialog) {
         glassMessageBoxOk("Glass Live Error", %data.message);
       } else {
-        echo("Glass Live Error: " @ %data.message);
+        warn("Glass Live Error: " @ %data.message);
       }
   }
   //%data.delete();
