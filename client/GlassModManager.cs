@@ -639,7 +639,7 @@ function GlassModManager::renderMyAddons(%this) {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = %addon.isRTB && !%addon.isBLG;
+        visible = %addon.isRTB && !%addon.isBLG && !isDefaultAddon(%addon.name);
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
         wrap = "0";
@@ -659,7 +659,7 @@ function GlassModManager::renderMyAddons(%this) {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = %addon.isBLG;
+        visible = %addon.isBLG && !isDefaultAddon(%addon.name);
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo.png";
         wrap = "0";
@@ -1028,7 +1028,7 @@ function GlassModManager::populateColorsets() {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = %this.colorsetData[%i].isRTB && !%this.colorsetData[%i].isBLG;
+        visible = %this.colorsetData[%i].isRTB && !%this.colorsetData[%i].isBLG && !isDefaultAddon(%this.colorsetName[%i]);
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
         wrap = "0";
@@ -1048,7 +1048,7 @@ function GlassModManager::populateColorsets() {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = %this.colorsetData[%i].isBLG;
+        visible = %this.colorsetData[%i].isBLG && !isDefaultAddon(%this.colorsetName[%i]);
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo.png";
         wrap = "0";

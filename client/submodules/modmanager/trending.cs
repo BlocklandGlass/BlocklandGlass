@@ -75,14 +75,14 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
       %id = %u.id;
       %version = %u.version;
 
-      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> -> <font:verdana bold:13>" @ %version @ "<br>";
+      %text = %text @ "<font:verdana bold:14>  +<font:verdana:13> <a:glass://aid-" @ %id @ ">" @ %name @ "</a> to <font:verdana bold:13>v" @ %version @ "<br>";
 
     }
   } else {
     %text = %text @ "<br><font:verdana:13>There's been no recent updates.<br><br>";
   }
 
-  %text = %text @ "<br><br>- GlassBot<just:right>" @ getSubStr(getDateTime(), 0, 14);
+  %text = %text @ "<br><br><font:verdana bold:13>- <color:" @ GlassLive.color_bot @ ">GlassBot<color:000000><just:right>" @ getSubStr(getDateTime(), 0, 14);
 
   %textml = new GuiMLTextCtrl() {
     horizSizing = "right";
