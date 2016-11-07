@@ -683,9 +683,6 @@ function GlassLive::userBlock(%blid) {
     if(isObject(%user.window))
       GlassLive::openUserWindow(%blid);
 
-    if(%user.isFriend())
-      GlassLive::removeFriendPrompt(%blid);
-
     %user.setIcon("wall");
   }
 
