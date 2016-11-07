@@ -519,6 +519,7 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
     %color = "255 210 210 255";
     %hcolor = "255 230 230 255";
   } else if(%status $= "offline" || %status $= "") {
+    GlassLive.noReconnect = true;
     GlassLive::disconnect($Glass::Disconnect["Manual"]);
     return;
   }
@@ -673,8 +674,20 @@ function GlassLive::userBlock(%blid) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  if(%user.isBlocked())
-    return;
+  if(isObject(%user)) {
+    if(%user.isBlocked())
+      return;
+
+    %user.setBlocked(true);
+
+    if(isObject(%user.window))
+      GlassLive::openUserWindow(%blid);
+
+    if(%user.isFriend())
+      GlassLive::removeFriendPrompt(%blid);
+
+    %user.setIcon("wall");
+  }
 
   %obj = JettisonObject();
   %obj.set("type", "string", "block");
@@ -690,17 +703,7 @@ function GlassLive::userBlock(%blid) {
     }
   }
 
-  %user.setBlocked(true);
-
   GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
-
-  if(isObject(%user.window))
-    GlassLive::openUserWindow(%blid);
-
-  if(%user.isFriend())
-    GlassLive::removeFriendPrompt(%blid);
-
-  %user.setIcon("wall");
 
   GlassLive::createFriendList();
 }
@@ -714,8 +717,17 @@ function GlassLive::userUnblock(%blid) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  if(!%user.isBlocked())
-    return;
+  if(isObject(%user)) {
+    if(!%user.isBlocked())
+      return;
+
+    %user.setBlocked(false);
+    
+    if(isObject(%user.window))
+      GlassLive::openUserWindow(%blid);
+
+    %user.setIcon(%user.realIcon);
+  }
 
   %obj = JettisonObject();
   %obj.set("type", "string", "unblock");
@@ -731,13 +743,6 @@ function GlassLive::userUnblock(%blid) {
       break;
     }
   }
-
-  %user.setBlocked(false);
-
-  if(isObject(%user.window))
-    GlassLive::openUserWindow(%blid);
-
-  %user.setIcon(%user.realIcon);
 
   GlassLive::createFriendList();
 }
@@ -1270,10 +1275,12 @@ function GlassLive::powerButtonPress() {
   %btn = GlassFriendsGui_PowerButton;
 
   if(%btn.on) {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect"))
-      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
-    else
+    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
+      glassMessageBoxYesNo("Disconnect", "Are you sure you want to disconnect from Glass Live?", "GlassLive.noReconnect = true; GlassLive::disconnect(" @ $Glass::Disconnect["Manual"] @ ");");
+    } else {
+      GlassLive.noReconnect = true;
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
+    }
   } else {
     GlassLive::connectToServer();
   }
@@ -2896,6 +2903,9 @@ function GlassLive::createFriendHeader(%name, %isOpen, %color) {
 }
 
 function GlassLive::createFriendSwatch(%name, %blid, %status) {
+  if(%name $= "")
+    %name = "Blockhead" @ %blid;
+
   if(%status $= "online") {
     %color = "210 220 255 255";
     %hcolor = "230 240 255 255";
@@ -3005,6 +3015,9 @@ function GlassLive::createFriendRequest(%name, %blid) {
   %color = "210 210 210 255";
   %hcolor = "230 230 230 255";
 
+  if(%name $= "")
+    %name = "Blockhead" @ %blid;
+
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -3081,6 +3094,9 @@ function GlassLive::createFriendRequest(%name, %blid) {
 function GlassLive::createBlockedSwatch(%name, %blid) {
   %color = "210 210 210 255";
   %hcolor = "230 230 230 255";
+
+  if(%name $= "")
+    %name = "Blockhead" @ %blid;
 
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
