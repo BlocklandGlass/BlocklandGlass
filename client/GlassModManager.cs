@@ -619,6 +619,26 @@ function GlassModManager::renderMyAddons(%this) {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
+        visible = isDefaultAddon(%addon.name);
+        clipToParent = "1";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/blLogo.png";
+        wrap = "0";
+        lockAspectRatio = "0";
+        alignLeft = "0";
+        alignTop = "0";
+        overflowImage = "0";
+        keepCached = "0";
+        mColor = "255 255 255 255";
+        mMultiply = "0";
+     };
+     new GuiBitmapCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "291 7";
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
         visible = %addon.isRTB && !%addon.isBLG;
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
@@ -821,11 +841,40 @@ function GlassModManagerGui_AddonHighlight::onMouseUp(%this) {
 // Colorsets
 //====================================
 
+function GlassModManager::deleteColorset(%this, %colorset) {
+  %name = %colorset.name;
+
+  if(isDefaultAddon(%name)) {
+    error("Will not delete default colorsets.");
+    return;
+  }
+
+  %dir = "Add-Ons/";
+
+  if(!isFile(%dir @ %name @ ".zip")) {
+    if(getFileCount(%dir @ %name @ "/*.cs"))
+      error("Will not delete folders.");
+    else
+      error(%dir @ %name @ ".zip not found.");
+    return;
+  }
+
+  if(GlassSettings.get("MM::Colorset") $= ("Add-Ons/" @ %name @ "/colorSet.txt"))
+    GlassModManager_MyColorsets::def();
+
+  fileDelete(%dir @ %name @ ".zip");
+  GlassModManager::setAddonStatus(%colorset.glassdata.id, "");
+
+  glassMessageBoxOk("Colorset Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
+
+  GlassModManager.schedule(1, populateColorsets);
+}
+
 function GlassModManager::populateColorsets() {
   %this = GlassModManager_MyColorsets;
 
   %this.colorsets = 0;
-  %pattern = "Add-ons/*/colorset.txt";
+  %pattern = "Add-Ons/*/colorSet.txt";
 	%idArrayLen = 0;
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-21);
@@ -835,11 +884,36 @@ function GlassModManager::populateColorsets() {
 
     if(%name !$= "Colorset_Default" && getFileCRC(%file) == -1147879122) continue; //default colorset
 
+    %so = new ScriptObject() {
+      class = "GlassModManager_MyColorset";
+      name = %name;
+      isRTB = isfile("Add-Ons/" @ %name @ "/rtbInfo.txt");
+      isBLG = isfile("Add-Ons/" @ %name @ "/glass.json");
+    };
+
+    if(%so.isBLG) {
+      %buffer = "";
+      %fo = new FileObject();
+      %fo.openforread("Add-Ons/" @ %name @ "/glass.json");
+      while(!%fo.isEOF()) {
+        if(%buffer !$= "") {
+          %buffer = %buffer NL getASCIIString(%fo.readLine());
+        } else {
+          %buffer = getASCIIString(%fo.readLine());
+        }
+      }
+      %fo.close();
+      %fo.delete();
+      jettisonParse(collapseEscape(%buffer));
+      %so.glassdata = $JSON::Value;
+    }
+
     %this.colorsetFile[%this.colorsets] = %file;
     %this.colorsetName[%this.colorsets] = %name;
+    %this.colorsetData[%this.colorsets] = %so;
     %this.colorsets++;
 	}
-
+  
   GlassModManagerGui_MyColorsets.clear();
   %currentY = 10;
   for(%i = 0; %i < %this.colorsets; %i++) {
@@ -892,6 +966,114 @@ function GlassModManager::populateColorsets() {
           clipToParent = "1";
           lockMouse = "0";
        };
+       new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "200 7";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/cross.png";
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+          overflowImage = "0";
+          keepCached = "0";
+          mColor = "255 255 255 255";
+          mMultiply = "0";
+
+          new GuiMouseEventCtrl("GlassModManager_ColorsetDelete") {
+            colorset = %this.colorsetData[%i];
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "16 16";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            lockMouse = "0";
+          };
+       };
+       new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "center";
+          position = "180 7";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = isDefaultAddon(%this.colorsetName[%i]);
+          clipToParent = "1";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/blLogo.png";
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+          overflowImage = "0";
+          keepCached = "0";
+          mColor = "255 255 255 255";
+          mMultiply = "0";
+       };
+     new GuiBitmapCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "180 7";
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = %this.colorsetData[%i].isRTB && !%this.colorsetData[%i].isBLG;
+        clipToParent = "1";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
+        wrap = "0";
+        lockAspectRatio = "0";
+        alignLeft = "0";
+        alignTop = "0";
+        overflowImage = "0";
+        keepCached = "0";
+        mColor = "255 255 255 255";
+        mMultiply = "0";
+     };
+     new GuiBitmapCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "180 7";
+        extent = "16 16";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = %this.colorsetData[%i].isBLG;
+        clipToParent = "1";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo.png";
+        wrap = "0";
+        lockAspectRatio = "0";
+        alignLeft = "0";
+        alignTop = "0";
+        overflowImage = "0";
+        keepCached = "0";
+        mColor = "255 255 255 255";
+        mMultiply = "0";
+
+        new GuiMouseEventCtrl("GlassModManager_ColorsetRedirect") {
+          colorset = %this.colorsetData[%i];
+          profile = "GuiDefaultProfile";
+          horizSizing = "right";
+          vertSizing = "bottom";
+          position = "0 0";
+          extent = "16 16";
+          minExtent = "8 2";
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+          lockMouse = "0";
+        };
+     };
     };
     %currentY += 35;
     GlassModManagerGui_MyColorsets.add(%cs);
@@ -899,6 +1081,33 @@ function GlassModManager::populateColorsets() {
     GlassModManagerGui_MyColorsets.setVisible(true);
     GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }
+}
+
+function GlassModManager_ColorsetDelete::onMouseUp(%this) {
+  %name = %this.colorset.name;
+
+  if(isDefaultAddon(%name)) {
+    glassMessageBoxOk("Delete Colorset", "Sorry, you may not delete the default colorset from the Glass Mod Manager.");
+    return;
+  }
+
+  %dir = "Add-Ons/";
+
+  if(!isFile(%dir @ %name @ ".zip")) {
+    if(getFileCount(%dir @ %name @ "/*.cs")) {
+      glassMessageBoxOk("Delete Colorset", "Sorry, you may not delete colorsets packaged as folders from the Glass Mod Manager.");
+    }
+    return;
+  }
+
+  glassMessageBoxYesNo("Delete Colorset", "Are you sure you want to delete <font:verdana bold:13>" @ %name, "GlassModManager.deleteColorset(\"" @ %this.colorset @ "\");");
+}
+
+function GlassModManager_ColorsetRedirect::onMouseUp(%this) {
+  $Glass::MM_PreviousPage = -1;
+  $Glass::MM_PreviousBoard = -1;
+  GlassModManagerGui::setPane(1);
+  GlassModManagerGui::fetchAndRenderAddon(%this.colorset.glassdata.id).action = "render";
 }
 
 function GlassModManager_ColorsetButton::onMouseDown(%this) {
@@ -931,10 +1140,17 @@ function GlassModManager_MyColorsets::init() {
 }
 
 function GlassModManager_MyColorsets::def() {
+  GlassSettings.update("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
+
+  if(!isFile(GlassSettings.get("MM::Colorset"))) {
+    error(%default SPC "not found.");
+    return;
+  }
+
   GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
+  GlassModManager::populateColorsets();
   filecopy("config/server/colorset.txt", "config/server/colorset.old");
   filecopy_hack(GlassSettings.get("MM::Colorset"), "config/server/colorset.txt");
-  GlassModManager::populateColorsets();
 }
 
 function GlassModManager_MyColorsets::apply() {

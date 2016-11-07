@@ -7,7 +7,7 @@ function GlassSettings::init(%context) {
 
   if(%context $= "client") {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
-    GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/System_BlocklandGlass/colorset_default.txt");
+    GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
     // GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
 
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change

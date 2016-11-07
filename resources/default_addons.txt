@@ -16,6 +16,7 @@ Brick_Poster_8x
 Brick_Teledoor
 Brick_Treasure_Chest
 Brick_V15
+Colorset_Default
 Emote_Alarm
 Emote_Confusion
 Emote_Hate
