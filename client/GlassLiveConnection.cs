@@ -551,7 +551,13 @@ function GlassLiveConnection::onLine(%this, %line) {
         %timeout = 5000;
       }
 
-      GlassNotificationManager::newNotification("Glass Live" SPC (%planned ? "Planned" : "Unplanned") SPC "Shutdown", "Reason:" SPC %reason, "roadworks", 1);
+      if(%reason $= "") {
+        %text = "Glass Live has gone offline!";
+      } else {
+        %text = "Glass Live has gone offline: " @ %reason;
+      }
+
+      GlassNotificationManager::newNotification((%planned ? "Planned" : "Unplanned") SPC "Shutdown", %text, "roadworks", false);
 
       alxPlay(GlassBellAudio);
 
