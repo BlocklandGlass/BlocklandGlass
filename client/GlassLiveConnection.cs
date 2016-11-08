@@ -379,10 +379,10 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomBanned": //we got banned from a room
       if(%data.all) {
         //we got banned from all rooms
-        glassMessageBoxOk("Banned", "You've been banned from all chatrooms for <font:verdana bold:13>" @ %data.duration @ "<font:verdana:13> seconds:<br><br><font:verdana bold:13>" @ %data.reason);
+        glassMessageBoxOk("Banned", "You've been banned from all chatrooms for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ "<font:verdana:13>:<br><br><font:verdana bold:13>" @ %data.reason);
       } else {
         %room = GlassLiveRoom::getFromId(%data.id);
-        glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>" @ %room.name @ "<font:verdana:13> for <font:verdana bold:13>" @ %data.duration @ "<font:verdana:13> seconds:<br><br><font:verdana bold:13>" @ %data.reason);
+        glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>" @ %room.name @ "<font:verdana:13> for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ "<font:verdana:13>:<br><br><font:verdana bold:13>" @ %data.reason);
       }
 
 
@@ -590,12 +590,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "kicked": //we got kicked from all service
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<br><br>\"" @ %data.reason @ "\"");
+      glassMessageBoxOk("Kicked", "You've been kicked from Glass Live:<font:verdana bold:13><br><br>" @ %data.reason);
       %this.disconnect();
 
     case "barred": //we're not allowed to use glass live
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Barred", "You've been barred from the Glass Live service for " @ %data.duration @ " seconds:<br><br>\"" @ %data.reason @ "\"");
+      glassMessageBoxOk("Barred", "You've been barred from the Glass Live service for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ ":<br><br>" @ %data.reason);
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
 

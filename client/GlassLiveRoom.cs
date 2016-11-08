@@ -116,7 +116,7 @@ function GlassLiveRoom::createView(%this, %window) {
 
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  if(GlassSettings.get("Live::ShowJoinLeave")) {
+  if(GlassSettings.get("Live::ShowJoinLeave") && !%user.isBlocked()) {
     %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
     %this.pushText(%text);
   }
@@ -128,7 +128,9 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
 
   %this.removeUser(%blid);
 
-  if(GlassSettings.get("Live::ShowJoinLeave")) {
+  %user = GlassLiveUser::getFromBlid(%blid);
+
+  if(GlassSettings.get("Live::ShowJoinLeave") && !%user.isBlocked()) {
     switch(%reason) {
       case -1:
         %text = "No Reason";
@@ -152,7 +154,6 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
         %text = "Unhandled: " @ %reason;
     }
 
-    %user = GlassLiveUser::getFromBlid(%blid);
     if(%user == false)
       %user = "BLID_" @ %blid; // todo local caching
     else
