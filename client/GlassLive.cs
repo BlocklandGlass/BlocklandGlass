@@ -699,6 +699,8 @@ function GlassLive::userBlock(%blid) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
+  %blockedIcon = "cancel";
+
   if(isObject(%user)) {
     if(%user.isBlocked())
       return;
@@ -708,7 +710,7 @@ function GlassLive::userBlock(%blid) {
     if(isObject(%user.window))
       GlassLive::openUserWindow(%blid);
 
-    %user.setIcon("wall");
+    %user.setIcon(%blockedIcon);
 
     if(isObject(%user.getMessageGui())) {
       %user.getMessageGui().input.setValue("");
