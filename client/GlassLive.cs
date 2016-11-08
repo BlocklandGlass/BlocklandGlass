@@ -688,6 +688,11 @@ function GlassLive::userBlock(%blid) {
       GlassLive::openUserWindow(%blid);
 
     %user.setIcon("wall");
+
+    if(isObject(%user.getMessageGui())) {
+      %user.getMessageGui().input.setValue("");
+      %user.getMessageGui().input.enabled = false;
+    }
   }
 
   %obj = JettisonObject();
@@ -728,6 +733,9 @@ function GlassLive::userUnblock(%blid) {
       GlassLive::openUserWindow(%blid);
 
     %user.setIcon(%user.realIcon);
+
+    if(isObject(%user.getMessageGui()))
+      %user.getMessageGui().input.enabled = true;
   }
 
   %obj = JettisonObject();
