@@ -148,9 +148,12 @@ function GlassLiveUser::setIcon(%this, %icon, %roomid) {
       if(isObject(%room))
         %room.renderUserList();
     } else {
-      %room = GlassLiveRoom::getFromId(GlassChatroomWindow.activeTab.id);
-      if(isObject(%room))
-        %room.renderUserList();
+      for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+        %window = GlassOverlayGui.getObject(%i);
+        if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassGroupchatWindow") {
+          %window.activeTab.room.renderUserList();
+        }
+      }
     }
 
     if(%this.isFriend())

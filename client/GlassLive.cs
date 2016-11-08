@@ -498,6 +498,27 @@ function GlassLive::checkPendingFriendRequests() {
 //= 3.2.0 things that we'll organize later                        =
 //================================================================
 
+function secondsToTimeString(%seconds) { // Crown
+  %total = %seconds * 60;
+  
+  %days = mFloor(%total / 86400);
+  %remander = %total % 86400;
+
+  %hours = mFloor(%remander / 3600);
+  %remander = %remander % 3600;
+
+  %minutes = mFloor(%remander / 60);
+
+  if(%days != 1)
+    %s = "s";
+  if(%hours != 1)
+    %hs = "s";
+  if(%minutes != 1)
+    %ms = "s";
+ 
+  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ ", and" SPC %minutes SPC "minute" @ %ms;
+}
+
 function GlassLive_StatusPopUp::ddsOpenMenu(%this) {
   parent::ddsOpenMenu(%this);
 
@@ -534,13 +555,13 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
 
 function GlassLive::setFriendStatus(%blid, %status) {
   %uo = GlassLiveUser::getFromBlid(%blid);
-  echo("Set Status: " @ %status);
+  // echo("Set Status: " @ %status);
   %uo.setStatus(%status);
-  echo("Status: " @ %uo.getStatus());
+  // echo("Status: " @ %uo.getStatus());
 
   GlassLive::createFriendList();
 
-  if(GlassSettings.get("Live::ShowFriendStatus")) {
+  if(GlassSettings.get("Live::ShowFriendStatus") && !%uo.isBlocked()) {
     if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
       %online = (%uo.getStatus() $= "offline" ? false : true);
       %sound = (%online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio");
@@ -688,6 +709,11 @@ function GlassLive::userBlock(%blid) {
       GlassLive::openUserWindow(%blid);
 
     %user.setIcon("wall");
+
+    if(isObject(%user.getMessageGui())) {
+      %user.getMessageGui().input.setValue("");
+      %user.getMessageGui().input.enabled = false;
+    }
   }
 
   %obj = JettisonObject();
@@ -729,6 +755,9 @@ function GlassLive::userUnblock(%blid) {
       GlassLive::openUserWindow(%blid);
 
     %user.setIcon(%user.realIcon);
+
+    if(isObject(%user.getMessageGui()))
+      %user.getMessageGui().input.enabled = true;
   }
 
   %obj = JettisonObject();

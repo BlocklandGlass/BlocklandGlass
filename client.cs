@@ -88,41 +88,32 @@ function Glass::execClient() {
 	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
 }
 
-function clientCmdGlassHandshake(%ver, %tries) {
+function clientCmdGlassHandshake(%ver) {
   if(%ver $= "")
     return;
 
   if(ServerConnection.hasGlass $= "") {
-    if(isObject(NewChatSO)) {
-      echo("\c4Glass Handshake Received...");
+    echo("\c4Glass Handshake Received...");
 
-      %ver = expandEscape(stripMlControlChars(%ver));
+    %ver = expandEscape(stripMlControlChars(%ver));
 
-      echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
+    echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
 
-      %semver = semanticVersionCompare(%ver, Glass.version);
+    %semver = semanticVersionCompare(%ver, Glass.version);
 
-      switch(%semver) {
-        case 0:
-          echo("\c4Glass Server <-> Glass Client version match.");
-        case 1:
-          NewChatSO.schedule(500, addLine, "Your version of \c3Blockland Glass\c0 is more older than the server's - consider checking for updates.");
-
-          echo("\c2Glass Server -> Glass Client version mismatch.");
-        case 2:
-          NewChatSO.schedule(500, addLine, "Your version of \c3Blockland Glass\c0 is more recent than the server's - consider informing the host.");
-
-          echo("\c2Glass Client -> Glass Server version mismatch.");
-      }
-
-      ServerConnection.hasGlass = true;
-      ServerConnection._glassVersion = %ver;
-
-      commandToServer('GlassHandshake', Glass.version);
-    } else {
-      if(%tries <= 5)
-        schedule(1000, 0, clientCmdGlassHandshake, %ver, %tries++);
+    switch(%semver) {
+      case 0:
+        echo("\c4Glass Server <-> Glass Client version match.");
+      case 1:
+        echo("\c2Glass Server -> Glass Client version mismatch.");
+      case 2:
+        echo("\c2Glass Client -> Glass Server version mismatch.");
     }
+
+    ServerConnection.hasGlass = true;
+    ServerConnection._glassVersion = %ver;
+
+    commandToServer('GlassHandshake', Glass.version);
   }
 }
 
