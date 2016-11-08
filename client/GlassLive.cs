@@ -707,6 +707,7 @@ function GlassLive::userBlock(%blid) {
   GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
 
   GlassLive::createFriendList();
+  GlassLive::onMessageNotification("You have blocked " @ %user.username, %blid);
 }
 
 function GlassLive::userUnblock(%blid) {
@@ -746,6 +747,7 @@ function GlassLive::userUnblock(%blid) {
   }
 
   GlassLive::createFriendList();
+  GlassLive::onMessageNotification("You have unblocked " @ %user.username, %blid);
 }
 
 //================================================================
