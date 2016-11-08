@@ -532,12 +532,13 @@ function GlassLive_StatusPopUp::updateStatus(%this) {
   schedule(150, 0, eval, GlassLive_StatusPopUp @ ".open = false;");
 }
 
-function GlassLive::friendOnline(%this, %blid, %status) {
+function GlassLive::setFriendStatus(%blid, %status) {
   %uo = GlassLiveUser::getFromBlid(%blid);
+  echo("Set Status: " @ %status);
+  %uo.setStatus(%status);
+  echo("Status: " @ %uo.getStatus());
 
   GlassLive::createFriendList();
-
-  %uo.setStatus(%status);
 
   if(GlassSettings.get("Live::ShowFriendStatus")) {
     if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
@@ -556,6 +557,8 @@ function GlassLive::friendOnline(%this, %blid, %status) {
         %icon = "status_away";
       case "offline":
         %icon = "status_offline";
+      default:
+        %icon = "user";
     }
 
     GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
@@ -1105,6 +1108,8 @@ function GlassLive::sendMessage(%blid, %msg) {
 
   if(GlassSettings.get("Live::MessageSound"))
     alxPlay(GlassUserMsgSentAudio);
+
+  %obj.delete();
 }
 
 function GlassLive::sendFriendRequest(%blid) {
