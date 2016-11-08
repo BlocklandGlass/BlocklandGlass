@@ -1582,8 +1582,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
       if(%this.online)
         GlassLive::openDirectMessage(%this.blid);
     } else {
-      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window)) {
+        %window.deleteAll();
         %window.delete();
+      }
       else
         GlassLive::openUserWindow(%this.blid);
     }
