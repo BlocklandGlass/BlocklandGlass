@@ -2120,7 +2120,7 @@ function GlassChatroomWindow::setTabsVisible(%this, %toggle) {
     %extent = "455 290";
   } else {
     %position = "0 35";
-    %extent = "475 265";
+    %extent = "475 290";
   }
 
   %this.extent = %extent;
