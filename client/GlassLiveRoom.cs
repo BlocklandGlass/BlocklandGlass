@@ -159,7 +159,8 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
     else
       %user = %user.username;
 
-    %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
+    //%text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
+    %text = "<font:verdana:12><color:666666>" @ %user @ " has exited the room.";
     %this.pushText(%text);
   }
 

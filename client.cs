@@ -18,9 +18,7 @@ function Glass::execClient() {
 	exec("./common/GlassSettings.cs");
 	GlassSettings::init("client");
 
-  if(isFile("config/BLG/client/mm.cs")) {
-    exec("./runonce/settingConversion.cs");
-  }
+  exec("./runonce/settingConversion.cs");
 
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/jettison.cs");
