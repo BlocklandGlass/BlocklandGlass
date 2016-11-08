@@ -500,7 +500,7 @@ function GlassLive::checkPendingFriendRequests() {
 
 function secondsToTimeString(%seconds) { // Crown
   %total = %seconds * 60;
-  
+
   %days = mFloor(%total / 86400);
   %remander = %total % 86400;
 
@@ -515,7 +515,7 @@ function secondsToTimeString(%seconds) { // Crown
     %hs = "s";
   if(%minutes != 1)
     %ms = "s";
- 
+
   return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ ", and" SPC %minutes SPC "minute" @ %ms;
 }
 
@@ -1562,8 +1562,8 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
     } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
       glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
       GlassLive::friendAccept(%this.blid);
-    // } else {
-      // GlassLive::openUserWindow(%this.blid);
+    } else {
+      GlassLive::openUserWindow(%this.blid);
     }
   } else if(%this.type $= "blocked") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
