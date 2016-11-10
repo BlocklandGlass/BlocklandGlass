@@ -246,9 +246,9 @@ function GlassModManagerTCP::onDone(%this, %error) {
             %branch = %ret.boards.value[%i];
             %name = %branch.name;
             %id = %branch.id;
-            %bg = %branch.video;
+            %icon = %branch.icon;
             %desc = %branch.description;
-            %str = %str @ %name TAB %id TAB %desc TAB %bg NL "";
+            %str = %str @ %name TAB %id TAB %desc TAB %icon NL "";
           }
           GlassModManagerGui::renderBoards(trim(%str));
 
@@ -913,7 +913,7 @@ function GlassModManager::populateColorsets() {
     %this.colorsetData[%this.colorsets] = %so;
     %this.colorsets++;
 	}
-  
+
   GlassModManagerGui_MyColorsets.clear();
   %currentY = 10;
   for(%i = 0; %i < %this.colorsets; %i++) {
@@ -1291,22 +1291,22 @@ function GlassModManagerQueue::next(%this) {
 
 function GlassModManagerQueue_Done(%this) {
   echo("Downloaded " @ %this.filename);
-  
+
   GlassModManager::setAddonStatus(%this.addonId, "installed");
-  
+
   %name = "GlassModManagerGui_DlButton_" @ %this.addonId @ "_" @ %this.branchId;
   if(isObject(%name)) {
     %name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
     GlassModManagerGui::fetchAndRenderAddon(%this.addonId).action = "render";
   }
-  
+
   %file = getsubstr(%this.filename, 0, strlen(%this.filename) - 4);
-  
+
   setModPaths(getModPaths());
-  
+
   if(getsubstr(strlwr(%file), 0, 7) $= "client_")
     exec("Add-Ons/" @ %file @ "/client.cs");
-  
+
   GlassModManagerQueue.remove(%this);
   GlassModManagerQueue.next();
 }
@@ -1329,25 +1329,25 @@ package GlassModManager {
     if(strpos(%url, "glass://") != -1) {
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
-      
+
       if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
         %board = getsubstr(%link, 6, strpos(%link, "&")-6);
         %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
       } else if(strpos(%link, "aid-") != -1) {
         $Glass::MM_PreviousPage = -1;
         $Glass::MM_PreviousBoard = -1;
-        
+
         %id = getsubstr(%link, 4, strlen(%link)-4);
       }
     } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=") != -1) {
       $Glass::MM_PreviousPage = -1;
       $Glass::MM_PreviousBoard = -1;
-      
+
       %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
     } else {
       return parent::onURL(%this, %url);
     }
-  
+
     if(GlassModManagerGui.getCount() > 0) {
       GlassModManagerGui.firstWake = true;
       GlassOverlayGui.add(GlassModManagerGui_Window);
@@ -1358,15 +1358,15 @@ package GlassModManager {
     }
 
     GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
-    
+
     if(%id+0 $= %id || %id > 0) {
       GlassModManagerGui::fetchAndRenderAddon(%id).action = "render";
     }
-    
+
     if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
       GlassModManagerGui::fetchBoard(%board, %page);
     }
-    
+
     if(%link $= "home") {
       GlassModManagerGui::loadContext("home");
     } else if(%link $= "boards") {

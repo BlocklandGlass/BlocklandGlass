@@ -20,7 +20,7 @@ function Glass::execServer() {
     exec("./runonce/settingConversion.cs");
   }
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
 	// exec("./support/Support_SemVer.cs");
