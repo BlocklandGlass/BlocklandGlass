@@ -38,7 +38,6 @@ function GlassModManagerGui::renderBoards(%boards) {
     %id = getField(%board, 1);
     %desc = getField(%board, 2);
     %icon = getField(%board, 3);
-    echo(%board);
 
     %contain = GlassModManagerGui::createBoardButton(%name, %icon, %id);
     %contain.position = 10 SPC %yPos;
