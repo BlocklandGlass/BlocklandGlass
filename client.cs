@@ -137,7 +137,7 @@ package GlassMainMenu {
         enabled = "1";
         visible = "1";
         clipToParent = "1";
-        text = "Glass v" @ Glass.version;
+        text = (Glass.dev ? "\c4" : "") @ "Glass v" @ Glass.version;
         maxLength = "255";
       };
 
