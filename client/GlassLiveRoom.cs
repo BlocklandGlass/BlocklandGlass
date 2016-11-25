@@ -388,7 +388,6 @@ function GlassLiveRoom::getOrderedUserList(%this) {
 
 function GlassLiveRoom::renderUserList(%this) {
   %userSwatch = %this.view.userswatch;
-  %userSwatch.deleteAll();
 
   %orderedList = %this.getOrderedUserList();
 
@@ -413,52 +412,70 @@ function GlassLiveRoom::renderUserList(%this) {
     if(%icon $= "")
       %icon = "help";
 
-    // TODO GuiBitmapButtonCtrl
-    %swatch = new GuiSwatchCtrl() {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "3 3";
-      extent = "110 22";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-    };
+    if(!isObject(%userSwatch.blid[%user.blid])) {
+      %swatch = new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 3";
+        extent = "110 22";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "0 0 0 0";
+      };
 
-    %swatch.icon = new GuiBitmapCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      extent = "16 16";
-      position = "1 3";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
-    };
+      %swatch.icon = new GuiBitmapCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        extent = "16 16";
+        position = "1 3";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
+        icon = %icon;
+        mKeepCached = "1";
+      };
 
-    %swatch.text = new GuiTextCtrl() {
-      profile = "GlassFriendTextProfile";
-      text = collapseEscape("\\c" @ %colorCode) @ %user.username;
-      rawtext = %user.username;
-      blid = %user.blid;
-      extent = "45 18";
-      position = "22 12";
-    };
+      %swatch.text = new GuiTextCtrl() {
+        profile = "GlassFriendTextProfile";
+        text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+        rawtext = %user.username;
+        blid = %user.blid;
+        extent = "45 18";
+        position = "22 12";
+      };
 
-    %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = %swatch.extent;
+      %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %swatch.extent;
 
-      swatch = %swatch;
-      user = %user;
-    };
+        swatch = %swatch;
+        user = %user;
+      };
 
-    %swatch.add(%swatch.icon);
-    %swatch.add(%swatch.text);
-    %swatch.add(%swatch.mouse);
-    %swatch.text.centerY();
+      %swatch.add(%swatch.icon);
+      %swatch.add(%swatch.text);
+      %swatch.add(%swatch.mouse);
+      %swatch.text.centerY();
+      %userSwatch.blid[%user.blid] = %swatch;
+    } else {
+      %swatch = %userSwatch.blid[%user.blid];
+      if(%swatch.icon.icon !$= %icon) {
+        %swatch.icon.icon = %icon;
+        %swatch.icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+      }
+
+      %text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+      if(%swatch.text.text !$= %text) {
+        %swatch.text.setText(%text);
+      }
+    }
+
+    %swatch.used = true;
+
     if(%last !$= "") {
       %swatch.placeBelow(%last, 0);
     }
@@ -466,6 +483,18 @@ function GlassLiveRoom::renderUserList(%this) {
     %userSwatch.add(%swatch);
 
     %this.userListSwatch[%user.blid] = %swatch;
+  }
+
+  for(%i = 0; %i < %userSwatch.getCount(); %i++) {
+    %obj = %userSwatch.getObject(%i);
+    if(!%obj.used) {
+      %obj.deleteAll();
+      %obj.delete();
+      %i--;
+      continue;
+    } else {
+      %obj.used = false;
+    }
   }
 
   // %userSwatch.getGroup().scrollToTop();
