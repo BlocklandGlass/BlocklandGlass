@@ -386,7 +386,13 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   return trim(%idList);
 }
 
-function GlassLiveRoom::renderUserList(%this) {
+function GlassLiveRoom::renderUserList(%this, %do) {
+  cancel(%this.renderUserSch);
+  if(!%do) {
+    %this.renderUserSch = %this.schedule(100, renderUserList, true);
+    return;
+  }
+
   %userSwatch = %this.view.userswatch;
 
   %orderedList = %this.getOrderedUserList();
