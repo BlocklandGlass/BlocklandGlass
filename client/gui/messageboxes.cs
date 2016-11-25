@@ -7,8 +7,8 @@ function glassMessageBoxOk(%title, %description, %command) {
   MBOKFrame.old["profile"] = MBOKFrame.profile;
   MBOKFrame.old["bitmap"] = MBOKFrame.getObject(1).bitmap;
 
-  MBOKFrame.getObject(1).bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-  MBOKFrame.profile = "GlassWindowProfile";
+  MBOKFrame.getObject(1).setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn");
+  MBOKFrame.setProfile("GlassWindowProfile");
   
   messageBoxOk(%title, "<font:verdana:13>" @ %description, %command);
 }
@@ -22,9 +22,9 @@ function glassMessageBoxYesNo(%title, %description, %command) {
   MBYesNoFrame.old["profile"] = MBOKFrame.profile;
   MBYesNoFrame.old["bitmap"] = MBOKFrame.getObject(1).bitmap;
 
-  MBYesNoFrame.getObject(1).bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-  MBYesNoFrame.getObject(2).bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-  MBYesNoFrame.profile = "GlassWindowProfile";
+  MBYesNoFrame.getObject(1).setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn");
+  MBYesNoFrame.getObject(2).setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn");
+  MBYesNoFrame.setProfile("GlassWindowProfile");
   
   messageBoxYesNo(%title, "<font:verdana:13>" @ %description, %command);
 }
@@ -37,16 +37,16 @@ package GlassMessageBoxesPackage {
     if(%dlg $= "MessageBoxOkDlg" && MBOKFrame.isGlass) {
       MBOKFrame.isGlass = false;
       
-      MBOKFrame.profile = MBOKFrame.old["profile"];
-      MBOKFrame.getObject(1).bitmap = MBOKFrame.old["bitmap"];
+      MBOKFrame.setProfile(MBOKFrame.old["profile"]);
+      MBOKFrame.getObject(1).setBitmap(MBOKFrame.old["bitmap"]);
     }
     
     if(%dlg $= "MessageBoxYesNoDlg" && MBYesNoFrame.isGlass) {
       MBYesNoFrame.isGlass = false;
       
-      MBYesNoFrame.profile = MBYesNoFrame.old["profile"];
-      MBYesNoFrame.getObject(1).bitmap = MBYesNoFrame.old["bitmap"];
-      MBYesNoFrame.getObject(2).bitmap = MBYesNoFrame.old["bitmap"];
+      MBYesNoFrame.setProfile(MBYesNoFrame.old["profile"]);
+      MBYesNoFrame.getObject(1).setBitmap(MBYesNoFrame.old["bitmap"]);
+      MBYesNoFrame.getObject(2).setBitmap(MBYesNoFrame.old["bitmap"]);
     }
   }
   
