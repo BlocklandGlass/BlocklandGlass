@@ -29,6 +29,10 @@ function Glass::init(%context) {
 		}
 	}
 
+	if(isFile("Add-Ons/System_BlocklandGlass/dev/core.cs")) {
+		exec("Add-Ons/System_BlocklandGlass/dev/core.cs");
+	}
+
 	if(%context $= "client") {
 		Glass::execClient();
 	} else {
