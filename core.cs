@@ -25,7 +25,7 @@ function Glass::init(%context) {
 			Glass.liveAddress = %config.liveAddress;
 			Glass.livePort = %config.livePort;
 
-			Glass.devMode = true;
+			Glass.dev = true;
 		}
 	}
 

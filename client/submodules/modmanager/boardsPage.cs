@@ -36,10 +36,25 @@ function GlassModManagerGui::renderBoards(%boards) {
     %board = getLine(%boards, %i);
     %name = getField(%board, 0);
     %id = getField(%board, 1);
-    %desc = getField(%board, 2);
-    %icon = getField(%board, 3);
+    %desc = getField(%desc, 2);
+    %img = getField(%desc, 3);
 
-    %contain = GlassModManagerGui::createBoardButton(%name, %icon, %id);
+    %star["Client Mods"] = "script";
+    %star["Server Mods"] = "server";
+    %star["Bricks"] = "construction";
+    %star["Cosmetics"] = "emotion_cool"; // sry i had to
+    %star["Gamemodes"] = "board_game";
+    %star["Tools"] = "toolbox";
+    %star["Weapons"] = "gun";
+    %star["Colorsets"] = "paintcan";
+    %star["Vehicles"] = "car";
+    %star["Bargain Bin"] = "bin";
+    %star["Sounds"] = "sound";
+
+    %star = strLen(%star[%name]) ? %star[%name] : "ask_and_answer";
+
+    %contain = GlassModManagerGui::createBoardButton(%name, %star, %id);
+
     %contain.position = 10 SPC %yPos;
     %contain.text.centerY();
 
