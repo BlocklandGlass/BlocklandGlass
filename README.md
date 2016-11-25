@@ -28,7 +28,7 @@ If you would like to suggest a feature or change, feel free to also submit it as
 
 _master_ is the current live branch
 
-_hotfix_ for patch changes, x.x.1
+_fix_ for patch changes, x.x.1
 
 _development_ for minor version, x.1.x
 
@@ -36,4 +36,4 @@ _feature_ for major version, 1.x.x
 
 Feature should be merged in to development after it has a self-contained new feature. After reaching development, the new feature should be integrated with the rest of the project, tweaking pre-existing features to co-exist and work with the new feature.
 
-Hotfix is should contain non-released fixes to the currently released version. It should be merged in to master first, then master merged to development and feature.
+Fix should contain non-released fixes to the currently released version. It should be merged in to master first, then master merged to development and feature.
