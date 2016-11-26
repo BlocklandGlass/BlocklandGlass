@@ -116,7 +116,7 @@ function GlassLiveRoom::createView(%this, %window) {
 
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
-  if(GlassSettings.get("Live::ShowJoinLeave") && !%user.isBlocked()) {
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
     %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
     %this.pushText(%text);
   }
@@ -130,7 +130,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  if(GlassSettings.get("Live::ShowJoinLeave") && !%user.isBlocked()) {
+  if(GlassSettings.get("Live::ShowJoinLeave")) {
     switch(%reason) {
       case -1:
         %text = "No Reason";

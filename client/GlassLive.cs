@@ -65,7 +65,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
-  // GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
+  GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
 
   // GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
@@ -73,19 +73,28 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomShowBlocked", "Show blocked users", "Chatroom", "checkbox");
 
   GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageAnyone", "Allow messages from anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
     %box.setValue(GlassSettings.get("Live::" @ %setting));
+  }
+
+  %settings = "UseDefault LiveSearch";
+
+  for(%i = 0; %i < getWordCount(%settings); %i++) {
+    %setting = getWord(%settings, %i);
+    %box = "GlassModManagerGui_Prefs_" @ %setting;
+    %box.setValue(GlassSettings.get("MM::" @ %setting));
   }
 }
 

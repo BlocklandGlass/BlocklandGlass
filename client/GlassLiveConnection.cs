@@ -324,7 +324,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
         %senderUser = GlassLiveUser::getFromBlid(%senderblid);
 
-        if(%senderUser.isBlocked())
+        if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked())
           return;
 
         %room.pushMessage(%senderUser, %msg, %data);

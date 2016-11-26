@@ -8,7 +8,7 @@ function GlassSettings::init(%context) {
   if(%context $= "client") {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
-    // GlassSettings.registerSetting("client", "MM::LiveSearch", true, "GlassModManager::updateLiveSearch");
+    GlassSettings.registerSetting("client", "MM::LiveSearch", true);
 
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
@@ -20,6 +20,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
+    GlassSettings.registerSetting("client", "Live::RoomShowBlocked", true);
     GlassSettings.registerSetting("client", "Live::AutoJoinRoom", true);
     // GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
     GlassSettings.registerSetting("client", "Live::RoomNotification", false); // joined room / left room notifications
