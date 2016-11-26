@@ -10748,15 +10748,15 @@ new GuiControl(GlassModManagerGui) {
                   enabled = "1";
                   visible = "1";
                   clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/trans.png";
+                  bitmap = "Add-Ons/System_BlocklandGlass/image/trans.png";
                   wrap = "1";
                   lockAspectRatio = "0";
                   alignLeft = "0";
                   alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 64";
-                  mMultiply = "0";
+                  overflowImage = "1";
+                  keepCached = "1";
+                  mColor = "64 64 64 255";
+                  mMultiply = "1";
 
                   new GuiSwatchCtrl() {
                      profile = "GuiDefaultProfile";
