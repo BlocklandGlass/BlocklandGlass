@@ -123,10 +123,29 @@ function GlassLiveUser::canSendMessage(%this) {
   if(%this.isAdmin() || %this.isMod() || %this.isBot())
     return true;
 
+  //%me = GlassLiveUser::getFromBlid(getNumKeyId()); //admins must receive all
+  //if(%me.isAdmin() || %me.isMod())
+  //  return true;
+
   if(%this.isBlocked())
     return false;
 
-  return true;
+  if(%this.isFriend())
+    return true;
+
+  //random user, default to setting
+  if(GlassSettings.get("Live::MessageAnyone")) {
+    return true;
+  } else {
+    //infrom user that this user is private
+    %obj = JettisonObject();
+    %obj.set("type", "string", "messagePrivate");
+    %obj.set("target", "string", %this.blid);
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
+    return false;
+  }
 }
 
 function GlassLiveUser::setIcon(%this, %icon, %roomid) {

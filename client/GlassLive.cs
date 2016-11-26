@@ -72,15 +72,14 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
-  // GlassSettings.drawSetting("Live::RoomAutoJoin", "Auto Join Room", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
 
   GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
-  // GlassSettings.drawSetting("Live::MessageAnyone", "DM Anyone", "Direct Messenging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageAnyone", "Allow messages from anyone", "Direct Messenging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
