@@ -224,7 +224,10 @@ function GlassOverlayGui::onWake(%this) {
     if(%window.getName() $= "GlassChatroomWindow") {
       if(isObject(%window.activeTab)) {
         %tab = %window.activeTab;
-        %tab.chattext.forceReflow();
+        if(%tab.chattext.didUpdate) {
+          %tab.chattext.forceReflow();
+          %tab.chattext.didUpdate = false;
+        }
         %tab.scrollSwatch.verticalMatchChildren(0, 2);
         %tab.scrollSwatch.setVisible(true);
 

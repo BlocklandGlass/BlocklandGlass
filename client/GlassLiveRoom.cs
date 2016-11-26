@@ -315,6 +315,8 @@ function GlassLiveRoom::pushText(%this, %msg) {
   %chatroom.chattext.setValue(%val);
   if(GlassOverlayGui.isAwake()) {
     %chatroom.chattext.forceReflow();
+  } else {
+    %chatroom.chattext.didUpdate = true;
   }
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
