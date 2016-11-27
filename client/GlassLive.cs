@@ -755,10 +755,15 @@ function GlassLive::userBlock(%blid) {
 
   GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
 
+  %username = %user.username;
+
+  if(%username $= "")
+    %username = "Blockhead" @ %blid;
+
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have blocked " @ %user.username @ ".", %blid);
+  GlassLive::onMessageNotification("You have blocked " @ %username @ ".", %blid);
   if(isObject(%room = GlassChatroomWindow.activeTab.room))
-    %room.pushText("You have blocked " @ %user.username @ ".");
+    %room.pushText("You have blocked " @ %username @ ".");
 }
 
 function GlassLive::userUnblock(%blid) {
@@ -799,11 +804,16 @@ function GlassLive::userUnblock(%blid) {
       break;
     }
   }
+  
+  %username = %user.username;
+
+  if(%username $= "")
+    %username = "Blockhead" @ %blid;
 
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have unblocked " @ %user.username @ ".", %blid);
+  GlassLive::onMessageNotification("You have unblocked " @ %username @ ".", %blid);
   if(isObject(%room = GlassChatroomWindow.activeTab.room))
-    %room.pushText("You have unblocked " @ %user.username @ ".");
+    %room.pushText("You have unblocked " @ %username @ ".");
 }
 
 //================================================================
