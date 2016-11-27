@@ -1,14 +1,15 @@
 function GlassSnowflakes::doSnow(%parent, %amount) {
-  if(isObject(GlassSnowflakes))
-    GlassSnowflakes.delete();
+  if(!isObject(GlassSnowflakes)) {
+    %x = getWord(getRes(), 0);
+    %y = getWord(getRes(), 1);
 
-  new ScriptObject(GlassSnowflakes) {
-    container = %parent;
-    count = %amount;
-    width = getWord(getRes(), 0);
-    height = getWord(getRes(), 1);
-  };
-  //GlassSnowflakes.tick(); //handled back packages
+    new ScriptObject(GlassSnowflakes) {
+      container = %parent;
+      count = %amount;
+      width = %x;
+      height = %y;
+    };
+  }
 }
 
 function GlassSnowflakes::newFlake(%this) {
