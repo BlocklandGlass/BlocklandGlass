@@ -268,14 +268,14 @@ package GlassNotificationManager {
 
     GlassNotificationManager.refocus();
 
-    if(%content.getName() $= "LoadingGui" || %content.getName() $= "GameModeGui") {
+    if(%content.getName() $= "LoadingGui") {
       if(isObject(Glass.mmNotification)) {
         Glass.mmNotification.dismiss();
       }
     } else if(%content.getName() $= "MainMenuGui") {
       if(GlassSettings.get("Live::StartupNotification")) {
         if(!$Glass::StartupNotified) {
-          GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 0, "GlassLive::openOverlay();");
+          Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 1, "GlassLive::openOverlay();");
           $Glass::StartupNotified = true;
         }
       }
@@ -284,6 +284,12 @@ package GlassNotificationManager {
 
   function Canvas::pushDialog(%this,%dialog) {
     parent::pushDialog(%this,%dialog);
+
+    if(%dialog.getName() $= "GameModeGui") {
+      if(isObject(Glass.mmNotification)) {
+        Glass.mmNotification.dismiss();
+      }
+    }
 
     GlassNotificationManager.refocus();
   }
