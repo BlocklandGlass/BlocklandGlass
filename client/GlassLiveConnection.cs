@@ -231,7 +231,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomJoinAuto":
       if(!GlassSettings.get("Live::AutoJoinRoom"))
         return;
-
+      
       if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
 
@@ -339,7 +339,12 @@ function GlassLiveConnection::onLine(%this, %line) {
         %data.text = strreplace(%data.text, "[date]", getWord(getDateTime(), 0));
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
 
-        %room.pushText("<spush><color:666666>" @ %data.text @ "<spop>");
+        // getASCIIString(); can't go over 1021 characters at one time
+        
+        if(strlen(%data.text) <= 1021) // to-do: split string if over 1021 and apply getASCIIString separately
+          %room.pushText("<spush><color:666666>" @ getASCIIString(%data.text) @ "<spop>");
+        else
+          %room.pushText("<spush><color:666666>" @ %data.text @ "<spop>");
       }
 
     case "roomUserJoin":
@@ -373,10 +378,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.setIcon(%data.icon, %data.id);
 
     case "roomKicked": //we got removed from a room
-      warn("TODO: roomKicked for reason " @ %data.reason);
-      glassMessageBoxOk("Kicked", "You've been kicked from -room name-:<br><br>" @ %data.reason);
+      // TODO: roomKicked for reason
+      glassMessageBoxOk("Kicked", "You've been kicked:<br><br>" @ %data.reason);
+      GlassLive.noReconnect = true;
 
     case "roomBanned": //we got banned from a room
+      GlassLive.noReconnect = true;
       if(%data.all) {
         //we got banned from all rooms
         glassMessageBoxOk("Banned", "You've been banned from all chatrooms for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ "<font:verdana:13>:<br><br><font:verdana bold:13>" @ %data.reason);

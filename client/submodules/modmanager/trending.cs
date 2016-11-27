@@ -82,7 +82,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     %text = %text @ "<br><font:verdana:13>There's been no recent updates.<br><br>";
   }
 
-  %text = %text @ "<br><br><font:verdana bold:13>- <color:" @ GlassLive.color_bot @ ">GlassBot<color:000000><just:right>" @ getSubStr(getDateTime(), 0, 14);
+  %text = %text @ "<br><br><font:verdana bold:13>- <color:" @ GlassLive.color_bot @ ">GlassBot<font:verdana:13><color:000000><just:right>" @ getSubStr(getDateTime(), 9, 5);
 
   %textml = new GuiMLTextCtrl() {
     horizSizing = "right";

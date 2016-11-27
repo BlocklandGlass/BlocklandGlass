@@ -117,7 +117,7 @@ function GlassLiveRoom::createView(%this, %window) {
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(GlassSettings.get("Live::ShowJoinLeave")) {
-    %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
+    %text = "<font:verdana:12><color:666666>" @ %user.username @ " (" @ %blid @ ") entered the room.";
     %this.pushText(%text);
   }
   %this.addUser(%blid);
@@ -160,7 +160,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
       %user = %user.username;
 
     //%text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
-    %text = "<font:verdana:12><color:666666>" @ %user @ " has exited the room.";
+    %text = "<font:verdana:12><color:666666>" @ %user @ " (" @ %blid @ ") exited the room.";
     %this.pushText(%text);
   }
 
@@ -225,6 +225,8 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     %color = GlassLive.color_admin;
   } else if(%sender.isMod()) {
     %color = GlassLive.color_mod;
+  // } else if(%sender.isBlocked()) {
+    // %color = GlassLive.color_blocked;
   } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
@@ -292,11 +294,6 @@ function GlassLiveRoom::pushText(%this, %msg) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
-      } else {
-        if(!GlassLiveUser::getFromName(":" @ %bitmap @ ":")) {
-          %word = " ";
-          %msg = setWord(%msg, %i, %word);
-        }
       }
     }
   }
@@ -408,17 +405,19 @@ function GlassLiveRoom::renderUserList(%this, %do) {
       %colorCode = 4;
     } else if(%user.isMod()) {
       %colorCode = 3;
-    } else if(%user.isFriend()) {
-      %colorCode = 2;
     } else if(%user.blid == getNumKeyId()) {
       %colorCode = 1;
+    // } else if(%user.isBlocked()) {
+      // %colorCode = 6;
+    } else if(%user.isFriend()) {
+      %colorCode = 2;
     } else {
       %colorCode = 0;
     }
 
     %icon = %user.icon;
     if(%icon $= "")
-      %icon = "help";
+      %icon = "ask_and_answer";
 
     if(!isObject(%userSwatch.blid[%user.blid])) {
       %swatch = new GuiSwatchCtrl() {
@@ -543,7 +542,7 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
       else
         GlassLive::openIconSelector();
     } else if(%this.user.isBot()) {
-      glassMessageBoxOk("Robots", "That's a bot!<br>Probably not very friendly...");
+      glassMessageBoxOk("Oh", "That's a bot.");
     } else {
       if(isObject(%this.user.window))
         %this.user.window.delete();

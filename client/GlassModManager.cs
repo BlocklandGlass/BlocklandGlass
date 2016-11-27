@@ -1079,6 +1079,8 @@ function GlassModManager::populateColorsets() {
     GlassModManagerGui_MyColorsets.setVisible(true);
     GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }
+  
+  GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
 }
 
 function GlassModManager_ColorsetDelete::onMouseUp(%this) {

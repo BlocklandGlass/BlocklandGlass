@@ -150,7 +150,7 @@ function GlassLiveUser::canSendMessage(%this) {
 
 function GlassLiveUser::setIcon(%this, %icon, %roomid) {
   %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
-  %blockedIcon = "cancel";
+  %blockedIcon = "wall";
 
   if(isFile(%bitmap)) {
     if(%icon !$= %blockedIcon)
@@ -189,6 +189,8 @@ function GlassLiveUser::setStatus(%this, %status) {
 
     if(isObject(%this.window))
       GlassLive::openUserWindow(%this.blid);
+    
+    GlassLive::onMessageNotification(%this.username @ " is now " @ %this.status @ ".", %this.blid);
   }
 }
 

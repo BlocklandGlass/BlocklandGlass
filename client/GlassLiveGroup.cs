@@ -140,6 +140,8 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
     %color = GlassLive.color_admin;
   } else if(%sender.isMod()) {
     %color = GlassLive.color_mod;
+  // } else if(%sender.isBlocked()) {
+    // %color = GlassLive.color_blocked;
   } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
@@ -205,11 +207,6 @@ function GlassLiveGroup::pushText(%this, %msg) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
-      } else {
-        if(!GlassLiveUser::getFromName(":" @ %bitmap @ ":")) {
-          %word = " ";
-          %msg = setWord(%msg, %i, %word);
-        }
       }
     }
   }
@@ -401,21 +398,25 @@ function GlassLiveGroup::renderUserList(%this) {
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
     
-    if(%user.isAdmin()) {
+    if(%user.isBot()) {
+      %colorCode = 5;
+    } else if(%user.isAdmin()) {
       %colorCode = 4;
     } else if(%user.isMod()) {
       %colorCode = 3;
-    } else if(%user.isFriend()) {
-      %colorCode = 2;
     } else if(%user.blid == getNumKeyId()) {
       %colorCode = 1;
+    // } else if(%user.isBlocked()) {
+      // %colorCode = 6;
+    } else if(%user.isFriend()) {
+      %colorCode = 2;
     } else {
       %colorCode = 0;
     }
 
     %icon = %user.icon;
     if(%icon $= "")
-      %icon = "help";
+      %icon = "ask_and_answer";
     
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {

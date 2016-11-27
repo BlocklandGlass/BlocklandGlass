@@ -53,11 +53,12 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapCtrl() {
+    new GuiBitmapCtrl(GlassLiveLogo) {
       horizSizing = "right";
       vertSizing = "bottom";
       extent = "557 132";
       position = "20 20";
+      visible = "0";
       bitmap = "Add-Ons/System_BlocklandGlass/image/logoWhite";
     };
     new GuiBitmapButtonCtrl() {

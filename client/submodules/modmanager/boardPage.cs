@@ -71,7 +71,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
 
   %back = "<a:glass://boards><< Back</a>";
 
-  if(%pages == 1) {
+  if(%pages <= 1) {
     %pageText = "";
   } else {
     if(%page > 3) {

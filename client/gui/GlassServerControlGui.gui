@@ -65,7 +65,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Administration";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -87,7 +87,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Preferences";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -109,7 +109,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Other";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";

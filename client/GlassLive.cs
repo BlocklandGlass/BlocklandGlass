@@ -20,6 +20,7 @@ exec("./GlassLiveGroup.cs");
 function GlassLive::init() {
   if(!isObject(GlassLive)) {
     new ScriptObject(GlassLive) {
+      // color_blocked = "969696";
       color_default = "222222";
       color_self = "55acee";
       color_friend = "2ecc71";
@@ -63,6 +64,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox");
   GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
   GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
@@ -72,15 +74,15 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomNotification", "Joined/Left Notifications", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomShowBlocked", "Show blocked users", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomNotification", "Entered/Exited Notifications", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomShowBlocked", "Show Blocked Users", "Chatroom", "checkbox");
 
-  GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messenging", "checkbox");
-  GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messenging", "checkbox");
-  GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messenging", "checkbox");
-  GlassSettings.drawSetting("Live::MessageAnyone", "Allow messages from anyone", "Direct Messenging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messaging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messaging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom";
+  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -219,6 +221,11 @@ function GlassOverlayGui::onWake(%this) {
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
 
+  if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
+    GlassLiveLogo.setVisible(true);
+  else if(!GlassSettings.get("Live::OverlayLogo") && GlassLiveLogo.visible)
+    GlassLiveLogo.setVisible(false);
+
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
     if(%window.getName() $= "GlassChatroomWindow") {
@@ -268,6 +275,7 @@ function GlassLive::chatColorCheck(%this) {
   %room.pushText("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
   %room.pushText("<font:verdana bold:12><color:" @ %this.color_bot @  ">Bot: <font:verdana:12><color:333333>rambling message", 0);
   %room.pushText("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
+  // %room.pushText("<font:verdana bold:12><color:" @ %this.color_blocked @  ">Blocked: <font:verdana:12><color:333333>rambling message", 0);
 }
 
 function GlassLive::disconnect(%reason) {
@@ -510,10 +518,8 @@ function GlassLive::checkPendingFriendRequests() {
 //================================================================
 
 function secondsToTimeString(%seconds) { // Crown
-  %total = %seconds * 60;
-
-  %days = mFloor(%total / 86400);
-  %remander = %total % 86400;
+  %days = mFloor(%seconds / 86400);
+  %remander = %seconds % 86400;
 
   %hours = mFloor(%remander / 3600);
   %remander = %remander % 3600;
@@ -527,7 +533,7 @@ function secondsToTimeString(%seconds) { // Crown
   if(%minutes != 1)
     %ms = "s";
 
-  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ ", and" SPC %minutes SPC "minute" @ %ms;
+  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ " and" SPC %minutes SPC "minute" @ %ms;
 }
 
 function GlassLive_StatusPopUp::ddsOpenMenu(%this) {
@@ -696,7 +702,7 @@ function GlassIconSelectorWindow::onWake(%this) {
   %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
 
   if(%icon $= "")
-    %icon = "help";
+    %icon = "ask_and_answer";
 
   GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
 }
@@ -710,7 +716,7 @@ function GlassLive::userBlock(%blid) {
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  %blockedIcon = "cancel";
+  %blockedIcon = "wall";
 
   if(isObject(%user)) {
     if(%user.isBlocked())
@@ -746,7 +752,9 @@ function GlassLive::userBlock(%blid) {
   GlassLive.blockedList = trim(GlassLive.blockedList SPC %blid);
 
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have blocked " @ %user.username, %blid);
+  GlassLive::onMessageNotification("You have blocked " @ %user.username @ ".", %blid);
+  if(isObject(%room = GlassChatroomWindow.activeTab.room))
+    %room.pushText("You have blocked " @ %user.username @ ".");
 }
 
 function GlassLive::userUnblock(%blid) {
@@ -789,7 +797,9 @@ function GlassLive::userUnblock(%blid) {
   }
 
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have unblocked " @ %user.username, %blid);
+  GlassLive::onMessageNotification("You have unblocked " @ %user.username @ ".", %blid);
+  if(isObject(%room = GlassChatroomWindow.activeTab.room))
+    %room.pushText("You have unblocked " @ %user.username @ ".");
 }
 
 //================================================================
@@ -954,11 +964,6 @@ function GlassLive::onMessage(%message, %username, %blid) {
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
         %message = setWord(%message, %i, %word);
-      } else {
-        if(!GlassLiveUser::getFromName(":" @ %bitmap @ ":")) {
-          %word = " ";
-          %message = setWord(%msg, %i, %word);
-        }
       }
     }
   }
@@ -996,6 +1001,16 @@ function GlassLive::onMessage(%message, %username, %blid) {
 function GlassLive::onMessageNotification(%message, %blid) {
   // TODO check friend, blocked, prefs, etc
 
+  %user = GlassLiveUser::getFromBlid(%blid);
+
+  if(!isObject(%user))
+    return;
+
+  %gui = %user.getMessageGui();
+
+  if(%gui == false)
+    return;
+
   %timestamp = "[" @ getWord(getDateTime(), 1) @ "]";
 
   if(GlassSettings.get("Live::MessageLogging")) {
@@ -1006,12 +1021,6 @@ function GlassLive::onMessageNotification(%message, %blid) {
       %fo.close();
       %fo.delete();
     }
-  }
-
-  %user = GlassLiveUser::getFromBlid(%blid);
-  %gui = %user.getMessageGui();
-  if(%gui == false) {
-    return;
   }
 
   %val = %gui.chattext.getValue();
@@ -1348,6 +1357,9 @@ function GlassLive::openAddDlg() {
     return;
   }
 
+  if(GlassFriendsGui_BlockUserBLID.getGroup().visible)
+    return;
+
   %gui = GlassFriendsGui_AddFriendBLID.getGroup();
 
   if(!%gui.visible) {
@@ -1356,6 +1368,50 @@ function GlassLive::openAddDlg() {
   } else {
     GlassLive::addDlgClose();
   }
+}
+
+function GlassLive::openBlockDlg() {
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to block users.");
+    return;
+  }
+
+  if(GlassFriendsGui_AddFriendBLID.getGroup().visible)
+    return;
+
+  %gui = GlassFriendsGui_BlockUserBLID.getGroup();
+
+  if(!%gui.visible) {
+    %gui.setVisible(true);
+    GlassFriendsGui_ScrollOverlay.setVisible(true);
+  } else {
+    GlassLive::blockDlgClose();
+  }
+}
+
+function GlassLive::blockDlgSubmit() {
+  if(GlassFriendsGui_BlockUserBLID.getValue()+0 !$= GlassFriendsGui_BlockUserBLID.getValue() || GlassFriendsGui_BlockUserBLID.getValue() < 0) {
+    GlassFriendsGui_BlockUserBLID.setValue("");
+    glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    return;
+  }
+
+  if(GlassFriendsGui_BlockUserBLID.getValue() == getNumKeyId()) {
+    GlassFriendsGui_BlockUserBLID.setValue("");
+    glassMessageBoxOk("Invalid BLID", "You can't block yourself.");
+    return;
+  }
+
+  GlassLive::userBlock(GlassFriendsGui_BlockUserBLID.getValue());
+  GlassFriendsGui_BlockUserBLID.getGroup().setVisible(false);
+  GlassFriendsGui_ScrollOverlay.setVisible(false);
+  GlassFriendsGui_BlockUserBLID.setValue("");
+}
+
+function GlassLive::blockDlgClose() {
+  GlassFriendsGui_BlockUserBLID.getGroup().setVisible(false);
+  GlassFriendsGui_ScrollOverlay.setVisible(false);
+  GlassFriendsGui_BlockUserBLID.setValue("");
 }
 
 function GlassLive::addDlgSubmit() {
@@ -1576,7 +1632,10 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
       glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
       GlassLive::friendAccept(%this.blid);
     } else {
-      GlassLive::openUserWindow(%this.blid);
+      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+        %window.delete();
+      else
+        GlassLive::openUserWindow(%this.blid);
     }
   } else if(%this.type $= "blocked") {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
@@ -1590,13 +1649,12 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
     }
   } else {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      if(%this.online)
+      if(%this.online) {
         GlassLive::openDirectMessage(%this.blid);
-    } else {
-      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window)) {
-        %window.deleteAll();
-        %window.delete();
       }
+    } else {
+      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+        %window.delete();
       else
         GlassLive::openUserWindow(%this.blid);
     }
@@ -1640,7 +1698,8 @@ function GlassLive::openUserWindow(%blid) {
       case "offline":
         %status = "<color:404040>Offline";
       default:
-        %status = "<color:404040>Unknown";
+        // %status = "<color:404040>Unknown";
+        %status = "<color:404040>Offline";
     }
 
     %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><font:verdana bold:12>" @ %status;
@@ -2014,7 +2073,7 @@ function GlassChatroomWindow::createTabButton(%this, %i, %width) {
     image = %button;
     extent = %button.extent;
     position = "0 0";
-    baseBitmap = (%i == %this.activeTabId ? "base/client/ui/tab1use" : "base/client/ui/tab1");
+    baseBitmap = (%i == %this.activeTabId ? "Add-Ons/System_BlocklandGlass/image/gui/tab1use" : "Add-Ons/System_BlocklandGlass/image/gui/tab1");
     extension = "n";
 
     command = %this.getId() @ ".openTab(" @ %i @ ");";
@@ -2062,7 +2121,7 @@ function GlassChatroomWindow::createAddTabButton(%this) {
 }
 
 function GlassChatroomTabMouse::setUse(%this, %bool) {
-  %this.baseBitmap = (%bool ? "base/client/ui/tab1use" : "base/client/ui/tab1");
+  %this.baseBitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tab1use" : "Add-Ons/System_BlocklandGlass/image/gui/tab1");
   %this.render();
 }
 
@@ -2973,7 +3032,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
 
   %icon = GlassLiveUser::getFromBlid(%blid).icon;
   if(%icon $= "")
-    %icon = "help";
+    %icon = "ask_and_answer";
 
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -3333,6 +3392,7 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
   GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
   GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-65 100");
+  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-115 100");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);

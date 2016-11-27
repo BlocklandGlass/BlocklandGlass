@@ -58,15 +58,13 @@ function Glass::execClient() {
 	exec("./client/GlassNotificationManager.cs");
 
   exec("./client/GlassCompatibility.cs");
-
-
-	exec("./client/GlassSnowflakes.cs");
 	
 	%date = getDateTime();
 	%month = getSubStr(%date, 0, 2);
 	%day = getSubStr(%date, strpos(%date, "/")+1, 2);
 	if(%month == 12 && %day >= 21 && !$Pref::Client::NoSnowflakes) {
-		GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/40));
+    exec("./client/GlassSnowflakes.cs");
+		GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/150));
 	}
 
 	echo(" ===                   Starting it up                   ===");
