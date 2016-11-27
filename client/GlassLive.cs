@@ -517,14 +517,16 @@ function GlassLive::checkPendingFriendRequests() {
 //= 3.2.0 things that we'll organize later                        =
 //================================================================
 
-function secondsToTimeString(%seconds) { // Crown
-  %days = mFloor(%seconds / 86400);
-  %remander = %seconds % 86400;
+function secondsToTimeString(%total) { // Crown
+  %days = mFloor(%total / 86400);
+  %remander = %total % 86400;
 
   %hours = mFloor(%remander / 3600);
   %remander = %remander % 3600;
 
   %minutes = mFloor(%remander / 60);
+  
+  %seconds = mFloor(%remander % 60);
 
   if(%days != 1)
     %s = "s";
@@ -532,8 +534,10 @@ function secondsToTimeString(%seconds) { // Crown
     %hs = "s";
   if(%minutes != 1)
     %ms = "s";
+  if(%seconds != 1)
+    %ss = "s";
 
-  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ " and" SPC %minutes SPC "minute" @ %ms;
+  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ "," SPC %minutes SPC "minute" @ %ms SPC "and" SPC %seconds SPC "second" @ %ss;
 }
 
 function GlassLive_StatusPopUp::ddsOpenMenu(%this) {
