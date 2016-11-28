@@ -128,6 +128,9 @@ function GuiControl::getCenter(%this) {
 
 function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   for(%i = 0; %i < %this.getCount(); %i++) {
+    if(!%this.getObject(%i).visible)
+      continue;
+      
     %low = getWord(vectorAdd(%this.getObject(%i).position, %this.getObject(%i).extent), 1);
     if(%low > %lowest) {
       %lowest = %low;

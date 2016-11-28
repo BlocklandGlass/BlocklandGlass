@@ -1,5 +1,5 @@
 function GlassModManagerGui::renderBoards(%boards) {
-  %container = new GuiSwatchCtrl() {
+  %container = new GuiSwatchCtrl(GlassModManagerGui_AddonContainer) {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "0 0 0 0";
@@ -180,6 +180,9 @@ function GlassModManagerGui::SearchResults(%res) {
   }
 
   GlassModManagerGui_SearchResults.verticalMatchChildren(20, 10);
+  GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
+  GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
 function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
@@ -204,6 +207,10 @@ function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
     %this.setCursorPos(0);
     GlassModManagerGui_SearchResults.setVisible(false);
     GlassModManagerGui_AddonDisplay.setVisible(true);
+
+    GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
+    GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
+    GlassModManagerGui_MainDisplay.setVisible(true);
   }
 
   if(!%this.filler) {
