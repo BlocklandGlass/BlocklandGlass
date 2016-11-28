@@ -525,7 +525,7 @@ function secondsToTimeString(%total) { // Crown
   %remander = %remander % 3600;
 
   %minutes = mFloor(%remander / 60);
-  
+
   %seconds = mFloor(%remander % 60);
 
   if(%days != 1)
@@ -804,7 +804,7 @@ function GlassLive::userUnblock(%blid) {
       break;
     }
   }
-  
+
   %username = %user.username;
 
   if(%username $= "")
@@ -2200,6 +2200,17 @@ function GlassChatroomWindow::renderTabs(%this) {
   %this.tabAddButton = %this.createAddTabButton();
   %this.tabAddButton.position = %x SPC 0;
   %swatch.add(%this.tabAddButton);
+
+  %swatch.extent = (%x+getWord(%this.tabAddButton.extent, 0)) SPC getWord(%swatch.extent, 1);
+
+  %pad = 10;
+  %minWidth = (%pad*2)+getWord(%swatch.extent, 0);
+
+  %this.minExtent = (%minWidth > 475 ? %minWidth : 475) SPC 290;
+  if(getWord(%this.extent, 0) < %minWidth) {
+    %this.schedule(0, resize, getWord(%this.position, 0), getWord(%this.position, 1), %minWidth, getWord(%this.extent, 1));
+    //%this.resize.schedule(1, onResize);
+  }
 }
 
 function GlassChatroomWindow::setTabsVisible(%this, %toggle) {
@@ -2489,6 +2500,9 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
       }
     }
   }
+
+  if(%this.isAwake())
+    %chatText.forceReflow();
 
   %scroll.scrollToBottom();
 
