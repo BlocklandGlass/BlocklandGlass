@@ -68,7 +68,7 @@ function GlassLiveRoom::removeUser(%this, %blid) {
   for(%i = 0; %i < getFieldCount(%this.users); %i++) {
     if(getField(%this.users, %i) == %blid) {
       %this.users = removeField(%this.users, %i);
-      return;
+      break;
     }
   }
 }
@@ -483,9 +483,12 @@ function GlassLiveRoom::renderUserList(%this, %do) {
 
     %swatch.used = true;
 
-    if(%last !$= "") {
+    if(%last $= "") {
+      %swatch.position = "3 3";
+    } else {
       %swatch.placeBelow(%last, 0);
     }
+
     %last = %swatch;
     %userSwatch.add(%swatch);
 
