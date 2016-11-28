@@ -189,7 +189,7 @@ function GlassDownloadGui_Mouse::onMouseDown(%this, %a, %b, %c) {
 
 }
 
-function GlassDownloadGui_Mouse::onRightMouseDown(%this) {
+function GlassDownloadGui_Mouse::onRightMouseUp(%this) {
   eval(%this.downloadObj.callback @ "(%this.downloadObj,1);");
 }
 
