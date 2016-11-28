@@ -8,7 +8,7 @@ function GlassSettings::init(%context) {
   if(%context $= "client") {
     GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
-    GlassSettings.registerSetting("client", "MM::LiveSearch", false);
+    GlassSettings.registerSetting("client", "MM::LiveSearch", true);
 
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
