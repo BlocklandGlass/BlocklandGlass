@@ -999,9 +999,11 @@ function GlassLive::onMessage(%message, %username, %blid) {
   }
 
   %gui.chattext.setValue(%val);
+
   if(%gui.isAwake()) {
     %gui.chattext.forceReflow();
   }
+
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
   %gui.scrollSwatch.setVisible(true);
 
@@ -2208,8 +2210,11 @@ function GlassChatroomWindow::renderTabs(%this) {
 
   %this.minExtent = (%minWidth > 475 ? %minWidth : 475) SPC 290;
   if(getWord(%this.extent, 0) < %minWidth) {
-    %this.schedule(0, resize, getWord(%this.position, 0), getWord(%this.position, 1), %minWidth, getWord(%this.extent, 1));
-    //%this.resize.schedule(1, onResize);
+    if(%this.isAwake()) {
+      %this.schedule(0, resize, getWord(%this.position, 0), getWord(%this.position, 1), %minWidth, getWord(%this.extent, 1));
+    } else {
+      %this.extent = %minWidth SPC getWord(%this.extent, 1);
+    }
   }
 }
 
@@ -2501,8 +2506,9 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
     }
   }
 
-  if(%this.isAwake())
+  if(%this.isAwake()) {
     %chatText.forceReflow();
+  }
 
   %scroll.scrollToBottom();
 
