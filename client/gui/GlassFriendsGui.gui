@@ -295,7 +295,7 @@ new GuiControl(GlassFriendsGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "95 350";
+         position = "155 350";
          extent = "24 24";
          minExtent = "8 2";
          enabled = "1";

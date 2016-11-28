@@ -5,6 +5,9 @@ $Glass::Disconnect["Quit"] = 3; // [Quit]
 $Glass::Disconnect["Update"] = 4; // [Updates]
 
 function GlassLive::connectToServer() {
+  if(isObject(GlassLiveConnection) && GlassLiveConnection.connected)
+    return;
+
   cancel(GlassLive.reconnect);
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
@@ -231,7 +234,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomJoinAuto":
       if(!GlassSettings.get("Live::AutoJoinRoom"))
         return;
-      
+
       if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
 
@@ -340,7 +343,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %data.text = strreplace(%data.text, "[time]", getWord(getDateTime(), 1));
 
         // getASCIIString(); can't go over 1021 characters at one time
-        
+
         if(strlen(%data.text) <= 1021) // to-do: split string if over 1021 and apply getASCIIString separately
           %room.pushText("<spush><color:666666>" @ getASCIIString(%data.text) @ "<spop>");
         else

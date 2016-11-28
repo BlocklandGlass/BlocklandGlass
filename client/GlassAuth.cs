@@ -82,7 +82,7 @@ function GlassAuth::onAuthSuccess(%this) {
     if(GlassSettings.get("Live::StartupConnect"))
       GlassLive::connectToServer();
 
-    GlassModManager::placeCall("rtb");
+    //GlassModManager::placeCall("rtb");
 	}
 
 	%this.firstAuth = true;

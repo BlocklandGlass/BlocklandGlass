@@ -3420,7 +3420,7 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
   GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
   GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-65 100");
-  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-115 100");
+  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-95 100");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
