@@ -84,7 +84,7 @@ function GlassModManagerGui::openRTBImport(%addons) {
     %last = %swatch;
   }
 
-  messageBoxOk("RTB Reclamation", "<font:verdana:12>Some of your old RTB add-ons have updates available through Glass! We'll go ahead and fetch those for you!", "GlassModManager::doRTBImport();");
+  glassMessageBoxOk("RTB Reclamation", "<font:verdana:12>Some of your old RTB add-ons have updates available through Glass! We'll go ahead and fetch those for you!", "GlassModManager::doRTBImport();");
 
   %container.verticalMatchChildren(0, 10);
 
@@ -101,7 +101,6 @@ function GlassModManager::doRTBImport() {
   %container = GlassModManagerGui_MainDisplay.getObject(0);
   for(%i = 0; %i < %container.getCount(); %i++) {
     %swatch = %container.getObject(%i);
-    %ret = GlassModManager::downloadAddonFromId(%swatch.import.glass_id);
-    %ret.rtbImportProgress = %swatch.progress;
+    GlassModManager::downloadAddon(%swatch.import.glass_id, false, %swatch.progress);
   }
 }

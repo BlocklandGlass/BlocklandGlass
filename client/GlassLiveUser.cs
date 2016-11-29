@@ -14,6 +14,7 @@ function GlassLiveUser::create(%username, %blid) {
     blid = %blid;
     online = true;
   };
+
   GlassLiveUsers.add(%user);
   GlassLiveUsers.user[%blid] = %user;
   return %user;
@@ -24,6 +25,15 @@ function GlassLiveUser::getFromBlid(%blid) {
     return GlassLiveUsers.user[%blid];
   else
     return false;
+}
+
+function GlassLiveUser::getFromName(%name) {
+  for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
+    %user = GlassLiveUsers.getObject(%i);
+    if(strpos(strlwr(%user.username), strlwr(%name)) != -1)
+      return %user;
+  }
+  return false;
 }
 
 function GlassLiveUser::addRoom(%this, %id) {
@@ -66,6 +76,14 @@ function GlassLiveUser::isFriend(%this) {
   return %this.isFriend;
 }
 
+function GlassLiveUser::setBot(%this, %bool) {
+  %this.isBot = %bool == 1;
+}
+
+function GlassLiveUser::isBot(%this) {
+  return %this.isBot;
+}
+
 function GlassLiveUser::setFriendRequest(%this, %bool) {
   %this.isFriendRequest = %bool == 1;
 }
@@ -79,31 +97,105 @@ function GlassLiveUser::setMessageGui(%this, %obj) {
 }
 
 function GlassLiveUser::getMessageGui(%this) {
-  if(isObject(%this.messageGui)) {
+  if(isObject(%this.messageGui))
     return %this.messageGui;
+  else
+    return false;
+}
+
+function GlassLiveUser::setBlocked(%this, %bool) {
+  %this.isBlocked = %bool == 1;
+}
+
+function GlassLiveUser::isBlocked(%this) {
+  return %this.isBlocked;
+}
+
+function GlassLiveUser::block(%this) {
+  GlassLive::userBlock(%this.blid);
+}
+
+function GlassLiveUser::unblock(%this) {
+  GlassLive::userUnblock(%this.blid);
+}
+
+function GlassLiveUser::canSendMessage(%this) {
+  if(%this.isAdmin() || %this.isMod() || %this.isBot())
+    return true;
+
+  //%me = GlassLiveUser::getFromBlid(getNumKeyId()); //admins must receive all
+  //if(%me.isAdmin() || %me.isMod())
+  //  return true;
+
+  if(%this.isBlocked())
+    return false;
+
+  if(%this.isFriend())
+    return true;
+
+  //random user, default to setting
+  if(GlassSettings.get("Live::MessageAnyone")) {
+    return true;
   } else {
+    //infrom user that this user is private
+    %obj = JettisonObject();
+    %obj.set("type", "string", "messagePrivate");
+    %obj.set("target", "string", %this.blid);
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
     return false;
   }
 }
 
-function GlassLiveUser::canSendMessage(%this) {
-  //can we show a message from them?
-  //privacy settings
-  //blocked users
+function GlassLiveUser::setIcon(%this, %icon, %roomid) {
+  %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
+  %blockedIcon = "wall";
 
-  %friendsOnly = GlassLive::getSetting("GL::FriendOnly");
-  %blocked = %this.blocked;
+  if(isFile(%bitmap)) {
+    if(%icon !$= %blockedIcon)
+      %this.realIcon = %icon;
 
-  if(%this.isAdmin() || %this.isMod())
-    return true;
+    if(%this.isBlocked()) {
+      %this.icon = %blockedIcon;
+    } else {
+      %this.icon = %icon;
+    }
 
-  if(%blocked)
-    return false;
+    if(%roomid !$= "") {
+      %room = GlassLiveRoom::getFromId(%roomid);
+      if(isObject(%room))
+        %room.renderUserList();
+    } else {
+      for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+        %window = GlassOverlayGui.getObject(%i);
+        if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassGroupchatWindow") {
+          %window.activeTab.room.renderUserList();
+        }
+      }
+    }
 
-  if(%friendsOnly && !%this.isFriend())
-    return false;
+    if(%this.isFriend())
+      GlassLive::createFriendList();
+  }
+}
 
-  return true;
+function GlassLiveUser::setStatus(%this, %status) {
+  if(%status $= GlassLiveUser::getFromBlid(%this.blid).status)
+    return;
+
+  if(%status $= "online" || %status $= "away" || %status $= "busy" || %status $= "offline") {
+    %this.status = %status;
+
+    if(isObject(%this.window))
+      GlassLive::openUserWindow(%this.blid);
+    
+    GlassLive::onMessageNotification(%this.username @ " is now " @ %this.status @ ".", %this.blid);
+  }
+}
+
+function GlassLiveUser::getStatus(%this) {
+  return %this.status;
 }
 
 function GlassLiveUser::disconnected(%this) {

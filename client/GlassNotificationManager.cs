@@ -132,6 +132,7 @@ function GlassNotification::onAdd(%this) {
     extent = "172 12";
     minextent = "0 0";
     autoResize = true;
+    maxBitmapHeight = "12";
   };
 
   %swatch.mouse = new GuiMouseEventCtrl(GlassNotificationMouse) {
@@ -224,9 +225,7 @@ function GlassNotificationMouse::onMouseLeave(%this) {
 }
 
 function GlassNotificationMouse::onMouseDown(%this) {
-  if(%this.notification.legacySource $= "oRBs") {
-    ORBS_Overlay.fadeIn();
-  } else if(%this.notification.legacySource $= "RTB") {
+  if(%this.notification.legacySource $= "RTB") {
     RTB_Overlay.fadeIn();
   } else if(%this.notification.callback !$= "") {
     if(strpos(%this.notification.callback, ";") == -1)
@@ -244,12 +243,7 @@ function GlassNotificationMouse::onRightMouseDown(%this) {
 }
 
 package GlassNotificationManager {
-  function ORBSCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime) {
-    //oRBs is cancer
-    RTBCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime, true);
-  }
-
-  function RTBCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime, %orbs) {
+  function RTBCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime) {
     if(%holdTime $= "") {
       %holdTime = 3000;
     }
@@ -265,7 +259,7 @@ package GlassNotificationManager {
     %obj = GlassNotificationManager::newNotification(%title, %message, %icon, %sticky);
 
     %obj.time = %holdTime;
-    %obj.legacySource = %orbs ? "oRBs" : "RTB";
+    %obj.legacySource = "RTB";
     %obj.legacyKey = %key;
   }
 
@@ -279,14 +273,23 @@ package GlassNotificationManager {
         Glass.mmNotification.dismiss();
       }
     } else if(%content.getName() $= "MainMenuGui") {
-      if(!isObject(Glass.mmNotification) && GlassSettings.get("Live::StartupNotification")) {
-        Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "module", 1, "GlassLive::openOverlay();");
+      if(GlassSettings.get("Live::StartupNotification")) {
+        if(!$Glass::StartupNotified) {
+          Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 1, "GlassLive::openOverlay();");
+          $Glass::StartupNotified = true;
+        }
       }
     }
   }
 
   function Canvas::pushDialog(%this,%dialog) {
     parent::pushDialog(%this,%dialog);
+
+    if(%dialog.getName() $= "GameModeGui") {
+      if(isObject(Glass.mmNotification)) {
+        Glass.mmNotification.dismiss();
+      }
+    }
 
     GlassNotificationManager.refocus();
   }

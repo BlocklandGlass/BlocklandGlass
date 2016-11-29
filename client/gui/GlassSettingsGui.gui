@@ -16,22 +16,31 @@ new GuiControl(GlassSettingsGui) {
       vertSizing = "center";
       position = "170 3";
       extent = "300 474";
-      minExtent = "8 2";
+      minExtent = "300 474";
       enabled = "1";
       visible = "1";
       clipToParent = "1";
       text = "Glass Settings";
       maxLength = "255";
       resizeWidth = "0";
-      resizeHeight = "0";
+      resizeHeight = "1";
       canMove = "1";
       canClose = "1";
       canMinimize = "0";
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "GlassLive::closeSettings();";
-
-      new GuiScrollCtrl() {
+      
+      new GuiMLTextCtrl(GlassSettingsResize) {
+        profile = "GuiMLTextProfile";
+        horizSizing = "relative";
+        vertSizing = "relative";
+        position = "0 0";
+        extent = "300 474";
+        visible = "0";
+      };
+      
+      new GuiScrollCtrl(GlassSettingsGui_Scroll) {
          profile = "GlassScrollProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -42,53 +51,25 @@ new GuiControl(GlassSettingsGui) {
          visible = "1";
          clipToParent = "1";
          willFirstRespond = "0";
-         hScrollBar = "dynamic";
+         hScrollBar = "alwaysOff";
          vScrollBar = "alwaysOn";
          constantThumbHeight = "0";
          childMargin = "0 0";
          rowHeight = "40";
          columnWidth = "30";
 
-         new GuiSwatchCtrl() {
+         new GuiSwatchCtrl(GlassSettingsGui_ScrollOverlay) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 -71";
-            extent = "270 610";
+            extent = "270 425";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
             color = "255 255 255 255";
-
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 100";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_Updater) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassUpdaterSupport::updateSetting();";
-                  text = "Use Default Updater";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
+            
             new GuiSwatchCtrl() {
                profile = "GuiDefaultProfile";
                horizSizing = "right";
@@ -148,450 +129,6 @@ new GuiControl(GlassSettingsGui) {
                   overflowImage = "0";
                   mKeepCached = "0";
                   mColor = "255 255 255 255";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 130";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_LiveSearch) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassModManager::updateLiveSearch();";
-                  text = "Enable Live Search";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 70";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "100 100 100 255";
-
-               new GuiTextCtrl() {
-                  profile = "GlassSearchResultProfile";
-                  horizSizing = "center";
-                  vertSizing = "center";
-                  position = "81 3";
-                  extent = "88 18";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "\c3Mod Manager";
-                  maxLength = "255";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 190";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "100 100 100 255";
-
-               new GuiTextCtrl() {
-                  profile = "GlassSearchResultProfile";
-                  horizSizing = "center";
-                  vertSizing = "center";
-                  position = "111 3";
-                  extent = "28 18";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "\c3Live";
-                  maxLength = "255";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 220";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_RoomChatNotification) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"RoomChatNotification\");";
-                  text = "Chatroom Notifications";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 250";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_RoomChatSound) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"RoomChatSound\");";
-                  text = "Chatroom Blip Sound";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 280";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_RoomMentionNotification) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"RoomMentionNotification\");";
-                  text = "Chatroom Mention Notification";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 340";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_RoomShowAwake) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"RoomShowAwake\");";
-                  text = "Share Awake Status";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 370";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_MessageNotification) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"MessageNotification\");";
-                  text = "Direct Message Notification";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 400";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_MessageSound) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"MessageSound\");";
-                  text = "Direct Message Sound";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 430";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_MessageAnyone) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "0";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"MessageAnyone\");";
-                  text = "Message Anyone";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 310";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_RoomAutoJoin) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "0";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"RoomAutoJoin\");";
-                  text = "Auto Join Room";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 460";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_ShowTimestamps) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"ShowTimestamps\");";
-                  text = "Show Timestamps";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 490";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-               
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_ShowJoinLeave) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"ShowJoinLeave\");";
-                  text = "Show Joining/Leaving";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 520";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-               
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_StartupNotification) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"StartupNotification\");";
-                  text = "Startup Notification";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 550";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-               
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_StartupConnect) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"StartupConnect\");";
-                  text = "Startup Connect";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "10 580";
-               extent = "250 25";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "230 230 230 255";
-               
-               new GuiCheckBoxCtrl(GlassModManagerGui_Prefs_ShowFriendStatus) {
-                  profile = "GlassCheckBoxProfile";
-                  horizSizing = "right";
-                  vertSizing = "center";
-                  position = "28 -3";
-                  extent = "180 30";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  command = "GlassLive::updateSetting(\"ShowFriendStatus\");";
-                  text = "Show Friend Status";
-                  groupNum = "-1";
-                  buttonType = "ToggleButton";
                };
             };
          };

@@ -23,50 +23,40 @@ function Glass::execServer() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
+	// exec("./support/Support_SemVer.cs");
 	exec("./support/jettison.cs");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
 	exec("./common/GlassDownloadManager.cs");
-	exec("./common/GlassRTBSupport.cs");
-	exec("./common/GlassUpdaterSupport.cs");
 	exec("./common/GlassResourceManager.cs");
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
-	//exec("./server/GlassServerInfo.cs");
 	exec("./server/GlassClientSupport.cs");
-	//exec("./server/GlassInfoServer.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
 
-	//GlassServerControlS::init();
-	GlassAuthS::init();
-	//GlassServerInfo::connectToServer();
-	//GlassInfoServer::init();
-
 	GlassAuthS::init();
 }
 
-if($Server::isDedicated) {
+if($Server::Dedicated) {
 	Glass::init("dedicated");
 } else {
 	Glass::init("server");
 }
 
-//Zeblote
-function fastPacketFixLoop(%bool)
-{
-   cancel($FastPacketFixSchedule);
-   $Pref::Net::FastPackets = %bool;
+function serverCmdGlassHandshake(%client, %ver) {
+  if(%ver $= "")
+    return;
 
-   if(%bool)
-      $FastPacketFixSchedule = schedule(8000, 0, fastPacketFixLoop, !%bool);
-   else
-      $FastPacketFixSchedule = schedule(600, 0, fastPacketFixLoop, !%bool);
+  if(%client.hasGlass $= "") {
+    %ver = expandEscape(stripMlControlChars(%ver));
+
+    %client.hasGlass = true;
+    %client._glassVersion = %ver;
+  }
 }
-
-fastPacketFixLoop(true);

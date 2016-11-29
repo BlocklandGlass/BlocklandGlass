@@ -54,9 +54,9 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 	}
 
 	if(%up) {
-		messageBoxOk("Settings Updated", "The server settings were updated");
+		glassMessageBoxOk("Settings Updated", "The server settings were updated.");
 	} else {
-		messageBoxOk("No Changes!", "There was nothing to update!");
+		glassMessageBoxOk("No Changes", "There was nothing to update!");
 	}
 }
 
@@ -110,7 +110,7 @@ function clientCmdupdateBLPref(%varname, %value) {
 }
 
 function clientCmdhasPrefSystem(%version, %permission) {
-	if($Glass::Debug)
+	if(Glass.dev)
 		echo("Server has pref system! (" @ %version @")");
   
 	if(%permission) {

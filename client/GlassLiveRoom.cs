@@ -37,6 +37,10 @@ function GlassLiveRoom::leaveRoom(%this) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
+  if(GlassSettings.get("Live::RoomNotification")) {
+    GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
+  }
+
   %this.view.window.removeTab(%this.view);
   %this.view.deleteAll();
   %this.view.delete();
@@ -64,7 +68,7 @@ function GlassLiveRoom::removeUser(%this, %blid) {
   for(%i = 0; %i < getFieldCount(%this.users); %i++) {
     if(getField(%this.users, %i) == %blid) {
       %this.users = removeField(%this.users, %i);
-      return;
+      break;
     }
   }
 }
@@ -113,7 +117,7 @@ function GlassLiveRoom::createView(%this, %window) {
 function GlassLiveRoom::onUserJoin(%this, %blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(GlassSettings.get("Live::ShowJoinLeave")) {
-    %text = "<font:verdana:12><color:666666>" @ %user.username @ " entered the room.";
+    %text = "<font:verdana:12><color:666666>" @ %user.username @ " (" @ %blid @ ") entered the room.";
     %this.pushText(%text);
   }
   %this.addUser(%blid);
@@ -123,6 +127,8 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
   %chatroom = %this.view;
 
   %this.removeUser(%blid);
+
+  %user = GlassLiveUser::getFromBlid(%blid);
 
   if(GlassSettings.get("Live::ShowJoinLeave")) {
     switch(%reason) {
@@ -139,25 +145,25 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
         %text = "Kicked";
 
       case 3:
-        %text = "Connection Dropped";
+        %text = "Quit";
 
       case 4:
         %text = "Updates";
 
       default:
-        %text = "unhandled: " @ %reason;
+        %text = "Unhandled: " @ %reason;
     }
 
-    %user = GlassLiveUser::getFromBlid(%blid);
     if(%user == false)
       %user = "BLID_" @ %blid; // todo local caching
     else
       %user = %user.username;
 
-    %text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
+    //%text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
+    %text = "<font:verdana:12><color:666666>" @ %user @ " (" @ %blid @ ") exited the room.";
     %this.pushText(%text);
   }
-  
+
   %this.renderUserList();
 }
 
@@ -179,28 +185,27 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
 
-function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
-  %this.awake[%blid] = %awake;
-  %text = %this.userListSwatch[%blid].text;
-  if(isObject(%text)) {
-    %colorCode = %awake ? 0 : 2;
-    %text.setValue(collapseEscape("\\c" @ %colorCode) @ %text.rawtext);
-  }
-}
+// function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
+  // %this.awake[%blid] = %awake;
+  // %icon = %this.userListSwatch[%blid].icon;
+  // if(isObject(%icon)) {
+    // %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "user.png" : "user_yellow.png"));
+  // }
+// }
 
-function GlassLiveRoom::setAwake(%this, %bool) {
-  if(!GlassSettings.get("Live::RoomShowAwake"))
-    %bool = false;
-  
-  %this.awake = %bool;
-  
-  %obj = JettisonObject();
-  %obj.set("type", "string", "roomAwake");
-  %obj.set("id", "string", %this.id);
-  %obj.set("bool", "string", %bool);
+// function GlassLiveRoom::setAwake(%this, %bool) {
+  // if(!GlassSettings.get("Live::RoomShowAwake"))
+    // %bool = false;
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
+  // %this.awake = %bool;
+
+  // %obj = JettisonObject();
+  // %obj.set("type", "string", "roomAwake");
+  // %obj.set("id", "string", %this.id);
+  // %obj.set("bool", "string", %bool);
+
+  // GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+// }
 
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();
@@ -214,26 +219,42 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   if(%senderblid == getNumKeyId()) {
     %color = GlassLive.color_self;
+  } else if(%sender.isBot()) {
+    %color = GlassLive.color_bot;
   } else if(%sender.isAdmin()) {
     %color = GlassLive.color_admin;
   } else if(%sender.isMod()) {
     %color = GlassLive.color_mod;
-  } else if(GlassLive.isFriend[%senderblid]) {
+  // } else if(%sender.isBlocked()) {
+    // %color = GlassLive.color_blocked;
+  } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
     %color = GlassLive.color_default;
   }
 
   %msg = stripMlControlChars(%msg);
-  
   for(%i = 0; %i < getWordCount(%msg); %i++) {
-    %word = getWord(%msg, %i);
-    if(%word $= ("@" @ $Pref::Player::NetName)) {
+    %word = getASCIIString(getWord(%msg, %i));
+    for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
+      %user = %this.view.userSwatch.getObject(%o);
+      %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
+      %blid = %user.text.blid;
+      if(%word $= ("@" @ %name)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      } else if(%word $= ("@" @ %blid)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      }
+    }
+
+    %name = getASCIIString(strreplace($Pref::Player::NetName, " ", "_"));
+
+    if(%word $= ("@" @ %name)) {
       %mentioned = true;
-      %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+    } else if(%word $= ("@" @ getNumKeyId())) {
+      %mentioned = true;
     }
   }
-
 
   %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender.username @ ":<font:verdana:12><color:333333> " @ %msg;
   %this.pushText(%text);
@@ -245,12 +266,16 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-      if(!%this.awake)
-        GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
-      
-      alxPlay(GlassUserMentionedAudio);
+      if(GlassLive.lastMentioned $= "" || $Sim::Time > GlassLive.lastMentioned) {
+        if(!%this.view.isAwake())
+          GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+
+        alxPlay(GlassBellAudio);
+
+        GlassLive.lastMentioned = $Sim::Time + 10;
+      }
     } else if(GlassSettings.get("Live::RoomChatNotification")) {
-      if(!%this.awake)
+      if(!%this.view.isAwake())
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
     }
   }
@@ -259,15 +284,15 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
-    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, ":");
+      %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
-        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
       }
     }
@@ -287,32 +312,47 @@ function GlassLiveRoom::pushText(%this, %msg) {
   %chatroom.chattext.setValue(%val);
   if(GlassOverlayGui.isAwake()) {
     %chatroom.chattext.forceReflow();
+  } else {
+    %chatroom.chattext.didUpdate = true;
   }
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
-  %chatroom.scroll.scrollToBottom();
+
+  %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
+
+  if(%lp >= -50) {
+    %chatroom.scroll.scrollToBottom();
+  }
 }
 
 function GlassLiveRoom::getOrderedUserList(%this) {
-  %users = new GuiTextListCtrl();
-  %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
+  %admins = new GuiTextListCtrl();
+  %bots = new GuiTextListCtrl();
+  // %friends = new GuiTextListCtrl();
+  %users = new GuiTextListCtrl();
 
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
-    if(%user.isAdmin()) {
+    if(%user.isBot()) {
+      %bots.addRow(%i, %user.username);
+    } else if(%user.isAdmin()) {
       %admins.addRow(%i, %user.username);
     } else if(%user.isMod()) {
       %mods.addRow(%i, %user.username);
+    // } else if(%user.isFriend()) {
+      // %friends.addRow(%i, %user.username);
     } else {
       %users.addRow(%i, %user.username);
     }
   }
 
-  %users.sort(0);
+  %bots.sort(0);
   %admins.sort(0);
   %mods.sort(0);
+  // %friends.sort(0);
+  %users.sort(0);
 
   %idList = "";
 
@@ -324,115 +364,167 @@ function GlassLiveRoom::getOrderedUserList(%this) {
     %idList = %idList SPC %mods.getRowId(%i);
   }
 
+  for(%i = 0; %i < %bots.rowCount(); %i++) {
+    %idList = %idList SPC %bots.getRowId(%i);
+  }
+
+  // for(%i = 0; %i < %friends.rowCount(); %i++) {
+    // %idList = %idList SPC %friends.getRowId(%i);
+  // }
+
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
+  %bots.delete();
   %admins.delete();
   %mods.delete();
+  // %friends.delete();
   %users.delete();
 
   return trim(%idList);
 }
 
-function GlassLiveRoom::renderUserList(%this) {
+function GlassLiveRoom::renderUserList(%this, %do) {
+  cancel(%this.renderUserSch);
+  if(!%do) {
+    %this.renderUserSch = %this.schedule(100, renderUserList, true);
+    return;
+  }
+
   %userSwatch = %this.view.userswatch;
-  %userSwatch.deleteAll();
 
   %orderedList = %this.getOrderedUserList();
 
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
 
-    if(%user.isAdmin()) {
-      %icon = "crown_gold";
-      %pos = "2 4";
-      %ext = "14 14";
+    if(%user.isBot()) {
+      %colorCode = 5;
+    } else if(%user.isAdmin()) {
+      %colorCode = 4;
     } else if(%user.isMod()) {
-      %icon = "crown_silver";
-      %pos = "2 4";
-      %ext = "14 14";
+      %colorCode = 3;
+    } else if(%user.blid == getNumKeyId()) {
+      %colorCode = 1;
+    // } else if(%user.isBlocked()) {
+      // %colorCode = 6;
     } else if(%user.isFriend()) {
-      %icon = "user_green";
-      %pos = "1 3";
-      %ext = "16 16";
+      %colorCode = 2;
     } else {
-      %icon = "user";
-      %pos = "1 3";
-      %ext = "16 16";
+      %colorCode = 0;
     }
 
-    if(%this.awake[%user.blid])
-      %colorCode = 0;
-    else
-      %colorCode = 2;
+    %icon = %user.icon;
+    if(%icon $= "")
+      %icon = "ask_and_answer";
 
-    // TODO GuiBitmapButtonCtrl
-    %swatch = new GuiSwatchCtrl() {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "3 3";
-      extent = "110 22";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-    };
+    if(!isObject(%userSwatch.blid[%user.blid])) {
+      %swatch = new GuiSwatchCtrl() {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 3";
+        extent = "110 22";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        color = "0 0 0 0";
+      };
 
-    %swatch.icon = new GuiBitmapCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      extent = %ext;
-      position = %pos;
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
-    };
+      %swatch.icon = new GuiBitmapCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        extent = "16 16";
+        position = "1 3";
+        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
+        icon = %icon;
+        mKeepCached = "1";
+      };
 
-    %swatch.text = new GuiTextCtrl() {
-      profile = "GlassFriendTextProfile";
-      text = collapseEscape("\\c" @ %colorCode) @ %user.username;
-      rawtext = %user.username;
-      extent = "45 18";
-      position = "22 12";
-    };
+      %swatch.text = new GuiTextCtrl() {
+        profile = "GlassFriendTextProfile";
+        text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+        rawtext = %user.username;
+        blid = %user.blid;
+        extent = "45 18";
+        position = "22 12";
+      };
 
-    %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = %swatch.extent;
+      %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %swatch.extent;
 
-      swatch = %swatch;
-      user = %user;
-    };
+        swatch = %swatch;
+        user = %user;
+      };
 
-    %swatch.add(%swatch.icon);
-    %swatch.add(%swatch.text);
-    %swatch.add(%swatch.mouse);
-    %swatch.text.centerY();
-    if(%last !$= "") {
+      %swatch.add(%swatch.icon);
+      %swatch.add(%swatch.text);
+      %swatch.add(%swatch.mouse);
+      %swatch.text.centerY();
+      %userSwatch.blid[%user.blid] = %swatch;
+    } else {
+      %swatch = %userSwatch.blid[%user.blid];
+      if(%swatch.icon.icon !$= %icon) {
+        %swatch.icon.icon = %icon;
+        %swatch.icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+      }
+
+      %text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+      if(%swatch.text.text !$= %text) {
+        %swatch.text.setText(%text);
+      }
+    }
+
+    %swatch.used = true;
+
+    if(%last $= "") {
+      %swatch.position = "3 3";
+    } else {
       %swatch.placeBelow(%last, 0);
     }
+
     %last = %swatch;
     %userSwatch.add(%swatch);
 
     %this.userListSwatch[%user.blid] = %swatch;
   }
 
-  %userSwatch.getGroup().scrollToTop();
+  for(%i = 0; %i < %userSwatch.getCount(); %i++) {
+    %obj = %userSwatch.getObject(%i);
+    if(!%obj.used) {
+      %obj.deleteAll();
+      %obj.delete();
+      %i--;
+      continue;
+    } else {
+      %obj.used = false;
+    }
+  }
+
+  // %userSwatch.getGroup().scrollToTop();
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);
 }
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
   %this.swatch.color = "220 220 220 255";
+
+  if(getWord(%this.swatch.text.extent, 0) > getWord(vectorSub(%this.swatch.extent, %this.swatch.pos), 0)-20)
+    if(%this.swatch.scrollTick $= "")
+      %this.swatch.scrollTick = %this.scrollLoop(%this.swatch.text, true);
 }
 
 function GlassLiveUserListSwatch::onMouseLeave(%this) {
   %this.swatch.color = "160 160 160 0";
   %this.down = false;
+
+  %this.scrollEnd(%this.swatch.text);
 }
 
 function GlassLiveUserListSwatch::onMouseDown(%this) {
@@ -447,10 +539,116 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-    if(%this.user.blid != getNumKeyId())
-      GlassLive::openUserWindow(%this.user.blid);
-      //messageBoxYesNo("Add Friend", "<font:verdana:13>Add <font:verdana bold:13>" @ %this.user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %this.user.blid @ ");");
+    if(%this.user.blid == getNumKeyId()) {
+      if(GlassIconSelectorWindow.visible)
+        GlassLive::closeIconSelector();
+      else
+        GlassLive::openIconSelector();
+    } else if(%this.user.isBot()) {
+      glassMessageBoxOk("Oh", "That's a bot.");
+    } else {
+      if(isObject(%this.user.window))
+        %this.user.window.delete();
+      else
+        GlassLive::openUserWindow(%this.user.blid);
+    }
+  }
+}
+
+function GlassLiveUserListSwatch::onRightMouseUp(%this) {
+  if(isObject(%input = GlassChatroomWindow.activeTab.input) && %this.user.blid != getNumKeyId()) {
+    %len = strlen(%input.getValue());
+    %name = strreplace(%this.user.username, " ", "_");
+    if(%len > 0 && getsubstr(%input.getValue(), %len - 1, %len) $= " ") {
+      %input.setValue(%input.getValue() @ "@" @ %name @ " ");
+    } else {
+      %input.setValue(ltrim(%input.getValue() SPC "@" @ %name @ " "));
+    }
+  }
+}
+
+function GlassLiveUserListSwatch::scrollLoop(%this, %text, %reset) {
+  if(%reset) {
+    %this.swatch._scrollOrigin = %this.swatch.text.position;
+    %this.swatch._scrollOrigin_Icon = %this.swatch.icon.position;
+    %this.swatch._scrollOffset = 0;
+    %this.swatch._scrollRange = getWord(%this.swatch.text.extent, 0)-getWord(%this.swatch.extent, 0)+getWord(%this.swatch.text.position, 0)+5;
+  }
+
+  %this.swatch.text.position = vectorSub(%this.swatch._scrollOrigin, %this.swatch._scrollOffset);
+  %this.swatch.icon.position = vectorSub(%this.swatch._scrollOrigin_Icon, %this.swatch._scrollOffset);
+
+  if(%this.swatch._scrollOffset >= %this.swatch._scrollRange) {
+    %this.swatch._scrollOffset = 0;
+    // %this.swatch.scrollTick = %this.schedule(2000, scrollLoop, %text);
+  } else {
+    %this.swatch._scrollOffset++;
+    %this.swatch.scrollTick = %this.schedule(25, scrollLoop, %text);
+  }
+}
+
+function GlassLiveUserListSwatch::scrollEnd(%this, %text) {
+  cancel(%this.swatch.scrollTick);
+  %this.swatch.text.position = %this.swatch._scrollOrigin;
+  %this.swatch.icon.position = %this.swatch._scrollOrigin_Icon;
+  %this.swatch.scrollTick = "";
+}
+
+// From Crown's (2143) "Name Completion" Add-On
+// Adapted for use with Glass
+
+function GlassChatroomGui_Input::fixCasesByName(%this, %name)
+{
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++)
+	{
+		%compare = %this.getGroup().userSwatch.getObject(%i).text.rawtext;
+		if(%name $= %compare)
+			return %compare;
+	}
+	return -1;
+}
+
+function GlassChatroomGui_Input::findPartialName(%this, %partialName)
+{
+	%partialName = strLwr(%partialName);
+	%bestName = -1;
+	%bestPos = -1;
+	for(%i=0; %i < %this.getGroup().userSwatch.getCount(); %i++)
+	{
+    %user = %this.getGroup().userSwatch.getObject(%i);
+		%name = strLwr(%user.text.rawtext);
+
+		%pos = strStr(%name, %partialName);
+		if(%pos > %bestPos)
+		{
+			%bestPos = %pos;
+			%bestName = %name;
+		}
+	}
+	if(%bestName == -1)
+		return -1;
+	return %this.fixCasesByName(%bestName);
+}
+
+function GlassChatroomGui_Input::onTabComplete(%this) {
+  %text = %this.getValue();
+
+  %last = getWord(%text, getWordCount(%text) - 1);
+  %closeName = %this.findPartialName(%last);
+
+  if(strLen(%last) < 2 || %closeName == -1)
+  {
+    return;
+  }
+
+  if(%closeName != -1)
+  {
+    %text = removeWord(%text, getWordCount(%text) - 1);
+    %closeName = "@" @ strreplace(%closeName, " ", "_") @ " ";
+    if(getWordCount(%text) >= 1)
+      %text = %text SPC %closeName;
     else
-      messageBoxOk("Hey There!", "<font:verdana:13>That's you!");
+      %text = %text @ %closeName;
+    %this.setValue(%text);
   }
 }

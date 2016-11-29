@@ -1,5 +1,5 @@
 function GlassModManagerGui::renderBoards(%boards) {
-  %container = new GuiSwatchCtrl() {
+  %container = new GuiSwatchCtrl(GlassModManagerGui_AddonContainer) {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "0 0 0 0";
@@ -38,7 +38,7 @@ function GlassModManagerGui::renderBoards(%boards) {
     %id = getField(%board, 1);
     %desc = getField(%desc, 2);
     %img = getField(%desc, 3);
-    
+
     %star["Client Mods"] = "script";
     %star["Server Mods"] = "server";
     %star["Bricks"] = "construction";
@@ -50,10 +50,11 @@ function GlassModManagerGui::renderBoards(%boards) {
     %star["Vehicles"] = "car";
     %star["Bargain Bin"] = "bin";
     %star["Sounds"] = "sound";
-    
+
     %star = strLen(%star[%name]) ? %star[%name] : "ask_and_answer";
 
     %contain = GlassModManagerGui::createBoardButton(%name, %star, %id);
+
     %contain.position = 10 SPC %yPos;
     %contain.text.centerY();
 
@@ -179,6 +180,9 @@ function GlassModManagerGui::SearchResults(%res) {
   }
 
   GlassModManagerGui_SearchResults.verticalMatchChildren(20, 10);
+  GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
+  GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
 function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
@@ -203,10 +207,14 @@ function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
     %this.setCursorPos(0);
     GlassModManagerGui_SearchResults.setVisible(false);
     GlassModManagerGui_AddonDisplay.setVisible(true);
+
+    GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
+    GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
+    GlassModManagerGui_MainDisplay.setVisible(true);
   }
 
   if(!%this.filler) {
-    if(GlassModManager.liveSearch) {
+    if(GlassSettings.get("MM::LiveSearch")) {
       GlassModManagerGui_SearchBar.search();
     }
   }

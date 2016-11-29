@@ -18,6 +18,12 @@ function openGlassSettings(%down) {
       canvas.popDialog(GlassServerControlGui);
     } else if(GlassServerControlC.enabled) {
       canvas.pushDialog(GlassServerControlGui);
+    } else {
+      if(ServerConnection.hasGlass) {
+        glassMessageBoxOk("Glass Server Preferences", "You don't have access to this server's Glass Server Preferences!");
+      } else {
+        glassMessageBoxOk("Glass Server Preferences", "Blockland Glass is not running on this server.");
+      }
     }
   }
 }
@@ -31,6 +37,8 @@ function GlassServerControlC::setTab(%tab) {
       %ctrl.setVisible(false);
     }
   }
+  
+  GlassServerControlGui_CursorFix.makeFirstResponder(true);
 }
 
 function GlassServerControlC::openCategory(%category) {
@@ -731,13 +739,11 @@ function GlassServerControlC::addUser() {
   GlassServerControlGui_InputBLID.setValue("");
 
   if((%blid+0 !$= %blid) || %blid < 0) {
-    messageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
     return;
   }
 
   %rank = GlassServerControlGui_InputRank.getValue();
-
-  GlassServerControlGui_InputRank.setValue("Admin");
 
   if(%rank $= "Super Admin") {
     %rank = 2;
@@ -767,6 +773,9 @@ function GlassServerControlC::addSelected(%rank, %auto) {
     if(%blid !$= "") {
       GlassServerControlGui_InputBLID.setValue(%blid);
     }
+    
+    GlassServerControlGui_InputRank.setValue("Admin");
+    GlassServerControlGui_InputBLID.makeFirstResponder(true);
   } else {
     if(%blid $= "") {
       return;
@@ -918,15 +927,6 @@ package GlassServerControlC {
         rtbServerControlBtn.setVisible(false);
       else
         rtbServerControlBtn.setVisible(true);
-    }
-
-    // oRBs
-
-    if(isObject(orbsServerControlBtn)) {
-      if(ServerConnection.hasGlass)
-        orbsServerControlBtn.setVisible(false);
-      else
-        orbsServerControlBtn.setVisible(true);
     }
 
     // glass (takes over BL's standard server settings btn)

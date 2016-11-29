@@ -1,0 +1,19 @@
+BOLDS:
+
+blue #55acee 85 172 238
+green #2ecc71 46 204 113
+red #e74c3c 231 76 60
+purple #9b59b6 155 89 182
+orange #e67e22 230 126 34
+yellow #f1c40f 241 196 15
+
+LIGHT:
+http://www.colorhexa.com/
+
+green #54d98c 84 217 140
+red #ed7669 237 118 105
+blue #83c3f3 131 195 243
+
+ALT:
+
+orange #edb869 237 184 105

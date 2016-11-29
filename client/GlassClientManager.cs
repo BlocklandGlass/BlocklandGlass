@@ -48,7 +48,7 @@ function GlassClientManager::downloadFinished(%id) {
     GlassClientManager.downloads = 0;
     GlassClientManager.mods = 0;
     GlassClientManager.scan();
-    JoinServerGui.join();
+    reconnectToServer();
   }
 }
 
@@ -162,18 +162,44 @@ function GlassClientManager::accept() {
   %container = GlassClientGui_Scroll.getObject(0);
   for(%i = 0; %i < %container.getCount(); %i++) {
     %swatch = %container.getObject(%i);
-    echo(%swatch.addonId);
-    %ret = GlassModManager::downloadAddonFromId(%swatch.addonId);
-    %ret.rtbImportProgress = %swatch.progress;
+
+    %dl = GlassDownloadManager::newDownload(%swatch.addonId, 1);
+    %dl.addHandle("progress", "GlassClientManager_DlProgress");
+    %dl.addHandle("done", "GlassClientManager_DlDone");
+    %dl.addHandle("failed", "GlassClientManager_DlDone");
+
+    %dl.progressBar = %swatch.progress;
+
+    %dl.startDownload();
   }
 }
+
+function GlassClientManager_DlProgress(%dl, %progress) {
+  %dl.progressBar.setValue(%progress);
+}
+
+function GlassClientManager_DlDone(%dl, %error) {
+  if(%error) {
+    echo("Error downloading client add-on");
+  } else {
+    %folder = getSubStr(%dl.filename, 0, strPos(%dl.filename, "."));
+
+    discoverFile("Add-Ons/" @ %dl.filename);
+    discoverFile("Add-Ons/" @ %folder @ "/*");
+
+    if(isFile("Add-Ons/" @ %folder @ "/client.cs"))
+      exec("Add-Ons/" @ %folder @ "/client.cs");
+  }
+  GlassClientManager::downloadFinished(%dl.addonId);
+}
+
 
 function GlassClientManager::skip() {
   canvas.popDialog(GlassClientGui);
   GlassClientManager.downloads = 0;
   GlassClientManager.mods = 0;
   GlassClientManager.bypass = true;
-  JoinServerGui.join();
+  reconnectToServer();
 }
 
 package GlassClientManager {
@@ -206,11 +232,13 @@ package GlassClientManager {
       }
 
       if(GlassClientManager.connectAttempts > 4) {
-        messageBoxOk("Failed to Connect", "There was an error in the required clients protocol. Ensure all add-ons are up-to-date.");
+        glassMessageBoxOk("Failed to Connect", "There was an error in the required clients protocol.<br><br>Ensure all add-ons are up-to-date.");
         return;
       }
 
-      %missing = getsubstr(%missing, 1, strlen(%missing)-1);
+      if(strlen(%missing) > 0) {
+        %missing = getsubstr(%missing, 1, strlen(%missing)-1);
+      }
 
       %count = getFieldCount(%missing);
       GlassClientManager.mods = %count;
@@ -240,8 +268,8 @@ package GlassClientManager {
     }
   }
 
-  function GameConnection::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
-    parent::onConnectRequestAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
+  function GameConnection::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
+    parent::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
     if(!GlassClientManager.tryLegacyNext) {
       warn("Connected Successfully using LEGACY Required Clients protocol");
     }

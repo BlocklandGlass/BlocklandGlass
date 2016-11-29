@@ -128,6 +128,9 @@ function GuiControl::getCenter(%this) {
 
 function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   for(%i = 0; %i < %this.getCount(); %i++) {
+    if(!%this.getObject(%i).visible)
+      continue;
+      
     %low = getWord(vectorAdd(%this.getObject(%i).position, %this.getObject(%i).extent), 1);
     if(%low > %lowest) {
       %lowest = %low;
@@ -153,4 +156,18 @@ function GuiControl::getCanvasPosition(%this) {
     %pos = vectorAdd(%pos, %parent.position);
   }
   return %pos;
+}
+
+// **Courtesy of RTB 4.0**
+//- GuiControl::getLowestPoint (finds the lowest point within a gui)
+
+function GuiControl::getLowestPoint(%this) {
+  %lowest = 0;
+  for(%i=0;%i<%this.getCount();%i++) {
+    %obj = %this.getObject(%i);
+    %low = getWord(%obj.position,1) + getWord(%obj.extent,1);
+    if(%low > %lowest)
+      %lowest = %low;
+  }
+  return %lowest;
 }

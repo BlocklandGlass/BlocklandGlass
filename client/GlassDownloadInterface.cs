@@ -15,7 +15,7 @@ function GlassDownloadGui::onAccept(%this) {
       eval(%ctx.callback[%i] @ "(1);");
     }
   } else {
-    messageBoxOk("Error", "Download GUI open without context. Please file a bug report");
+    glassMessageBoxOk("Error", "Download GUI open without context. Please file a bug report");
   }
 }
 
@@ -56,7 +56,7 @@ function GlassDownloadGui::onDone(%this) {
 
 function GlassDownloadGui::loadContext(%this, %ctx) {
   %this.getObject(0).setText(%ctx.title);
-  GlassDownloadGui_Text.setValue("<font:verdana:16>" @ %ctx.text);
+  GlassDownloadGui_Text.setValue("<font:verdana:15>" @ %ctx.text);
 
   GlassDownloadInterface.currentContext = %ctx;
 
@@ -116,8 +116,8 @@ function GlassDownloadGui::buildSwatch(%obj) {
     profile = "GuiMLTextProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = %textX SPC 7;
-    extent = "280 20";
+    position = %textX SPC 8;
+    extent = "280 14";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -189,7 +189,7 @@ function GlassDownloadGui_Mouse::onMouseDown(%this, %a, %b, %c) {
 
 }
 
-function GlassDownloadGui_Mouse::onRightMouseDown(%this) {
+function GlassDownloadGui_Mouse::onRightMouseUp(%this) {
   eval(%this.downloadObj.callback @ "(%this.downloadObj,1);");
 }
 

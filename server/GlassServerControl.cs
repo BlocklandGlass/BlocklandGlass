@@ -6,37 +6,37 @@ $Glass::Modules::Prefs = true;
 // Admin
 //====================================
 
-function updateGlassPref(%value, %client, %pso) {
-  if(%pso.title $= "Who can manage super-admins?") {
-    GlassSettings.update("SC::SAEditRank", %value);
-  } else if(%pso.title $= "Who can manage admins?") {
-    GlassSettings.update("SC::AEditRank", %value);
-  } else if(%pso.title $= "Required Client Add-Ons") {
-    GlassSettings.update("SC::RequiredClients", %value);
-    %value = strreplace(%value, ",", "\t");
-    messageAll('MsgAdminForce', "\c6 + \c3" @ %client.netname @ "\c6 has updated the required mods.");
-    for(%i = 0; %i < getFieldCount(%value); %i++) {
-      %mid = trim(getField(%value, %i));
-      messageAll('', "\c6 ++ Required: \c3" @ GlassSettings.cacheFetch("AddonName_" @ %mid));
-    }
+// function updateGlassPref(%value, %client, %pso) {
+  // if(%pso.title $= "Who can manage super-admins?") {
+    // GlassSettings.update("SC::SAEditRank", %value);
+  // } else if(%pso.title $= "Who can manage admins?") {
+    // GlassSettings.update("SC::AEditRank", %value);
+  // } else if(%pso.title $= "Required Client Add-Ons") {
+    // GlassSettings.update("SC::RequiredClients", %value);
+    // %value = strreplace(%value, ",", "\t");
+    // messageAll('MsgAdminForce', "\c6 + \c3" @ %client.netname @ "\c6 has updated the required mods.");
+    // for(%i = 0; %i < getFieldCount(%value); %i++) {
+      // %mid = trim(getField(%value, %i));
+      // messageAll('', "\c6 ++ Required: \c3" @ GlassSettings.cacheFetch("AddonName_" @ %mid));
+    // }
 
-  }
-}
+  // }
+// }
 
 function serverCmdglassNameCacheAdd(%client, %id, %name) {
   if(%client.isSuperAdmin)
     GlassSettings.cachePut("AddonName_" @ %id, %name);
 }
 
-function GameConnection::checkPermissionLevel(%this, %perm) {
-  if(%perm == 3) {
-    return %this.bl_id == getNumKeyId() || %this.bl_id == 999999;
-  } else if(%perm == 2) {
-    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.bl_id == 999999);
-  } else if(%perm == 1) {
-    return (%this.bl_id == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.bl_id == 999999);
-  }
-}
+// function GameConnection::checkPermissionLevel(%this, %perm) {
+  // if(%perm == 3) {
+    // return %this.getBLID() == getNumKeyId() || %this.getBLID() == 999999;
+  // } else if(%perm == 2) {
+    // return (%this.getBLID() == getNumKeyId() || %this.isSuperAdmin || %this.getBLID() == 999999);
+  // } else if(%perm == 1) {
+    // return (%this.getBLID() == getNumKeyId() || %this.isSuperAdmin || %this.isAdmin || %this.getBLID() == 999999);
+  // }
+// }
 
 function removeItemFromList(%list, %item) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
@@ -111,16 +111,16 @@ function serverCmdGlassSetAdmin(%client, %blid, %rank, %auto) {
   }
 }
 
-function serverCmdGetGlassUsers(%client) {
-  %users = 0;
-  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    %cl = ClientGroup.getObject(%i);
-    if(%cl.hasGlass) {
-      %users++;
-    }
-  }
-  messageClient(%client, '', %users);
-}
+// function serverCmdGetGlassUsers(%client) {
+  // %users = 0;
+  // for(%i = 0; %i < ClientGroup.getCount(); %i++) {
+    // %cl = ClientGroup.getObject(%i);
+    // if(%cl.hasGlass) {
+      // %users++;
+    // }
+  // }
+  // messageClient(%client, '', %users);
+// }
 
 function GlassServerControlS::setAdmin(%blid, %rank, %auto) {
   if(%blid == getNumKeyID()) {
@@ -292,15 +292,11 @@ function containsField(%needle, %haystack) {
   return false;
 }
 
-function serverCmdGlassUpdateSend(%client) {
-  messageAll('MsgAdminForce', '\c3%1 \c0updated the server settings.', %client.name);
-}
-
 package GlassServerControlS {
   function GameConnection::autoAdminCheck(%client) {
     %ret = parent::autoAdminCheck(%client);
     commandToClient(%client, 'GlassHandshake', Glass.version);
-    if(%client.isAdmin || %client.bl_id == 999999) {
+    if(%client.isAdmin || %client.getBLID() == 999999) {
       commandToClient(%client, 'hasPrefSystem', $BLPrefs::Version, %client.BLP_isAllowedUse());
       GlassServerControlS::sendAdminData(%client);
     }

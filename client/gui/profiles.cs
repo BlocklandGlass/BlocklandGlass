@@ -66,13 +66,13 @@ if(!isObject(GlassWindowProfile)) new GuiControlProfile(GlassWindowProfile) {
   doFontOutline = "0";
   fontOutlineColor = "255 255 255 255";
   justify = "left";
-  textOffset = "10 7";
+  textOffset = "10 6";
   autoSizeWidth = "0";
   autoSizeHeight = "0";
   returnTab = "0";
   numbersOnly = "0";
   cursorColor = "0 0 0 255";
-  bitmap = "Add-Ons/System_BlocklandGlass/client/gui/glassWindow";
+  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/glassWindow";
   text = "GuiWindowCtrl test";
   hasBitmapArray = "1";
 };
@@ -183,6 +183,20 @@ if(!isObject(GlassSearchResultProfile)) new GuiControlProfile(GlassSearchResultP
 if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfile : GuiTextProfile) {
   fontType = "Verdana Bold";
   fontSize = "13";
+  fontColors[0] = "0 0 0 255"; // black/user
+  fontColors[1] = "85 172 238 255"; // blue/self
+  fontColors[2] = "46 204 113 255"; // green/friend
+  fontColors[3] = "230 126 34 255"; // orange/mod
+  fontColors[4] = "231 76 60 255"; // red/admin
+  fontColors[5] = "155 89 182 255"; // purple/bot
+  fontColors[6] = "150 150 150 255"; // gray/blocked
+
+  fontOutlineColor = "150 150 150 255";
+  //doFontOutline = true;
+
+  border = true;
+  borderColor = "0 0 0 255";
+  borderThickness = 5;
 };
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
@@ -252,8 +266,8 @@ if(!isObject(GlassUserMsgReceivedAudio)) new AudioProfile(GlassUserMsgReceivedAu
   preload = true;
 };
 
-if(!isObject(GlassUserMentionedAudio)) new AudioProfile(GlassUserMentionedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/userMentioned.wav"; // Attrib: http://www.narfstuff.co.uk
+if(!isObject(GlassBellAudio)) new AudioProfile(GlassBellAudio) {
+  filename = "Add-Ons/System_BlocklandGlass/sound/bell.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;
 };
@@ -283,12 +297,6 @@ if(!isObject(GlassFriendAddedAudio)) new AudioProfile(GlassFriendAddedAudio) {
 };
 
 if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendDeclinedAudio)) new AudioProfile(GlassFriendDeclinedAudio) {
   filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
   description = "AudioGui";
   preload = true;

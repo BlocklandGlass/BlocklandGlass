@@ -24,17 +24,17 @@ function GlassServerInfo::onConnected(%this) {
 
 function GlassServerInfo::onDisconnect(%this) {
   %this.connected = false;
-  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), "connectToServer");
+  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), connectToServer);
 }
 
 function GlassServerInfo::onDNSFailed(%this) {
   %this.connected = false;
-  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), "connectToServer");
+  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), connectToServer);
 }
 
 function GlassServerInfo::onConnectFailed(%this) {
   %this.connected = false;
-  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), "connectToServer");
+  %this.reconnect = %this.schedule(1000+getRandom(0, 1000), connectToServer);
 }
 
 function GlassServerInfo::updateField(%this, %key, %val) {

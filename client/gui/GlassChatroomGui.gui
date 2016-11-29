@@ -115,7 +115,7 @@ new GuiControl(GlassChatroomGui) {
          maxLength = "255";
          historySize = "0";
          password = "0";
-         tabComplete = "0";
+         tabComplete = "1";
          sinkAllKeyEvents = "0";
       };
    };

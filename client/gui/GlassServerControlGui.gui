@@ -32,7 +32,25 @@ new GuiControl(GlassServerControlGui) {
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "canvas.popDialog(GlassServerControlGui);";
-
+      
+      new GuiTextCtrl(GlassServerControlGui_CursorFix) {
+         profile = "GuiMLTextEditProfile";
+         horizSizing = "relative";
+         vertSizing = "relative";
+         position = "0 0";
+         extent = "1 1";
+         minExtent = "1 1";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+      
       new GuiBitmapButtonCtrl() {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
@@ -47,7 +65,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Administration";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -69,7 +87,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Preferences";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -91,7 +109,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Other";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "base/client/ui/tab1";
+         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";

@@ -18,7 +18,7 @@ function GlassAuthS::heartbeat(%this) {
     %cl = ClientGroup.getObject(%i);
 
     %status = "";
-    if(%cl.bl_id == getNumKeyId()) {
+    if(%cl.getBLID() == getNumKeyId()) {
       %status = "H";
     } else if(%cl.isSuperAdmin) {
       %status = "S";
@@ -26,7 +26,7 @@ function GlassAuthS::heartbeat(%this) {
       %status = "A";
     }
 
-    %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion;
+    %clients = %clients NL %cl.netname TAB %cl.getBLID() TAB %status TAB %cl._glassVersion;
   }
 
   if(%clients !$= "")

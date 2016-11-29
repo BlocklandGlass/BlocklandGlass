@@ -27,7 +27,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
 
   %text = %text @ "<br><br>";
 
-  if($Glass::Debug) {
+  if(Glass.dev) {
     %text = %text @ "<just:left><font:Lucida Console:12>" @ %buffer;
   } else {
     //record the event

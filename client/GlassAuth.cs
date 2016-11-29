@@ -1,6 +1,9 @@
 function GlassAuth::init() {
-  GlassFriendsGui_HeaderText.setText("<font:verdana bold:14><color:cc0000>Disconnected");
+  GlassFriendsGui_HeaderText.position = "10 13";
+  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   GlassLive::setPowerButton(0);
+  GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
+  GlassLive_StatusPopUp.setVisible(false);
 
 	if(isObject(GlassAuth)) {
 		GlassAuth.delete();
@@ -79,7 +82,7 @@ function GlassAuth::onAuthSuccess(%this) {
     if(GlassSettings.get("Live::StartupConnect"))
       GlassLive::connectToServer();
 
-    GlassModManager::placeCall("rtb");
+    //GlassModManager::placeCall("rtb");
 	}
 
 	%this.firstAuth = true;
@@ -95,7 +98,7 @@ function GlassAuthTCP::onDone(%this) {
 			GlassAuth.ident = %object.get("ident");
 
 			if(%object.get("status") $= "error") {
-				error("error authenticating: " @ %object.get("error"));
+				error("Error authenticating: " @ %object.get("error"));
 			}
 
 			if(%object.get("status") $= "success") {
@@ -113,7 +116,7 @@ function GlassAuthTCP::onDone(%this) {
 					GlassVerifyAccount_Input.setText("");
 					canvas.pushDialog(GlassVerifyAccountGui);
 				} else {
-					echo("Glass auth success");
+					// echo("Glass auth success");
 					GlassAuth.onAuthSuccess();
 				}
 
@@ -142,8 +145,13 @@ function GlassAuthTCP::handleText(%this, %line) {
 
 package GlassAuthPackage {
 	function MM_AuthBar::blinkSuccess(%this) {
-		GlassAuth.heartbeat();
-		parent::blinkSuccess(%this);
+    parent::blinkSuccess(%this);
+    GlassAuth.heartbeat();
+    GlassLive.ready = true;
 	}
+
+  // function MM_AuthBar::blinkFail(%this) {
+    // parent::blinkFail(%this);
+  // }
 };
 activatePackage(GlassAuthPackage);

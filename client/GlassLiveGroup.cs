@@ -136,7 +136,13 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 
   if(%senderblid == getNumKeyId()) {
     %color = GlassLive.color_self;
-  } else if(GlassLive.isFriend[%senderblid]) {
+  } else if(%sender.isAdmin()) {
+    %color = GlassLive.color_admin;
+  } else if(%sender.isMod()) {
+    %color = GlassLive.color_mod;
+  // } else if(%sender.isBlocked()) {
+    // %color = GlassLive.color_blocked;
+  } else if(%sender.isFriend()) {
     %color = GlassLive.color_friend;
   } else {
     %color = GlassLive.color_default;
@@ -144,13 +150,26 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
-    %word = getWord(%msg, %i);
-    if(%word $= ("@" @ $Pref::Player::NetName)) {
+    %word = getASCIIString(getWord(%msg, %i));
+    for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
+      %user = %this.view.userSwatch.getObject(%o);
+      %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
+      %blid = %user.text.blid;
+      if(%word $= ("@" @ %name)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      } else if(%word $= ("@" @ %blid)) {
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+      }
+    }
+
+    %name = getASCIIString(strreplace($Pref::Player::NetName, " ", "_"));
+
+    if(%word $= ("@" @ %name)) {
       %mentioned = true;
-      %msg = setWord(%msg, %i, " <spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+    } else if(%word $= ("@" @ getNumKeyId())) {
+      %mentioned = true;
     }
   }
-
 
   %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender.username @ ":<font:verdana:12><color:333333> " @ %msg;
   %this.pushText(%text);
@@ -160,12 +179,16 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
-      if(!%this.awake)
-        GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
-      
-      alxPlay(GlassUserMentionedAudio);
+      if(GlassLive.lastMentioned $= "" || $Sim::Time > GlassLive.lastMentioned) {
+        if(!%this.view.isAwake())
+          GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+        
+        alxPlay(GlassBellAudio);
+        
+        GlassLive.lastMentioned = $Sim::Time + 10;
+      }
     } else if(GlassSettings.get("Live::RoomChatNotification")) {
-      if(!%this.awake)
+      if(!%this.view.isAwake())
         GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
     }
   }
@@ -174,15 +197,15 @@ function GlassLiveGroup::pushMessage(%this, %sender, %msg) {
 function GlassLiveGroup::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
-    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0) {
+    if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
     if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
-      %bitmap = stripChars(%word, ":");
+      %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
-        %word = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ">";
+        %word = "<bitmap:" @ %bitmap @ ">";
         %msg = setWord(%msg, %i, %word);
       }
     }
@@ -200,12 +223,18 @@ function GlassLiveGroup::pushText(%this, %msg) {
     %val = %msg;
 
   %chatroom.chattext.setValue(%val);
-  if(GlassOverlayGui.isAwake())
+  if(GlassOverlayGui.isAwake()) {
     %chatroom.chattext.forceReflow();
+  }
 
   %chatroom.scrollSwatch.verticalMatchChildren(0, 2);
   %chatroom.scrollSwatch.setVisible(true);
-  %chatroom.scroll.scrollToBottom();
+  
+  %lp = %chatroom.getLowestPoint() - %chatroom.scroll.getLowestPoint();
+  
+  if(%lp >= -50) {
+    %chatroom.scroll.scrollToBottom();
+  }
 }
 
 function GlassLiveGroup::createGui(%this) {
@@ -302,22 +331,59 @@ function GlassLiveGroup::getUser(%this, %idx) {
 }
 
 function GlassLiveGroup::getOrderedUserList(%this) {
-  %users = new GuiTextListCtrl();
-  %admins = new GuiTextListCtrl();
   %mods = new GuiTextListCtrl();
-
+  %admins = new GuiTextListCtrl();
+  %bots = new GuiTextListCtrl();
+  // %friends = new GuiTextListCtrl();
+  %users = new GuiTextListCtrl();
+  
   for(%i = 0; %i < %this.getCount(); %i++) {
     %user = %this.getUser(%i);
-    %users.addRow(%i, %user.username);
+    if(%user.isBot()) {
+      %bots.addRow(%i, %user.username);
+    } else if(%user.isAdmin()) {
+      %admins.addRow(%i, %user.username);
+    } else if(%user.isMod()) {
+      %mods.addRow(%i, %user.username);
+    // } else if(%user.isFriend()) {
+      // %friends.addRow(%i, %user.username);
+    } else {
+      %users.addRow(%i, %user.username);
+    }
   }
 
+  %bots.sort(0);
+  %admins.sort(0);
+  %mods.sort(0);
+  // %friends.sort(0);
   %users.sort(0);
 
   %idList = "";
+
+  for(%i = 0; %i < %admins.rowCount(); %i++) {
+    %idList = %idList SPC %admins.getRowId(%i);
+  }
+
+  for(%i = 0; %i < %mods.rowCount(); %i++) {
+    %idList = %idList SPC %mods.getRowId(%i);
+  }
+
+  for(%i = 0; %i < %bots.rowCount(); %i++) {
+    %idList = %idList SPC %bots.getRowId(%i);
+  }
+
+  // for(%i = 0; %i < %friends.rowCount(); %i++) {
+    // %idList = %idList SPC %friends.getRowId(%i);
+  // }
+
   for(%i = 0; %i < %users.rowCount(); %i++) {
     %idList = %idList SPC %users.getRowId(%i);
   }
 
+  %bots.delete();
+  %admins.delete();
+  %mods.delete();
+  // %friends.delete();
   %users.delete();
 
   return trim(%idList);
@@ -331,16 +397,27 @@ function GlassLiveGroup::renderUserList(%this) {
 
   for(%i = 0; %i < getWordCount(%orderedList); %i++) {
     %user = %this.getUser(getWord(%orderedList, %i));
-
-    %icon = "user";
-    %pos = "1 3";
-    %ext = "16 16";
-
-    if(%this.awake[%user.blid])
-      %colorCode = 0;
-    else
+    
+    if(%user.isBot()) {
+      %colorCode = 5;
+    } else if(%user.isAdmin()) {
+      %colorCode = 4;
+    } else if(%user.isMod()) {
+      %colorCode = 3;
+    } else if(%user.blid == getNumKeyId()) {
+      %colorCode = 1;
+    // } else if(%user.isBlocked()) {
+      // %colorCode = 6;
+    } else if(%user.isFriend()) {
       %colorCode = 2;
+    } else {
+      %colorCode = 0;
+    }
 
+    %icon = %user.icon;
+    if(%icon $= "")
+      %icon = "ask_and_answer";
+    
     // TODO GuiBitmapButtonCtrl
     %swatch = new GuiSwatchCtrl() {
       profile = "GuiDefaultProfile";
@@ -358,8 +435,8 @@ function GlassLiveGroup::renderUserList(%this) {
     %swatch.icon = new GuiBitmapCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      extent = %ext;
-      position = %pos;
+      extent = "16 16";
+      position = "1 3";
       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
     };
 
@@ -367,6 +444,7 @@ function GlassLiveGroup::renderUserList(%this) {
       profile = "GlassFriendTextProfile";
       text = collapseEscape("\\c" @ %colorCode) @ %user.username;
       rawtext = %user.username;
+      blid = %user.blid;
       extent = "45 18";
       position = "22 12";
     };
