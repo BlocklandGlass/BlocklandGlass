@@ -38,6 +38,8 @@ function Glass::execClient() {
 	exec("./client/gui/GlassServerControlGui.gui");
 	exec("./client/gui/GlassChatroomGui.gui");
 	exec("./client/gui/GlassClientGui.gui");
+	exec("./client/gui/GlassBanGui.gui");
+
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
