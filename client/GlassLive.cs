@@ -1758,13 +1758,21 @@ function GlassLive::createUserWindow(%uo) {
     //%uo.window.delete();
     return %uo.window;
   }
-
+  
+  %isMod = GlassLiveUser::getFromBlid(getNumKeyId()).isMod();
+  
+  if(%isMod)
+	  %windowExtent = "170 336";
+  else
+	  %windowExtent = "170 211";
+  
+  
   %window = new GuiWindowCtrl() {
     profile = "GlassWindowProfile";
     horizSizing = "center";
     vertSizing = "center";
     position = "235 157";
-    extent = "170 211";
+    extent = %windowExtent;
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -1877,12 +1885,68 @@ function GlassLive::createUserWindow(%uo) {
     mKeepCached = "0";
     mColor = "237 118 105 200";
   };
-
+  
   %window.add(%window.textcontainer);
   %window.textcontainer.add(%window.text);
   %window.add(%window.messageButton);
   %window.add(%window.friendButton);
   %window.add(%window.blockButton);
+  
+  if(%isMod) {
+	  
+	%window.muteButton = new GuiBitmapButtonCtrl() {
+	  profile = "GlassBlockButtonProfile";
+	  position = "10 220";
+	  extent = "150 22";
+	  text = "Mute";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	  mColor = "241 196 15 200";
+	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Mute\");";
+	};
+	  
+	%window.kickButton = new GuiBitmapButtonCtrl() {
+	  profile = "GlassBlockButtonProfile";
+	  position = "10 248";
+	  extent = "150 22";
+	  text = "Kick";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	  mColor = "230 126 34 200";
+	  command = "GlassLive::sendRoomCommand(\"/kickid" SPC %uo.blid @ "\"," @ GlassChatroomWindow.activeTab.id @ ");";
+	};
+	
+	%window.banButton = new GuiBitmapButtonCtrl() {
+	  profile = "GlassBlockButtonProfile";
+	  position = "10 276";
+	  extent = "150 22";
+	  text = "Ban";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	  mColor = "237 118 105 200";
+	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Ban\");";
+	};
+	
+	%window.barButton = new GuiBitmapButtonCtrl() {
+	  profile = "GlassBlockButtonProfile";
+	  position = "10 304";
+	  extent = "150 22";
+	  text = "Bar";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	  mColor = "231 76 60 200";
+	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Bar\");";
+	};
+	
+	%window.hr = new GuiSwatchCtrl() {
+	  position = "10 209";
+	  extent = "150 2";
+	  color = "220 220 220 220";
+	};
+	
+	%window.add(%window.muteButton);
+	%window.add(%window.kickButton);
+	%window.add(%window.banButton);
+	%window.add(%window.barButton);
+	%window.add(%window.hr);
+
+  }
 
   %window.closeCommand = %window.getId() @ ".delete();";
 
@@ -1891,6 +1955,30 @@ function GlassLive::createUserWindow(%uo) {
   %window.setName("GlassUserGui");
   %uo.window = %window;
   return %window;
+}
+
+function GlassLive::createBanWindow(%blid, %name, %type) {
+  if(!GlassOverlayGui.isMember(GlassBanWindowGui))
+	GlassoverlayGui.add(GlassBanWindowGui);
+
+  if(%type $= "Mute")
+	GlassBanWindowReasonBlocker.setVisible(1);
+  else
+	GlassBanWindowReasonBlocker.setVisible(0);
+  GlassBanWindowGui.punishType = %type;
+  GlassBanWindowGui.blid = %blid;
+  GlassBanWindowLabel.setText("<just:center><font:verdana bold:14>" @ %type @ %name SPC "(" @ %blid @ ")");
+  GlassBanWindowGui.forceCenter();
+  GlassOverlayGui.pushToBack(GlassBanWindowGui);
+  GlassBanWindowGui.setVisible(1);
+}
+
+function GlassLive::submitBanWindow() {
+	%reason = GlassBanWindowReason.getValue();
+	if(%reason !$= "")
+		%reason = " " @ %reason;
+  GlassLive::sendRoomCommand("/" @ GlassBanWindowGui.punishType @ "id" SPC GlassBanWindowDuration.getValue() SPC GlassBanWindowGui.blid @ %reason, GlassChatroomWindow.activeTab.id);
+  GlassBanWindowGui.setVisible(0);
 }
 
 function GlassLive::createChatroomWindow() {
