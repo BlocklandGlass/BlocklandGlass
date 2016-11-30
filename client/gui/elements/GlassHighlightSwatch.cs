@@ -16,6 +16,7 @@ function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command) {
     command = %command;
   };
   %swatch.add(%swatch.glassHighlight);
+  return %swatch.glassHighlight;
 }
 
 function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {
@@ -53,6 +54,13 @@ function GlassHighlightMouse::onMouseLeave(%this) {
     %this.getGroup().flare.setVisible(false);
 
   %this.getGroup().color = %this.getGroup().ocolor;
+
+  echo("exited!");
+
+  if(%this.exitCommand !$= "") {
+    echo("exitCommand!");
+    eval(%this.exitCommand @ "(%this.getGroup().getId());");
+  }
 }
 
 function GlassHighlightMouse::onMouseEnter(%this) {
@@ -61,6 +69,10 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
   %this.getGroup().ocolor = %this.getGroup().color;
   %this.getGroup().color = %this.getGroup().hcolor;
+
+  if(%this.hoverCommand !$= "") {
+    eval(%this.hoverCommand @ "(%this.getGroup().getId());");
+  }
 }
 
 
@@ -74,6 +86,6 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
 
   if(%this.command !$= "") {
-    eval(%this.command @ "(%this.getGroup().getId());");
+    eval(%this.command @ "(%this.getGroup().getId(), %pos);");
   }
 }
