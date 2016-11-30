@@ -7,23 +7,35 @@ package GlassServers {
 	  GlassJS_window.setName("JS_window");
 	}
 	parent::onWake(%this);
-  }   
+  }
 };
 activatePackage(GlassServers);
+
+function GlassServerPreviewGui::open(%this) {
+  canvas.popDialog(joinServerGui);
+  canvas.pushDialog(GlassServerPreviewGui);
+}
+
+function GlassServerPreviewGui::close(%this) {
+  canvas.popDialog(GlassServerPreviewGui);
+  canvas.pushDialog(joinServerGui);
+}
 
 function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreviewWindowGui.forceCenter();
   %server = ServerInfoGroup.getObject(JS_ServerList.getSelectedID());
-  
+
   if(!isObject(%server))
 	  return;
 
-  GlassServerPreview_Name.setText("<font:verdana bold:22>" @ %server.name);
-  GlassServerPreview_Playercount.setText("<font:verdana bold:18>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
-  GlassServerPreview_preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
+  if(%server.pass !$= "No")
+    %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock>";
+
+  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ %server.name SPC %img @ "<br><font:verdana:15>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
+  GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview_Playerlist.clear();
   GlassServerPreview::getServerInfo(%server.ip);
-  
+
   GlassServerPreview::getServerBuild(%server.ip);
 }
 
@@ -42,7 +54,7 @@ function GlassServerPreviewTCP::onDone(%this, %error) {
   if(%error) {
     echo("ERROR:" SPC %error);
   }
-  GlassServerPreview_preview.setBitmap("config/client/BLG/ServerPreview.jpg");
+  GlassServerPreview_Preview.setBitmap("config/client/BLG/ServerPreview.jpg");
 }
 
 function GlassServerPreview::getServerInfo(%addr) {
@@ -65,7 +77,7 @@ function GlassServerPreviewPlayerTCP::handleText(%this, %text) {
 
 function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
   if(%error) {
-    echo("ERROR:" SPC %error); 
+    echo("ERROR:" SPC %error);
   } else {
     %err = jettisonParse(%this.buffer);
     if(%err) {
@@ -74,7 +86,7 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
     }
 
     %result = $JSON::Value;
-	
+
 	if(%result.status $= "error")
 		GlassServerPreview_noGlass.setVisible(1);
 	else {
@@ -90,5 +102,6 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
 function joinServerGui::preview(%this) {
   if(JS_ServerList.getSelectedID() == -1)
 	  return;
-  canvas.pushDialog(GlassServerPreviewGui);
+
+  GlassServerPreviewGui.open();
 }

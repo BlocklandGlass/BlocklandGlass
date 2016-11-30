@@ -4,7 +4,7 @@ new GuiControl(GlassServerPreviewGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "1900 1000";
+   extent = "640 480";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
@@ -12,8 +12,8 @@ new GuiControl(GlassServerPreviewGui) {
 
    new GuiWindowCtrl(GlassServerPreviewWindowGui) {
       profile = "GlassWindowProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
+      horizSizing = "center";
+      vertSizing = "center";
       position = "0 0";
       extent = "640 480";
       minExtent = "8 2";
@@ -29,14 +29,14 @@ new GuiControl(GlassServerPreviewGui) {
       canMinimize = "0";
       canMaximize = "0";
       minSize = "50 50";
-      closeCommand = "canvas.popDialog(GlassServerPreviewGui);";
+      closeCommand = "GlassServerPreviewGui.close();";
 
       new GuiSwatchCtrl() {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "10 32";
-         extent = "620 40";
+         position = "10 35";
+         extent = "620 42";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -47,9 +47,9 @@ new GuiControl(GlassServerPreviewGui) {
             profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "5 2";
-            extent = "591 22";
-            minExtent = "8 2";
+            position = "10 5";
+            extent = "600 32";
+            minExtent = "600 32";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
@@ -61,31 +61,13 @@ new GuiControl(GlassServerPreviewGui) {
             selectable = "1";
             autoResize = "1";
          };
-         new GuiMLTextCtrl(GlassServerPreview_Playercount) {
-            profile = "GuiMLTextProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "7 20";
-            extent = "153 18";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            lineSpacing = "2";
-            allowColorChars = "0";
-            maxChars = "-1";
-            text = "<font:verdana bold:18>24/40 Players";
-            maxBitmapHeight = "-1";
-            selectable = "1";
-            autoResize = "1";
-         };
       };
       new GuiBitmapButtonCtrl() {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "195 79";
-         extent = "60 16";
+         position = "195 82";
+         extent = "60 20";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -106,8 +88,8 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassScrollProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "10 95";
-         extent = "267 373";
+         position = "10 102";
+         extent = "280 368";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -136,13 +118,32 @@ new GuiControl(GlassServerPreviewGui) {
             fitParentWidth = "1";
             clipColumnText = "0";
          };
+
+         new GuiMLTextCtrl(GlassServerPreview_noGlass) {
+            profile = "GuiMLTextProfile";
+            horizSizing = "center";
+            vertSizing = "center";
+            position = "10 97";
+            extent = "267 22";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "0";
+            clipToParent = "1";
+            lineSpacing = "2";
+            allowColorChars = "0";
+            maxChars = "-1";
+            text = "<just:center><font:verdana bold:15><color:666666>Server not running Glass";
+            maxBitmapHeight = "-1";
+            selectable = "1";
+            autoResize = "1";
+         };
       };
       new GuiBitmapButtonCtrl() {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "40 79";
-         extent = "60 16";
+         position = "40 82";
+         extent = "60 20";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -159,24 +160,12 @@ new GuiControl(GlassServerPreviewGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
       };
-      new GuiSwatchCtrl() {
-         profile = "GuiDefaultProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "290 95";
-         extent = "340 2";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         color = "180 180 180 220";
-      };
       new GuiBitmapButtonCtrl() {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "290 79";
-         extent = "60 16";
+         position = "305 82";
+         extent = "75 20";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -196,8 +185,8 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "570 79";
-         extent = "60 16";
+         position = "570 82";
+         extent = "60 20";
          minExtent = "8 2";
          enabled = "1";
          visible = "0";
@@ -213,24 +202,24 @@ new GuiControl(GlassServerPreviewGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
       };
-      new GuiSwatchCtrl(GlassServerPreview_previewTab) {
+      new GuiSwatchCtrl(GlassServerPreview_PreviewTab) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "290 97";
-         extent = "340 342";
+         position = "300 102";
+         extent = "330 330";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         color = "0 104 160 2";
+         color = "0 0 0 0";
 
-         new GuiBitmapCtrl(GlassServerPreview_preview) {
+         new GuiBitmapCtrl(GlassServerPreview_Preview) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
-            extent = "340 340";
+            extent = "330 330";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -270,14 +259,14 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "526 444";
-         extent = "103 26";
+         position = "530 442";
+         extent = "100 28";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
 		 accelerator = "enter";
          clipToParent = "1";
-         command = "JoinServerGui.join(); canvas.popDialog(GlassServerPreviewGui);";
+         command = "JoinServerGui.join(); GlassServerPreviewGui.close();";
          text = "Connect";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -293,13 +282,13 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "289 444";
-         extent = "103 26";
+         position = "300 442";
+         extent = "100 28";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "canvas.popDialog(GlassServerPreviewGui);";
+         command = "GlassServerPreviewGui.close();";
          accelerator = "escape";
          text = "Back";
          groupNum = "-1";
@@ -311,24 +300,6 @@ new GuiControl(GlassServerPreviewGui) {
          overflowImage = "0";
          mKeepCached = "0";
          mColor = "255 255 255 200";
-      };
-      new GuiMLTextCtrl(GlassServerPreview_noGlass) {
-         profile = "GuiMLTextProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "10 97";
-         extent = "267 22";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "0";
-         clipToParent = "1";
-         lineSpacing = "2";
-         allowColorChars = "0";
-         maxChars = "-1";
-         text = "<just:center><font: verdana bold:22>Server not running Glass";
-         maxBitmapHeight = "-1";
-         selectable = "1";
-         autoResize = "1";
       };
    };
 };
