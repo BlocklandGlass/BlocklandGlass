@@ -1762,7 +1762,7 @@ function GlassLive::createUserWindow(%uo) {
   %isMod = GlassLiveUser::getFromBlid(getNumKeyId()).isMod();
   
   if(%isMod)
-	  %windowExtent = "170 330";
+	  %windowExtent = "170 336";
   else
 	  %windowExtent = "170 211";
   
@@ -1894,10 +1894,20 @@ function GlassLive::createUserWindow(%uo) {
   
   if(%isMod) {
 	  
+	%window.muteButton = new GuiBitmapButtonCtrl() {
+	  profile = "GlassBlockButtonProfile";
+	  position = "10 220";
+	  extent = "150 22";
+	  text = "Mute";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	  mColor = "241 196 15 200";
+	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Mute\");";
+	};
+	  
 	%window.kickButton = new GuiBitmapButtonCtrl() {
 	  profile = "GlassBlockButtonProfile";
-	  position = "10 219";
-	  extent = "150 30";
+	  position = "10 248";
+	  extent = "150 22";
 	  text = "Kick";
 	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 	  mColor = "230 126 34 200";
@@ -1906,8 +1916,8 @@ function GlassLive::createUserWindow(%uo) {
 	
 	%window.banButton = new GuiBitmapButtonCtrl() {
 	  profile = "GlassBlockButtonProfile";
-	  position = "10 254";
-	  extent = "150 30";
+	  position = "10 276";
+	  extent = "150 22";
 	  text = "Ban";
 	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 	  mColor = "237 118 105 200";
@@ -1916,8 +1926,8 @@ function GlassLive::createUserWindow(%uo) {
 	
 	%window.barButton = new GuiBitmapButtonCtrl() {
 	  profile = "GlassBlockButtonProfile";
-	  position = "10 289";
-	  extent = "150 30";
+	  position = "10 304";
+	  extent = "150 22";
 	  text = "Bar";
 	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 	  mColor = "231 76 60 200";
@@ -1930,6 +1940,7 @@ function GlassLive::createUserWindow(%uo) {
 	  color = "220 220 220 220";
 	};
 	
+	%window.add(%window.muteButton);
 	%window.add(%window.kickButton);
 	%window.add(%window.banButton);
 	%window.add(%window.barButton);
@@ -1949,7 +1960,11 @@ function GlassLive::createUserWindow(%uo) {
 function GlassLive::createBanWindow(%blid, %name, %type) {
   if(!GlassOverlayGui.isMember(GlassBanWindowGui))
 	GlassoverlayGui.add(GlassBanWindowGui);
-  
+
+  if(%type $= "Mute")
+	GlassBanWindowReasonBlocker.setVisible(1);
+  else
+	GlassBanWindowReasonBlocker.setVisible(0);
   GlassBanWindowGui.punishType = %type;
   GlassBanWindowGui.blid = %blid;
   GlassBanWindowLabel.setText("<just:center><font:verdana bold:14>" @ %type @ %name SPC "(" @ %blid @ ")");
@@ -1959,7 +1974,10 @@ function GlassLive::createBanWindow(%blid, %name, %type) {
 }
 
 function GlassLive::submitBanWindow() {
-  GlassLive::sendRoomCommand("/" @ GlassBanWindowGui.punishType @ "id" SPC GlassBanWindowDuration.getValue() SPC GlassBanWindowGui.blid SPC GlassBanWindowReason.getValue(), GlassChatroomWindow.activeTab.id);
+	%reason = GlassBanWindowReason.getValue();
+	if(%reason !$= "")
+		%reason = " " @ %reason;
+  GlassLive::sendRoomCommand("/" @ GlassBanWindowGui.punishType @ "id" SPC GlassBanWindowDuration.getValue() SPC GlassBanWindowGui.blid @ %reason, GlassChatroomWindow.activeTab.id);
   GlassBanWindowGui.setVisible(0);
 }
 
