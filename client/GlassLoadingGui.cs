@@ -1,4 +1,14 @@
+function GlassFavoriteServer::changeGui() {
+  if(!isObject(GlassFavoriteServerSwatch)) {
+    exec("./gui/elements/GlassHighlightSwatch.cs");
+    exec("./gui/GlassFavoriteServer.gui");
+  }
+
+  MainMenuButtonsGui.add(GlassFavoriteServerSwatch);
+}
+
 function GlassLoading::changeGui() {
+  GlassFavoriteServer::changeGui();
   if(LoadingGui.isGlass) {
     return;
   }

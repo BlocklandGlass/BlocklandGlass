@@ -1,0 +1,88 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "left";
+   vertSizing = "top";
+   position = "350 336";
+   extent = "290 144";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+   color = "255 255 255 255";
+
+   new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 35";
+      extent = "270 47";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "131 195 243 255";
+
+      new GuiMLTextCtrl(GlassFavoriteServer) {
+         profile = "GuiMLTextProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 10";
+         extent = "250 27";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+   };
+   new GuiSwatchCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 87";
+      extent = "270 47";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "220 220 220 255";
+
+      new GuiMLTextCtrl(GlassFavoriteServer2) {
+         profile = "GuiMLTextProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 10";
+         extent = "250 27";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+   };
+   new GuiTextCtrl() {
+      profile = "GlassChatroomTabProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 10";
+      extent = "270 18";
+      minExtent = "270 18";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Favorite Servers";
+      maxLength = "255";
+   };
+};
+//--- OBJECT WRITE END ---
