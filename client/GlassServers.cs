@@ -61,7 +61,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   }
 
   if(!isObject(%swatch.glassHighlight)) {
-    GlassHighlightSwatch::addToSwatch(%swatch, "10 10 10 0", "GlassFavoriteServers::interact");
+    GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
   }
   %swatch.pushToBack(%swatch.glassHighlight);
 }
