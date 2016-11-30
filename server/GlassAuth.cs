@@ -18,15 +18,19 @@ function GlassAuthS::heartbeat(%this) {
     %cl = ClientGroup.getObject(%i);
 
     %status = "";
-    if(%cl.getBLID() == getNumKeyId()) {
+    if(%cl.bl_id == getNumKeyId()) {
       %status = "H";
     } else if(%cl.isSuperAdmin) {
       %status = "S";
     } else if(%cl.isAdmin) {
       %status = "A";
+    } else if(%cl.isModerator) {
+      %status = "M";
+    }else if(%cl.statusLetter !$= "") {
+      %status = getSubStr(%cl.statusLetter, 0, 1);
     }
 
-    %clients = %clients NL %cl.netname TAB %cl.getBLID() TAB %status TAB %cl._glassVersion;
+    %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion;
   }
 
   if(%clients !$= "")

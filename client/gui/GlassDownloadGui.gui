@@ -11,7 +11,7 @@ new GuiControl(GlassDownloadGui) {
    clipToParent = "1";
 
    new GuiWindowCtrl() {
-      profile = "GuiWindowProfile";
+      profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
       position = "20 65";
