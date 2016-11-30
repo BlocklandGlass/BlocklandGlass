@@ -11,7 +11,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
    clipToParent = "1";
    color = "255 255 255 255";
 
-   new GuiSwatchCtrl() {
+   new GuiSwatchCtrl(GlassFavoriteServerGui_Swatch0) {
       profile = "GuiDefaultProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -23,7 +23,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
       clipToParent = "1";
       color = "131 195 243 255";
 
-      new GuiMLTextCtrl(GlassFavoriteServer) {
+      new GuiMLTextCtrl() {
          profile = "GuiMLTextProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -41,7 +41,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
          autoResize = "1";
       };
    };
-   new GuiSwatchCtrl() {
+   new GuiSwatchCtrl(GlassFavoriteServerGui_Swatch1) {
       profile = "GuiDefaultProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -53,7 +53,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
       clipToParent = "1";
       color = "220 220 220 255";
 
-      new GuiMLTextCtrl(GlassFavoriteServer2) {
+      new GuiMLTextCtrl() {
          profile = "GuiMLTextProfile";
          horizSizing = "right";
          vertSizing = "bottom";

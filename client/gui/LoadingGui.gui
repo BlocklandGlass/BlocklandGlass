@@ -52,7 +52,7 @@ new GuiChunkedBitmapCtrl(LoadingGui) {
       selectable = "1";
       autoResize = "1";
    };
-   new GuiWindowCtrl() {
+   new GuiWindowCtrl(GlassLoadingGui) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
