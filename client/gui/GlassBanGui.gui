@@ -4,7 +4,7 @@ new GuiControl(GlassBanGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "1900 1000";
+   extent = "640 480";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
@@ -14,7 +14,7 @@ new GuiControl(GlassBanGui) {
       profile = "GlassWindowProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "6 4";
+      position = "0 0";
       extent = "236 104";
       minExtent = "8 2";
       enabled = "1";
@@ -30,6 +30,8 @@ new GuiControl(GlassBanGui) {
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "GlassBanWindowGui.setVisible(0);";
+         punishType = "Mute";
+         blid = "8326";
 
       new GuiMLTextCtrl() {
          profile = "GuiMLTextProfile";
@@ -139,6 +141,18 @@ new GuiControl(GlassBanGui) {
          overflowImage = "0";
          mKeepCached = "0";
          mColor = "84 217 140 200";
+      };
+      new GuiSwatchCtrl(GlassBanWindowReasonBlocker) {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 53";
+         extent = "214 21";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "0";
+         clipToParent = "1";
+         color = "200 200 200 220";
       };
    };
 };
