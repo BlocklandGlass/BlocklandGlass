@@ -62,8 +62,10 @@ function Glass::execClient() {
 	exec("./client/GlassNotificationManager.cs");
 	exec("./client/GlassServers.cs");
 
+  exec("./client/GlassLoadingGui.cs");
+
   exec("./client/GlassCompatibility.cs");
-	
+
 	%date = getDateTime();
 	%month = getSubStr(%date, 0, 2);
 	%day = getSubStr(%date, strpos(%date, "/")+1, 2);
@@ -86,6 +88,8 @@ function Glass::execClient() {
 	GlassNotificationManager::init();
 
 	GlassModManager::init();
+
+	GlassLoading::changeGui();
 
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
