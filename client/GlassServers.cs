@@ -30,6 +30,9 @@ function GlassFavoriteServers::changeGui() {
 }
 
 function GlassFavoriteServers::addFavorite(%this, %username) {
+  if(trim(%username) $= "")
+    return;
+
   %favs = GlassSettings.get("Servers::Favorites");
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
     if(getField(%favs, %i) $= %username) {
@@ -147,9 +150,8 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
       %swatch.text.setText("<font:verdana bold:15>" @ %title @ "<br><font:verdana:13>Offline");
   }
 
-  if(!isObject(%swatch.glassHighlight)) {
-    GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
-  }
+  %swatch.ocolor = %swatch.color;
+  %swatch.hcolor = %swatch.color;
   %swatch.pushToBack(%swatch.glassHighlight);
 }
 
