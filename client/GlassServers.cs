@@ -134,6 +134,8 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
     maxPlayers = %maxPlayers;
 
     ip = %addr;
+
+    offline = %status $= "offline";
   };
 
   switch$(%status) {
@@ -157,7 +159,10 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
 
 function GlassFavoriteServers::interact(%swatch) {
   %server = %swatch.server;
-  GlassServerPreviewGui.open(%server);
+  if(!%server.offline)
+    GlassServerPreviewGui.open(%server);
+  else
+    glassMessageBoxOk("Offline", %server.name @ " is currently offline!");
 }
 
 function getHostName(%name) {
@@ -440,10 +445,10 @@ package GlassServers {
 
     LoadingGui.pushToBack(GlassLoadingGui);
   }
-  
+
   function NewPlayerListGui::UpdateWindowTitle(%gui) {
     parent::UpdateWindowTitle(%gui);
-    
+
     GlassLoadingGui.updateWindowTitle();
   }
 };
