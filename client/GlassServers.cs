@@ -128,7 +128,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
     %swatch.text = %swatch.getObject(0);
 
   %swatch.server = new ScriptObject() {
-    name = %title;
+    name = trim(%title);
     pass = (%status $= "passworded" ? "Yes" : "No");
     currPlayers = %players;
     maxPlayers = %maxPlayers;
@@ -232,6 +232,18 @@ function GlassLoading::changeGui() {
   LoadingGui.isGlass = true;
 }
 
+function GlassLoadingGui::updateWindowTitle(%this) {
+  %npl = NPL_Window.getValue();
+  %name = trim(getSubStr(%npl, strPos(%npl, "-") + 2, strLen(%npl)));
+
+  if(%name !$= "")
+    %text = "Joining \"" @ %name @ "\"";
+  else
+    %text = "Joining Server";
+
+  %this.setText(%text);
+}
+
 function GlassLoadingGui::onWake(%this) {
   GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
@@ -272,7 +284,7 @@ function GlassServerPreviewGui::onWake(%this) {
   if(%server.pass !$= "No")
     %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock>";
 
-  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ %server.name SPC %img @ "<br><font:verdana:15>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
+  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%server.name) SPC %img @ "<br><font:verdana:15>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview_Playerlist.clear();
   GlassServerPreview::getServerInfo(%server.ip);
@@ -330,15 +342,22 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
 
     %result = $JSON::Value;
 
-	if(%result.status $= "error")
-		GlassServerPreview_noGlass.setVisible(1);
-	else {
-	  for(%i=0; %i < %result.valueClients.length; %i++) {
-		GlassServerPreview_noGlass.setVisible(0);
-	    %cl = %result.valueClients.value[%i];
-	    GlassServerPreview_Playerlist.addRow(%cl.blid, %cl.status TAB %cl.name TAB %cl.blid);
-	  }
-	}
+    if(%result.status $= "error") {
+      GlassServerPreview_Playerlist.clear();
+      GlassServerPreview_noGlass.setVisible(true);
+    } else {
+      GlassServerPreview_noGlass.setVisible(false);
+
+      %playerCount = %result.Clients.length;
+
+      if(%result.clients.value[0].name $= "") // empty serv
+        return;
+
+      for(%i=0; %i < %playerCount; %i++) {
+        %cl = %result.clients.value[%i];
+        GlassServerPreview_Playerlist.addRow(%cl.blid, %cl.status TAB %cl.name TAB %cl.blid);
+      }
+    }
   }
 }
 
@@ -390,6 +409,12 @@ package GlassServers {
       parent::onWake(%this);
 
     LoadingGui.pushToBack(GlassLoadingGui);
+  }
+  
+  function NewPlayerListGui::UpdateWindowTitle(%gui) {
+    parent::UpdateWindowTitle(%gui);
+    
+    GlassLoadingGui.updateWindowTitle();
   }
 };
 activatePackage(GlassServers);

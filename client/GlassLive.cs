@@ -1921,15 +1921,15 @@ function GlassLive::createBanWindow(%blid, %name, %type) {
 	GlassoverlayGui.add(GlassBanWindowGui);
 
   if(%type $= "Mute")
-	GlassBanWindowReasonBlocker.setVisible(1);
+	GlassBanWindowReasonBlocker.setVisible(true);
   else
-	GlassBanWindowReasonBlocker.setVisible(0);
+	GlassBanWindowReasonBlocker.setVisible(false);
   GlassBanWindowGui.punishType = %type;
   GlassBanWindowGui.blid = %blid;
   GlassBanWindowLabel.setText("<just:center><font:verdana bold:14>" @ %type @ %name SPC "(" @ %blid @ ")");
   GlassBanWindowGui.forceCenter();
   GlassOverlayGui.pushToBack(GlassBanWindowGui);
-  GlassBanWindowGui.setVisible(1);
+  GlassBanWindowGui.setVisible(true);
 }
 
 function GlassLive::submitBanWindow() {
@@ -1937,7 +1937,7 @@ function GlassLive::submitBanWindow() {
 	if(%reason !$= "")
 		%reason = " " @ %reason;
   GlassLive::sendRoomCommand("/" @ GlassBanWindowGui.punishType @ "id" SPC GlassBanWindowDuration.getValue() SPC GlassBanWindowGui.blid @ %reason, GlassChatroomWindow.activeTab.id);
-  GlassBanWindowGui.setVisible(0);
+  GlassBanWindowGui.setVisible(false);
 }
 
 function GlassLive::createChatroomWindow() {

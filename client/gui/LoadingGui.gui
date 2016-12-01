@@ -62,7 +62,7 @@ new GuiChunkedBitmapCtrl(LoadingGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      text = "Joining \"Jincux\'s Development\"...";
+      text = "Joining \"Development\"";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";

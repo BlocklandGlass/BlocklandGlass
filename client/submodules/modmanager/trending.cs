@@ -19,9 +19,9 @@ function GlassModManagerGui::renderHome(%data) {
 
     %container.add(%body);
 
-    %body.setVisible(1);
+    %body.setVisible(true);
 
-    %body.text.setVisible(1);
+    %body.text.setVisible(true);
     %body.text.forceReflow();
 
     %body.verticalMatchChildren(0, 10);

@@ -266,7 +266,7 @@ new GuiControl(GlassServerPreviewGui) {
          visible = "1";
 		 accelerator = "enter";
          clipToParent = "1";
-         command = "JoinServerGui.join(); GlassServerPreviewGui.close();";
+         command = "GlassServerPreviewGui.close(); JoinServerGui.join();";
          text = "Connect";
          groupNum = "-1";
          buttonType = "PushButton";
