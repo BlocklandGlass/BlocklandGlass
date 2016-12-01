@@ -1,6 +1,6 @@
 //--- OBJECT WRITE BEGIN ---
-new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
-   profile = "GuiDefaultProfile";
+new GuiWindowCtrl(GlassFavoriteServerSwatch) {
+   profile = "GlassWindowProfile";
    horizSizing = "left";
    vertSizing = "top";
    position = "350 336";
@@ -10,6 +10,14 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
    visible = "1";
    clipToParent = "1";
    color = "255 255 255 255";
+   text = "Favorite Servers";
+
+   canMinimize = false;
+   canMaximize = false;
+   resizeHeight = false;
+   resizeWidth = false;
+   canClose = false;
+   canMove = false;
 
    new GuiSwatchCtrl(GlassFavoriteServerGui_Swatch0) {
       profile = "GuiDefaultProfile";
@@ -79,7 +87,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
       extent = "270 18";
       minExtent = "270 18";
       enabled = "1";
-      visible = "1";
+      visible = "0";
       clipToParent = "1";
       text = "Favorite Servers";
       maxLength = "255";

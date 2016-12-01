@@ -3,6 +3,16 @@ function GlassServers::init() {
   GlassLoading::changeGui();
 
   new ScriptObject(GlassFavoriteServers);
+  %this = GlassFavoriteServers;
+
+  %favs = GlassSettings.get("Servers::Favorites");
+  %this.favorites = 0;
+  for(%i = 0; %i < getFieldCount(%favs); %i++) {
+    %this.favorite[%this.favorites] = getField(%favs, %i);
+    %this.favorites++;
+  }
+
+  GlassFavoriteServers.buildSwatches();
   GlassFavoriteServers.load();
 }
 
@@ -17,15 +27,6 @@ function GlassFavoriteServers::changeGui() {
   }
 
   MainMenuButtonsGui.add(GlassFavoriteServerSwatch);
-
-  %favs = GlassSettings.get("Servers::Favorites");
-  %this.favorites = 0;
-  for(%i = 0; %i < getFieldCount(%favs); %i++) {
-    %this.favorite[%this.favorites] = getField(%favs, %i);
-    %this.favorites++;
-  }
-
-  GlassFavoriteServers.buildSwatches();
 }
 
 function GlassFavoriteServers::addFavorite(%this, %username) {
@@ -114,7 +115,7 @@ function GlassFavoriteServers::buildSwatches(%this) {
     %placeBelow = %swatch;
   }
 
-  GlassFavoriteServerSwatch.verticalMatchChildren(0, 10);
+  GlassFavoriteServerSwatch.verticalMatchChildren(24, 10);
   GlassFavoriteServerSwatch.position = vectorSub(MainMenuButtonsGui.extent, GlassFavoriteServerSwatch.extent);
 }
 
