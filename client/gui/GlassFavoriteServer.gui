@@ -71,7 +71,7 @@ new GuiSwatchCtrl(GlassFavoriteServerSwatch) {
          autoResize = "1";
       };
    };
-   new GuiTextCtrl() {
+   new GuiTextCtrl(GlassFavoriteServerGui_Text) {
       profile = "GlassChatroomTabProfile";
       horizSizing = "right";
       vertSizing = "bottom";

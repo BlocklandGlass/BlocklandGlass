@@ -10,7 +10,6 @@ function GlassServers::init() {
 // Favorite Servers
 //====================================
 
-  exec("./gui/elements/GlassHighlightSwatch.cs");
 function GlassFavoriteServers::changeGui() {
   if(!isObject(GlassFavoriteServerSwatch)) {
     exec("./gui/elements/GlassHighlightSwatch.cs");
@@ -18,18 +17,105 @@ function GlassFavoriteServers::changeGui() {
   }
 
   MainMenuButtonsGui.add(GlassFavoriteServerSwatch);
+
+  %favs = GlassSettings.get("Servers::Favorites");
+  %this.favorites = 0;
+  for(%i = 0; %i < getFieldCount(%favs); %i++) {
+    %this.favorite[%this.favorites] = getField(%favs, %i);
+    %this.favorites++;
+  }
+
+  GlassFavoriteServers.buildSwatches();
+}
+
+function GlassFavoriteServers::addFavorite(%this, %username) {
+  %favs = GlassSettings.get("Servers::Favorites");
+  for(%i = 0; %i < getFieldCount(%favs); %i++) {
+    if(getField(%favs, %i) $= %username) {
+      glassMessageBoxOk("Already a favorite!", "You've already favorited this host!");
+      return;
+    }
+  }
+
+  GlassSettings.update("Servers::Favorites", trim(%favs TAB %username));
+
+  %this.favorite[%this.favorites] = %username;
+  %this.favorites++;
+
+  %this.buildSwatches();
+  %this.load();
 }
 
 function GlassFavoriteServers::load(%this) {
-  %this.favorite[0] = "Crown";
-  %this.favorite[1] = "New Year";
-  %this.favorites = 2;
 
   for(%i = 0; %i < %this.favorites; %i++) {
     %this.isFavorite[getHostName(%this.favorite[%i])] = true;
   }
 
   connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
+}
+
+function GlassFavoriteServers::buildSwatches(%this) {
+
+  for(%i = 0; %i < GlassFavoriteServerSwatch.getCount(); %i++) {
+    %obj = GlassFavoriteServerSwatch.getObject(%i);
+    if(%obj.getName() !$= "GlassFavoriteServerGui_Text") {
+      %obj.deleteAll();
+      %obj.delete();
+      %i--;
+    }
+  }
+
+  for(%i = 0; %i < %this.favorites; %i++) {
+    %swatch = new GuiSwatchCtrl("GlassFavoriteServerGui_Swatch" @ %i) {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 0";
+      extent = "270 47";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      color = "220 220 220 255";
+    };
+
+    %swatch.text = new GuiMLTextCtrl() {
+      profile = "GuiMLTextProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 10";
+      extent = "250 27";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lineSpacing = "2";
+      allowColorChars = "0";
+      maxChars = "-1";
+      maxBitmapHeight = "-1";
+      selectable = "1";
+      autoResize = "1";
+    };
+
+    %swatch.add(%swatch.text);
+
+    %swatch.text.setText("<font:verdana bold:15>" @ getHostName(%this.favorite[%i]) @ " Server<br><just:center><font:verdana:13>Loading...");
+
+    GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
+
+    GlassFavoriteServerSwatch.add(%swatch);
+
+    if(%placeBelow $= "")
+      %swatch.placeBelow(GlassFavoriteServerGui_Text, 10);
+    else
+      %swatch.placeBelow(%placeBelow, 5);
+
+    %placeBelow = %swatch;
+  }
+
+  GlassFavoriteServerSwatch.verticalMatchChildren(0, 10);
+  GlassFavoriteServerSwatch.position = vectorSub(MainMenuButtonsGui.extent, GlassFavoriteServerSwatch.extent);
 }
 
 function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %players, %maxPlayers, %map, %addr) {
