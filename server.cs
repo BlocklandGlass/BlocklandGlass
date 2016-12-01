@@ -27,6 +27,7 @@ function Glass::execServer() {
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
 	exec("./server/GlassClientSupport.cs");
+	exec("./server/GlassServers.cs");
 
 	echo(" ===                   Starting it up                   ===");
 
