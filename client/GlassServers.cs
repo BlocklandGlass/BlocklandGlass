@@ -374,6 +374,14 @@ function joinServerGui::preview(%this) {
 }
 
 function clientCmdGlass_setLoadingBackground(%url, %filetype) {
+  if(!LoadingGUI.isAwake())
+	return;
+
+  if(LoadingGUI.lastDownload + 2 > $Sim::Time)
+	  return;
+  
+  LoadingGUI.lastDownload = $Sim::Time;
+
   if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
 	echo("Cannot download loading screen background as it does not have a legal file type.");
 	return;
