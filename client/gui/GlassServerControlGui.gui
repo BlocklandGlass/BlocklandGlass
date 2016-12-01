@@ -685,7 +685,7 @@ new GuiControl(GlassServerControlGui) {
                enabled = "1";
                visible = "0";
                clipToParent = "1";
-               command = "GlassServerControlGui_RequiredClientsDlg.setVisible(1);GlassServerControlC.populateClientsPopUp();";
+               command = "GlassServerControlGui_RequiredClientsDlg.setVisible(true);GlassServerControlC.populateClientsPopUp();";
                text = "Required Clients";
                groupNum = "-1";
                buttonType = "PushButton";

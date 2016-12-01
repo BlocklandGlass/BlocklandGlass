@@ -1,10 +1,3 @@
-//================================================================
-//=	Title: 	Blockland Glass (i3)																 =
-//=	Author:	Jincux (9789)																				 =
-//=	If you're looking at this, go you. either that, or you're a	 =
-//=	little skiddy trying to 'troll'															 =
-//================================================================
-
 if($Pref::PreLoadScriptLauncherVersion != 2) {
 	echo("Installing pre-loader!");
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
@@ -20,7 +13,7 @@ function Glass::execClient() {
 
   exec("./runonce/settingConversion.cs");
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_MetaTCP.cs");
@@ -38,6 +31,10 @@ function Glass::execClient() {
 	exec("./client/gui/GlassServerControlGui.gui");
 	exec("./client/gui/GlassChatroomGui.gui");
 	exec("./client/gui/GlassClientGui.gui");
+	exec("./client/gui/GlassBanGui.gui");
+	exec("./client/gui/GlassServerPreviewGui.gui");
+	exec("./client/gui/GlassJoinServerGui.gui");
+
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -56,9 +53,10 @@ function Glass::execClient() {
 	exec("./client/GlassPreferencesBridge.cs");
 	exec("./client/GlassServerControl.cs");
 	exec("./client/GlassNotificationManager.cs");
+	exec("./client/GlassServers.cs");
 
   exec("./client/GlassCompatibility.cs");
-	
+
 	%date = getDateTime();
 	%month = getSubStr(%date, 0, 2);
 	%day = getSubStr(%date, strpos(%date, "/")+1, 2);
@@ -81,6 +79,7 @@ function Glass::execClient() {
 	GlassNotificationManager::init();
 
 	GlassModManager::init();
+	GlassServers::init();
 
   GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
@@ -108,12 +107,12 @@ function clientCmdGlassHandshake(%ver) {
     %semver = semanticVersionCompare(%ver, Glass.version);
 
     switch(%semver) {
-      case 0:
-        echo("\c4Glass Server <-> Glass Client version match.");
+      // case 0:
+        // echo("\c4Glass version matched.");
       case 1:
-        echo("\c2Glass Server -> Glass Client version mismatch.");
+        echo("\c2Glass Client is out of date.");
       case 2:
-        echo("\c2Glass Client -> Glass Server version mismatch.");
+        echo("\c2Glass Server is out of date.");
     }
 
     ServerConnection.hasGlass = true;

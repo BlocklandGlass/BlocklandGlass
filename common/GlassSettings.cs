@@ -42,6 +42,8 @@ function GlassSettings::init(%context) {
     // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
     // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
+
+    GlassSettings.registerSetting("client", "Servers::Favorites", "");
   }
 
   GlassSettings.loadData(%context);
