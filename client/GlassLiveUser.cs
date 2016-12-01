@@ -134,7 +134,7 @@ function GlassLiveUser::canSendMessage(%this) {
     return true;
 
   //random user, default to setting
-  if(GlassSettings.get("Live::MessageAnyone")) {
+  if(GlassSettings.get("Live::MessageAnyone") && GlassLiveUser::getFromBlid(getNumKeyId()).status !$= "busy") {
     return true;
   } else {
     //infrom user that this user is private

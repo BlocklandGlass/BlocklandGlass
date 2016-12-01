@@ -1,10 +1,3 @@
-//================================================================
-//=	Title: 	Blockland Glass (i3)								                 =
-//=	Author:	Jincux (9789)								                     		 =
-//=	If you're looking at this, go you. either that, or you're a  =
-//=	little skiddy trying to 'troll'						              		 =
-//================================================================
-
 if($Pref::PreLoadScriptLauncherVersion < 1) {
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }
@@ -20,7 +13,7 @@ function Glass::execServer() {
     exec("./runonce/settingConversion.cs");
   }
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
 	// exec("./support/Support_SemVer.cs");

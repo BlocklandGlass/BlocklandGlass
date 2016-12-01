@@ -242,5 +242,4 @@ exec("./modmanager/errorPage.cs");
 exec("./modmanager/addonPage.cs");
 exec("./modmanager/boardsPage.cs");
 exec("./modmanager/boardPage.cs");
-//exec("./modmanager/forumBrowser.cs");
 exec("./modmanager/rtbImport.cs");
