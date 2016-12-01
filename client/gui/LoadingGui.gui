@@ -72,7 +72,7 @@ new GuiChunkedBitmapCtrl(LoadingGui) {
       canMaximize = "0";
       minSize = "50 50";
 
-      new GuiBitmapCtrl() {
+      new GuiBitmapCtrl(GlassLoadingGui_Image) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";

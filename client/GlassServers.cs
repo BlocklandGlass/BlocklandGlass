@@ -232,6 +232,11 @@ function GlassLoading::changeGui() {
   LoadingGui.isGlass = true;
 }
 
+function GlassLoadingGui::onWake(%this) {
+  GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
+  GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
+}
+
 //====================================
 // ServerPreview
 //====================================
@@ -272,10 +277,10 @@ function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreview_Playerlist.clear();
   GlassServerPreview::getServerInfo(%server.ip);
 
-  GlassServerPreview::getServerBuild(%server.ip);
+  GlassServerPreview::getServerBuild(%server.ip, GlassServerPreview_Preview);
 }
 
-function GlassServerPreview::getServerBuild(%addr) {
+function GlassServerPreview::getServerBuild(%addr, %obj) {
   %addr = strReplace(%addr, ".", "-");
   %addr = strReplace(%addr, ":", "_");
   %url = "http://image.blockland.us/detail/" @ %addr @ ".jpg";
@@ -284,13 +289,15 @@ function GlassServerPreview::getServerBuild(%addr) {
   %className = "GlassServerPreviewTCP";
 
   %tcp = connectToUrl(%url, %method, %downloadPath, %className);
+  %tcp.bitmap = %obj;
 }
 
 function GlassServerPreviewTCP::onDone(%this, %error) {
   if(%error) {
     echo("ERROR:" SPC %error);
   }
-  GlassServerPreview_Preview.setBitmap("config/client/BLG/ServerPreview.jpg");
+
+  %this.bitmap.setBitmap("config/client/BLG/ServerPreview.jpg");
 }
 
 function GlassServerPreview::getServerInfo(%addr) {
