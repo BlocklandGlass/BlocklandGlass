@@ -22,7 +22,7 @@ function GlassUpdaterSupport::downloadGui(%code) {
 function GlassUpdaterSupport::pushGlassUpdater(%force) {
   if(isObject(GlassUpdatesGroup.ctx)) return;
 
-  %ctx = GlassDownloadInterface::openContext("Add-On Updates", "<font:verdana bold:15>Updates are available!<font:verdana:15> Click on an add-on to view its change-log, or right click to prevent it from updating.");
+  %ctx = GlassDownloadInterface::openContext("Add-On Updates", "<font:verdana bold:15>Updates are available!<br><br><font:verdana:15>Click on an add-on to view its change-log, or right click to prevent it from updating.");
   %ctx.registerCallback("GlassUpdaterSupport::downloadGui");
   GlassUpdatesGroup.ctx = %ctx;
 
@@ -46,7 +46,8 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
       %glassDat = $JSON::Value;
 
       %title = %glassDat.get("title");
-      %text = "<font:Verdana Bold:15>" @ %title @ " <font:verdana:14>" @ %name;
+      // %text = "<font:Verdana Bold:15>" @ %title @ " <font:verdana:14>" @ %name;
+      %text = "<font:Verdana Bold:15>" @ %title;
 
       %boardId = %glassDat.get("board");
       if(GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]") !$= "") {

@@ -1,7 +1,7 @@
 exec("./GlassLiveConnection.cs");
 exec("./GlassLiveUser.cs");
 exec("./GlassLiveRoom.cs");
-exec("./GlassLiveGroup.cs");
+// exec("./GlassLiveGroup.cs");
 
 //Settings:
 //RoomChatNotification

@@ -2,14 +2,14 @@ function GlassModManagerGui::fetchBoard(%id, %page) {
   if(%page < 1) %page = 1;
 
   GlassModManager::placeCall("board", "id" TAB %id NL "page" TAB %page);
-  return;
-  %id = 1;
-  %name = "Blockland Glass";
-  %author = "Jincux";
-  %rating = 3.2;
-  %downloads = 17381;
-  %listing = %id TAB %name TAB %author TAB %rating TAB %downloads;
-  GlassModManagerGui::renderBoardPage(1, "Client Mods", %listing NL %listing, 11, 14);
+  
+  // %id = 1;
+  // %name = "Blockland Glass";
+  // %author = "Jincux";
+  // %rating = 3.2;
+  // %downloads = 17381;
+  // %listing = %id TAB %name TAB %author TAB %rating TAB %downloads;
+  // GlassModManagerGui::renderBoardPage(1, "Client Mods", %listing NL %listing, 11, 14);
 }
 
 function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %maxpage, %rtb) {
@@ -72,7 +72,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
   %back = "<a:glass://boards><< Back</a>";
 
   if(%pages <= 1) {
-    %pageText = "";
+    %pageText = "[1]";
   } else {
     if(%page > 3) {
       %pageText = _glassPageNav(%bid, "1") SPC "..." SPC "";

@@ -221,7 +221,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
-      if(GlassSettings.get("Live::MessageNotification"))
+      if(GlassSettings.get("Live::MessageNotification") && GlassOverlayGui.isAwake())
         GlassNotificationManager::newNotification(%sender, %data.message, "comment", 0);
 
       if(GlassSettings.get("Live::MessageSound"))

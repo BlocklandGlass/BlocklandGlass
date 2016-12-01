@@ -1,10 +1,3 @@
-//================================================================
-//=	Title: 	Blockland Glass (i3)																 =
-//=	Author:	Jincux (9789)																				 =
-//=	If you're looking at this, go you. either that, or you're a	 =
-//=	little skiddy trying to 'troll'															 =
-//================================================================
-
 if($Pref::PreLoadScriptLauncherVersion != 2) {
 	echo("Installing pre-loader!");
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
@@ -20,7 +13,7 @@ function Glass::execClient() {
 
   exec("./runonce/settingConversion.cs");
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " suiting up.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_MetaTCP.cs");
@@ -114,12 +107,12 @@ function clientCmdGlassHandshake(%ver) {
     %semver = semanticVersionCompare(%ver, Glass.version);
 
     switch(%semver) {
-      case 0:
-        echo("\c4Glass Server <-> Glass Client version match.");
+      // case 0:
+        // echo("\c4Glass version matched.");
       case 1:
-        echo("\c2Glass Server -> Glass Client version mismatch.");
+        echo("\c2Glass Client is out of date.");
       case 2:
-        echo("\c2Glass Client -> Glass Server version mismatch.");
+        echo("\c2Glass Server is out of date.");
     }
 
     ServerConnection.hasGlass = true;
