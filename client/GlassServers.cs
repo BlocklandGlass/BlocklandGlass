@@ -379,7 +379,7 @@ function clientCmdGlass_setLoadingBackground(%url, %filetype) {
 
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
-  
+
   LoadingGUI.lastDownload = $Sim::Time;
 
   if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
@@ -388,10 +388,11 @@ function clientCmdGlass_setLoadingBackground(%url, %filetype) {
   }
 
   %method = "GET";
-  %downloadPath = "config/client/BLG/loadingBackground.jpg";
+  %downloadPath = "config/client/BLG/loadingBackground." @ %fileType;
   %className = "GlassServerBackgroundTCP";
 
   %tcp = connectToUrl(%url, %method, %downloadPath, %className);
+  %tcp.fileType = %fileType;
 }
 
 function GlassServerBackgroundTCP::onBinChunk(%this, %chunk) {
@@ -407,7 +408,7 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
 	return;
   }
   LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
-  LOAD_MapPicture.setBitmap("config/client/BLG/loadingBackground.jpg");
+  LOAD_MapPicture.setBitmap("config/client/BLG/loadingBackground." @ %this.fileType);
 }
 
 package GlassServers {
