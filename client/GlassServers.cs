@@ -368,35 +368,6 @@ function joinServerGui::preview(%this) {
   GlassServerPreviewGui.open();
 }
 
-function clientCmdGlass_setLoadingBackground(%url, %filetype) {
-  if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
-	echo("Cannot download loading screen background as it does not have a legal file type.");
-	return;
-  }
-
-  %method = "GET";
-  %downloadPath = "config/client/BLG/loadingBackground.jpg";
-  %className = "GlassServerBackgroundTCP";
-
-  %tcp = connectToUrl(%url, %method, %downloadPath, %className);
-}
-
-function GlassServerBackgroundTCP::onBinChunk(%this, %chunk) {
-	if(%chunk >= 2000000) {
-		warn("Error - GlassServerBackgroundTCP file is greater than 2mb, stopping download.");
-		%this.disconnect();
-	}
-}
-
-function GlassServerBackgroundTCP::onDone(%this, %error) {
-  if(%error) {
-    echo("GlassServerBackgroundTCP error:" SPC %error);
-	return;
-  }
-  LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
-  LOAD_MapPicture.setBitmap("config/client/BLG/loadingBackground.jpg");
-}
-
 package GlassServers {
   function joinServerGui::onWake(%this) {
   	if(!%this.initializedGlass) {
@@ -434,7 +405,6 @@ package GlassServers {
   }
 
   function LoadingGui::onWake(%this) {
-	LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
     if(isFunction(LoadingGui, onWake))
       parent::onWake(%this);
 
