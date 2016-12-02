@@ -45,7 +45,7 @@ function GlassModManagerGui::openPage(%this, %page, %arg1, %arg2, %arg3, %arg4) 
     %content = %page.open(%arg1, %arg2, %arg3, %arg4);
 
     GlassModManagerGui_MainDisplay.add(%content);
-    GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+    GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 0);
     GlassModManagerGui_MainDisplay.setVisible(true);
     GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
 
@@ -72,24 +72,44 @@ function GlassModManagerGui::loadContext(%context) {
   }
 }
 
-function GlassModManagerGui::setLoading(%bool) {
-  if($Server::Dedicated)
-    return;
+function GlassModManagerGui::setLoading(%this, %bool) {
+  %swatch = GlassModManagerGui_LoadingSwatch;
+  %swatch.loading = %bool;
 
-  GlassModManagerGui_LoadingAnimation.setVisible(false);
-  return;
-  if(%bool) {
-    //%parent = GlassModManagerGui_LoadingAnimation.getGroup();
-    //%parent.bringToFront(GlassModManagerGui_LoadingAnimation);
-
-    GlassModManagerGui_LoadingAnimation.setVisible(true);
-    GlassModManagerGui_LoadingAnimation.frame = 1;
-
-    GlassModManager.animationTick();
-  } else {
-    GlassModManagerGui_LoadingAnimation.setVisible(false);
-    cancel(GlassModManagerGui_LoadingAnimation.schedule);
+  if(%swatch.sch $= "") {
+    %swatch.sch = %swatch.schedule(100, tick);
   }
+}
+
+function GlassModManagerGui_LoadingSwatch::tick(%this) {
+  cancel(%this.sch);
+  %this.sch = "";
+
+  if(%this.loading) {
+    if(%this.opacity < 255) {
+      %this.opacity += 10;
+      %this.visible = true;
+    } else {
+      return;
+    }
+  } else {
+    if(%this.opacity > 0) {
+      %this.opacity -= 20;
+    } else {
+      return;
+    }
+  }
+
+  if(%this.opacity < 0) {
+    %this.opacity = 0;
+    %this.visible = true;
+  } else if(%this.opacity > 255) {
+    %this.opacity = 255;
+  }
+
+  %this.color = "200 200 200" SPC %this.opacity;
+
+  %this.sch = %this.schedule(10, tick);
 }
 
 function GlassModManagerGui::animationTick(%this) {

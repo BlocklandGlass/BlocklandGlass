@@ -18,6 +18,7 @@ function GMM_ActivityPage::open(%this) {
     extent = "635 498";
   };
 
+  GlassModManagerGui.setLoading(true);
   GlassModManager.loadHome();
 
   return %this.container;
@@ -28,12 +29,21 @@ function GMM_ActivityPage::close() {
 }
 
 function GlassModManagerGui::renderHome(%data) {
+  GlassModManagerGui.setLoading(false);
+
   %container = GMM_ActivityPage.container;
+
 
   for(%i = 0; %i < %data.length; %i++) {
     %dlg = %data.value[%i];
 
-    %body = GlassModManagerGui::createNewUploadsDialog(%dlg.uploads, %dlg.updates);
+    switch$(%dlg.type) {
+      case "recent":
+        %body = GMM_ActivityPage.createNewUploadsDialog(%dlg.uploads, %dlg.updates);
+
+      case "message":
+        %body = GMM_ActivityPage.createMessageDialog(%dlg.message);
+    }
 
     %container.add(%body);
 
@@ -43,6 +53,11 @@ function GlassModManagerGui::renderHome(%data) {
     %body.text.forceReflow();
 
     %body.verticalMatchChildren(0, 10);
+
+    if(%last)
+      %body.placeBelow(%last, 10);
+
+    %last = %body;
   }
 
   %container.verticalMatchChildren(498, 0);
@@ -50,7 +65,32 @@ function GlassModManagerGui::renderHome(%data) {
   GlassModManagerGui.resizePage();
 }
 
-function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
+function GMM_ActivityPage::createMessageDialog(%this, %message) {
+  %body = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "615 10";
+  };
+
+  %body.text = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    profile = "GlassModManagerMLProfile";
+    text = "<font:verdana:13>" @ %message;
+    position = "10 10";
+    extent = "595 0";
+    minextent = "0 0";
+    autoResize = true;
+  };
+
+  %body.add(%body.text);
+
+  return %body;
+}
+
+function GMM_ActivityPage::createNewUploadsDialog(%this, %uploads, %updates) {
   %body = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";

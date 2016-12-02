@@ -9,105 +9,7 @@ new GuiControl(GlassModManagerGui) {
    enabled = "1";
    visible = "1";
    clipToParent = "1";
-      page = "GMM_BoardsPage";
-      firstWake = "1";
 
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
-   new GuiSwatchCtrl(GMM_BoardsContainer) {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "0 0";
-      extent = "635 498";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = "0 0 0 0";
-   };
    new GuiWindowCtrl(GlassModManagerGui_Window) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
@@ -194,52 +96,6 @@ new GuiControl(GlassModManagerGui) {
                visible = "1";
                clipToParent = "1";
                color = "0 0 0 0";
-
-               new GuiSwatchCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "635 498";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  color = "0 0 0 0";
-
-                  new GuiSwatchCtrl() {
-                     profile = "GuiDefaultProfile";
-                     horizSizing = "right";
-                     vertSizing = "bottom";
-                     position = "10 10";
-                     extent = "485 150";
-                     minExtent = "8 2";
-                     enabled = "1";
-                     visible = "1";
-                     clipToParent = "1";
-                     color = "255 255 255 255";
-                        text = "36860";
-
-                     new GuiMLTextCtrl() {
-                        profile = "GlassModManagerMLProfile";
-                        horizSizing = "right";
-                        vertSizing = "bottom";
-                        position = "10 10";
-                        extent = "465 130";
-                        minExtent = "0 0";
-                        enabled = "1";
-                        visible = "1";
-                        clipToParent = "1";
-                        lineSpacing = "2";
-                        allowColorChars = "0";
-                        maxChars = "-1";
-                        text = "<font:verdana bold:13>Hey there!<br><br><font:verdana:13>There\'s no new uploads today.<br><br><br><font:verdana:13>There\'s been no recent updates.<br><br><br><br><font:verdana bold:13>- <color:9b59b6>GlassBot<font:verdana:13><color:000000><just:right>13:22";
-                        maxBitmapHeight = "-1";
-                        selectable = "1";
-                        autoResize = "1";
-                     };
-                  };
-               };
             };
          };
          new GuiSwatchCtrl(GlassModManagerGui_ColorsetOld) {
@@ -11409,6 +11265,18 @@ new GuiControl(GlassModManagerGui) {
                };
             };
          };
+      };
+      new GuiSwatchCtrl(GlassModManagerGui_LoadingSwatch) {
+         profile = "GuiDefaultProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 60";
+         extent = "645 500";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         color = "0 0 0 128";
       };
       new GuiProgressCtrl(GlassModManagerGui_ProgressBar) {
          profile = "GuiProgressProfile";
