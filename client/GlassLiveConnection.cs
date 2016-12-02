@@ -53,7 +53,6 @@ function GlassLive::connectToServer() {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
-
   GlassLiveConnection.connect(%server @ ":" @ %port);
 }
 
@@ -79,7 +78,6 @@ function GlassLiveConnection::onConnected(%this) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
-
   GlassLive.schedule(500, checkPendingFriendRequests);
 }
 
@@ -87,6 +85,7 @@ function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   GlassLive_StatusPopUp.setVisible(false);
+  GlassFriendsGui_Blockhead.setVisible(false);
 
   %this.connected = false;
 
