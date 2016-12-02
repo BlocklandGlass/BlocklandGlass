@@ -261,8 +261,17 @@ function GlassOverlayGui::onWake(%this) {
 
   GlassOverlayResponder.schedule(1, makeFirstResponder, true);
 
-
-
+  if(isObject(GlassFriendsGui_Blockhead)) {
+    GlassFriendsGui_Blockhead.setOrbitDist(5.5);
+    GlassFriendsGui_Blockhead.setCameraRot(0.22,0.5,2.8);
+  }
+  // Horrible way to handle this. The Blockhead cannot be loaded until the avatar prefs are loaded. This needs a better place because it shouldn't be checking every time the overlay opens.
+  if(!GlassFriendsGui_Blockhead.initialSetup && $Avatar::NumColors !$= "") {
+	GlassLive::createBlockhead();
+	GlassLive::updateBlockhead();
+	
+	GlassFriendsGui_Blockhead.initialSetup = 1;
+  }
   //instantly close all notifications
 }
 
@@ -814,6 +823,87 @@ function GlassLive::userUnblock(%blid) {
   GlassLive::onMessageNotification("You have unblocked " @ %username @ ".", %blid);
   if(isObject(%room = GlassChatroomWindow.activeTab.room))
     %room.pushText("You have unblocked " @ %username @ ".");
+}
+
+function GlassLive::createBlockhead() {
+  if(isObject(GlassFriendsGui_Blockhead))
+	  GlassFriendsGui_Blockhead.delete();
+  
+  new GuiObjectView(GlassFriendsGui_Blockhead) {
+    forceFOV = "18";
+    lightDirection = "0 0.2 0.2";
+    extent = "74 176";
+  };
+  
+  if(isObject(GlassFriendsGui_BlockheadAnim))
+	GlassFriendsGui_BlockheadAnim.delete();
+  
+  new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
+    extent = "74 176";
+    command = "GlassFriendsGui_Blockhead.setSequence(\"\", 1, \"talk\", 1); GlassFriendsGui_Blockhead.schedule(500, \"setSequence\", \"\", 1, \"root\", 1);";
+  };
+  
+  GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
+  GlassFriendsGui_Blockhead.setObject("", "base/data/shapes/player/m.dts", "", 100);
+  GlassFriendsGui_BlockButton.setVisible(false);
+}
+
+function GlassLive::updateBlockhead() {
+  if(!isObject(GlassFriendsGui_Blockhead))
+	  GlassLive::createBlockhead();
+  
+  %obj = GlassFriendsGui_Blockhead;
+  %obj.position = "120 -5";
+  %obj.forceFOV = 18;
+  %obj.lightDirection = "0 0.2 0.2";
+  %obj.setVisible(true);
+  
+  GlassFriendsGui_InfoSwatch.add(%obj);
+  
+  for(%i = 0; %i < $numFace; %i++)
+	if(strStr($Face[%i], $Pref::Avatar::FaceName) >= 0)
+	  %faceDecal = %i;
+	  
+  for(%i = 0; %i < $numDecal; %i++)
+    if(strStr($Decal[%i], $Pref::Avatar::DecalName) >= 0)
+	  %shirtDecal = %i;
+  
+  %obj.setIFLFrame("", "face", %faceDecal);
+  %obj.setIFLFrame("", "decal",%shirtDecal);
+  %obj.setNodeColor("", "ALL", $Pref::Avatar::HeadColor);
+ 
+  %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
+  for(%i = 0; %i <= 11; %i++) {
+	%currPart = getWord(%bodyParts, %i);
+	%numPart = $num[%currPart];
+	
+	for(%j = 0; %j <= %numPart; %j++) {
+	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
+	  %equipCurrPartColor = eval("return $Pref::Avatar::" @ %currPart @ "Color;");
+	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];"); 
+
+	  if(%currCheck $= "" || %currCheck $= "None")
+		  continue;
+	  
+	  if(%j $= %equipCurrPart) {
+		%obj.unHideNode("", %currCheck);
+		%obj.setNodeColor("", %currCheck, %equipCurrPartColor);
+	  }
+	  else
+		%obj.hideNode("", %currCheck);
+	}
+  }
+  %accent = getWord($accentsAllowed[$hat[$Pref::Avatar::Hat]], $Pref::Avatar::Accent);
+  if(%accent !$= "" && %accent !$= "none") {
+    %obj.unhidenode("", %accent);
+	%obj.hideNode("", "plume");
+    %obj.setnodeColor("", %accent, $Pref::Avatar::AccentColor);
+  }
+  
+  %obj.setNodeColor("", $chest[$Pref::Avatar::Chest], $Pref::Avatar::TorsoColor);
+  %obj.setMouse(1, 0);
+  %obj.setOrbitDist(5.5);
+  %obj.setCameraRot(0.22,0.5,2.8);
 }
 
 //================================================================
@@ -3547,6 +3637,11 @@ package GlassLivePackage {
     parent::onConnectionAccepted(%this, %a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k);
 
     GlassLive::updateLocation(true);
+  }
+  
+  function Avatar_Done() {
+	parent::Avatar_Done();
+    GlassLive::updateBlockhead();
   }
 };
 activatePackage(GlassLivePackage);
