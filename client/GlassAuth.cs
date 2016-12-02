@@ -28,7 +28,7 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
+	%url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
 	if(%this.ident !$= "") {
 			%url = %url @ "&ident=" @ urlenc(%this.ident);
 	}
@@ -41,7 +41,7 @@ function GlassAuth::check(%this) {
 }
 
 function GlassAuth::verifyAccept() {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?ident=" @ urlenc(GlassAuth.ident) @ "&action=verify&email=" @ urlenc(GlassVerifyAccount_Input.getValue());
+	%url = "http://" @ Glass.address @ "/api/3/auth.php?ident=" @ urlenc(GlassAuth.ident) @ "&action=verify&email=" @ urlenc(GlassVerifyAccount_Input.getValue());
 
 	%method = "GET";
 	%downloadPath = "";
@@ -52,7 +52,7 @@ function GlassAuth::verifyAccept() {
 }
 
 function GlassAuth::verifyDecline() {
-	%url = "http://" @ Glass.address @ "/api/2/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=reject";
+	%url = "http://" @ Glass.address @ "/api/3/auth.php?sid=" @ urlenc(GlassAuth.sid) @ "&request=verify&action=reject";
 	%method = "GET";
 	%downloadPath = "";
 	%className = "GlassAuthTCP";

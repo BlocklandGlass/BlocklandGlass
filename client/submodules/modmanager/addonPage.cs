@@ -150,7 +150,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
 
   %num = getWordCount(%obj.branches);
-  %xExtent = mfloor((505-70)/3);
+  %xExtent = mfloor((635-70)/3);
   %xMargin = 10;
   %totalWidth = (%xExtent*%num) + (%xMargin*(%num-1));
 

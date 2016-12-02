@@ -1,11 +1,13 @@
 function GlassModManager::init() {
-  exec("./submodules/GlassModManager.cs");
+  exec("./GlassModManagerGui.cs");
+  GMM_ActivityPage::init();
+  GMM_BoardsPage::init();
   if(isObject(GlassModManager)) {
     GlassModManager.delete();
   }
 
   new ScriptObject(GlassModManager) {
-    
+
   };
 
   GlassModManager::catalogAddons();
@@ -145,7 +147,7 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
 
       %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
 
-    %url = "http://" @ Glass.address @ "/api/2/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
+    %url = "http://" @ Glass.address @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
 
     Glass::debug("Calling url: " @ %url);
 
@@ -183,6 +185,11 @@ function GlassModManagerTCP::onDone(%this, %error) {
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";
       GlassAuth.heartbeat();
+    }
+
+    if(%this.glass_uniqueReturn !$= "") {
+      eval(%this.glass_uniqueReturn @ "(%ret);");
+      return;
     }
 
     if(%ret.status $= "success") {
@@ -240,15 +247,11 @@ function GlassModManagerTCP::onDone(%this, %error) {
 
         case "boards":
           %str = "";
-          for(%i = 0; %i < %ret.boards.length; %i++) {
-            %branch = %ret.boards.value[%i];
-            %name = %branch.name;
-            %id = %branch.id;
-            %bg = %branch.video;
-            %desc = %branch.description;
-            %str = %str @ %name TAB %id TAB %desc TAB %bg NL "";
+          if(%ret.status $= "success") {
+            GlassModManagerGui::renderBoards(%ret);
+          } else {
+            // TODO error
           }
-          GlassModManagerGui::renderBoards(trim(%str));
 
         case "board":
           Glass::debug(%this.buffer);
@@ -349,14 +352,6 @@ function GlassModManager::scanForRTB() {
 
 function GlassModManager::loadHome() {
   GlassModManager::placeCall("home");
-}
-
-//====================================
-// Boards
-//====================================
-
-function GlassModManager::loadBoards(%this) {
-  GlassModManager::placeCall("boards");
 }
 
 //====================================
@@ -1079,7 +1074,7 @@ function GlassModManager::populateColorsets() {
     GlassModManagerGui_MyColorsets.setVisible(true);
     GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
   }
-  
+
   GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
 }
 

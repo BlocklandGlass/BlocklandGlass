@@ -20,7 +20,7 @@ function GlassModManagerGui::renderForumTopic(%title, %text, %links) {
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
   %container.blf = new GuiBitmapCtrl() {
@@ -162,7 +162,7 @@ function GlassModManagerGui::renderForumBoard(%topics) {
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
   for(%i = 0; %i < getlinecount(%topics); %i++) {
@@ -172,7 +172,7 @@ function GlassModManagerGui::renderForumBoard(%topics) {
       vertSizing = "bottom";
       color = "200 200 200 255";
       position = "0 0";
-      extent = "505 30";
+      extent = "635 30";
     };
 
     %topicTitle = getSubStr(getField(%topic, 0), 0, 40);

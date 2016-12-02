@@ -780,7 +780,7 @@ new GuiControl(GlassOverlayGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "505 667";
+               extent = "635 667";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";

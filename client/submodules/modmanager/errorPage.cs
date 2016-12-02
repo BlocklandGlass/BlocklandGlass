@@ -4,7 +4,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
   %container.text = new GuiMLTextCtrl() {
@@ -56,7 +56,7 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
   if(getWord(%container.text.extent, 1) > 498-30) {
     GlassModManagerGui_MainDisplay.extent = %container.extent = getWord(%container.extent, 0) SPC getWord(%container.text.extent, 1)+60;
   } else {
-    GlassModManagerGui_MainDisplay.extent = 505 SPC 498;
+    GlassModManagerGui_MainDisplay.extent = 635 SPC 498;
   }
 
 

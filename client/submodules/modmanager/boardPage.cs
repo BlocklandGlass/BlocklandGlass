@@ -18,7 +18,7 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
   %nav = GlassModManagerGui::createBoardNav(%id, %page, %maxpage);

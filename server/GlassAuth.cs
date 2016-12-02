@@ -8,7 +8,7 @@ function GlassAuthS::init() {
 }
 
 function GlassAuthS::heartbeat(%this) {
-  %url = "http://" @ Glass.address @ "/api/2/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin&server=1&port=" @ $Server::Port;
+  %url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin&server=1&port=" @ $Server::Port;
 	if(%this.ident !$= "") {
 			%url = %url @ "&ident=" @ urlenc(%this.ident);
 	}

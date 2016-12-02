@@ -1,78 +1,117 @@
-function GlassModManagerGui::renderBoards(%boards) {
-  %container = new GuiSwatchCtrl(GlassModManagerGui_AddonContainer) {
+function GMM_BoardsPage::init() {
+  new ScriptObject(GMM_BoardsPage) {
+    class = "GlassModManagerPage";
+  };
+}
+
+function GMM_BoardsPage::open(%this) {
+  if(%this.loaded) {
+    return %this.container;
+  } else {
+    if(isObject(%this.container)) {
+      %this.container.deleteAll();
+      %this.container.delete();
+    }
+  }
+
+  %this.container = new GuiSwatchCtrl(GMM_BoardsContainer) {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
-  %body = new GuiSwatchCtrl(GlassModManagerGui_AddonDisplay) {
+  GlassModManager::placeCall("boards", "", "GMM_BoardsPage.handleResults");
+
+  echo(%this.container);
+  return %this.container;
+}
+
+function GMM_BoardsPage::close(%this) {
+  if(isObject(%this.container)) {
+    //preserve the gui object
+    %this.container.getGroup().remove(%this.container);
+  }
+}
+
+function GMM_BoardsPage::handleResults(%this, %obj) {
+  %this.loaded = true;
+  %container = %this.container;
+
+  %body = new GuiSwatchCtrl(GMM_BoardsDisplay) {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "255 255 255 255";
     position = "10 10";
-    extent = "485 64";
+    extent = "615 64";
   };
 
-  %searchRes = new GuiSwatchCtrl(GlassModManagerGui_SearchResults) {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "255 255 255 255";
-    position = "10 10";
-    extent = "485 64";
-    visible = false;
-  };
+  %last = "";
 
-  GlassModManagerGui_AddonDisplay.deleteAll();
+  for(%j = 0; %j < %obj.groups.length; %j++) {
+    %group = %obj.groups.value[%j];
 
-  %ypos = 10;
+    %boards = %group.boards;
 
-  %dark = 0;
+    %header = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "84 217 140 255";
+      position = "10 10";
+      extent = "595 25";
+    };
 
-  for(%i = 0; %i < getLineCount(%boards); %i++) {
-    %dark = !%dark;
+    %header.text = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<just:center><font:Verdana Bold:15><color:ffffff>" @ %group.name;
+      position = "0 0";
+      extent = "595 16";
+    };
 
-    %board = getLine(%boards, %i);
-    %name = getField(%board, 0);
-    %id = getField(%board, 1);
-    %desc = getField(%desc, 2);
-    %img = getField(%desc, 3);
+    %header.add(%header.text);
+    %header.text.centerY();
+    GMM_BoardsDisplay.add(%header);
 
-    %star["Client Mods"] = "script";
-    %star["Server Mods"] = "server";
-    %star["Bricks"] = "construction";
-    %star["Cosmetics"] = "emotion_cool"; // sry i had to
-    %star["Gamemodes"] = "board_game";
-    %star["Tools"] = "toolbox";
-    %star["Weapons"] = "gun";
-    %star["Colorsets"] = "paintcan";
-    %star["Vehicles"] = "car";
-    %star["Bargain Bin"] = "bin";
-    %star["Sounds"] = "sound";
+    if(isObject(%last)) {
+      %header.placeBelow(%last, 20);
+    }
 
-    %star = strLen(%star[%name]) ? %star[%name] : "ask_and_answer";
+    %last = %header;
 
-    %contain = GlassModManagerGui::createBoardButton(%name, %star, %id);
+    %dark = 0;
 
-    %contain.position = 10 SPC %yPos;
-    %contain.text.centerY();
+    for(%i = 0; %i < %boards.length; %i++) {
+      %board = %boards.value[%i];
+      %dark = !%dark;
 
-    %contain.color = (%dark ? "210 210 210 255" : "220 220 220 255");
+      %name = %board.name;
+      %id = %board.id;
+      %img = %board.icon;
 
-    %yPos += 35;
+      %img = isFile("Add-Ons/System_BlocklandGlass/image/icon/" @ %img @ ".png") ? %img : "ask_and_answer";
 
-    GlassModManagerGui_AddonDisplay.add(%contain);
-    %contain.mouse.onAdd();
+      %contain = GlassModManagerGui::createBoardButton(%name, %img, %id);
+
+      %contain.placeBelow(%last, 0);
+      %contain.text.centerY();
+
+      %contain.color = (%dark ? "235 235 235 255" : "230 230 230 255");
+      %contain.hcolor = "240 240 240 255";
+
+
+      GMM_BoardsDisplay.add(%contain);
+      %last = %contain;
+    }
   }
 
   %rtb = GlassModManagerGui::createBoardButton("Return to Blockland Archive", "bricks", "rtb");
-  %rtb.position = 10 SPC %yPos;
+  %rtb.placeBelow(%last, 20);
   %rtb.text.centerY();
   %rtb.color = (!%dark ? "210 210 210 255" : "220 220 220 255");
   %rtb.ocolor = %rtb.color;
-  GlassModManagerGui_AddonDisplay.add(%rtb);
-  %rtb.mouse.delete();
+  GMM_BoardsDisplay.add(%rtb);
 
   %rtb.mouse = new GuiMouseEventCtrl(GlassModManagerGui_RTBButton) {
     extent = %rtb.extent;
@@ -81,24 +120,13 @@ function GlassModManagerGui::renderBoards(%boards) {
   };
   %rtb.add(%rtb.mouse);
 
-  GlassModManagerGui_AddonDisplay.verticalMatchChildren(0, 10);
+  GMM_BoardsDisplay.verticalMatchChildren(0, 10);
 
-  %search = GlassModManagerGui::createSearchBar();
-  %container.add(%search);
   %container.add(%body);
-  %container.add(%searchRes);
-  %body.placeBelow(%search, 10);
-  %searchRes.placeBelow(%search, 10);
 
   %container.verticalMatchChildren(498, 10);
 
-  GlassModManagerGui_MainDisplay.deleteAll();
-  GlassModManagerGui_MainDisplay.add(%container);
-  GlassModManagerGui_MainDisplay.extent = %container.extent;
-  GlassModManagerGui_MainDisplay.setVisible(true);
-
-  //%container.verticalMatchChildren(498, 10);
-  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+  GlassModManagerGui.resizePage();
 }
 
 function GlassModManagerGui::createSearchBar() {
@@ -107,7 +135,7 @@ function GlassModManagerGui::createSearchBar() {
     vertSizing = "bottom";
     color = "255 255 255 255";
     position = "10 10";
-    extent = "485 50";
+    extent = "615 50";
   };
 
   %search = new GuiTextEditCtrl(GlassModManagerGui_SearchBar) {
@@ -116,7 +144,7 @@ function GlassModManagerGui::createSearchBar() {
     vertSizing = "bottom";
     color = "255 255 255 255";
     position = "10 10";
-    extent = "465 29";
+    extent = "595 29";
     text = "\c1Search...";
     command = "GlassModManagerGui_SearchBar.onUpdate();";
     accelerator = "enter";
@@ -128,127 +156,15 @@ function GlassModManagerGui::createSearchBar() {
   return %container;
 }
 
-function GlassModManagerGui::SearchResults(%res) {
-  GlassModManagerGui_SearchResults.deleteAll();
-  %y = 10;
-  for(%i = 0; %i < %res.length; %i++) {
-    %result = %res.value[%i];
-
-    %swat = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "235 235 235 255";
-      position = 10 SPC %y;
-      extent = "465 50";
-    };
-
-    %search = new GuiTextCtrl() {
-      profile = "GlassSearchResultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "255 255 255 255";
-      position = "10 10";
-      extent = "465 25";
-      text = %result.title;
-      filler = 1;
-    };
-
-    %swat.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-      aid = %result.id;
-      swatch = %swat;
-    };
-
-    %swat.add(%search);
-    %swat.verticalMatchChildren(0, 5);
-    %swat.add(%swat.mouse);
-    %y += getWord(%swat.getExtent(), 1) + 5;
-    GlassModManagerGui_SearchResults.add(%swat);
-  }
-
-  if(%res.length == 0) {
-    %text = new GuiTextCtrl() {
-      profile = "GlassSearchResultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "255 255 255 255";
-      position = "10 10";
-      extent = "465 25";
-      text = "No results found";
-      filler = 1;
-    };
-    GlassModManagerGui_SearchResults.add(%text);
-  }
-
-  GlassModManagerGui_SearchResults.verticalMatchChildren(20, 10);
-  GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
-  GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
-  GlassModManagerGui_MainDisplay.setVisible(true);
-}
-
-function GlassModManagerGui_SearchBar::onUpdate(%this, %a) {
-  %text = %this.getValue();
-  if(%this.filler) {
-    if(strlen(%text) < 10) {
-      %this.setValue("\c1Search...");
-      %this.setCursorPos(0);
-      GlassModManagerGui_SearchResults.setVisible(false);
-      GlassModManagerGui_AddonDisplay.setVisible(true);
-    } else {
-      %char = getsubstr(%text, %this.getCursorPos()-1, 1);
-      %text = %char;
-      %this.setValue(%text);
-      %this.filler = false;
-    }
-  }
-
-  if(strlen(%text) == 0) {
-    %this.filler = true;
-    %this.setValue("\c1Search...");
-    %this.setCursorPos(0);
-    GlassModManagerGui_SearchResults.setVisible(false);
-    GlassModManagerGui_AddonDisplay.setVisible(true);
-
-    GlassModManagerGui_AddonContainer.verticalMatchChildren(0, 10);
-    GlassModManagerGui_MainDisplay.verticalMatchChildren(0, 0);
-    GlassModManagerGui_MainDisplay.setVisible(true);
-  }
-
-  if(!%this.filler) {
-    if(GlassSettings.get("MM::LiveSearch")) {
-      GlassModManagerGui_SearchBar.search();
-    }
-  }
-}
-
-function GlassModManagerGui_SearchBar::search(%this) {
-  %query = trim(%this.getValue());
-  if(%this.filler)
-    return;
-
-  if(strlen(%query) == 0)
-    return;
-
-  GlassModManagerGui_SearchResults.clear();
-  %loading = GlassModManagerGui::createLoadingAnimation();
-  GlassModManagerGui_SearchResults.add(%loading);
-  %loading.forceCenter();
-
-  $Glass::MM_PreviousPage = -1;
-  $Glass::MM_PreviousBoard = -1;
-
-  GlassModManagerGui_SearchResults.setVisible(true);
-  GlassModManagerGui_AddonDisplay.setVisible(false);
-
-  %this.lastTCP = GlassModManager::placeCall("search", "type\taddon\nby\tname" NL "query" TAB %query);
-}
-
 function GlassModManagerGui::createBoardButton(%name, %img, %id) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "200 200 200 255";
     position = "10 10";
-    extent = "465 35";
+    extent = "595 35";
+
+    boardId = %id;
   };
 
   %container.icon = new GuiBitmapCtrl() {
@@ -269,16 +185,17 @@ function GlassModManagerGui::createBoardButton(%name, %img, %id) {
     extent = "225 16";
   };
 
-  %container.mouse = new GuiMouseEventCtrl(GlassModManagerGui_BoardButton) {
-    bid = %id;
-    swatch = %container;
-  };
 
   %container.add(%container.icon);
   %container.add(%container.text);
-  %container.add(%container.mouse);
+
+  GlassHighlightSwatch::addToSwatch(%container, "0 0 0", "GMM_BoardsPage::clickBoard");
 
   return %container;
+}
+
+function GMM_BoardsPage::clickBoard(%this) {
+  GlassModManagerGui::fetchBoard(%this.boardId);
 }
 
 function GlassModManagerGui_RTBButton::onMouseDown(%this) {

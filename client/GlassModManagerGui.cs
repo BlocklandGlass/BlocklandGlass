@@ -17,7 +17,8 @@ function GlassModManagerGui::setPane(%pane) {
     if(%a == 1) continue;
 
     %obj = "GlassModManagerGui_Pane" @ %a+1;
-    %obj.setVisible(false);
+    if(isObject(%obj))
+      %obj.setVisible(false);
   }
 
   if(%pane == 0) {
@@ -36,17 +37,38 @@ function GlassModManagerGui::setPane(%pane) {
   %obj.setVisible(true);
 }
 
+function GlassModManagerGui::openPage(%this, %page, %arg1, %arg2, %arg3, %arg4) {
+  if(isObject(%page)) {
+    %this.page.close();
+    GlassModManagerGui_MainDisplay.deleteAll();
+
+    %content = %page.open(%arg1, %arg2, %arg3, %arg4);
+
+    GlassModManagerGui_MainDisplay.add(%content);
+    GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+    GlassModManagerGui_MainDisplay.setVisible(true);
+    GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+
+    %this.page = %page;
+  }
+}
+
+function GlassModManagerGui::resizePage(%this) {
+  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 0);
+  GlassModManagerGui_MainDisplay.setVisible(true);
+}
+
 function GlassModManagerGui::loadContext(%context) {
   //contexts are essentially just different starting points
   //for the dynamic guis
   //home, addons, build
 
   if(%context $= "home") {
-    GlassModManager.loadHome();
+    GlassModManagerGui.openPage(GMM_ActivityPage);
   }
 
   if(%context $= "addons") {
-    GlassModManager.loadBoards();
+    GlassModManagerGui.openPage(GMM_BoardsPage);
   }
 }
 
@@ -237,9 +259,9 @@ function GlassModManagerGui_BoardButton::onAdd(%this) {
   %this.position = "0 0";
 }
 
-exec("./modmanager/trending.cs");
-exec("./modmanager/errorPage.cs");
-exec("./modmanager/addonPage.cs");
-exec("./modmanager/boardsPage.cs");
-exec("./modmanager/boardPage.cs");
-exec("./modmanager/rtbImport.cs");
+exec("./submodules/modmanager/trending.cs");
+exec("./submodules/modmanager/errorPage.cs");
+exec("./submodules/modmanager/addonPage.cs");
+exec("./submodules/modmanager/boardsPage.cs");
+exec("./submodules/modmanager/boardPage.cs");
+exec("./submodules/modmanager/rtbImport.cs");

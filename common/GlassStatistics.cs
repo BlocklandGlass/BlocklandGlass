@@ -10,7 +10,7 @@ function GlassStatistics::reportMods() {
 
   %str = getsubstr(%str, 1, strlen(%str)-1);
 
-  %url = "http://" @ Glass.address @ "/api/2/stats.php?ident=" @ urlenc(GlassAuth.ident) @ "&sha=" @ sha1(getComputerName()) @ "&data=" @ urlEnc(%str);
+  %url = "http://" @ Glass.address @ "/api/3/stats.php?ident=" @ urlenc(GlassAuth.ident) @ "&sha=" @ sha1(getComputerName()) @ "&data=" @ urlEnc(%str);
 	%method = "POST";
 	%downloadPath = "";
 	%className = "GlassStatTCP";

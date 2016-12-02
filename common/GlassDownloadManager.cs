@@ -32,7 +32,7 @@ function GlassDownload::startDownload(%this) {
 }
 
 function GlassDownload::_fetch(%this) {
-	%url = "http://" @ Glass.netAddress @ "/api/2/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
+	%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
 
 	%tcp = connectToURL(%url, "GET", "", "GlassDownloadTCP");
 	%tcp.downloadObject = %this;

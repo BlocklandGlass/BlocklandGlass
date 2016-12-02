@@ -47,7 +47,7 @@ package GlassResourceManager {
     %channel["Support_Updater"] = "release";
     %channel["Support_Preferences"] = "stable";
     %repourl["Support_Updater"] = "mods.greek2me.us";
-    %repourl["Support_Preferences"] = "http://api.blocklandglass.com/api/2/repository.php";
+    %repourl["Support_Preferences"] = "http://api.blocklandglass.com/api/3/repository.php";
     %format["Support_Updater"] = "TML";
     %format["Support_Preferences"] = "JSON";
     %id["Support_Updater"] = "";

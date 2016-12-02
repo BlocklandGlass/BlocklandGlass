@@ -1,16 +1,34 @@
-function GlassModManagerGui::renderHome(%data) {
-  %container = new GuiSwatchCtrl() {
+function GMM_ActivityPage::init() {
+  new ScriptObject(GMM_ActivityPage) {
+    class = "GlassModManagerPage";
+  };
+}
+
+function GMM_ActivityPage::open(%this) {
+  if(isObject(%this.container)) {
+    %this.container.deleteAll();
+    %this.container.delete();
+  }
+
+  %this.container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "0 0 0 0";
     position = "0 0";
-    extent = "505 498";
+    extent = "635 498";
   };
 
+  GlassModManager.loadHome();
 
-  GlassModManagerGui_MainDisplay.deleteAll();
-  GlassModManagerGui_MainDisplay.add(%container);
-  GlassModManagerGui_MainDisplay.extent = %container.extent;
+  return %this.container;
+}
+
+function GMM_ActivityPage::close() {
+
+}
+
+function GlassModManagerGui::renderHome(%data) {
+  %container = GMM_ActivityPage.container;
 
   for(%i = 0; %i < %data.length; %i++) {
     %dlg = %data.value[%i];
@@ -28,10 +46,8 @@ function GlassModManagerGui::renderHome(%data) {
   }
 
   %container.verticalMatchChildren(498, 0);
-  
-  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
-  GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
-  GlassModManagerGui_MainDisplay.setVisible(true);
+
+  GlassModManagerGui.resizePage();
 }
 
 function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
@@ -40,7 +56,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     vertSizing = "bottom";
     color = "255 255 255 255";
     position = "10 10";
-    extent = "485 10";
+    extent = "615 10";
   };
 
   if(%uploads.length > 0) {
@@ -90,7 +106,7 @@ function GlassModManagerGui::createNewUploadsDialog(%uploads, %updates) {
     profile = "GlassModManagerMLProfile";
     text = %text;
     position = "10 10";
-    extent = "465 0";
+    extent = "595 0";
     minextent = "0 0";
     autoResize = true;
   };
