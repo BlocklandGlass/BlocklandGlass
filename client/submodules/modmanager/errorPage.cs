@@ -26,15 +26,13 @@ function GMM_ErrorPage::open(%this, %errorcode, %buffer) {
   if($Glass::MM::Error[%errorcode] !$= "") {
     %text = %text @ getField($Glass::MM::Error[%errorcode], 0);
     %text = %text @ "<br><br>";
-    %text = %text @ "<font:Verdana Bold:15>" @ getField($Glass::MM::Error[%errorcode], 1);
+    %text = %text @ "<font:Verdana:13>" @ getField($Glass::MM::Error[%errorcode], 1);
   } else {
     %text = %text @ "Code: " @ %errorcode;
   }
 
-  %text = %text @ "<br><br>";
-
   if(Glass.dev) {
-    %text = %text @ "<just:left><font:Lucida Console:12>" @ %buffer;
+    %text = "<br><br>" @ %text @ "<just:left><font:Lucida Console:12>" @ %buffer;
   } else {
     //record the event
     %fo = new FileObject();

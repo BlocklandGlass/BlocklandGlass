@@ -128,9 +128,8 @@ function GMM_BoardPage::handleResults(%this, %res) {
   %container.verticalMatchChildren(498, 0);
 }
 
-function GMM_BoardPage::swatchClick(%swatch) {
-  %obj = GlassModManagerGui::fetchAndRenderAddon(%swatch.aid);
-  %obj.action = "render";
+function GMM_BoardPage::swatchClick(%this, %swatch) {
+  %obj = GlassModManagerGui.openPage(GMM_AddonPage, %swatch.aid);
 }
 
 function _glassPageNav(%board, %id) {

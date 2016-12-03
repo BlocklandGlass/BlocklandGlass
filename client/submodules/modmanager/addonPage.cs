@@ -1,10 +1,35 @@
-//discoverFile("*"); exec("Add-Ons/System_BlocklandGlass/client/submodules/modmanager/addonPage.cs");
-
-function GlassModManagerGui::fetchAndRenderAddon(%modId) {
-  GlassModManager::placeCall("addon", "id" TAB %modId);
+function GMM_AddonPage::init() {
+  new ScriptObject(GMM_AddonPage);
 }
 
-function GlassModManagerGui::renderAddon(%obj) {
+function GMM_AddonPage::open(%this, %modId) {
+  %container = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 0 255 0";
+    position = "0 0";
+    extent = "635 498";
+  };
+
+  %body = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "615 498";
+  };
+
+  %this.container = %container;
+  %this.body = %body;
+  %container.add(%body);
+
+  GlassModManager::placeCall("addon", "id" TAB %modId, "GMM_AddonPage.handleResults");
+
+  return %container;
+}
+
+function GMM_AddonPage::handleResults(%this, %obj) {
+  echo("addonpage resx");
   //obj:
   // authors
   // manager
@@ -14,26 +39,20 @@ function GlassModManagerGui::renderAddon(%obj) {
   // board
   // dependencies
   //
-  
-  %container = new GuiSwatchCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "255 255 255 255";
-    position = "10 10";
-    extent = "485 498";
-  };
-  
-  
+
+  %container = %this.body;
+
+
   if($Glass::MM_PreviousBoard == -1 || $Glass::MM_PreviousPage == -1)
     %link = "<a:glass://home><< Back</a>";
   else
     %link = "<a:glass://board=" @ $Glass::MM_PreviousBoard @ "&page=" @ $Glass::MM_PreviousPage @ "><< Back</a>";
-  
+
   %container.back = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
-    text = "<color:333333><font:verdana:16><just:left>" @ %link;
+    text = "<color:333333><font:verdana:15><just:left>" @ %link;
     position = "10 10";
     extent = "75 25";
   };
@@ -42,7 +61,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     horizSizing = "right";
     vertSizing = "bottom";
     text = "<font:verdana bold:24><just:left>" @ %obj.name;
-    position = "102 30";
+    position = "20 30";
     extent = "300 24";
     minextent = "0 0";
     autoResize = true;
@@ -52,7 +71,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     horizSizing = "right";
     vertSizing = "bottom";
     text = "<font:verdana:13><just:left>Uploaded by " @ %obj.author;
-    position = "102 30";
+    position = "20 30";
     extent = "300 16";
     minextent = "0 0";
     autoResize = true;
@@ -73,13 +92,13 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.info = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/email_authentication.png> This add-on was inspected by a Glass Reviewer<br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/time.png> " @ %obj.date @ "<br><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %dlStr;
-    position = "102 30";
-    extent = "300 16";
+    text = "<font:verdana:13><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/time.png> " @ %obj.date @ "<br><br><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %dlStr;
+    position = "10 30";
+    extent = "595 16";
     minextent = "0 0";
     autoResize = true;
   };
-  
+
   for(%i = 0; %i < getWordCount(%obj.description); %i++) {
     %word = getWord(%obj.description, %i);
     if(strpos(%word, "http://") == 0 || strpos(%word, "https://") == 0 || strpos(%word, "glass://") == 0) {
@@ -91,15 +110,15 @@ function GlassModManagerGui::renderAddon(%obj) {
   %container.description = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:16><just:left>" @ %obj.description;
-    position = "102 30";
-    extent = "300 16";
+    text = "<font:verdana:13>" @ %obj.description;
+    position = "10 30";
+    extent = "595 16";
     minextent = "0 0";
     autoResize = true;
   };
 
   %rate = %obj.rating;
-  %x = 380;
+  %x = 510;
   for(%i = 0; %i < 5; %i++) {
     if(%rate >= 1) {
       %bitmap = "star";
@@ -150,7 +169,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
 
   %num = getWordCount(%obj.branches);
-  %xExtent = mfloor((635-70)/3);
+  %xExtent = mfloor((595)/3);
   %xMargin = 10;
   %totalWidth = (%xExtent*%num) + (%xMargin*(%num-1));
 
@@ -158,7 +177,7 @@ function GlassModManagerGui::renderAddon(%obj) {
     %bid = getword(%obj.branches, %i);
     %branch = %obj.branchName[%bid];
 
-    %x = ((485-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
+    %x = ((595-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
 
     %status = GlassModManager::getAddonStatus(%obj.id);
     switch$(%status) {
@@ -220,26 +239,18 @@ function GlassModManagerGui::renderAddon(%obj) {
     %container.download[%branch].info.forceCenter();
     %container.add(%container.download[%branch]);
   }
-  
+
   %container.add(%container.back);
-  
+
   %container.add(%container.title);
   %container.add(%container.author);
   %container.add(%container.info);
   %container.add(%container.description);
-  
-  GlassModManagerGui_MainDisplay.deleteAll();
-  GlassModManagerGui_MainDisplay.add(%container);
-  
-  %container.info.setMarginResize(20);
-  %container.description.setMarginResize(20);
 
   %container.info.setVisible(true);
   %container.info.forceReflow();
   %container.description.setVisible(true);
   %container.description.forceReflow();
-
-  %container.setMarginResize(10, 10);
 
   %container.title.setMargin(20, 20);
   %container.title.setMarginResize(20);
@@ -301,10 +312,7 @@ function GlassModManagerGui::renderAddon(%obj) {
 
   GlassModManagerGui::loadAddonComments(%obj.id, %comments);
 
-  GlassModManagerGui_MainDisplay.container = %container;
-  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
-  GlassModManagerGui_MainDisplay.setVisible(true);
-  GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+  return %container;
 }
 
 function GlassScreenshot::loadThumb(%this) {
@@ -499,6 +507,7 @@ function GlassModManagerGui::loadAddonComments(%id, %swatch) {
   %swatch.setName("GlassModManagerGui_AddonComments");
   GlassModManagerGui_AddonComments.currentAddon = %id;
 
+  return;
   %tcp = GlassModManager::placeCall("comments", "id" TAB %id);
 }
 
