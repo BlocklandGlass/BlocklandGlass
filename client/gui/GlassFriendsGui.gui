@@ -371,7 +371,7 @@ new GuiControl(GlassFriendsGui) {
          alignTop = "0";
          overflowImage = "0";
          keepCached = "0";
-         mColor = "220 220 220 220";
+         mColor = "255 255 255 230";
          mMultiply = "0";
 
          new GuiBitmapCtrl() {
@@ -392,7 +392,7 @@ new GuiControl(GlassFriendsGui) {
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "240 240 240 110";
+            mColor = "240 240 220 210";
 			text = "";
 
             new GuiMLTextCtrl() {
@@ -447,7 +447,7 @@ new GuiControl(GlassFriendsGui) {
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "240 240 240 110";
+            mColor = "220 240 220 210";
 			text = "";
 
             new GuiMLTextCtrl() {
@@ -502,7 +502,7 @@ new GuiControl(GlassFriendsGui) {
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "240 240 240 110";
+            mColor = "240 220 220 210";
 			text = "";
 
             new GuiMLTextCtrl() {
