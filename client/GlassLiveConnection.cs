@@ -84,7 +84,7 @@ function GlassLiveConnection::onConnected(%this) {
 function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
-  GlassLive_StatusPopUp.setVisible(false);
+  GlassLive_StatusSwatch.setVisible(false);
 
   %this.connected = false;
 
@@ -149,7 +149,7 @@ function GlassLiveConnection::doDisconnect(%this, %reason) {
 
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
-  GlassLive_StatusPopUp.setVisible(false);
+  GlassLive_StatusSwatch.setVisible(false);
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   if(GlassFriendsGui_HeaderText.isAwake()) {

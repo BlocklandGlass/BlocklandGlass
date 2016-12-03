@@ -29,11 +29,6 @@ function GlassLive::init() {
       color_bot = "9b59b6";
     };
 
-    GlassLive_StatusPopUp.add("Online", 1);
-    GlassLive_StatusPopUp.add("Away", 2);
-    GlassLive_StatusPopUp.add("Busy", 3);
-    GlassLive_StatusPopUp.add("Offline", 4);
-
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
 
@@ -113,17 +108,16 @@ function GlassLive_keybind(%down) {
 }
 
 function GlassLive::onAuthSuccess() {
-  GlassLive_StatusPopUp.setVisible(true);
-  GlassLive_StatusPopUp.setValue("Online");
-  GlassLive_StatusPopUp.updateStatus();
-
+  GlassLive_StatusSwatch.setVisible(true);
+  GlassFriendsGui_StatusSelect::selectStatus("Online");
+ 
   GlassFriendsGui_Blockhead.setVisible(true);
   GlassFriendsGui_Blockhead.setOrbitDist(5.5);
   GlassFriendsGui_Blockhead.setCameraRot(0.22, 0.5, 2.8);
   
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
   
-  GlassFriendsGui_HeaderText.position = "10 5";
+  GlassFriendsGui_HeaderText.position = "10 2";
 }
 
 function GlassLive::openOverlay() {
@@ -269,8 +263,8 @@ function GlassOverlayGui::onWake(%this) {
   GlassOverlayResponder.schedule(1, makeFirstResponder, true);
 
   if(isObject(GlassFriendsGui_Blockhead)) {
-    GlassFriendsGui_Blockhead.setOrbitDist(5.5);
-    GlassFriendsGui_Blockhead.setCameraRot(0.22,0.5,2.8);
+    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
+    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
   }
   //instantly close all notifications
 }
@@ -550,38 +544,41 @@ function secondsToTimeString(%total) { // Crown
   return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ "," SPC %minutes SPC "minute" @ %ms SPC "and" SPC %seconds SPC "second" @ %ss;
 }
 
-function GlassLive_StatusPopUp::ddsOpenMenu(%this) {
-  parent::ddsOpenMenu(%this);
-
-  %this.open = true;
-}
-
-function GlassLive_StatusPopUp::ddsCloseMenu(%this) {
-  parent::ddsCloseMenu(%this);
-}
-
-function GlassLive_StatusPopUp::updateStatus(%this) {
-  %status = %this.getValue();
-  if(%status $= "online") {
-    %color = "210 220 255 255";
-    %hcolor = "230 240 255 255";
-  } else if(%status $= "away") {
-    %color = "255 244 210 255";
-    %hcolor = "255 255 230 255";
-  } else if(%status $= "busy") {
-    %color = "255 210 210 255";
-    %hcolor = "255 230 230 255";
-  } else if(%status $= "offline" || %status $= "") {
-    GlassLive.noReconnect = true;
-    GlassLive::disconnect($Glass::Disconnect["Manual"]);
-    return;
+function GlassFriendsGui_StatusSelect::updateStatus() {
+  %status = trim(stripMlControlChars(GlassLive_Status.getValue()));
+  %selector = GlassFriendsGui_StatusSelect;
+  
+  switch$ (%status) {
+	case "Online":
+	  %selector.position = "14 60";
+	case "Away":
+	  %selector.position = "14 35";
+	case "Busy":
+	  %selector.position = "14 9";
+	default:
+		return;
   }
+  %selector.setVisible(true);
+}
 
+function GlassFriendsGui_StatusSelect::selectStatus(%status) {
+  GlassFriendsGui_StatusSelect.setVisible(false);
+  switch$ (%status) {
+	case "Online":
+	  %color = "210 220 255 255";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:15> Online";
+	case "Away":
+	  %color = "255 244 210 255";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:15> Away";
+	case "Busy":
+	  %color = "255 210 210 255";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:15> Busy";
+	default:
+		return;
+  }
+  GlassLive_Status.setValue(%value);
   GlassFriendsGui_InfoSwatch.color = %color;
-
-  GlassLive::setStatus(%this.getValue());
-
-  schedule(150, 0, eval, GlassLive_StatusPopUp @ ".open = false;");
+  GlassLive::setStatus(%status);
 }
 
 function GlassLive::setFriendStatus(%blid, %status) {
@@ -1672,10 +1669,8 @@ function GlassLive::friendListClick(%swatch, %pos) {
       GlassLive::userUnblock(%this.blid);
     }
   } else if(%this.type $= "toggle") {
-    if(!GlassLive_StatusPopUp.open) {
       eval(%this.toggleVar @ " = !" @ %this.toggleVar @ ";");
       GlassLive::createFriendList();
-    }
   } else {
     if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
       if(%this.online) {
