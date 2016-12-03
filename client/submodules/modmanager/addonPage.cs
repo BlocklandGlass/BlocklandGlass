@@ -31,16 +31,22 @@ function GMM_AddonPage::open(%this, %modId) {
 function GMM_AddonPage::handleResults(%this, %obj) {
   echo("addonpage resx");
   //obj:
-  // authors
-  // manager
+  // aid
+  // filename
+  // boardId
+  // board
   // name
   // description
-  // tags
-  // board
-  // dependencies
-  //
+  // date
+  // downloads
+  // rating
+  // screenshots
+  // author
+  // contributors
+  // branches
 
-  %container = %this.body;
+  %container = %this.container;
+  %body = %this.body;
 
 
   if($Glass::MM_PreviousBoard == -1 || $Glass::MM_PreviousPage == -1)
@@ -48,56 +54,87 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   else
     %link = "<a:glass://board=" @ $Glass::MM_PreviousBoard @ "&page=" @ $Glass::MM_PreviousPage @ "><< Back</a>";
 
-  %container.back = new GuiMLTextCtrl() {
+  %body.back = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
     text = "<color:333333><font:verdana:15><just:left>" @ %link;
     position = "10 10";
-    extent = "75 25";
+    extent = "75 15";
   };
 
-  %container.title = new GuiMLTextCtrl() {
+  %body.add(%body.back);
+
+  %body.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:24><just:left>" @ %obj.name;
-    position = "20 30";
+    text = "<font:verdana bold:20><just:left>" @ %obj.name;
+    position = "10 30";
     extent = "300 24";
     minextent = "0 0";
     autoResize = true;
   };
 
-  %container.author = new GuiMLTextCtrl() {
+  %body.add(%body.title);
+  %body.title.placeBelow(%body.back, 5);
+
+  %body.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:13><just:left>Uploaded by " @ %obj.author;
-    position = "20 30";
-    extent = "300 16";
+    text = "<font:verdana:12><just:left>Uploaded by " @ %obj.author @ "<just:right><color:444444>" @ %obj.date;
+    position = "10 30";
+    extent = "575 12";
     minextent = "0 0";
     autoResize = true;
   };
+
+  %body.add(%body.author);
+  %body.author.placeBelow(%body.title, 0);
+  %body.verticalMatchChildren(20, 10);
 
   %downloads = %obj.downloads;
 
-  %dlStr = "";
-  for(%i = strlen(%downloads); %i >= 0; %i--) {
-    %dlStr = getsubstr(%downloads, %i, 1) @ %dlStr;
-    if(mfloor((strlen(%downloads)-%i)/3) == (strlen(%downloads)-%i)/3) {
-      %dlStr = "," @ %dlStr;
-    }
-  }
-  %dlStr = getsubstr(%dlStr, 0, strlen(%dlstr)-1);
-  if(strpos(%dlStr, ",") == 0) %dlStr = getsubstr(%dlStr, 1, strlen(%dlstr));
+  %info = 4;
+  %border = 5;
+  %width = mFloor((615+%border)/%info);
+  for(%i = 0; %i < %info; %i++) {
+    %swatch = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "255 255 255 255";
+      position = (%width)*%i+10 SPC 0;
+      extent = %width-%border SPC 36;
+    };
 
-  %container.info = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana:13><just:left><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board @ "<br><br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename @ "<br><br><bitmap:Add-Ons/System_BlocklandGlass/image/icon/time.png> " @ %obj.date @ "<br><br><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %dlStr;
-    position = "10 30";
-    extent = "595 16";
-    minextent = "0 0";
-    autoResize = true;
-  };
+    %swatch.text = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "";
+      position = "10 10";
+      extent = (%width-20) SPC "16";
+      minextent = (%width-20) SPC "16";
+    };
+
+    switch(%i) {
+      case 0:
+        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board);
+
+      case 1:
+        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename);
+
+      case 2:
+        %swatch.text.setText("<font:verdana:12>Rating");
+
+      case 3:
+        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %obj.downloads @ " downloads");
+    }
+
+    %swatch.add(%swatch.text);
+    %container.add(%swatch);
+
+    %swatch.placeBelow(%body, %border);
+    %container.info[%i] = %swatch;
+  }
 
   for(%i = 0; %i < getWordCount(%obj.description); %i++) {
     %word = getWord(%obj.description, %i);
@@ -107,163 +144,35 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     }
   }
 
-  %container.description = new GuiMLTextCtrl() {
+  %description = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:13>" @ %obj.description;
-    position = "10 30";
+    color = "255 255 255 255";
+    position = "10 0";
+    extent = "615 30";
+  };
+
+  %description.text = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ %obj.description;
+    position = "10 10";
     extent = "595 16";
     minextent = "0 0";
     autoResize = true;
   };
 
-  %rate = %obj.rating;
-  %x = 510;
-  for(%i = 0; %i < 5; %i++) {
-    if(%rate >= 1) {
-      %bitmap = "star";
-    } else if(%rate >= 0.75) {
-      %bitmap = "star_frac_3";
-    } else if(%rate >= 0.50) {
-      %bitmap = "star_frac_2";
-    } else if(%rate >= 0.25) {
-      %bitmap = "star_frac_1";
-    } else {
-      %bitmap = "star_empty";
-    }
-    %container.star[%i+1] = new GuiBitmapCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap;
-      dbitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap;
-      position = %x SPC 10;
-      extent = "16 16";
-      minextent = "0 0";
-      clipToParent = true;
-    };
+  %description.add(%description.text);
 
-    %x += 20;
-    %rate -= 1;
-
-    %container.add(%container.star[%i+1]);
-  }
-
-  %container.ratingmouse = new GuiMouseEventCtrl(GlassModManagerGui_RatingMouse) {
-    aid = %obj.id;
-    profile = "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = %container.star1.position;
-    extent = "100 25";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    lockMouse = "0";
-  };
-
-  %container.add(%container.ratingmouse);
-
-  %branchColor["stable"] = "128 255 128 255";
-  %branchColor["beta"] = "255 128 128 255";
-
-
-  %num = getWordCount(%obj.branches);
-  %xExtent = mfloor((595)/3);
-  %xMargin = 10;
-  %totalWidth = (%xExtent*%num) + (%xMargin*(%num-1));
-
-  for(%i = 0; %i < getWordCount(%obj.branches); %i++) {
-    %bid = getword(%obj.branches, %i);
-    %branch = %obj.branchName[%bid];
-
-    %x = ((595-%totalWidth)/2) + (%xExtent*(%i)) + (%xMargin*(%i));
-
-    %status = GlassModManager::getAddonStatus(%obj.id);
-    switch$(%status) {
-      case "installed":
-        %text = "Installed";
-        %action = "";
-
-      case "downloading":
-        %text = "Downloading..";
-        %action = "";
-
-      case "queued":
-        %text = "Queued..";
-        %action = "";
-
-      case "outdated":
-        %text = "Update";
-        %action = "update";
-
-      default:
-        %text = "Download";
-        %action = "download";
-    }
-
-    %container.download[%branch] = new GuiSwatchCtrl() {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = %branchColor[%branch];
-      position = %x SPC 0;
-      extent = %xExtent SPC 35;
-    };
-
-
-
-    %name = "GlassModManagerGui_DlButton_" @ %obj.id @ "_" @ (%i+1);
-    %container.download[%branch].info = new GuiMLTextCtrl(%name) {
-      horizSizing = "center";
-      vertSizing = "center";
-      text = "<font:Verdana Bold:15><just:center>" @ %text @ "<br><font:verdana:14>" @ strcap(%branch);
-      position = "0 0";
-      extent = "300 16";
-      minextent = "0 0";
-      autoResize = true;
-    };
-
-    %container.download[%branch].add(%container.download[%branch].info);
-
-    if(%action !$= "") {
-      %container.download[%branch].mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonDownloadButton) {
-        aid = %obj.id;
-        obj = %obj;
-        swatch = %container.download[%branch];
-        branch = %branch;
-      };
-      %container.download[%branch].add(%container.download[%branch].mouse);
-    }
-
-    %container.download[%branch].info.setMarginResize(2, 2);
-    %container.download[%branch].info.forceCenter();
-    %container.add(%container.download[%branch]);
-  }
-
-  %container.add(%container.back);
-
-  %container.add(%container.title);
-  %container.add(%container.author);
-  %container.add(%container.info);
+  %container.description = %description;
   %container.add(%container.description);
+  %container.description.placeBelow(%container.info0, 5);
 
-  %container.info.setVisible(true);
-  %container.info.forceReflow();
-  %container.description.setVisible(true);
-  %container.description.forceReflow();
+  %container.description.text.forceReflow();
+  %container.description.verticalMatchChildren(30, 10);
+  %container.verticalMatchChildren(0, 0);
 
-  %container.title.setMargin(20, 20);
-  %container.title.setMarginResize(20);
-  %container.author.setMarginResize(20);
-  %container.title.placeBelow(%container.back);
-  %container.author.placeBelow(%container.title, 1);
-  %container.info.placeBelow(%container.author, 15);
-  %container.description.placeBelow(%container.info, 25);
-  for(%i = 0; %i < %num; %i++) {
-    %bid = getword(%obj.branches, %i);
-    %branch = %obj.branchName[%bid];
-    %container.download[%branch].placeBelow(%container.description, 25);
-  }
+  return;
 
   %x = 10;
   for(%i = 0; %i < %obj.screenshots.length; %i++) {
@@ -767,7 +676,7 @@ function GlassModManagerGui::doDownloadSprite(%origin, %destination, %maxHeight)
     timeElapsed = 0;
   };
 
-  GlassModManagerGui.add(%sprite);
+  GlassOverlay.add(%sprite);
   %sprite.tick();
 }
 
