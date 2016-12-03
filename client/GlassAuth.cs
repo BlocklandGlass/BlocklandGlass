@@ -3,7 +3,7 @@ function GlassAuth::init() {
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
-  GlassLive_StatusPopUp.setVisible(false);
+  GlassFriendsGui_StatusSelect.setVisible(false);
 
 	if(isObject(GlassAuth)) {
 		GlassAuth.delete();

@@ -151,14 +151,6 @@ package GlassMainMenu {
       MainMenuButtonsGui.add(%mm);
     }
   }
-
-  function DDS_BackgroundCtrl::onMouseDown(%this) {
-    if(%this.ddsControl.getName() $= "GlassLive_StatusPopUp")
-      %this.ddsControl.open = false;
-
-    parent::onMouseDown(%this);
-  }
-
 };
 activatePackage(GlassMainMenu);
 
