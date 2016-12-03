@@ -85,7 +85,6 @@ function GlassLiveConnection::onDisconnect(%this) {
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   GlassLive_StatusPopUp.setVisible(false);
-  GlassFriendsGui_Blockhead.setVisible(false);
 
   %this.connected = false;
 

@@ -98,6 +98,8 @@ function GlassLive::init() {
     %box = "GlassModManagerGui_Prefs_" @ %setting;
     %box.setValue(GlassSettings.get("MM::" @ %setting));
   }
+
+  GlassLive::createBlockhead();
 }
 
 function GlassLive_keybind(%down) {
@@ -115,7 +117,12 @@ function GlassLive::onAuthSuccess() {
   GlassLive_StatusPopUp.setValue("Online");
   GlassLive_StatusPopUp.updateStatus();
 
+  GlassFriendsGui_Blockhead.setVisible(true);
+  GlassFriendsGui_Blockhead.setOrbitDist(5.5);
+  GlassFriendsGui_Blockhead.setCameraRot(0.22, 0.5, 2.8);
+  
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
+  
   GlassFriendsGui_HeaderText.position = "10 5";
 }
 
@@ -265,13 +272,6 @@ function GlassOverlayGui::onWake(%this) {
     GlassFriendsGui_Blockhead.setOrbitDist(5.5);
     GlassFriendsGui_Blockhead.setCameraRot(0.22,0.5,2.8);
   }
-  // Horrible way to handle this. The Blockhead cannot be loaded until the avatar prefs are loaded. This needs a better place because it shouldn't be checking every time the overlay opens.
-  if(!GlassFriendsGui_Blockhead.initialSetup && $Avatar::NumColors !$= "") {
-	GlassLive::createBlockhead();
-	GlassLive::updateBlockhead();
-	
-	GlassFriendsGui_Blockhead.initialSetup = 1;
-  }
   //instantly close all notifications
 }
 
@@ -327,6 +327,7 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
+  GlassFriendsGui_BlockButton.setVisible(false);
 }
 
 // function GlassLive::showUserStatus() {
@@ -826,6 +827,8 @@ function GlassLive::userUnblock(%blid) {
 }
 
 function GlassLive::createBlockhead() {
+  AvatarGui.OnWake();
+  
   if(isObject(GlassFriendsGui_Blockhead))
 	  GlassFriendsGui_Blockhead.delete();
   
@@ -845,7 +848,9 @@ function GlassLive::createBlockhead() {
   
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
   GlassFriendsGui_Blockhead.setObject("", "base/data/shapes/player/m.dts", "", 100);
-  GlassFriendsGui_BlockButton.setVisible(false);
+  GlassFriendsGui_Blockhead.setVisible(false);
+  
+  GlassLive::updateBlockhead();
 }
 
 function GlassLive::updateBlockhead() {
@@ -856,7 +861,6 @@ function GlassLive::updateBlockhead() {
   %obj.position = "120 -5";
   %obj.forceFOV = 18;
   %obj.lightDirection = "0 0.2 0.2";
-  %obj.setVisible(true);
   
   GlassFriendsGui_InfoSwatch.add(%obj);
   
@@ -902,8 +906,8 @@ function GlassLive::updateBlockhead() {
   
   %obj.setNodeColor("", $chest[$Pref::Avatar::Chest], $Pref::Avatar::TorsoColor);
   %obj.setMouse(1, 0);
-  %obj.setOrbitDist(5.5);
-  %obj.setCameraRot(0.22,0.5,2.8);
+  %obj.schedule(800, "setOrbitDist", 5.5);
+  %obj.schedule(800, "setCameraRot", 0.22, 0.5, 2.8);
 }
 
 //================================================================
