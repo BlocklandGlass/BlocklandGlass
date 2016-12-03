@@ -5,7 +5,7 @@ function GMM_BoardsPage::init() {
 }
 
 function GMM_BoardsPage::open(%this) {
-  if(%this.loaded) {
+  if(%this.loaded && isObject(%this.container)) {
     return %this.container;
   } else {
     if(isObject(%this.container)) {
@@ -22,6 +22,7 @@ function GMM_BoardsPage::open(%this) {
     extent = "635 498";
   };
 
+  GlassModManagerGui.setLoading(true);
   GlassModManager::placeCall("boards", "", "GMM_BoardsPage.handleResults");
 
   echo(%this.container);
@@ -38,6 +39,8 @@ function GMM_BoardsPage::close(%this) {
 function GMM_BoardsPage::handleResults(%this, %obj) {
   %this.loaded = true;
   %container = %this.container;
+
+  GlassModManagerGui.setLoading(false);
 
   %body = new GuiSwatchCtrl(GMM_BoardsDisplay) {
     horizSizing = "right";
@@ -92,7 +95,7 @@ function GMM_BoardsPage::handleResults(%this, %obj) {
 
       %img = isFile("Add-Ons/System_BlocklandGlass/image/icon/" @ %img @ ".png") ? %img : "ask_and_answer";
 
-      %contain = GlassModManagerGui::createBoardButton(%name, %img, %id);
+      %contain = GMM_BoardsPage::createBoardButton(%name, %img, %id);
 
       %contain.placeBelow(%last, 0);
       %contain.text.centerY();
@@ -106,7 +109,7 @@ function GMM_BoardsPage::handleResults(%this, %obj) {
     }
   }
 
-  %rtb = GlassModManagerGui::createBoardButton("Return to Blockland Archive", "bricks", "rtb");
+  %rtb = GMM_BoardsPage::createBoardButton("Return to Blockland Archive", "bricks", "rtb");
   %rtb.placeBelow(%last, 20);
   %rtb.text.centerY();
   %rtb.color = (!%dark ? "210 210 210 255" : "220 220 220 255");
@@ -156,7 +159,7 @@ function GlassModManagerGui::createSearchBar() {
   return %container;
 }
 
-function GlassModManagerGui::createBoardButton(%name, %img, %id) {
+function GMM_BoardsPage::createBoardButton(%name, %img, %id) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -195,7 +198,7 @@ function GlassModManagerGui::createBoardButton(%name, %img, %id) {
 }
 
 function GMM_BoardsPage::clickBoard(%this) {
-  GlassModManagerGui::fetchBoard(%this.boardId);
+  GlassModManagerGui.openPage(GMM_BoardPage, %this.boardId);
 }
 
 function GlassModManagerGui_RTBButton::onMouseDown(%this) {

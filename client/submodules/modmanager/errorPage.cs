@@ -1,8 +1,13 @@
-function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
+function GMM_ErrorPage::init() {
+  new ScriptObject(GMM_ErrorPage);
+}
+
+function GMM_ErrorPage::open(%this, %errorcode, %buffer) {
+  GlassModManagerGui.setLoading(false);
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "0 0 0 0";
+    color = "255 255 255 255";
     position = "0 0";
     extent = "635 498";
   };
@@ -11,16 +16,17 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
     horizSizing = "center";
     vertSizing = "center";
     text = "";
-    position = "102 30";
-    extent = "300 498";
+    position = "100 30";
+    extent = "300 10";
+    minExtent = "10 10";
     autoResize = true;
   };
 
   %text = "<just:center><font:verdana bold:20><color:ff0000>Error!<br><color:000000>";
-  if($GlassError[%errorcode] !$= "") {
-    %text = %text @ getField($GlassError[%errorcode], 0);
+  if($Glass::MM::Error[%errorcode] !$= "") {
+    %text = %text @ getField($Glass::MM::Error[%errorcode], 0);
     %text = %text @ "<br><br>";
-    %text = %text @ "<font:Verdana Bold:15>" @ getField($GlassError[%errorcode], 1);
+    %text = %text @ "<font:Verdana Bold:15>" @ getField($Glass::MM::Error[%errorcode], 1);
   } else {
     %text = %text @ "Code: " @ %errorcode;
   }
@@ -41,41 +47,28 @@ function GlassModManagerGui::loadErrorPage(%errorcode, %buffer) {
   }
 
   %container.text.setValue(%text);
-
   %container.add(%container.text);
 
-  GlassModManagerGui_MainDisplay.extent = %container.extent;
+  %container.text.schedule(1, forceReflow);
+  %container.text.schedule(1, setMarginResizeParent, 10, 10);
+  %container.schedule(1, forceCenter);
 
-  GlassModManagerGui::setLoading(false);
-
-  GlassModManagerGui_MainDisplay.deleteAll();
-  GlassModManagerGui_MainDisplay.add(%container);
-
-  %container.text.forceReflow();
-
-  if(getWord(%container.text.extent, 1) > 498-30) {
-    GlassModManagerGui_MainDisplay.extent = %container.extent = getWord(%container.extent, 0) SPC getWord(%container.text.extent, 1)+60;
-  } else {
-    GlassModManagerGui_MainDisplay.extent = 635 SPC 498;
-  }
-
-
-  GlassModManagerGui_MainDisplay.setVisible(true);
+  return %container;
 }
 
 
-$GlassError["development"] = "Development\tThis page is still in development!";
+$Glass::MM::Error["development"] = "Development\tThis page is still in development!";
 
-$GlassError["status_"] = "No Status\tThe API failed to return a status message.";
-$GlassError["status_error"] = "API Error\tThe API encountered an error completing your request.";
-$GlassError["status_development"] = "Development\tThis page is still in development!";
+$Glass::MM::Error["status_"] = "No Status\tThe API failed to return a status message.";
+$Glass::MM::Error["status_error"] = "API Error\tThe API encountered an error completing your request.";
+$Glass::MM::Error["status_development"] = "Development\tThis page is still in development!";
 
-$GlassError["jettison"] = "Internal Error\tThere was a jettison parse error. If this continues, be sure to report it.";
+$Glass::MM::Error["jettison"] = "Internal Error\tThere was a jettison parse error. If this continues, be sure to report it.";
 
-$GlassError["tcpclient_" @ $TCPClient::Error::connectionFailed] = "Failed to Connect\tThe Mod Manager couldn't connect to the Blockland Glass website!";
-$GlassError["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connect\tDNS Failed.";
-$GlassError["tcpclient_" @ $TCPClient::Error::invalidResponse] = "Invalid Response\tThe server encountered an error!";
-$GlassError["tcpclient_" @ $TCPClient::Error::connectionTimedOut] = "Timeout\tThe connection timed out.";
+$Glass::MM::Error["tcpclient_" @ $TCPClient::Error::connectionFailed] = "Failed to Connect\tThe Mod Manager couldn't connect to the Blockland Glass website!";
+$Glass::MM::Error["tcpclient_" @ $TCPClient::Error::dnsFailed] = "Failed to Connect\tDNS Failed.";
+$Glass::MM::Error["tcpclient_" @ $TCPClient::Error::invalidResponse] = "Invalid Response\tThe server encountered an error!";
+$Glass::MM::Error["tcpclient_" @ $TCPClient::Error::connectionTimedOut] = "Timeout\tThe connection timed out.";
 
 //$TCPClient::Error::none = 0;
 //$TCPClient::Error::connectionFailed = 1;

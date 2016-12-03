@@ -1,7 +1,11 @@
 function GlassModManager::init() {
   exec("./GlassModManagerGui.cs");
+  
   GMM_ActivityPage::init();
   GMM_BoardsPage::init();
+  GMM_BoardPage::init();
+  GMM_ErrorPage::init();
+
   if(isObject(GlassModManager)) {
     GlassModManager.delete();
   }
@@ -175,7 +179,7 @@ function GlassModManagerTCP::onDone(%this, %error) {
     %error = jettisonParse(%this.buffer);
     if(%error) {
       Glass::debug(%this.buffer);
-      GlassModManagerGui::loadErrorPage("jettisonError", $JSON::Error @ " : " @ $JSON::Index);
+      GlassModManagerGui.openPage(GMM_ErrorPage, "jettisonError", $JSON::Error @ " : " @ $JSON::Index);
       return;
     }
     %ret = $JSON::Value;
@@ -303,10 +307,10 @@ function GlassModManagerTCP::onDone(%this, %error) {
       }
 
     } else {
-      GlassModManagerGui::loadErrorPage("status_" @ %ret.status, %this.buffer);
+      GlassModManagerGui.openPage(GMM_ErrorPage, "status_" @ %ret.status, %this.buffer);
     }
 	} else {
-    GlassModManagerGui::loadErrorPage("tcpclient_" @ %error);
+    GlassModManagerGui.openPage(GMM_ErrorPage, "tcpclient_" @ %error);
   }
 }
 
@@ -1359,7 +1363,7 @@ package GlassModManager {
     }
 
     if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
-      GlassModManagerGui::fetchBoard(%board, %page);
+      GlassModManagerGui.openPage(GMM_BoardPage, %board, %page);
     }
 
     if(%link $= "home") {

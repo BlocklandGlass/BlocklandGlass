@@ -1,18 +1,9 @@
-function GlassModManagerGui::fetchBoard(%id, %page) {
-  if(%page < 1) %page = 1;
-
-  GlassModManager::placeCall("board", "id" TAB %id NL "page" TAB %page);
-  
-  // %id = 1;
-  // %name = "Blockland Glass";
-  // %author = "Jincux";
-  // %rating = 3.2;
-  // %downloads = 17381;
-  // %listing = %id TAB %name TAB %author TAB %rating TAB %downloads;
-  // GlassModManagerGui::renderBoardPage(1, "Client Mods", %listing NL %listing, 11, 14);
+function GMM_BoardPage::init() {
+  new ScriptObject(GMM_BoardPage);
 }
 
-function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %maxpage, %rtb) {
+function GMM_BoardPage::open(%this, %id, %page) {
+  if(%page < 1) %page = 1;
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -21,43 +12,132 @@ function GlassModManagerGui::renderBoardPage(%id, %title, %listings, %page, %max
     extent = "635 498";
   };
 
-  %nav = GlassModManagerGui::createBoardNav(%id, %page, %maxpage);
-  %header = GlassModManagerGui::createBoardHeader(%title);
+  %call = GlassModManager::placeCall("board", "id" TAB %id NL "page" TAB %page, "GMM_BoardPage.handleResults");
 
-  %container.add(%nav);
-  %container.add(%header);
+  GlassModManagerGui.setLoading(true);
+
+  %this.container = %container;
+  %this.call = %call;
+
+  return %container;
+}
+
+function GMM_BoardPage::close(%this) {
+  %this.container.deleteAll();
+  %this.container.delete();
+}
+
+function GMM_BoardPage::handleResults(%this, %res) {
+  GlassModManagerGui.setLoading(false);
+  %status = %res.status;
+
+  %id = %res.board_id;
+  %name = %res.board_name;
+  %page = %res.page;
+  %pages = %res.pages;
+
+  %addons = %res.addons;
+
+  %container = %this.container;
+
+  %body = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 10";
+    extent = "615 10";
+  };
+  %container.add(%body);
+
+  %nav = GMM_BoardPage::createBoardNav(%id, %page, %pages);
+  %header = GMM_BoardPage::createBoardHeader(%name);
+
+  %body.add(%nav);
+  %body.add(%header);
   %header.placeBelow(%nav);
 
-  for(%i = 0; %i < getLineCount(%listings); %i++) {
-    %line = getLine(%listings, %i);
-    %id = getField(%line, 0);
-    %name = getASCIIString(getField(%line, 1));
-    %author = getASCIIString(getField(%line, 2));
-    %rating = getField(%line, 3);
-    %downloads = getField(%line, 4);
+  %last = %header;
 
-    if(strLen(%name)) {
-      %listing = GlassModManagerGui::createBoardListing(%id, %name, %author, %rating, %downloads, %odd = !%odd, %rtb);
-      %listing.placeBelow(%container.getObject(%container.getCount()-1), 0);
-      %container.add(%listing);
-    }
+  for(%i = 0; %i < %addons.length; %i++) {
+    %addon = %addons.value[%i];
+
+    %aid = %addon.id;
+    %addonName = getASCIIString(%addon.name);
+    %author = getASCIIString(%addon.author);
+    %rating = %addon.rating;
+    %downloads = %addon.downloads;
+
+    %summary = getASCIIString(%addon.summary);
+    if(%summary $= "")
+      %summary = "< Missing Summary >";
+
+    %swatch = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = (%odd = !%odd) ? "235 235 235 255" : "230 230 230 255";
+      position = "10 10";
+      extent = "595 40";
+
+      aid = %aid;
+    };
+
+    %swatch.title = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<color:444444><font:Verdana Bold:15>" @ %addonName @ "<br><font:verdana:13>" @ %summary;
+      position = "10 5";
+      extent = "325 45";
+    };
+
+    %swatch.author = new GuiMLTextCtrl() {
+      horizSizing = "left";
+      vertSizing = "bottom";
+      text = "<color:333333><just:center><font:verdana:13>" @ %author;
+      position = "235 12";
+      extent = "120 16";
+    };
+
+    %swatch.downloads = new GuiMLTextCtrl() {
+      horizSizing = "left";
+      vertSizing = "bottom";
+      text = "<color:333333><font:verdana:13><just:right>11";
+      position = "500 12";
+      extent = "85 45";
+    };
+
+    %swatch.stars = GMM_BoardPage::createStars(%rating);
+    %swatch.stars.position = "400 12";
+
+    %swatch.add(%swatch.title);
+    %swatch.add(%swatch.author);
+    %swatch.add(%swatch.downloads);
+    %swatch.add(%swatch.stars);
+
+    GlassHighlightSwatch::addToSwatch(%swatch, "10 10 10", "GMM_BoardPage.swatchClick");
+    %swatch.hColor = "240 240 240 255";
+
+    %body.add(%swatch);
+    %swatch.placeBelow(%last, 0);
+
+    %swatch.author.centerY();
+
+    %last = %swatch;
   }
 
-  GlassModManagerGui_MainDisplay.deleteAll();
-  GlassModManagerGui_MainDisplay.add(%container);
-  GlassModManagerGui_MainDisplay.extent = %container.extent;
-  GlassModManagerGui_MainDisplay.setVisible(true);
+  %body.verticalMatchChildren(10, 10);
+  %container.verticalMatchChildren(498, 0);
+}
 
-
-  //%container.verticalMatchChildren(498, 10);
-  GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 10);
+function GMM_BoardPage::swatchClick(%swatch) {
+  %obj = GlassModManagerGui::fetchAndRenderAddon(%swatch.aid);
+  %obj.action = "render";
 }
 
 function _glassPageNav(%board, %id) {
   return "<a:glass://board=" @ %board @ "&page=" @ %id @ ">" @ %id @ "</a>";
 }
 
-function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
+function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
   $Glass::MM_PreviousBoard = %bid;
   $Glass::MM_PreviousPage = %page;
 
@@ -66,7 +146,7 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
     vertSizing = "bottom";
     color = "100 100 100 0";
     position = "10 10";
-    extent = "485 25";
+    extent = "595 25";
   };
 
   %back = "<a:glass://boards><< Back</a>";
@@ -99,134 +179,96 @@ function GlassModManagerGui::createBoardNav(%bid, %page, %pages) {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
-    text = "<color:333333><font:verdana:16><just:left>" @ %back @ "<just:right>" @ %pageText;
+    text = "<color:333333><font:verdana:15><just:left>" @ %back @ "<just:right>" @ %pageText;
     position = "0 0";
-    extent = "485 45";
+    extent = "595 45";
   };
 
   %swatch.add(%swatch.text);
   return %swatch;
 }
 
-function GlassModManagerGui::createBoardHeader(%title) {
+function GMM_BoardPage::createBoardHeader(%title) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "100 100 100 255";
+    color = "46 204 113 255";
     position = "10 10";
-    extent = "485 25";
+    extent = "595 30";
   };
 
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<color:ffffff><font:verdana bold:20><just:center>" @ %title;
-    position = "0 0";
-    extent = "225 45";
+    text = "<color:ffffff><font:verdana bold:15><just:center>" @ %title;
+    position = "0 5";
+    extent = "595 15";
   };
 
   %swatch.add(%swatch.text);
-  %swatch.text.setVisible(true);
-  %swatch.text.setMarginResize(2, 0);
+  %swatch.verticalMatchChildren(0, 5);
   return %swatch;
 }
 
-function GlassModManagerGui::createBoardListing(%id, %title, %author, %stars, %downloads, %odd, %rtb) {
+function GMM_BoardPage::createStars(%stars) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = %odd ? "200 200 200 255" : "190 190 190 255";
+    color = "0 0 0 0";
     position = "10 10";
-    extent = "485 40";
+    extent = "100 16";
   };
 
-  %swatch.title = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<color:333333><font:Verdana Bold:15>" @ %title @ "<br><font:verdana:12>Uploaded by <font:verdana bold:12>" @ %author;
-    position = "10 7";
-    extent = "325 45";
-  };
-
-  %dlStr = "";
-  for(%i = strlen(%downloads); %i >= 0; %i--) {
-    %dlStr = getsubstr(%downloads, %i, 1) @ %dlStr;
-    if(mfloor((strlen(%downloads)-%i)/3) == (strlen(%downloads)-%i)/3) {
-      %dlStr = "," @ %dlStr;
-    }
-  }
-  %dlStr = getsubstr(%dlStr, 0, strlen(%dlstr)-1);
-  if(strpos(%dlStr, ",") == 0) %dlStr = getsubstr(%dlStr, 1, strlen(%dlstr));
-
-  %swatch.downloads = new GuiMLTextCtrl() {
-    horizSizing = "left";
-    vertSizing = "bottom";
-    text = "<color:333333><font:verdana:16><just:right>" @ %dlstr;
-    position = "375 7";
-    extent = "100 45";
-  };
-
-  if(!%rtb) {
-    %fullStars = mfloor(%stars);
-    %fracStar = mfloor((%stars - %fullStars + 0.125)*4);
-    %emptyStars = 4-%fullStars;
-    %x = 300;
-    for(%i = 0; %i < %fullStars; %i++) {
-      %swatch.star[%i] = new GuiBitmapCtrl() {
-        horizSizing = "left";
-        vertSizing = "bottom";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
-        position = %x SPC "12";
-        extent = "16 16";
-        minextent = "0 0";
-        clipToParent = true;
-      };
-      %swatch.add(%swatch.star[%i]);
-      %x += 20;
-    }
-
-    if(%fracStar != 0) {
-      if(%fracStar > 3)
-        %fracStar = 3;
-
-      %swatch.fracstar = new GuiBitmapCtrl() {
-        horizSizing = "left";
-        vertSizing = "bottom";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_frac_" @ %fracStar @ ".png";
-        position = %x SPC "12";
-        extent = "16 16";
-        minextent = "0 0";
-        clipToParent = true;
-      };
-      %swatch.add(%swatch.fracstar);
-      %x += 20;
-    } else {
-      %emptyStars++;
-    }
-
-    for(%i = 0; %i < %emptyStars; %i++) {
-      %swatch.emptystar[%i] = new GuiBitmapCtrl() {
-        horizSizing = "left";
-        vertSizing = "bottom";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_empty.png";
-        position = %x SPC "12";
-        extent = "16 16";
-        minextent = "0 0";
-        clipToParent = true;
-      };
-      %swatch.add(%swatch.emptystar[%i]);
-      %x += 20;
-    }
+  %fullStars = mfloor(%stars);
+  %fracStar = mfloor((%stars - %fullStars + 0.125)*4);
+  %emptyStars = 4-%fullStars;
+  %x = 0;
+  for(%i = 0; %i < %fullStars; %i++) {
+    %swatch.star[%i] = new GuiBitmapCtrl() {
+      horizSizing = "left";
+      vertSizing = "bottom";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
+      position = %x SPC 0;
+      extent = "16 16";
+      minextent = "0 0";
+      clipToParent = true;
+    };
+    %swatch.add(%swatch.star[%i]);
+    %x += 20;
   }
 
-  %swatch.mouse = new GuiMouseEventCtrl(GlassModManagerGui_AddonButton) {
-    rtb = %rtb;
-    aid = %id;
-    swatch = %swatch;
-  };
+  if(%fracStar != 0) {
+    if(%fracStar > 3)
+      %fracStar = 3;
 
-  %swatch.add(%swatch.downloads);
-  %swatch.add(%swatch.title);
-  %swatch.add(%swatch.mouse);
+    %swatch.fracstar = new GuiBitmapCtrl() {
+      horizSizing = "left";
+      vertSizing = "bottom";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_frac_" @ %fracStar @ ".png";
+      position = %x SPC 0;
+      extent = "16 16";
+      minextent = "0 0";
+      clipToParent = true;
+    };
+    %swatch.add(%swatch.fracstar);
+    %x += 20;
+  } else {
+    %emptyStars++;
+  }
+
+  for(%i = 0; %i < %emptyStars; %i++) {
+    %swatch.emptystar[%i] = new GuiBitmapCtrl() {
+      horizSizing = "left";
+      vertSizing = "bottom";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_empty.png";
+      position = %x SPC 0;
+      extent = "16 16";
+      minextent = "0 0";
+      clipToParent = true;
+    };
+    %swatch.add(%swatch.emptystar[%i]);
+    %x += 20;
+  }
+
   return %swatch;
 }

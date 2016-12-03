@@ -7,34 +7,7 @@
 //================================
 
 function GlassModManagerGui::setPane(%pane) {
-  //somewhat an antiquated function
-  //pane 1 is all dynamic content
-  //pane 3 is "My Add-ons"
-  //pane 4 is Colorsets
-  //pane 5 is settings
-
-  for(%a = 0; %a < 5; %a++) {
-    if(%a == 1) continue;
-
-    %obj = "GlassModManagerGui_Pane" @ %a+1;
-    if(isObject(%obj))
-      %obj.setVisible(false);
-  }
-
-  if(%pane == 0) {
-    GlassModManagerGui_MainDisplay.deleteAll();
-  }
-
-  if(%pane == 3) {
-    GlassModManager.populateMyAddons();
-  }
-
-  if(%pane == 4) {
-    GlassModManager::populateColorsets();
-  }
-
-  %obj = "GlassModManagerGui_Pane" @ %pane;
-  %obj.setVisible(true);
+  error("Depreciated GlassModManagerGui::setPane");
 }
 
 function GlassModManagerGui::openPage(%this, %page, %arg1, %arg2, %arg3, %arg4) {
@@ -63,12 +36,22 @@ function GlassModManagerGui::loadContext(%context) {
   //for the dynamic guis
   //home, addons, build
 
-  if(%context $= "home") {
-    GlassModManagerGui.openPage(GMM_ActivityPage);
-  }
 
-  if(%context $= "addons") {
-    GlassModManagerGui.openPage(GMM_BoardsPage);
+  switch$(%context) {
+    case "activity":
+      GlassModManagerGui.openPage(GMM_ActivityPage);
+
+    case "boards":
+      GlassModManagerGui.openPage(GMM_BoardsPage);
+
+    case "search":
+      GlassModManagerGui.openPage(GMM_SearchPage);
+
+    case "colorset":
+      GlassModManagerGui.openPage(GMM_ColorsetPage);
+
+    case "myaddons":
+      GlassModManagerGui.openPage(GMM_MyAddonPage);
   }
 }
 
@@ -96,15 +79,17 @@ function GlassModManagerGui_LoadingSwatch::tick(%this) {
     if(%this.opacity > 0) {
       %this.opacity -= 20;
     } else {
+      %this.visible = false;
       return;
     }
   }
 
   if(%this.opacity < 0) {
     %this.opacity = 0;
-    %this.visible = true;
+    %this.visible = false;
   } else if(%this.opacity > 255) {
     %this.opacity = 255;
+    %this.visible = true;
   }
 
   %this.color = "200 200 200" SPC %this.opacity;
@@ -271,7 +256,7 @@ function GlassModManagerGui_BoardButton::onMouseLeave(%this) {
 }
 
 function GlassModManagerGui_BoardButton::onMouseDown(%this) {
-  %obj = GlassModManagerGui::fetchBoard(%this.bid);
+  GlassModManagerGui.openPage(GMM_BoardPage, %this.bid);
 }
 
 function GlassModManagerGui_BoardButton::onAdd(%this) {

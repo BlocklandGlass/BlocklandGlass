@@ -43,7 +43,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"search\");";
+         command = "GlassModManagerGui::loadContext(\"search\");";
          text = "Search";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -11274,9 +11274,10 @@ new GuiControl(GlassModManagerGui) {
          extent = "645 500";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
-         color = "0 0 0 128";
+         color = "0 0 0 0";
+         opacity = 0;
       };
       new GuiProgressCtrl(GlassModManagerGui_ProgressBar) {
          profile = "GuiProgressProfile";
@@ -11313,7 +11314,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::setPane(4);";
+         command = "GlassModManagerGui::loadContext(\"colorset\");";
          text = "My Colorsets";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -11335,7 +11336,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"home\");";
+         command = "GlassModManagerGui::loadContext(\"activity\");";
          text = "Activity";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -11357,7 +11358,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"addons\");";
+         command = "GlassModManagerGui::loadContext(\"boards\");";
          text = "Boards";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -11379,7 +11380,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::setPane(3);";
+         command = "GlassModManagerGui::loadContext(\"myaddons\");";
          text = "My Add-Ons";
          groupNum = "-1";
          buttonType = "PushButton";
