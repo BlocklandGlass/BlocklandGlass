@@ -269,8 +269,8 @@ function GlassOverlayGui::onWake(%this) {
   GlassOverlayResponder.schedule(1, makeFirstResponder, true);
 
   if(isObject(GlassFriendsGui_Blockhead)) {
-    GlassFriendsGui_Blockhead.setOrbitDist(5.5);
-    GlassFriendsGui_Blockhead.setCameraRot(0.22,0.5,2.8);
+    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
+    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
   }
   //instantly close all notifications
 }
