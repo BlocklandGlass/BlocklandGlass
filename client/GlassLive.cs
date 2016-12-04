@@ -321,7 +321,7 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
-  GlassFriendsGui_BlockButton.setVisible(false);
+  GlassFriendsGui_Blockhead.setVisible(false);
 }
 
 // function GlassLive::showUserStatus() {
