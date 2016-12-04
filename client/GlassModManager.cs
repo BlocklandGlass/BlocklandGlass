@@ -1,7 +1,8 @@
 function GlassModManager::init() {
   exec("./GlassModManagerGui.cs");
-  
+
   GMM_ActivityPage::init();
+  GMM_AddonPage::init();
   GMM_BoardsPage::init();
   GMM_BoardPage::init();
   GMM_ErrorPage::init();
@@ -151,7 +152,7 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
 
       %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
 
-    %url = "http://" @ Glass.address @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
+    %url = "http://" @ "test.blocklandglass.com" @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
 
     Glass::debug("Calling url: " @ %url);
 

@@ -83,7 +83,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     vertSizing = "bottom";
     text = "<font:verdana:12><just:left>Uploaded by " @ %obj.author @ "<just:right><color:444444>" @ %obj.date;
     position = "10 30";
-    extent = "575 12";
+    extent = "595 12";
     minextent = "0 0";
     autoResize = true;
   };
@@ -106,30 +106,42 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       extent = %width-%border SPC 36;
     };
 
+    %swatch.image = new GuiBitmapCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 10";
+      extent = "16 16";
+      bitmap = "";
+    };
+
     %swatch.text = new GuiMLTextCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
       text = "";
-      position = "10 10";
-      extent = (%width-20) SPC "16";
-      minextent = (%width-20) SPC "16";
+      position = "0 11";
+      extent = (%width-%border) SPC "13";
+      minextent = (%width-20) SPC "13";
     };
 
     switch(%i) {
       case 0:
-        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_BlocklandGlass/image/icon/tag.png> " @ %obj.board);
+        %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.board);
+        %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/category.png");
 
       case 1:
-        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png> " @ %obj.filename);
+        %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.filename);
+        %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png");
 
       case 2:
-        %swatch.text.setText("<font:verdana:12>Rating");
+        %swatch.text.setText("<font:verdana:13><just:center>Rating");
 
       case 3:
-        %swatch.text.setText("<font:verdana:13><bitmap:Add-Ons/System_Blocklandglass/image/icon/inbox_download.png> " @ %obj.downloads @ " downloads");
+        %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.downloads @ " downloads");
+        %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/inbox_download.png");
     }
 
     %swatch.add(%swatch.text);
+    %swatch.add(%swatch.image);
     %container.add(%swatch);
 
     %swatch.placeBelow(%body, %border);
@@ -172,7 +184,25 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %container.description.verticalMatchChildren(30, 10);
   %container.verticalMatchChildren(0, 0);
 
-  return;
+  %screenshots = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 0";
+    extent = "615 30";
+  };
+
+  %screenshots.text = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    text = "<font:verdana bold:13>Screenshots";
+    position = "10 10";
+    extent = "595 16";
+    minextent = "0 0";
+    autoResize = true;
+  };
+
+  %screenshots.add(%screenshots.text);
 
   %x = 10;
   for(%i = 0; %i < %obj.screenshots.length; %i++) {
@@ -194,11 +224,18 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
     %x += 106;
 
-    %container.add(%screenshotHolder);
-    %screenshotHolder.placeBelow(%container.downloadStable, 25);
+    %screenshots.add(%screenshotHolder);
   }
 
+  %screenshots.verticalMatchChildren(36, 10);
+
+  %container.screenshots = %screenshots;
+  %container.add(%container.screenshots);
+  %container.screenshots.placeBelow(%container.description, 5);
+
   %container.verticalMatchChildren(0, 10);
+
+  return;
 
   //================================
   // comments

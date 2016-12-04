@@ -110,14 +110,14 @@ function GlassLive_keybind(%down) {
 function GlassLive::onAuthSuccess() {
   GlassLive_StatusSwatch.setVisible(true);
   GlassFriendsGui_StatusSelect::selectStatus("Online");
- 
+
   GlassFriendsGui_Blockhead.setVisible(true);
   GlassFriendsGui_Blockhead.setOrbitDist(5.5);
   GlassFriendsGui_Blockhead.setCameraRot(0.22, 0.5, 2.8);
-  
+
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
-  
-  GlassFriendsGui_HeaderText.position = "10 2";
+
+  GlassFriendsGui_HeaderText.position = "10 5";
 }
 
 function GlassLive::openOverlay() {
@@ -547,14 +547,14 @@ function secondsToTimeString(%total) { // Crown
 function GlassFriendsGui_StatusSelect::updateStatus() {
   %status = trim(stripMlControlChars(GlassLive_Status.getValue()));
   %selector = GlassFriendsGui_StatusSelect;
-  
+
   switch$ (%status) {
 	case "Online":
-	  %selector.position = "14 60";
+	  %selector.position = "14 65";
 	case "Away":
-	  %selector.position = "14 35";
+	  %selector.position = "14 40";
 	case "Busy":
-	  %selector.position = "14 9";
+	  %selector.position = "14 15";
 	default:
 		return;
   }
@@ -565,14 +565,14 @@ function GlassFriendsGui_StatusSelect::selectStatus(%status) {
   GlassFriendsGui_StatusSelect.setVisible(false);
   switch$ (%status) {
 	case "Online":
-	  %color = "210 220 255 255";
-	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:15> Online";
+	  %color = "84 217 140 100";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
 	case "Away":
-	  %color = "255 244 210 255";
-	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:15> Away";
+	  %color = "241 196 15 100";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:13> Away";
 	case "Busy":
-	  %color = "255 210 210 255";
-	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:15> Busy";
+	  %color = "231 76 60 100";
+	  %value = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:13> Busy";
 	default:
 		return;
   }
@@ -825,67 +825,67 @@ function GlassLive::userUnblock(%blid) {
 
 function GlassLive::createBlockhead() {
   AvatarGui.OnWake();
-  
+
   if(isObject(GlassFriendsGui_Blockhead))
 	  GlassFriendsGui_Blockhead.delete();
-  
+
   new GuiObjectView(GlassFriendsGui_Blockhead) {
     forceFOV = "18";
     lightDirection = "0 0.2 0.2";
     extent = "74 176";
   };
-  
+
   if(isObject(GlassFriendsGui_BlockheadAnim))
 	GlassFriendsGui_BlockheadAnim.delete();
-  
+
   new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
     extent = "74 176";
     command = "GlassFriendsGui_Blockhead.setSequence(\"\", 1, \"talk\", 1); GlassFriendsGui_Blockhead.schedule(500, \"setSequence\", \"\", 1, \"root\", 1);";
   };
-  
+
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
   GlassFriendsGui_Blockhead.setObject("", "base/data/shapes/player/m.dts", "", 100);
   GlassFriendsGui_Blockhead.setVisible(false);
-  
+
   GlassLive::updateBlockhead();
 }
 
 function GlassLive::updateBlockhead() {
   if(!isObject(GlassFriendsGui_Blockhead))
 	  GlassLive::createBlockhead();
-  
+
   %obj = GlassFriendsGui_Blockhead;
   %obj.position = "120 -5";
   %obj.forceFOV = 18;
   %obj.lightDirection = "0 0.2 0.2";
-  
+
   GlassFriendsGui_InfoSwatch.add(%obj);
-  
+
   for(%i = 0; %i < $numFace; %i++)
 	if(strStr($Face[%i], $Pref::Avatar::FaceName) >= 0)
 	  %faceDecal = %i;
-	  
+
   for(%i = 0; %i < $numDecal; %i++)
     if(strStr($Decal[%i], $Pref::Avatar::DecalName) >= 0)
 	  %shirtDecal = %i;
-  
+
   %obj.setIFLFrame("", "face", %faceDecal);
   %obj.setIFLFrame("", "decal",%shirtDecal);
   %obj.setNodeColor("", "ALL", $Pref::Avatar::HeadColor);
- 
+
   %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
   for(%i = 0; %i <= 11; %i++) {
 	%currPart = getWord(%bodyParts, %i);
 	%numPart = $num[%currPart];
-	
+
 	for(%j = 0; %j <= %numPart; %j++) {
 	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
 	  %equipCurrPartColor = eval("return $Pref::Avatar::" @ %currPart @ "Color;");
-	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];"); 
+	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];");
 
 	  if(%currCheck $= "" || %currCheck $= "None")
 		  continue;
-	  
+
 	  if(%j $= %equipCurrPart) {
 		%obj.unHideNode("", %currCheck);
 		%obj.setNodeColor("", %currCheck, %equipCurrPartColor);
@@ -900,7 +900,7 @@ function GlassLive::updateBlockhead() {
 	%obj.hideNode("", "plume");
     %obj.setnodeColor("", %accent, $Pref::Avatar::AccentColor);
   }
-  
+
   %obj.setNodeColor("", $chest[$Pref::Avatar::Chest], $Pref::Avatar::TorsoColor);
   %obj.setMouse(1, 0);
   %obj.schedule(800, "setOrbitDist", 5.5);
@@ -3578,11 +3578,12 @@ function GlassLive::createFriendList() {
 }
 
 function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
-  GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 130");
+  GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 135");
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
-  GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 100");
-  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-65 100");
-  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-95 100");
+
+  GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 105");
+  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-65 105");
+  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-95 105");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
@@ -3637,7 +3638,7 @@ package GlassLivePackage {
 
     GlassLive::updateLocation(true);
   }
-  
+
   function Avatar_Done() {
 	parent::Avatar_Done();
     GlassLive::updateBlockhead();
