@@ -2218,7 +2218,9 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
   if(!%this.tabs) {
     %this.schedule(0, delete);
   } else {
-    if(%this.activeTabId == %id) {
+	if(%this.activeTabId == -1)
+		%browserOpen = 1;
+    else if(%this.activeTabId == %id) {
       if(%id >= %this.tabs)
         %this.openTab(%this.tabs-1);
       else
@@ -2226,6 +2228,8 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
     } else if(%this.activeTabId >= %id) {
       %this.activeTabId--;
     }
+	if(%browserOpen)
+		%this.openTab(0);
     %this.renderTabs();
   }
 }
@@ -2368,7 +2372,6 @@ function GlassChatroomTabMouse::render(%this) {
 function GlassChatroomWindow::renderTabs(%this) {
   %swatch = %this.tabSwatch;
   %swatch.deleteAll();
-
   %x = 0;
   %width = 140;
   for(%i = 0; %i < %this.tabs; %i++) {
@@ -3524,7 +3527,6 @@ function GlassLive::sortFriendList(%list) {
 
     %friends.addRow(%blid, %uo.username TAB %priority);
   }
-
   %friends.sort(0, true);
   %friends.sortNumerical(1, false);
 
@@ -3534,7 +3536,7 @@ function GlassLive::sortFriendList(%list) {
   }
 
   %newList = getSubStr(%newList, 1, strLen(%newList)-1);
-
+  %friends.delete();
   return %newList;
 }
 
