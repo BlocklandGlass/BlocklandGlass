@@ -27,7 +27,7 @@ new GuiControl(GlassOverlayGui) {
     alignTop = "0";
     overflowImage = "0";
     keepCached = "0";
-    mColor = "0 0 50 255";
+    mColor = "0 0 50 150";
     mMultiply = "1";
 
     new GuiBitmapButtonCtrl(GlassLiveGuiEscape) {

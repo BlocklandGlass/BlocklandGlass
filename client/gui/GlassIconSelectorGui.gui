@@ -20,7 +20,7 @@ new GuiControl(GlassIconSelectorGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      text = "Icon Selector";
+      text = "Glass Icon Selector";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";

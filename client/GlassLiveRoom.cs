@@ -275,8 +275,14 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         GlassLive.lastMentioned = $Sim::Time + 10;
       }
     } else if(GlassSettings.get("Live::RoomChatNotification")) {
-      if(!%this.view.isAwake())
-        GlassNotificationManager::newNotification(%this.name, %sender.username @ ": " @ %msg, "comment", 0);
+      if(!%this.view.isAwake()) {
+        %msg = %sender.username @ ": " @ %msg;
+
+        if(strlen(%msg) > 85)
+          %msg = getsubstr(%msg, 0, 85) @ "...";
+
+        GlassNotificationManager::newNotification(%this.name, %msg, "comment", 0);
+      }
     }
   }
 }

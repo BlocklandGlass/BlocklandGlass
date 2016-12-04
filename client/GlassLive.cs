@@ -878,7 +878,7 @@ function GlassLive::BlockheadRandomAnim() {
   }
   
   if(%time $= "")
-	%time = 400;
+    %time = 400;
   
   GlassLive::BlockheadAnim(%thread, %time);
 }
