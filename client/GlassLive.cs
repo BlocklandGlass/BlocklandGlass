@@ -840,7 +840,7 @@ function GlassLive::createBlockhead() {
 
   new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
     extent = "74 176";
-    command = "GlassFriendsGui_Blockhead.setSequence(\"\", 1, \"talk\", 1); GlassFriendsGui_Blockhead.schedule(500, \"setSequence\", \"\", 1, \"root\", 1);";
+    command = "GlassLive::talkBlockhead(\"crownisgreat\");";
   };
 
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
@@ -848,6 +848,16 @@ function GlassLive::createBlockhead() {
   GlassFriendsGui_Blockhead.setVisible(false);
 
   GlassLive::updateBlockhead();
+}
+
+function GlassLive::talkBlockhead(%msg) {
+  %blockhead = GlassFriendsGui_Blockhead;
+  if(!isObject(%blockhead))
+	return;
+  
+  cancel(%blockhead.rootSchedule);
+  GlassFriendsGui_Blockhead.setSequence("", 1, "talk", 1);   
+  %blockhead.rootSchedule = %blockhead.schedule(strLen(%msg) * 50, "setSequence", "", 1, "root", 1);
 }
 
 function GlassLive::updateBlockhead() {
@@ -1245,6 +1255,7 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  GlassLive::talkBlockhead(%msg);
 }
 
 function GlassLive::sendRoomCommand(%msg, %id) {
@@ -1609,6 +1620,7 @@ function GlassLive::messageInputSend(%id) {
   }
 
   GlassLive::sendMessage(%id, %val);
+  GlassLive::talkBlockhead(%val);
   GlassLive::onMessage(%val, $Pref::Player::NetName, %id);
   %gui.input.setValue("");
   %gui.scroll.schedule(100, "scrollToBottom");
