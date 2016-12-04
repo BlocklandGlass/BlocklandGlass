@@ -46,43 +46,33 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   // branches
 
   %container = %this.container;
+
+  GMM_Navigation.addStep(%obj.name, "GlassModManagerGui.openPage(GMM_AddonPage, " @ expandEscape(%obj.aid) @ ");");
+
+  %container.nav = GMM_Navigation.createSwatch();
+  %container.add(%container.nav);
+
   %body = %this.body;
 
-
-  if($Glass::MM_PreviousBoard == -1 || $Glass::MM_PreviousPage == -1)
-    %link = "<a:glass://home><< Back</a>";
-  else
-    %link = "<a:glass://board=" @ $Glass::MM_PreviousBoard @ "&page=" @ $Glass::MM_PreviousPage @ "><< Back</a>";
-
-  %body.back = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    profile = "GlassModManagerMLProfile";
-    text = "<color:333333><font:verdana:15><just:left>" @ %link;
-    position = "10 10";
-    extent = "75 15";
-  };
-
-  %body.add(%body.back);
+  %body.placeBelow(%container.nav, 10);
 
   %body.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     text = "<font:verdana bold:20><just:left>" @ %obj.name;
-    position = "10 30";
+    position = "10 10";
     extent = "300 24";
     minextent = "0 0";
     autoResize = true;
   };
 
   %body.add(%body.title);
-  %body.title.placeBelow(%body.back, 5);
 
   %body.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     text = "<font:verdana:12><just:left>Uploaded by " @ %obj.author @ "<just:right><color:444444>" @ %obj.date;
-    position = "10 30";
+    position = "10 20";
     extent = "595 12";
     minextent = "0 0";
     autoResize = true;

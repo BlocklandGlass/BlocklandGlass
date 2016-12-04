@@ -13,6 +13,15 @@ function GMM_Navigation::addStep(%this, %text, %callback) {
   %this.steps++;
 }
 
+function GMM_Navigation::selectStep(%this, %i) {
+  if(%i == %this.steps-1)
+    return;
+
+  %this.steps = %i;
+  if(%this.stepCall[%i] !$= "")
+    eval(%this.stepCall[%i]);
+}
+
 function GMM_Navigation::createSwatch(%this) {
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -40,7 +49,7 @@ function GMM_Navigation::createSwatch(%this) {
 
       text = %this.step[%i];
 
-      command = (%i != %this.steps-1) ? %this.stepCall[%i] : "";
+      command = "GMM_Navigation.selectStep(" @ %i @ ");";
     };
 
     %x += 20+(strlen(%this.step[%i])*8) + 10;
