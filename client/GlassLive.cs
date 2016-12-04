@@ -840,7 +840,7 @@ function GlassLive::createBlockhead() {
 
   new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
     extent = "74 176";
-    command = "GlassLive::talkBlockhead(\"crownisgreat\");";
+    command = "GlassLive::BlockheadRandomAnim();";
   };
 
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
@@ -850,14 +850,52 @@ function GlassLive::createBlockhead() {
   GlassLive::updateBlockhead();
 }
 
-function GlassLive::talkBlockhead(%msg) {
+function GlassLive::BlockheadRandomAnim() {
+  %rand = getRandom(0, 8);
+  
+  switch (%rand) {
+	  case 0:
+		%thread = "talk";
+	  case 1:
+		%thread = "standjump";
+	  case 2:
+		%thread = "side";
+	  case 3:
+		%thread = "spearReady";
+		%time = 800;
+	  case 4:
+	    GlassLive::BlockheadAnim("look", 200);
+	    GlassLive::BlockheadAnim("look", 400, 1);
+		return;
+	  case 5:
+		%thread = "undo";
+	  case 6:
+		%thread = "back";
+	  case 7:
+		%thread = "headside";
+	  case 8:
+		%thread = "armReadyBoth";
+  }
+  
+  if(%time $= "")
+	%time = 400;
+  
+  GlassLive::BlockheadAnim(%thread, %time);
+}
+
+function GlassLive::BlockheadAnim(%thread, %time, %type) {
   %blockhead = GlassFriendsGui_Blockhead;
   if(!isObject(%blockhead))
     return;
   
   cancel(%blockhead.rootSchedule);
-  GlassFriendsGui_Blockhead.setSequence("", 1, "talk", 1);   
-  %blockhead.rootSchedule = %blockhead.schedule(strLen(%msg) * 50, "setSequence", "", 1, "root", 1);
+  
+  if(%type $= "")
+	  %type = 1;
+  
+  GlassFriendsGui_Blockhead.setSequence("", %type, %thread, 1);
+  
+  %blockhead.rootSchedule = %blockhead.schedule(%time, "setSequence", "", 1, "root", 1);
 }
 
 function GlassLive::updateBlockhead() {
@@ -1255,7 +1293,7 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  GlassLive::talkBlockhead(%msg);
+  GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
 }
 
 function GlassLive::sendRoomCommand(%msg, %id) {
@@ -1620,7 +1658,7 @@ function GlassLive::messageInputSend(%id) {
   }
 
   GlassLive::sendMessage(%id, %val);
-  GlassLive::talkBlockhead(%val);
+  GlassLive::BlockheadAnim("talk", strLen(%val) * 50);
   GlassLive::onMessage(%val, $Pref::Player::NetName, %id);
   %gui.input.setValue("");
   %gui.scroll.schedule(100, "scrollToBottom");
