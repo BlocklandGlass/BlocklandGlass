@@ -62,7 +62,7 @@ new GuiChunkedBitmapCtrl(LoadingGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      text = "Joining \"Development\"";
+      text = " ";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
@@ -135,7 +135,7 @@ new GuiChunkedBitmapCtrl(LoadingGui) {
                resizeCell = "1";
                columns = "5 35 145 215";
                fitParentWidth = "1";
-               clipColumnText = "0";
+               clipColumnText = "1";
             };
          };
          new GuiBitmapButtonCtrl() {

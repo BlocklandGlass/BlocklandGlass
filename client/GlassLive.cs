@@ -853,7 +853,7 @@ function GlassLive::createBlockhead() {
 function GlassLive::talkBlockhead(%msg) {
   %blockhead = GlassFriendsGui_Blockhead;
   if(!isObject(%blockhead))
-	return;
+    return;
   
   cancel(%blockhead.rootSchedule);
   GlassFriendsGui_Blockhead.setSequence("", 1, "talk", 1);   
@@ -885,8 +885,8 @@ function GlassLive::updateBlockhead() {
 
   %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
   for(%i = 0; %i <= 11; %i++) {
-	%currPart = getWord(%bodyParts, %i);
-	%numPart = $num[%currPart];
+    %currPart = getWord(%bodyParts, %i);
+    %numPart = $num[%currPart];
 
 	for(%j = 0; %j <= %numPart; %j++) {
 	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
@@ -897,17 +897,17 @@ function GlassLive::updateBlockhead() {
 		  continue;
 
 	  if(%j $= %equipCurrPart) {
-		%obj.unHideNode("", %currCheck);
-		%obj.setNodeColor("", %currCheck, %equipCurrPartColor);
+      %obj.unHideNode("", %currCheck);
+      %obj.setNodeColor("", %currCheck, %equipCurrPartColor);
 	  }
 	  else
-		%obj.hideNode("", %currCheck);
-	}
+      %obj.hideNode("", %currCheck);
+    }
   }
   %accent = getWord($accentsAllowed[$hat[$Pref::Avatar::Hat]], $Pref::Avatar::Accent);
   if(%accent !$= "" && %accent !$= "none") {
     %obj.unhidenode("", %accent);
-	%obj.hideNode("", "plume");
+    %obj.hideNode("", "plume");
     %obj.setnodeColor("", %accent, $Pref::Avatar::AccentColor);
   }
 

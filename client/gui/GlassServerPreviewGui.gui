@@ -24,7 +24,7 @@ new GuiControl(GlassServerPreviewGui) {
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
-      canMove = "1";
+      canMove = "0";
       canClose = "1";
       canMinimize = "0";
       canMaximize = "0";
@@ -116,7 +116,7 @@ new GuiControl(GlassServerPreviewGui) {
             resizeCell = "1";
             columns = "0 26 192";
             fitParentWidth = "1";
-            clipColumnText = "0";
+            clipColumnText = "1";
          };
 
          new GuiMLTextCtrl(GlassServerPreview_noGlass) {
@@ -164,13 +164,14 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "305 82";
-         extent = "75 20";
+         position = "15 82";
+         extent = "20 20";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         text = "Preview";
+         command = "GlassServerPreview_Playerlist.sort(0, 0);";
+         text = " ";
          groupNum = "-1";
          buttonType = "PushButton";
          bitmap = "~/System_BlocklandGlass/image/gui/tab1";
@@ -185,13 +186,13 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassChatroomTabProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "570 82";
-         extent = "60 20";
+         position = "305 82";
+         extent = "75 20";
          minExtent = "8 2";
          enabled = "1";
-         visible = "0";
+         visible = "1";
          clipToParent = "1";
-         text = "Add-ons";
+         text = "Preview";
          groupNum = "-1";
          buttonType = "PushButton";
          bitmap = "~/System_BlocklandGlass/image/gui/tab1";
@@ -255,7 +256,7 @@ new GuiControl(GlassServerPreviewGui) {
          mKeepCached = "0";
          mColor = "255 255 255 255";
       };
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassServerPreview_Connect) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -264,7 +265,7 @@ new GuiControl(GlassServerPreviewGui) {
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
-		 accelerator = "enter";
+         accelerator = "enter";
          clipToParent = "1";
          command = "GlassServerPreviewGui.close(); JoinServerGui.join();";
          text = "Connect";

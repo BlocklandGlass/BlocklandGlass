@@ -777,7 +777,7 @@ function GlassServerControlC::addSelected(%rank, %auto) {
     GlassServerControlGui_InputRank.setValue("Admin");
     GlassServerControlGui_InputBLID.makeFirstResponder(true);
   } else {
-    if(%blid $= "") {
+    if(%blid $= "" || %blid $= "LAN") {
       return;
     }
 
@@ -792,7 +792,7 @@ function GlassServerControlC::removeSelected() {
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
 
-  if(%blid $= "") {
+  if(%blid $= "" || %blid $= "LAN") {
     return;
   }
 

@@ -219,8 +219,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
-      if(GlassSettings.get("Live::MessageNotification") && GlassOverlayGui.isAwake())
+      if(GlassSettings.get("Live::MessageNotification") && GlassOverlayGui.isAwake()) {
+        if(strlen(%data.message) > 85)
+          %data.message = getsubstr(%data.message, 0, 85) @ "...";
+
         GlassNotificationManager::newNotification(%sender, %data.message, "comment", 0);
+      }
 
       if(GlassSettings.get("Live::MessageSound"))
         alxPlay(GlassUserMsgReceivedAudio);

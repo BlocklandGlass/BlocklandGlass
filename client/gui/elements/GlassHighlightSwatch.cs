@@ -56,7 +56,6 @@ function GlassHighlightMouse::onMouseLeave(%this) {
   %this.getGroup().color = %this.getGroup().ocolor;
 
   if(%this.exitCommand !$= "") {
-    echo("exitCommand!");
     eval(%this.exitCommand @ "(%this.getGroup().getId());");
   }
 }

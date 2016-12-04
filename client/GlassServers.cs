@@ -36,7 +36,7 @@ function GlassFavoriteServers::addFavorite(%this, %username) {
   %favs = GlassSettings.get("Servers::Favorites");
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
     if(getField(%favs, %i) $= %username) {
-      glassMessageBoxOk("Already a favorite!", "You've already favorited this host!");
+      glassMessageBoxOk("Duplicate", "You've already favorited this host!");
       return;
     }
   }
@@ -239,14 +239,15 @@ function GlassLoading::changeGui() {
 
 function GlassLoadingGui::updateWindowTitle(%this) {
   %npl = NPL_Window.getValue();
-  %name = trim(getSubStr(%npl, strPos(%npl, "-") + 2, strLen(%npl)));
+  // %name = trim(getSubStr(%npl, strPos(%npl, "-") + 2, strLen(%npl)));
 
-  if(%name !$= "")
-    %text = "Joining \"" @ %name @ "\"";
-  else
-    %text = "Joining Server";
+  // if(%name !$= "")
+    // %text = "Joining \"" @ %name @ "\"";
+  // else
+    // %text = "Joining Server";
 
-  %this.setText(%text);
+  // %this.setText(%text);
+  %this.setText(%npl);
 }
 
 function GlassLoadingGui::onWake(%this) {
@@ -286,8 +287,15 @@ function GlassServerPreviewGui::onWake(%this) {
   if(!isObject(%server))
 	  return;
 
-  if(%server.pass !$= "No")
+  if(%server.pass !$= "No") {
     %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock>";
+    GlassServerPreview_Connect.mColor = "235 153 80 220";
+  } else if(%server.currPlayers >= %server.maxPlayers) {
+    %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/group_error>";
+    GlassServerPreview_Connect.mColor = "237 118 105 220";
+  } else {
+    GlassServerPreview_Connect.mColor = "84 217 140 220";
+  }
 
   GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%server.name) SPC %img @ "<br><font:verdana:15>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
@@ -360,7 +368,11 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
 
       for(%i=0; %i < %playerCount; %i++) {
         %cl = %result.clients.value[%i];
-        GlassServerPreview_Playerlist.addRow(%cl.blid, %cl.status TAB %cl.name TAB %cl.blid);
+
+        if(%cl.status $= "")
+          %cl.status = "-";
+
+        GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB %cl.name TAB %cl.blid);
       }
     }
   }

@@ -83,7 +83,7 @@ new GuiControl(GlassIconSelectorGui) {
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "255 255 255 255";
+         mColor = "84 217 140 220";
       };
       new GuiMLTextCtrl() {
          profile = "GuiMLTextProfile";
