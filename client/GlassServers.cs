@@ -1,4 +1,7 @@
 function GlassServers::init() {
+  if(GlassSettings.get("Servers::EnableFavorites") == 0)
+	return;
+  GlassServerPreview_Favorite.setVisible(true);
   GlassFavoriteServers::changeGui();
   GlassLoading::changeGui();
 
@@ -11,9 +14,8 @@ function GlassServers::init() {
     %this.favorite[%this.favorites] = getField(%favs, %i);
     %this.favorites++;
   }
-
-  GlassFavoriteServers.buildSwatches();
-  GlassFavoriteServers.load();
+  
+  GlassFavoriteServers.scanServers();
 }
 
 //====================================
@@ -29,48 +31,43 @@ function GlassFavoriteServers::changeGui() {
   MainMenuButtonsGui.add(GlassFavoriteServerSwatch);
 }
 
-function GlassFavoriteServers::addFavorite(%this, %username) {
-  if(trim(%username) $= "")
+function GlassFavoriteServers::toggleFavorite(%this, %ip) {
+  if(%ip $= "")
     return;
-
+	
   %favs = GlassSettings.get("Servers::Favorites");
+   
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
-    if(getField(%favs, %i) $= %username) {
-      glassMessageBoxOk("Duplicate", "You've already favorited this host!");
+    if(getField(%favs, %i) $= %ip) { 
+	  GlassSettings.update("Servers::Favorites", removeField(%favs, %i));
+      glassMessageBoxOk("Removed", "This server has been removed from your favorites!");
+	  GlassServerPreview_Favorite.mColor = "46 204 113 220";
+	  GlassServerPreview_Favorite.setText("Add Favorite");
+	  GlassServers::init();
       return;
     }
   }
-
-  GlassSettings.update("Servers::Favorites", trim(%favs TAB %username));
-
-  %this.favorite[%this.favorites] = %username;
-  %this.favorites++;
-
-  %this.buildSwatches();
-  %this.load();
+  
+  glassMessageBoxOk("Success", "This server has been added to your favorites!");
+  GlassSettings.update("Servers::Favorites", trim(%favs TAB %ip));
+  GlassServerPreview_Favorite.mColor = "231 76 60 220";
+  GlassServerPreview_Favorite.setText("Remove Favorite");
+  GlassServers::init();
 }
+	
 
-function GlassFavoriteServers::load(%this) {
-
-  for(%i = 0; %i < %this.favorites; %i++) {
-    %this.isFavorite[getHostName(%this.favorite[%i])] = true;
-  }
-
-  connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
-}
-
-function GlassFavoriteServers::buildSwatches(%this) {
-
+function GlassFavoriteServers::buildList(%this) {
+	
   for(%i = 0; %i < GlassFavoriteServerSwatch.getCount(); %i++) {
     %obj = GlassFavoriteServerSwatch.getObject(%i);
-    if(%obj.getName() !$= "GlassFavoriteServerGui_Text") {
+	%name = %obj.getName();
+    if(%name !$= "GlassFavoriteServerGui_Text" && %name !$= "GlassFavoriteServerGui_Tutorial" && %name !$= "GlassFavoriteServerGui_NoServers") {
       %obj.deleteAll();
       %obj.delete();
       %i--;
     }
   }
-
-  for(%i = 0; %i < %this.favorites; %i++) {
+  for(%i = 1; %i <= %this.onlineFavoriteCount; %i++) {
     %swatch = new GuiSwatchCtrl("GlassFavoriteServerGui_Swatch" @ %i) {
       profile = "GuiDefaultProfile";
       horizSizing = "right";
@@ -88,7 +85,7 @@ function GlassFavoriteServers::buildSwatches(%this) {
       profile = "GuiMLTextProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "10 10";
+      position = "10 6";
       extent = "250 27";
       minExtent = "8 2";
       enabled = "1";
@@ -104,7 +101,7 @@ function GlassFavoriteServers::buildSwatches(%this) {
 
     %swatch.add(%swatch.text);
 
-    %swatch.text.setText("<font:verdana bold:15>" @ getHostName(%this.favorite[%i]) @ " Server<br><just:center><font:verdana:13>Loading...");
+    %swatch.text.setText("<font:verdana bold:15>" @ %this.favorite[%i] @ "<br><just:center><font:verdana:13>Loading...");
 
     GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
 
@@ -116,8 +113,24 @@ function GlassFavoriteServers::buildSwatches(%this) {
       %swatch.placeBelow(%placeBelow, 5);
 
     %placeBelow = %swatch;
+	
+	%server = GlassFavoriteServers.onlineFavorite[%i];
+	echo("Server:" SPC %server);
+	%password = getField(%server, 3);
+	GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %i, getField(%server, 2), getField(%server, 4), getField(%server, 5), getField(%server, 6), getField(%server, 0) @ getField(%server, 1));
   }
-
+  
+  if(%this.favorites $= "" || %this.favorites == 0) {
+    GlassFavoriteServerSwatch.extent = "290 60";
+	GlassFavoriteServerGui_Tutorial.setVisible(true);
+	GlassFavoriteServerGui_NoServers.setVisible(false);
+  } else if(%this.onlineFavoriteCount == 0) {
+	  GlassFavoriteServerGui_NoServers.setVisible(true);
+	  GlassFavoriteServerGui_Tutorial.setVisible(false);
+  } else { 
+	GlassFavoriteServerGui_Tutorial.setVisible(false);
+	GlassFavoriteServerGui_NoServers.setVisible(false);
+  }
   GlassFavoriteServerSwatch.verticalMatchChildren(24, 10);
   GlassFavoriteServerSwatch.position = vectorSub(MainMenuButtonsGui.extent, GlassFavoriteServerSwatch.extent);
 }
@@ -127,6 +140,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   //if(%swatch.text $= "")
     %swatch.text = %swatch.getObject(0);
 
+  echo(%status SPC %id SPC %title SPC %players SPC %maxPlayers SPC %map SPC %addr);
   %swatch.server = new ScriptObject() {
     name = trim(%title);
     pass = (%status $= "passworded" ? "Yes" : "No");
@@ -157,28 +171,19 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   %swatch.pushToBack(%swatch.glassHighlight);
 }
 
+function GlassFavoriteServers::scanServers() {
+	if(!isObject(GlassFavoriteServers))
+	  return;
+  
+  connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
+}
+
 function GlassFavoriteServers::interact(%swatch) {
   %server = %swatch.server;
   if(!%server.offline)
     GlassServerPreviewGui.open(%server);
   else
     glassMessageBoxOk("Offline", %server.name @ " is currently offline!");
-}
-
-function getHostName(%name) {
-  if(getSubStr(%name, strlen(%name)-1, 1) $= "s") {
-    return %name @ "'";
-  } else {
-    return %name @ "'s";
-  }
-}
-
-function getNameFromHost(%name) {
-  if(getSubStr(%name, strlen(%name)-2, 2) $= "'s") {
-    return getSubStr(%name, 0, strlen(%name)-2);
-  } else {
-    return getSubStr(%name, 0, strlen(%name)-1);
-  }
 }
 
 function GlassFavoriteServersTCP::handleText(%this, %text) {
@@ -189,34 +194,28 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
   if(%err) {
     GlassFavoriteServers.renderError(%err);
   } else {
-    for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
+	%onlineCount = 0;
+	for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
       %line = getLine(%this.buffer, %i);
-      %serverName = getField(%line, 4);
-
-      for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
-        if(strpos(%serverName, getHostName(GlassFavoriteServers.favorite[%j])) == 0) {
-          %players = getField(%line, 5);
+	  %serverIP = trim(getField(%line, 0) @ ":" @ getField(%line, 1));
+	  
+	  for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
+	    %fav = GlassFavoriteServers.favorite[%j];
+		if(%fav $= %serverIP) {
+		  %passworded = getField(%line, 2);
+		  %serverName = getField(%line, 4);
+		  %players = getField(%line, 5);
           %maxPlayers = getField(%line, 6);
-          %passworded = getField(%line, 2);
           %map = getField(%line, 7);
-
-          %addr = getField(%line, 0) @ ":" @ getField(%line, 1);
-
-          %foundServer[%j] = true;
-
-          GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %j, %serverName, %players, %maxPlayers, %map, %addr);
-        }
-      }
-    }
-
-    for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
-      if(!%foundServer[%j]) {
-        %serverName = getHostName(GlassFavoriteServers.favorite[%j]) @ " Server";
-        GlassFavoriteServers.renderServer("offline", %j, %serverName);
-      }
-    }
+		  GlassFavoriteServers.onlineFavorite[%onlineCount++] = %serverIP TAB %serverPort TAB %serverName TAB %passworded TAB %players TAB %maxPlayers TAB %map;
+		}
+	  }
+	}
+	GlassFavoriteServers.onlineFavoriteCount = %onlineCount;
+	GlassFavoriteServers.buildList();
   }
 }
+
 
 //====================================
 // LoadingGui
@@ -301,8 +300,25 @@ function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview_Playerlist.clear();
   GlassServerPreview::getServerInfo(%server.ip);
+  GlassServerPreviewWindowGui.openServerIP = %server.ip;
+  GlassServerPreviewWindowGui.openServerName = %server.name;
 
   GlassServerPreview::getServerBuild(%server.ip, GlassServerPreview_Preview);
+  
+  if(GlassSettings.get("Servers::EnableFavorites")) {
+    for(%i = 0; %i < GlassFavoriteServers.favorites; %i++) {
+      %fav = GlassFavoriteServers.favorite[%i];
+    
+	  if(%fav $= %server.ip) {
+	  	GlassServerPreview_Favorite.mColor = "231 76 60 220";
+	  	GlassServerPreview_Favorite.setText("Remove Favorite");
+	  	break;
+	  } else {
+	  	GlassServerPreview_Favorite.mColor = "46 204 113 220";
+	  	GlassServerPreview_Favorite.setText("Add Favorite");
+	  }
+    }
+  }
 }
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
@@ -386,6 +402,9 @@ function joinServerGui::preview(%this) {
 }
 
 function clientCmdGlass_setLoadingBackground(%url, %filetype) {
+  if(GlassSettings.get("Servers::LoadingImages") == 0)
+	  return;
+  
   if(!LoadingGUI.isAwake())
 	return;
 
@@ -453,7 +472,8 @@ package GlassServers {
   }
 
   function MainMenuButtonsGui::onWake(%this) {
-    GlassFavoriteServers.load();
+	if(isObject(GlassFavoriteServers))
+      GlassFavoriteServers.scanServers();
 
     if(isFunction(%this, onWake))
       parent::onWake(%this);

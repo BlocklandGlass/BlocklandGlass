@@ -12,6 +12,7 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
+    GlassSettings.registerSetting("client", "Live::TalkingAnimation", true);
     GlassSettings.registerSetting("client", "Live::OverlayLogo", true);
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
@@ -38,12 +39,17 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
+	
+	GlassSettings.registerSetting("client", "Servers::EnableFavorites", true);
+    GlassSettings.registerSetting("client", "Servers::LoadingImages", true);
+
+	
   // } else if(%context $= "server") {
     // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
     // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
 
-    GlassSettings.registerSetting("client", "Servers::Favorites", "");
+	GlassSettings.registerSetting("client", "Servers::Favorites", "");
   }
 
   GlassSettings.loadData(%context);

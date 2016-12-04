@@ -60,6 +60,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
   GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox");
   GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox");
+  GlassSettings.drawSetting("Live::TalkingAnimation", "Animate Avatar on Message", "Live", "checkbox");
 
   GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
@@ -76,8 +77,11 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox");
+  
+  GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers *", "Servers", "checkbox");
+  GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox");
 
-  %settings = "RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo";
+  %settings = "TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo";
   // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -92,6 +96,14 @@ function GlassLive::init() {
     %setting = getWord(%settings, %i);
     %box = "GlassModManagerGui_Prefs_" @ %setting;
     %box.setValue(GlassSettings.get("MM::" @ %setting));
+  }
+  
+  %settings = "LoadingImages EnableFavorites";
+
+  for(%i = 0; %i < getWordCount(%settings); %i++) {
+    %setting = getWord(%settings, %i);
+    %box = "GlassModManagerGui_Prefs_" @ %setting;
+    %box.setValue(GlassSettings.get("Servers::" @ %setting));
   }
 
   GlassLive::createBlockhead();
@@ -887,6 +899,9 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
   %blockhead = GlassFriendsGui_Blockhead;
   if(!isObject(%blockhead))
     return;
+  
+   if(GlassSettings.get("Live::TalkingAnimation") == 0 && %thread $= "talk")
+	  return;
   
   cancel(%blockhead.rootSchedule);
   

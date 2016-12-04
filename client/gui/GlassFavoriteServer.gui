@@ -92,5 +92,45 @@ new GuiWindowCtrl(GlassFavoriteServerSwatch) {
       text = "Favorite Servers";
       maxLength = "255";
    };
+   	new GuiBitmapButtonCtrl(GlassFavoriteServerGui_Tutorial) {
+       profile = "GlassBlockButtonProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "62 32";
+       extent = "161 21";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "0";
+       clipToParent = "1";
+       command = "glassMessageBoxOk(\"Glass Favorite Servers\", \"1. Open the server browser and select a server.<br>2. Click 'Preview' at the bottom.<br>3. Click 'Add to Favorites' <br><br>Alternatively, you can disable favorite servers completely in the Glass options menu.\");";
+       text = "How do I add a server?";
+       groupNum = "-1";
+       buttonType = "PushButton";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       mKeepCached = "0";
+       mColor = "255 255 255 220";
+    };
+	new GuiMLTextCtrl(GlassFavoriteServerGui_NoServers) {
+		profile = "GuiMLTextProfile";
+		horizSizing = "right";
+		vertSizing = "bottom";
+		position = "3 35";
+		extent = "269 16";
+		minExtent = "0 0";
+		enabled = "1";
+		visible = "0";
+		clipToParent = "1";
+		lineSpacing = "2";
+		allowColorChars = "0";
+		maxChars = "-1";
+		text = "<just:center><font:verdana:14>All of your favorites are offline<bitmap:Add-Ons/System_BlocklandGlass/image/icon/emotion_waaaht>";
+		maxBitmapHeight = "-1";
+		selectable = "1";
+		autoResize = "1";
+    };
 };
 //--- OBJECT WRITE END ---

@@ -4,7 +4,7 @@ new GuiControl(GlassServerPreviewGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "640 480";
+   extent = "1900 1000";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
@@ -14,7 +14,7 @@ new GuiControl(GlassServerPreviewGui) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
-      position = "0 0";
+      position = "4 4";
       extent = "640 480";
       minExtent = "8 2";
       enabled = "1";
@@ -107,7 +107,7 @@ new GuiControl(GlassServerPreviewGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 1";
-            extent = "257 2";
+            extent = "262 2";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -118,13 +118,12 @@ new GuiControl(GlassServerPreviewGui) {
             fitParentWidth = "1";
             clipColumnText = "1";
          };
-
          new GuiMLTextCtrl(GlassServerPreview_noGlass) {
             profile = "GuiMLTextProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "10 97";
-            extent = "267 22";
+            position = "6 177";
+            extent = "267 14";
             minExtent = "8 2";
             enabled = "1";
             visible = "0";
@@ -260,14 +259,14 @@ new GuiControl(GlassServerPreviewGui) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "530 442";
-         extent = "100 28";
+         position = "550 442";
+         extent = "80 28";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
-         accelerator = "enter";
          clipToParent = "1";
          command = "GlassServerPreviewGui.close(); JoinServerGui.join();";
+         accelerator = "enter";
          text = "Connect";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -284,7 +283,7 @@ new GuiControl(GlassServerPreviewGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "300 442";
-         extent = "100 28";
+         extent = "80 28";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -301,6 +300,28 @@ new GuiControl(GlassServerPreviewGui) {
          overflowImage = "0";
          mKeepCached = "0";
          mColor = "255 255 255 200";
+      };
+      new GuiBitmapButtonCtrl(GlassServerPreview_Favorite) {
+         profile = "GlassBlockButtonProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "405 442";
+         extent = "120 28";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "0";
+         clipToParent = "1";
+         command = "GlassFavoriteServers.toggleFavorite(GlassServerPreviewWindowGui.openServerIP);";
+         text = "Add Favorite";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "~/System_BlocklandGlass/image/gui/btn";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "46 204 113 220";
       };
    };
 };
