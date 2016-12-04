@@ -3,6 +3,12 @@ function GMM_MyAddonsPage::init() {
 }
 
 function GMM_MyAddonsPage::open(%this) {
+  if(!isObject(GMM_MyAddonsPage_AddonGroup)) {
+    GMM_MyAddonsPage.populateAddons();
+  }
+
+  GlassModManagerGui_MainDisplayScroll.vScrollBar = "alwaysOff";
+
   if(isObject(%this.container) && isObject(%this.container.body)) {
     %body = %this.container.body;
     %body.scroll.scrollToTop();
@@ -96,7 +102,7 @@ function GMM_MyAddonsPage::open(%this) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassModManager_MyAddons::defaults();";
+      command = "GMM_MyAddonsPage::defaults();";
       text = "Defaults";
       groupNum = "-1";
       buttonType = "PushButton";
@@ -118,7 +124,7 @@ function GMM_MyAddonsPage::open(%this) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassModManager_MyAddons::enableAll();";
+      command = "GMM_MyAddonsPage::enableAll();";
       text = "Enable All";
       groupNum = "-1";
       buttonType = "PushButton";
@@ -140,7 +146,7 @@ function GMM_MyAddonsPage::open(%this) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassModManager_MyAddons::disableAll();";
+      command = "GMM_MyAddonsPage::disableAll();";
       text = "Disable All";
       groupNum = "-1";
       buttonType = "PushButton";
@@ -162,7 +168,7 @@ function GMM_MyAddonsPage::open(%this) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassModManager_MyAddons::apply();";
+      command = "GMM_MyAddonsPage::apply();";
       text = "Apply";
       groupNum = "-1";
       buttonType = "PushButton";
@@ -184,8 +190,6 @@ function GMM_MyAddonsPage::open(%this) {
   %container.body = %body;
   %this.container = %container;
 
-  GlassModManagerGui_MainDisplayScroll.vScrollBar = "alwaysOff";
-
   return %this.container;
 }
 
@@ -203,8 +207,8 @@ function GMM_MyAddonsPage::close(%this) {
 function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
   %swatch.deleteAll();
 
-  for(%i = 0; %i < GlassModManager_MyAddons.getCount(); %i++) {
-    %addon = GlassModManager_MyAddons.getObject(GlassModManager_MyAddons.getCount()-%i-1);
+  for(%i = 0; %i < GMM_MyAddonsPage_AddonGroup.getCount(); %i++) {
+    %addon = GMM_MyAddonsPage_AddonGroup.getObject(GMM_MyAddonsPage_AddonGroup.getCount()-%i-1);
 
   	%enabled = ($AddOn["__" @ %addon.name] == 1);
 
@@ -365,4 +369,175 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
 
     %last = %gui;
   }
+}
+
+function GMM_MyAddonsPage::defaults() {
+  // echo("Loading defaults");
+  for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+    %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+    %check = %guiObj.checkbox;
+    $AddOn__[%check.addon] = false;
+
+    %check.setValue(false);
+  }
+
+  $AddOn__Bot_Blockhead = 1;
+  $AddOn__Bot_Hole = 1;
+  $AddOn__Bot_Horse = 1;
+  $AddOn__Bot_Shark = 1;
+  $AddOn__Bot_Zombie = 1;
+  $AddOn__Brick_Arch = 1;
+  $AddOn__Brick_Checkpoint = 1;
+  $AddOn__Brick_Christmas_Tree = 1;
+  $AddOn__Brick_Doors = 1;
+  $AddOn__Brick_Halloween = 1;
+  $AddOn__Brick_Large_Cubes = 1;
+  $AddOn__Brick_Teledoor = 1;
+  $AddOn__Brick_Treasure_Chest = 1;
+  $AddOn__Brick_V15 = 1;
+  $AddOn__Emote_Alarm = 1;
+  $AddOn__Emote_Confusion = 1;
+  $AddOn__Emote_Hate = 1;
+  $AddOn__Emote_Love = 1;
+  $AddOn__Item_Key = 1;
+  $AddOn__Item_Skis = 1;
+  $AddOn__Item_Sports = 1;
+  $AddOn__Light_Animated = 1;
+  $AddOn__Light_Basic = 1;
+  $AddOn__Particle_Basic = 1;
+  $AddOn__Particle_FX_Cans = 1;
+  $AddOn__Particle_Grass = 1;
+  $AddOn__Particle_Player = 1;
+  $AddOn__Particle_Tools = 1;
+  $AddOn__Player_Fuel_Jet = 1;
+  $AddOn__Player_Jump_Jet = 1;
+  $AddOn__Player_Leap_Jet = 1;
+  $AddOn__Player_No_Jet = 1;
+  $AddOn__Player_Quake = 1;
+  $AddOn__Print_1x2f_BLPRemote = 1;
+  $AddOn__Print_1x2f_Default = 1;
+  $AddOn__Print_2x2f_Default = 1;
+  $AddOn__Print_2x2r_Default = 1;
+  $AddOn__Print_Letters_Default = 1;
+  $AddOn__Projectile_GravityRocket = 1;
+  $AddOn__Projectile_Pinball = 1;
+  $AddOn__Projectile_Pong = 1;
+  $AddOn__Projectile_Radio_Wave = 1;
+  $AddOn__Sound_Beeps = 1;
+  $AddOn__Sound_Phone = 1;
+  $AddOn__Sound_Synth4 = 1;
+  $AddOn__Support_Doors = 1;
+  $AddOn__Vehicle_Ball = 1;
+  $AddOn__Vehicle_Flying_Wheeled_Jeep = 1;
+  $AddOn__Vehicle_Horse = 1;
+  $AddOn__Vehicle_Jeep = 1;
+  $AddOn__Vehicle_Magic_Carpet = 1;
+  $AddOn__Vehicle_Pirate_Cannon = 1;
+  $AddOn__Vehicle_Rowboat = 1;
+  $AddOn__Vehicle_Tank = 1;
+  $AddOn__Weapon_Bow = 1;
+  $AddOn__Weapon_Gun = 1;
+  $AddOn__Weapon_Guns_Akimbo = 1;
+  $AddOn__Weapon_Horse_Ray = 1;
+  $AddOn__Weapon_Push_Broom = 1;
+  $AddOn__Weapon_Rocket_Launcher = 1;
+  $AddOn__Weapon_Spear = 1;
+  $AddOn__Weapon_Sword = 1;
+
+  for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+    %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+    %check = %guiObj.checkbox;
+    %check.setValue($AddOn__[%check.addon]);
+  }
+}
+
+function GMM_MyAddonsPage::enableAll() {
+  for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+    %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+    %check = %guiObj.checkbox;
+    %check.setValue(true);
+  }
+
+  // $AddOn__System_BlocklandGlass = 1;
+}
+
+function GMM_MyAddonsPage::disableAll() {
+  for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+    %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+    %check = %guiObj.checkbox;
+    %check.setValue(false);
+  }
+
+  // $AddOn__System_BlocklandGlass = 1;
+}
+
+function GMM_MyAddonsPage::apply() {
+  for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+    %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+    %check = %guiObj.checkbox;
+    $AddOn__[%check.addon] = %check.getValue();
+  }
+
+  export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
+
+  GMM_MyAddonsPage.populateAddonList(GMM_MyAddonsPage_List);
+}
+
+function GMM_MyAddonsPage::populateAddons(%this) {
+  discoverFile("Add-Ons/*.zip");
+  if(isObject(GMM_MyAddonsPage_AddonGroup)) {
+    GMM_MyAddonsPage_AddonGroup.delete();
+  }
+
+  new ScriptGroup(GMM_MyAddonsPage_AddonGroup);
+
+  //rtbInfo.txt
+  //server.cs
+  %pattern = "Add-Ons/*/server.cs";
+	%idArrayLen = 0;
+	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
+    %name = getsubstr(%file, 8, strlen(%file)-18);
+
+    if(!clientIsValidAddon(%name, 0)) {
+      continue;
+    }
+
+    if(strpos(%name, "/") >= 0) { //removes sub-directories
+      continue;
+    }
+
+    if(%name $= "System_BlocklandGlass" || %name $= "Support_Preferences" || %name $= "Support_Updater") {
+      continue;
+    }
+
+    %so = new ScriptObject() {
+      class = "GlassModManager_Addon";
+      name = %name;
+      isRTB = isfile("Add-Ons/" @ %name @ "/rtbInfo.txt");
+      isBLG = isfile("Add-Ons/" @ %name @ "/glass.json");
+    };
+
+    if(%so.isBLG) {
+      %buffer = "";
+      %fo = new FileObject();
+      %fo.openforread("Add-Ons/" @ %name @ "/glass.json");
+      while(!%fo.isEOF()) {
+        if(%buffer !$= "") {
+          %buffer = %buffer NL getASCIIString(%fo.readLine());
+        } else {
+          %buffer = getASCIIString(%fo.readLine());
+        }
+      }
+      %fo.close();
+      %fo.delete();
+      jettisonParse(collapseEscape(%buffer));
+      %so.glassdata = $JSON::Value;
+    }
+    GMM_MyAddonsPage_AddonGroup.add(%so);
+	}
 }

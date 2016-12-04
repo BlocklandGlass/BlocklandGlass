@@ -148,6 +148,7 @@ function GMM_SearchPage::close(%this) {
 function GMM_SearchPage::handleBoardsResult(%this, %obj) {
   %container = %this.container;
   %container.searchOptions.board.clear();
+  %container.searchOptions.board.add("All", -1);
   for(%j = 0; %j < %obj.groups.length; %j++) {
     %group = %obj.groups.value[%j];
     %boards = %group.boards;
