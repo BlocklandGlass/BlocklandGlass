@@ -269,4 +269,6 @@ exec("./submodules/modmanager/errorPage.cs");
 exec("./submodules/modmanager/addonPage.cs");
 exec("./submodules/modmanager/boardsPage.cs");
 exec("./submodules/modmanager/boardPage.cs");
+exec("./submodules/modmanager/searchPage.cs");
 exec("./submodules/modmanager/rtbImport.cs");
+exec("./gui/elements/GMM_Navigation.cs");

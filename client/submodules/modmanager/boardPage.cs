@@ -40,6 +40,11 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
   %container = %this.container;
 
+  GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_BoardPage, " @ expandEscape(%id) @ ", " @ expandEscape(%page) @ ");");
+
+  %container.nav = GMM_Navigation.createSwatch();
+  %container.add(%container.nav);
+
   %body = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -48,6 +53,8 @@ function GMM_BoardPage::handleResults(%this, %res) {
     extent = "615 10";
   };
   %container.add(%body);
+
+  %body.placeBelow(%container.nav, 10);
 
   %nav = GMM_BoardPage::createBoardNav(%id, %page, %pages);
   %header = GMM_BoardPage::createBoardHeader(%name);

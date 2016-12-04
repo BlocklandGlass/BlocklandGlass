@@ -5,6 +5,10 @@ function GMM_BoardsPage::init() {
 }
 
 function GMM_BoardsPage::open(%this) {
+
+  GMM_Navigation.clear();
+  GMM_Navigation.addStep("Boards", "GlassModManagerGui.openPage(GMM_BoardsPage);");
+
   if(%this.loaded && isObject(%this.container)) {
     return %this.container;
   } else {
@@ -21,6 +25,9 @@ function GMM_BoardsPage::open(%this) {
     position = "0 0";
     extent = "635 498";
   };
+
+  %this.container.nav = GMM_Navigation.createSwatch();
+  %this.container.add(%this.container.nav);
 
   GlassModManagerGui.setLoading(true);
   GlassModManager::placeCall("boards", "", "GMM_BoardsPage.handleResults");
@@ -49,6 +56,7 @@ function GMM_BoardsPage::handleResults(%this, %obj) {
     position = "10 10";
     extent = "615 64";
   };
+  %body.placeBelow(%container.nav, 10);
 
   %last = "";
 
