@@ -6,6 +6,7 @@ function GlassModManager::init() {
   GMM_BoardsPage::init();
   GMM_BoardPage::init();
   GMM_ErrorPage::init();
+  GMM_MyAddonsPage::init();
   GMM_SearchPage::init();
 
   GMM_Navigation::init();
