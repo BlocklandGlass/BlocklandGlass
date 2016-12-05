@@ -275,7 +275,7 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
     //glassLogo
 
     %icon = "";
-    if(isDefaultAddon(%addon)) {
+    if(isDefaultAddon(%addon.name)) {
       %icon = "blLogo";
     } else if(%addon.isBLG) {
       %icon = "glassLogo";
@@ -292,7 +292,7 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
         extent = "16 16";
         minExtent = "8 2";
         enabled = "1";
-        visible = isDefaultAddon(%addon.name);
+        visible = true;
         clipToParent = "1";
         bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
         wrap = "0";

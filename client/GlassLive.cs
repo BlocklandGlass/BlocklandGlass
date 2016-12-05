@@ -132,6 +132,7 @@ function GlassLive::onAuthSuccess() {
   GlassFriendsGui_HeaderText.position = "10 5";
 
   GlassLive::sendAvatarData();
+  GlassLive::updateLocation();
 }
 
 function GlassLive::openOverlay() {

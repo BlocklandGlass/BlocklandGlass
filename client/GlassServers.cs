@@ -457,14 +457,6 @@ package GlassServers {
     return parent::addRow(%this, %id, %val);
   }
 
-  function NPL_List::sort(%this, %a) {
-    parent::sort(%this, %a);
-  }
-
-  function NPL_List::sortNumerical(%this, %a) {
-    parent::sortNumerical(%this, %a);
-  }
-
   function NPL_List::clear(%this) {
     GlassLoadingGui_UserList.clear();
     parent::clear(%this);
