@@ -205,8 +205,9 @@ function GlassLiveUser::disconnected(%this) {
 }
 
 function GlassLiveUser::getAvatar(%this, %gui) {
+  %this.avatarGui = %gui;
   if(%this.avatar) {
-    %gui.createBlockhead(%this.avatar);
+    %this.gotAvatar(%this.avatar);
   } else {
     %obj = JettisonObject();
     %obj.set("type", "string", "getAvatar");
@@ -214,8 +215,6 @@ function GlassLiveUser::getAvatar(%this, %gui) {
 
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
     %obj.delete();
-
-    %this.avatarGui = %gui;
   }
 }
 
@@ -223,8 +222,12 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj) {
   %this.avatar = %jsonObj;
   %this.avatarGui.createBlockhead(%this.avatar);
 
-  %this.avatarGui.setSequence("", 0, "crouch", 1);
-  %this.avatarGui.setSequence("test", 1, "headside", 1);
+  //%this.avatarGui.setSequence("", 0, "crouch", 1);
+  //%this.avatarGui.setSequence("test", 1, "headside", 1);
   %this.avatarGui.setOrbitDist(18);
-  %this.avatarGui.setCameraRot(3, 0, 1.5);
+  %this.avatarGui.setCameraRot(0, 0, $pi*1.2);
+  %this.avatarGui.lightDirection = "0 0.2 0.2";
+  %this.avatarGui.position = "-60 0";
+
+  echo(%this.avatarGui);
 }

@@ -194,6 +194,17 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
     };
     %results.add(%results.text);
   } else {
+    %results.text = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<font:verdana bold:13>Search Results";
+      position = "10 7";
+      extent = "595 13";
+      minextent = "0 0";
+      autoResize = true;
+    };
+    %results.add(%results.text);
+
     for(%i = 0; %i < %res.results.length; %i++) {
       %result = %res.results.value[%i];
 
@@ -202,7 +213,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
           horizSizing = "right";
           vertSizing = "bottom";
           color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
-          position = "10 10";
+          position = "10 25";
           extent = "595 30";
         };
 
@@ -220,7 +231,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
           horizSizing = "right";
           vertSizing = "bottom";
           color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
-          position = "10 10";
+          position = "10 25";
           extent = "595 30";
         };
 
@@ -299,33 +310,40 @@ function GMM_SearchPage_SearchBar::onUpdate(%this, %a) {
     %this.setCursorPos(0);
   }
 
-  if(!%this.filler) {
-    if(GlassSettings.get("MM::LiveSearch")) {
-      GMM_SearchPage.search();
-    }
+  if(GlassSettings.get("MM::LiveSearch")) {
+    GMM_SearchPage.search();
   }
 }
 
 function GMM_SearchPage::search(%this) {
-  %query = trim(GMM_SearchPage_SearchBar.getValue());
-  echo(%query);
+
+  //name
   if(GMM_SearchPage_SearchBar.filler)
     %query = "";
+  else
+    %query = trim(GMM_SearchPage_SearchBar.getValue());
 
   if(strlen(%query) > 0) {
     %search = "name" TAB %query;
   }
 
-  %author = GMM_SearchPage_Author.getValue();
+  //author
+  %author = trim(GMM_SearchPage_Author.getValue());
   if(strlen(%author) > 0) {
     %search = trim(%search NL "author" TAB %author);
   }
 
-  if(GMM_SearchPage_RTB.getValue()) {
+  //rtb
+  if(GMM_SearchPage_RTB.getValue() && strlen(%query) > 0) {
     %search = trim(%search NL "rtb\t1");
   }
 
-  echo(%search);
+  if(%author $= "" && %query $= "") {
+    %this.container.searchResults.deleteAll();
+    %this.container.searchResults.delete();
+    return;
+  }
 
+  //search
   %this.lastTCP = GlassModManager::placeCall("search", %search, "GMM_SearchPage.handleSearchResults");
 }

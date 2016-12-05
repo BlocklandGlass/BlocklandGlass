@@ -1475,7 +1475,18 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
+
   GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
+
+  if(GlassLiveUser::getFromBlid(getNumKeyId()).getStatus() !$= "away") {
+    for(%i = 0; %i < getWordCount(%msg); %i++) {
+      %word = getWord(%msg, %i);
+      if(%word $= "brb" || %word $= "afk") {
+        glassMessageBoxYesNo("Away", "Would you like to set your status to \"Away\"?", "GlassFriendsGui_StatusSelect::selectStatus(\"away\");");
+      }
+    }
+  }
 }
 
 function GlassLive::sendRoomCommand(%msg, %id) {
@@ -2237,6 +2248,7 @@ function GlassLive::createUserWindow(%uo) {
   return %window;
 }
 
+
 // NEW USER WINDOWS // Not finished
 /////////////////////////////////////
 function GlassLive::createUserWindow2(%uo) {
@@ -2317,30 +2329,33 @@ function GlassLive::createUserWindow2(%uo) {
 function GlassLive::openUserWindow2(%blid) {
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
-    %window = GlassLive::createUserWindow(%uo);
+    %window = GlassLive::createUserWindow2(%uo);
 
     switch$(%uo.getStatus()) {
       case "online":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
-		%statusColor = "84 217 140 100";
+        %statusColor = "84 217 140 100";
+
       case "busy":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:13> Busy";
-		%statusColor = "231 76 60 100";
+        %statusColor = "231 76 60 100";
+
       case "away":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:13> Away";
-		%statusColor = "241 196 15 100";
+        %statusColor = "241 196 15 100";
+
       default:
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
-		%statusColor = "210 210 210 255";
+        %statusColor = "210 210 210 255";
     }
 
 
-	%window.statusText.setText(%status);
-	%window.infoSwatch.color = %statusColor;
-	%window.headerText.setText("<just:right><font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid);
+  	%window.statusText.setText(%status);
+  	%window.infoSwatch.color = %statusColor;
+  	%window.headerText.setText("<just:right><font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid);
 
-  %uo.getAvatar(%window.blockhead);
-  //this is now asyncronous, handle camera in GlassLiveUser::gotAvatar
+    %uo.getAvatar(%window.blockhead);
+    //this is now asyncronous, handle camera in GlassLiveUser::gotAvatar
 
     if(%uo.isFriend()) {
       %window.friendButton.mcolor = "255 200 200 200";
