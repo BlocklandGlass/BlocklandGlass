@@ -1615,13 +1615,13 @@ function GlassLive::removeFriend(%blid, %silent) {
 function GlassLive::updateLocation(%inServer) {
 
   if(!%inServer) {
-    %action = "idle";
+    %action = "menus";
   } else if(ServerConnection.isLocal()) {
     if($Server::LAN) {
       if($Server::ServerType $= "Singleplayer") {
         %action = "singleplayer";
       } else {
-        %action = "lan_hosting";
+        %action = "hosting_lan";
       }
     } else {
       %action = "hosting";
@@ -1636,16 +1636,15 @@ function GlassLive::updateLocation(%inServer) {
   }
 
   %obj = JettisonObject();
-  %obj.set("type", "string", "locationUpdate");
-  %obj.set("action", "string", %action);
+  %obj.set("type", "string", "updateLocation");
+  %obj.set("location", "string", %action);
 
   if(%action $= "playing") {
-    %location = ServerConnection.getRawIP() SPC ServerConnection.getPort();
+    %location = ServerConnection.getRawIP() @ ":" @ ServerConnection.getPort();
     %name = NPL_Window.getValue();
     %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
 
-    %obj.set("serverIp", "string", %location);
-    %obj.set("serverName", "string", %name);
+    %obj.set("address", "string", %location);
     echo("playing" TAB %location TAB %name);
   }
 

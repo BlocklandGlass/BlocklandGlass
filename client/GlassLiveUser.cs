@@ -231,3 +231,21 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj) {
 
   echo(%this.avatarGui);
 }
+
+function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress) {
+  %this.location = %location;
+  %this.serverTitle = %serverTitle;
+  %this.serverAddress = %serverAddress;
+}
+
+function GlassLiveUser::getLocation(%this) {
+  return %this.location;
+}
+
+function GlassLiveUser::getServerTitle(%this) {
+  return %this.serverTitle;
+}
+
+function GlassLiveUser::getServerAddress(%this) {
+  return %this.serverAddress;
+}

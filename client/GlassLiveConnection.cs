@@ -484,6 +484,11 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       alxPlay(GlassFriendRemovedAudio);
 
+    case "friendLocation":
+      %uo = GlassLiveUser::create(%data.username, %data.blid);
+
+      %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
+
     case "groupJoin":
       %group = GlassLiveGroup::create(%data.id, %data.clients);
       %group.createGui();
