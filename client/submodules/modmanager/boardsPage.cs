@@ -33,7 +33,6 @@ function GMM_BoardsPage::open(%this) {
   GlassModManagerGui.setLoading(true);
   GlassModManager::placeCall("boards", "", "GMM_BoardsPage.handleResults");
 
-  echo(%this.container);
   return %this.container;
 }
 

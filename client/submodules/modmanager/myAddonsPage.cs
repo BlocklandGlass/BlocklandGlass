@@ -197,10 +197,8 @@ function GMM_MyAddonsPage::open(%this) {
 
 function GMM_MyAddonsPage::close(%this) {
   if(isObject(%this.container)) {
-    echo("is container!");
     %this.container.getGroup().remove(%this.container);
   } else {
-    echo("No container!");
   }
   GlassModManagerGui_MainDisplayScroll.vScrollBar = "alwaysOn";
 }
