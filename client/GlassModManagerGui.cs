@@ -12,17 +12,25 @@ function GlassModManagerGui::setPane(%pane) {
 
 function GlassModManagerGui::openPage(%this, %page, %arg1, %arg2, %arg3, %arg4) {
   if(isObject(%page)) {
-    %this.page.close();
-    GlassModManagerGui_MainDisplay.deleteAll();
+    %this.oldPage = %this.page;
 
     %content = %page.open(%arg1, %arg2, %arg3, %arg4);
 
-    GlassModManagerGui_MainDisplay.add(%content);
+    %this.page = %page;
+    %this.pageContent = %content;
+  }
+}
+
+function GlassModManagerGui::pageDidLoad(%this, %page) {
+  if(%this.page.getId() == %page.getId()) {
+    if(isObject(%this.oldPage))
+      %this.oldPage.close();
+    GlassModManagerGui_MainDisplay.deleteAll();
+
+    GlassModManagerGui_MainDisplay.add(%this.pageContent);
     GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 0);
     GlassModManagerGui_MainDisplay.setVisible(true);
     GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
-
-    %this.page = %page;
   }
 }
 
@@ -69,7 +77,7 @@ function GlassModManagerGui_LoadingSwatch::tick(%this) {
   %this.sch = "";
 
   if(%this.loading) {
-    if(%this.opacity < 255) {
+    if(%this.opacity < 128) {
       %this.opacity += 10;
       %this.visible = true;
     } else {
@@ -87,8 +95,8 @@ function GlassModManagerGui_LoadingSwatch::tick(%this) {
   if(%this.opacity < 0) {
     %this.opacity = 0;
     %this.visible = false;
-  } else if(%this.opacity > 255) {
-    %this.opacity = 255;
+  } else if(%this.opacity > 128) {
+    %this.opacity = 128;
     %this.visible = true;
   }
 

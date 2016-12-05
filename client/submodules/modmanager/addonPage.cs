@@ -29,7 +29,7 @@ function GMM_AddonPage::open(%this, %modId) {
 }
 
 function GMM_AddonPage::handleResults(%this, %obj) {
-  echo("addonpage resx");
+  GlassModManagerGui.pageDidLoad(%this);
   //obj:
   // aid
   // filename

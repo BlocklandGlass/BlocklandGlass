@@ -28,6 +28,7 @@ function GMM_BoardPage::close(%this) {
 }
 
 function GMM_BoardPage::handleResults(%this, %res) {
+  GlassModManagerGui.pageDidLoad(%this);
   GlassModManagerGui.setLoading(false);
   %status = %res.status;
 

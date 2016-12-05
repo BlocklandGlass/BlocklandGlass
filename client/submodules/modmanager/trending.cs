@@ -19,7 +19,8 @@ function GMM_ActivityPage::open(%this) {
   };
 
   GlassModManagerGui.setLoading(true);
-  GlassModManager.loadHome();
+
+  GlassModManager::placeCall("home", "", "GMM_ActivityPage.handleData");
 
   return %this.container;
 }
@@ -28,11 +29,13 @@ function GMM_ActivityPage::close() {
 
 }
 
-function GlassModManagerGui::renderHome(%data) {
+function GMM_ActivityPage::handleData(%this, %res) {
+  GlassModManagerGui.pageDidLoad(%this);
   GlassModManagerGui.setLoading(false);
 
   %container = GMM_ActivityPage.container;
 
+  %data = %res.data;
 
   for(%i = 0; %i < %data.length; %i++) {
     %dlg = %data.value[%i];

@@ -15,6 +15,7 @@ function GMM_MyAddonsPage::open(%this) {
     %this.populateAddonList(%body.scroll.addonList);
     %body.scroll.addonList.verticalMatchChildren(456, 10);
     %body.scroll.addonList.setVisible(true);
+    GlassModManagerGui.schedule(0, pageDidLoad, %this);
     return %this.container;
   }
 
@@ -190,6 +191,7 @@ function GMM_MyAddonsPage::open(%this) {
   %container.body = %body;
   %this.container = %container;
 
+  GlassModManagerGui.schedule(0, pageDidLoad, %this);
   return %this.container;
 }
 

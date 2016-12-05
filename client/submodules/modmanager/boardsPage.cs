@@ -10,6 +10,7 @@ function GMM_BoardsPage::open(%this) {
   GMM_Navigation.addStep("Boards", "GlassModManagerGui.openPage(GMM_BoardsPage);");
 
   if(%this.loaded && isObject(%this.container)) {
+    GlassModManagerGui.schedule(0, pageDidLoad, %this);
     return %this.container;
   } else {
     if(isObject(%this.container)) {
@@ -44,6 +45,7 @@ function GMM_BoardsPage::close(%this) {
 }
 
 function GMM_BoardsPage::handleResults(%this, %obj) {
+  GlassModManagerGui.pageDidLoad(%this);
   %this.loaded = true;
   %container = %this.container;
 

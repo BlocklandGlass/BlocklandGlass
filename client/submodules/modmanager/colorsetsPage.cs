@@ -10,6 +10,7 @@ function GMM_ColorsetsPage::open(%this) {
   }
 
   if(isObject(%this.container)) {
+    GlassModManagerGui.schedule(0, pageDidLoad, %this);
     return %this.container;
   }
 
@@ -154,6 +155,7 @@ function GMM_ColorsetsPage::open(%this) {
 
   %this.renderPreview(GlassSettings.get("MM::Colorset"));
 
+  GlassModManagerGui.schedule(0, pageDidLoad, %this);
   return %this.container;
 }
 
