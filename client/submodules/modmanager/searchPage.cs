@@ -245,7 +245,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
         %resultSwatch.text = new GuiMLTextCtrl() {
           horizSizing = "right";
           vertSizing = "bottom";
-          text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> (" @ %result.filename @ ")<br><color:555555><font:verdana:12>RTB Archive";
+          text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> (" @ %result.filename @ ")<br><color:555555><font:verdana:12>RTB Archive: " @ %result.type;
           position = "33 10";
           extent = "549 25";
           minextent = "0 0";
