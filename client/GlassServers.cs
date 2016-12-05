@@ -1,6 +1,6 @@
 function GlassServers::init() {
   if(GlassSettings.get("Servers::EnableFavorites") == 0)
-	return;
+    return;
   GlassServerPreview_Favorite.setVisible(true);
   GlassFavoriteServers::changeGui();
   GlassLoading::changeGui();
@@ -40,7 +40,7 @@ function GlassFavoriteServers::toggleFavorite(%this, %ip) {
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
     if(getField(%favs, %i) $= %ip) {
 	  GlassSettings.update("Servers::Favorites", removeField(%favs, %i));
-      glassMessageBoxOk("Removed", "This server has been removed from your favorites!");
+    glassMessageBoxOk("Favorite Removed", "This server has been removed from your favorites!");
 	  GlassServerPreview_Favorite.mColor = "46 204 113 220";
 	  GlassServerPreview_Favorite.setText("Add Favorite");
 	  GlassServers::init();
@@ -48,7 +48,7 @@ function GlassFavoriteServers::toggleFavorite(%this, %ip) {
     }
   }
 
-  glassMessageBoxOk("Success", "This server has been added to your favorites!");
+  glassMessageBoxOk("Favorite Added", "This server has been added to your favorites!");
   GlassSettings.update("Servers::Favorites", trim(%favs TAB %ip));
   GlassServerPreview_Favorite.mColor = "231 76 60 220";
   GlassServerPreview_Favorite.setText("Remove Favorite");
