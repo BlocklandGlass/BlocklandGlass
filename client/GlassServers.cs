@@ -57,22 +57,23 @@ function GlassFavoriteServers::toggleFavorite(%this, %ip) {
 
 
 function GlassFavoriteServers::buildList(%this) {
-
   for(%i = 0; %i < GlassFavoriteServerSwatch.getCount(); %i++) {
     %obj = GlassFavoriteServerSwatch.getObject(%i);
-	%name = %obj.getName();
+	  %name = %obj.getName();
+
     if(%name !$= "GlassFavoriteServerGui_Text" && %name !$= "GlassFavoriteServerGui_Tutorial" && %name !$= "GlassFavoriteServerGui_NoServers") {
       %obj.deleteAll();
       %obj.delete();
       %i--;
     }
   }
+
   for(%i = 1; %i <= %this.onlineFavoriteCount; %i++) {
     %swatch = new GuiSwatchCtrl("GlassFavoriteServerGui_Swatch" @ %i) {
       profile = "GuiDefaultProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "10 0";
+      position = "10 35";
       extent = "270 47";
       minExtent = "8 2";
       enabled = "1";
@@ -85,7 +86,7 @@ function GlassFavoriteServers::buildList(%this) {
       profile = "GuiMLTextProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "10 6";
+      position = "10 10";
       extent = "250 27";
       minExtent = "8 2";
       enabled = "1";
@@ -107,29 +108,27 @@ function GlassFavoriteServers::buildList(%this) {
 
     GlassFavoriteServerSwatch.add(%swatch);
 
-    if(%placeBelow $= "")
-      %swatch.placeBelow(GlassFavoriteServerGui_Text, 10);
-    else
+    if(%placeBelow)
       %swatch.placeBelow(%placeBelow, 5);
 
     %placeBelow = %swatch;
 
-	%server = GlassFavoriteServers.onlineFavorite[%i];
+  	%server = GlassFavoriteServers.onlineFavorite[%i];
 
-	%password = getField(%server, 3);
-	GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %i, getField(%server, 2), getField(%server, 4), getField(%server, 5), getField(%server, 6), getField(%server, 0) @ getField(%server, 1));
+  	%password = getField(%server, 3);
+  	GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %i, getField(%server, 2), getField(%server, 4), getField(%server, 5), getField(%server, 6), getField(%server, 0) @ getField(%server, 1));
   }
 
   if(%this.favorites $= "" || %this.favorites == 0) {
     GlassFavoriteServerSwatch.extent = "290 60";
-	GlassFavoriteServerGui_Tutorial.setVisible(true);
-	GlassFavoriteServerGui_NoServers.setVisible(false);
+  	GlassFavoriteServerGui_Tutorial.setVisible(true);
+  	GlassFavoriteServerGui_NoServers.setVisible(false);
   } else if(%this.onlineFavoriteCount == 0) {
 	  GlassFavoriteServerGui_NoServers.setVisible(true);
 	  GlassFavoriteServerGui_Tutorial.setVisible(false);
   } else {
-	GlassFavoriteServerGui_Tutorial.setVisible(false);
-	GlassFavoriteServerGui_NoServers.setVisible(false);
+  	GlassFavoriteServerGui_Tutorial.setVisible(false);
+  	GlassFavoriteServerGui_NoServers.setVisible(false);
   }
   GlassFavoriteServerSwatch.verticalMatchChildren(24, 10);
   GlassFavoriteServerSwatch.position = vectorSub(MainMenuButtonsGui.extent, GlassFavoriteServerSwatch.extent);
