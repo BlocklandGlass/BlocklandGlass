@@ -130,6 +130,8 @@ function GlassLive::onAuthSuccess() {
   GlassFriendsGui_HeaderText.setText("<font:verdana bold:14>" @ $Pref::Player::NetName @ "<br><font:verdana:12>" @ getNumKeyId());
 
   GlassFriendsGui_HeaderText.position = "10 5";
+
+  GlassLive::sendAvatarData();
 }
 
 function GlassLive::openOverlay() {
@@ -861,7 +863,7 @@ function GlassLive::createBlockhead() {
   GlassFriendsGui_Blockhead.lightDirection = "0 0.2 0.2";
   GlassFriendsGui_Blockhead.createBlockhead();
   GlassFriendsGui_InfoSwatch.add(GlassFriendsGui_Blockhead);
-  
+
   GlassFriendsGui_Blockhead.schedule(500, "setVisible", true);
   GlassFriendsGui_Blockhead.schedule(200, "setOrbitDist", 5.5);
   GlassFriendsGui_Blockhead.schedule(200, "setCameraRot", 0.22, 0.5, 2.8);
@@ -920,52 +922,93 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
 
 function GuiObjectView::createBlockhead(%this, %json) {
   %this.forceFOV = 18;
-  
+
   %this.setObject("", "base/data/shapes/player/m.dts", "", 100);
   if(!%json) {
     %FaceName = $Pref::Avatar::FaceName;
     %DecalName = $Pref::Avatar::DecalName;
     %HeadColor = $Pref::Avatar::HeadColor;
-    
+
     %accent = $Pref::Avatar::accent;
     %accentColor = $Pref::Avatar::accentColor;
-    
+
     %hat = $Pref::Avatar::hat;
     %hatColor = $Pref::Avatar::hatColor;
-    
+
     %chest = $Pref::Avatar::chest;
     %chestColor = $Pref::Avatar::chestColor;
     %TorsoColor = $Pref::Avatar::TorsoColor;
-    
+
     %pack = $Pref::Avatar::pack;
     %packColor = $Pref::Avatar::packColor;
-    
+
     %secondPack = $Pref::Avatar::secondPack;
-    %secondPack = $Pref::Avatar::secondPackColor;
-    
+    %secondPackColor = $Pref::Avatar::secondPackColor;
+
     %larm = $Pref::Avatar::larm;
     %larmColor = $Pref::Avatar::larmColor;
-    
+
     %rarm = $Pref::Avatar::rarm;
     %rarmColor = $Pref::Avatar::rarmColor;
-    
+
     %lhand = $Pref::Avatar::lhand;
     %lhandColor = $Pref::Avatar::lhandColor;
-      
+
     %rhand = $Pref::Avatar::rhand;
     %rhandColor = $Pref::Avatar::rhandColor;
-    
+
     %hip = $Pref::Avatar::hip;
     %hipColor = $Pref::Avatar::hipColor;
-      
+
     %lleg = $Pref::Avatar::lleg;
     %llegColor = $Pref::Avatar::llegColor;
-      
+
     %rleg = $Pref::Avatar::rleg;
-    %rlegColor = $Pref::Avatar::rlegColor; 
+    %rlegColor = $Pref::Avatar::rlegColor;
+  } else {
+    %FaceName = %json.faceName;
+    %DecalName = %json.decalName;
+    %HeadColor = %json.headColor;
+
+    %accent = %json.accent;
+    %accentColor = %json.accentColor;
+
+    %hat = %json.hat;
+    %hatColor = %json.hatColor;
+
+    %chest = %json.chest;
+    %chestColor = %json.chestColor;
+    %TorsoColor = %json.torsoColor;
+
+    %pack = %json.pack;
+    %packColor = %json.packColor;
+
+    %secondPack = %json.secondPack;
+    %secondPackColor = %json.secondPackColor;
+
+    %larm = %json.larm;
+    %larmColor = %json.larmColor;
+
+    %rarm = %json.rarm;
+    %rarmColor = %json.rarmColor;
+
+    %lhand = %json.lhand;
+    %lhandColor = %json.lhandColor;
+
+    %rhand = %json.rhand;
+    %rhandColor = %json.rhandColor;
+
+    %hip = %json.hip;
+    %hipColor = %json.hipColor;
+
+    %lleg = %json.lleg;
+    %llegColor = %json.llegColor;
+
+    %rleg = %json.rleg;
+    %rlegColor = %json.rlegColor;
   }
- 
-  
+
+
   for(%i = 0; %i < $numFace; %i++)
 	if(strStr($Face[%i], %FaceName) >= 0)
 	  %faceDecal = %i;
@@ -1005,7 +1048,7 @@ function GuiObjectView::createBlockhead(%this, %json) {
     %this.hideNode("", "plume");
     %this.setnodeColor("", %accent, %accentColor);
   }
-  
+
   %this.hideNode("", "rski");
   %this.hideNode("", "lski");
 
@@ -1019,51 +1062,74 @@ function GlassLive::sendAvatarData() {
 
   %partArray = JettisonArray();
 
-  for(%i = 0; %i < $numFace; %i++) {
-    if(strStr($Face[%i], $Pref::Avatar::FaceName) >= 0)
-	    %faceDecal = %i;
-  }
+  %FaceName = $Pref::Avatar::FaceName;
+  %DecalName = $Pref::Avatar::DecalName;
+  %HeadColor = $Pref::Avatar::HeadColor;
+  %obj.set("faceName", "string", %faceName);
+  %obj.set("decalName", "string", %decalName);
+  %obj.set("headColor", "string", %headColor);
 
-  for(%i = 0; %i < $numDecal; %i++) {
-    if(strStr($Decal[%i], $Pref::Avatar::DecalName) >= 0)
-  	  %shirtDecal = %i;
-  }
+  %accent = $Pref::Avatar::accent;
+  %accentColor = $Pref::Avatar::accentColor;
+  %obj.set("accent", "string", %accent);
+  %obj.set("accentColor", "string", %accentColor);
 
-  %obj.set("face", "string", %faceDecal);
-  %obj.set("decal", "string", %shirtDecal);
-  %obj.set("headColor", "string", $Pref::Avatar::HeadColor);
-  %obj.set("torsoColor", "string", $Pref::Avatar::TorsoColor);
+  %hat = $Pref::Avatar::hat;
+  %hatColor = $Pref::Avatar::hatColor;
+  %obj.set("hat", "string", %hat);
+  %obj.set("hatColor", "string", %hatColor);
 
-  %accent = getWord($accentsAllowed[$hat[$Pref::Avatar::Hat]], $Pref::Avatar::Accent);
-  if(%accent !$= "" && %accent !$= "none") {
-    %obj.set("accent", "string", %accent);
-    %obj.set("accentColor", "string", $Pref::Avatar::AccentColor);
-  }
+  %chest = $Pref::Avatar::chest;
+  %chestColor = $Pref::Avatar::chestColor;
+  %TorsoColor = $Pref::Avatar::TorsoColor;
+  %obj.set("chest", "string", %chest);
+  %obj.set("chestColor", "string", %chestColor);
+  %obj.set("torsoColor", "string", %torsoColor);
 
-  %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
-  for(%i = 0; %i <= 11; %i++) {
-    %currPart = getWord(%bodyParts, %i);
-    %numPart = $num[%currPart];
+  %pack = $Pref::Avatar::pack;
+  %packColor = $Pref::Avatar::packColor;
+  %obj.set("pack", "string", %pack);
+  %obj.set("packColor", "string", %packColor);
 
-  	for(%j = 0; %j <= %numPart; %j++) {
-  	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
-  	  %equipCurrPartColor = eval("return $Pref::Avatar::" @ %currPart @ "Color;");
-  	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];");
+  %secondPack = $Pref::Avatar::secondPack;
+  %secondPackColor = $Pref::Avatar::secondPackColor;
+  %obj.set("secondPack", "string", %secondPack);
+  %obj.set("secondPackColor", "string", %secondPackColor);
 
-  	  if(%currCheck $= "" || %currCheck $= "None")
-  		  continue;
+  %larm = $Pref::Avatar::larm;
+  %larmColor = $Pref::Avatar::larmColor;
+  %obj.set("larm", "string", %larm);
+  %obj.set("larmColor", "string", %larmColor);
 
-        echo(%currCheck);
+  %rarm = $Pref::Avatar::rarm;
+  %rarmColor = $Pref::Avatar::rarmColor;
+  %obj.set("rarm", "string", %rarm);
+  %obj.set("rarmColor", "string", %rarmColor);
 
-      %partObj = JettisonObject();
-      %partObj.set("part", "string", %currCheck);
-      %partObj.set("color", "string", %equipCurrPartColor);
+  %lhand = $Pref::Avatar::lhand;
+  %lhandColor = $Pref::Avatar::lhandColor;
+  %obj.set("lhand", "string", %lhand);
+  %obj.set("lhandColor", "string", %lhandColor);
 
-      %partArray.push("object", %partObj);
-    }
-  }
+  %rhand = $Pref::Avatar::rhand;
+  %rhandColor = $Pref::Avatar::rhandColor;
+  %obj.set("rhand", "string", %rhand);
+  %obj.set("rhandColor", "string", %rhandColor);
 
-  %obj.set("parts", "object", %partArray);
+  %hip = $Pref::Avatar::hip;
+  %hipColor = $Pref::Avatar::hipColor;
+  %obj.set("hip", "string", %hip);
+  %obj.set("hipColor", "string", %hipColor);
+
+  %lleg = $Pref::Avatar::lleg;
+  %llegColor = $Pref::Avatar::llegColor;
+  %obj.set("lleg", "string", %lleg);
+  %obj.set("llegColor", "string", %llegColor);
+
+  %rleg = $Pref::Avatar::rleg;
+  %rlegColor = $Pref::Avatar::rlegColor;
+  %obj.set("rleg", "string", %rleg);
+  %obj.set("rlegColor", "string", %rlegColor);
 
   echo(jettisonStringify("object", %obj));
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
@@ -2179,7 +2245,7 @@ function GlassLive::createUserWindow2(%uo) {
     //%uo.window.delete();
     return %uo.window;
   }
-  
+
   %window = new GuiWindowCtrl() {
     profile = "GlassWindowProfile";
     horizSizing = "center";
@@ -2193,13 +2259,13 @@ function GlassLive::createUserWindow2(%uo) {
     canMinimize = "0";
     canMaximize = "0";
   };
-  
+
   %window.infoSwatch = new GuiSwatchCtrl() {
 	color = "210 210 210 255";
 	position = "10 33";
 	extent = "300 60";
   };
-  
+
   %window.blockhead = new GuiObjectView() {
     position = "2 -30";
 	extent = "270 140";
@@ -2212,7 +2278,7 @@ function GlassLive::createUserWindow2(%uo) {
 	extent = "280 26";
 	text = "";
   };
-   
+
   %window.statusSwatch = new GuiBitmapButtonCtrl() {
 	profile = "GlassBlockButtonProfile";
 	bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
@@ -2221,27 +2287,27 @@ function GlassLive::createUserWindow2(%uo) {
 	position = "222 35";
 	extent = "70 22";
   };
-  
+
   %window.statusText = new GuiMLTextCtrl() {
 	position = "2 3";
 	extent = "65 16";
 	minExtent = "8 2";
 	text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
   };
-  
-  
+
+
   %window.add(%window.infoSwatch);
   %window.infoSwatch.add(%window.blockhead);
   %window.infoSwatch.add(%window.headerText);
   %window.infoSwatch.add(%window.statusSwatch);
-  
+
   %window.statusSwatch.add(%window.statusText);
- 
-  
+
+
   %window.closeCommand = %window.getId() @ ".delete();";
 
   GlassOverlayGui.add(%window);
-  
+
    %window.setName("GlassUserGui");
    %uo.window = %window;
    return %window;
@@ -2267,18 +2333,15 @@ function GlassLive::openUserWindow2(%blid) {
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
 		%statusColor = "210 210 210 255";
     }
-	
-	
+
+
 	%window.statusText.setText(%status);
 	%window.infoSwatch.color = %statusColor;
 	%window.headerText.setText("<just:right><font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid);
 
-	%window.blockhead.createBlockhead();
-    %window.blockhead.setSequence("", 0, "crouch", 1);
-    %window.blockhead.setSequence("test", 1, "headside", 1);
-	%window.blockhead.setOrbitDist(18);
-	%window.blockhead.setCameraRot(3, 0, 1.5);
-	
+  %uo.getAvatar(%window.blockhead);
+  //this is now asyncronous, handle camera in GlassLiveUser::gotAvatar
+
     if(%uo.isFriend()) {
       %window.friendButton.mcolor = "255 200 200 200";
       %window.friendButton.command = "GlassLive::removeFriendPrompt(" @ %uo.blid @ ");";

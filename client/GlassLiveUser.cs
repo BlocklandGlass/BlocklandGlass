@@ -189,7 +189,7 @@ function GlassLiveUser::setStatus(%this, %status) {
 
     if(isObject(%this.window))
       GlassLive::openUserWindow(%this.blid);
-    
+
     GlassLive::onMessageNotification(%this.username @ " is now " @ %this.status @ ".", %this.blid);
   }
 }
@@ -202,4 +202,29 @@ function GlassLiveUser::disconnected(%this) {
   GlassLiveUsers.user[%this.blid] = "";
   GlassLiveUsers.remove(%this);
   %this.delete();
+}
+
+function GlassLiveUser::getAvatar(%this, %gui) {
+  if(%this.avatar) {
+    %gui.createBlockhead(%this.avatar);
+  } else {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "getAvatar");
+    %obj.set("blid", "string", %this.blid);
+
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
+
+    %this.avatarGui = %gui;
+  }
+}
+
+function GlassLiveUser::gotAvatar(%this, %jsonObj) {
+  %this.avatar = %jsonObj;
+  %this.avatarGui.createBlockhead(%this.avatar);
+
+  %this.avatarGui.setSequence("", 0, "crouch", 1);
+  %this.avatarGui.setSequence("test", 1, "headside", 1);
+  %this.avatarGui.setOrbitDist(18);
+  %this.avatarGui.setCameraRot(3, 0, 1.5);
 }

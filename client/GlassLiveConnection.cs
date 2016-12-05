@@ -527,6 +527,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       return;
       GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
+    case "userAvatar":
+      %user = GlassLiveUser::getFromBlid(%data.blid);
+      %blid = %data.blid;
+      %avatarData = %data.avatar;
+
+      %user.gotAvatar(%avatarData);
 
     case "blockedList":
       %list = "";
