@@ -75,7 +75,7 @@ function GMM_SearchPage::open(%this, %preserve) {
     autoResize = true;
   };
 
-  %container.searchOptions.rtb = new GuiCheckBoxCtrl() {
+  %container.searchOptions.rtb = new GuiCheckBoxCtrl(GMM_SearchPage_RTB) {
     profile = "GlassCheckBoxProfile";
     horizSizing = "right";
     vertSizing = "center";
@@ -84,6 +84,7 @@ function GMM_SearchPage::open(%this, %preserve) {
     text = "Search RTB Archive";
     clipToParent = "1";
     buttonType = "ToggleButton";
+    command = "GMM_SearchPage.search();";
   };
 
   %container.searchOptions.blf = new GuiCheckBoxCtrl() {
@@ -195,29 +196,74 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
   } else {
     for(%i = 0; %i < %res.results.length; %i++) {
       %result = %res.results.value[%i];
-      %resultSwatch = new GuiSwatchCtrl() {
-        horizSizing = "right";
-        vertSizing = "bottom";
-        color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
-        position = "10 10";
-        extent = "595 30";
-      };
 
-      %resultSwatch.text = new GuiMLTextCtrl() {
-        horizSizing = "right";
-        vertSizing = "bottom";
-        text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> by " @ %result.author.username @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : %result.summary);
-        position = "10 10";
-        extent = "575 25";
-        minextent = "0 0";
-        autoResize = true;
-      };
+      if(!%result.isRTB) {
+        %resultSwatch = new GuiSwatchCtrl() {
+          horizSizing = "right";
+          vertSizing = "bottom";
+          color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
+          position = "10 10";
+          extent = "595 30";
+        };
+
+        %resultSwatch.text = new GuiMLTextCtrl() {
+          horizSizing = "right";
+          vertSizing = "bottom";
+          text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> by " @ %result.author.username @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : %result.summary);
+          position = "10 10";
+          extent = "575 25";
+          minextent = "0 0";
+          autoResize = true;
+        };
+      } else {
+        %resultSwatch = new GuiSwatchCtrl() {
+          horizSizing = "right";
+          vertSizing = "bottom";
+          color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
+          position = "10 10";
+          extent = "595 30";
+        };
+
+        %resultSwatch.image = new GuiBitmapCtrl() {
+          profile = "GuiDefaultProfile";
+          extent = "16 16";
+          position = "10 10";
+          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
+
+          enabled = "1";
+          visible = "1";
+          clipToParent = "1";
+
+          wrap = "0";
+          lockAspectRatio = "0";
+          alignLeft = "0";
+          alignTop = "0";
+
+          keepCached = "1";
+        };
+
+        %resultSwatch.text = new GuiMLTextCtrl() {
+          horizSizing = "right";
+          vertSizing = "bottom";
+          text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> (" @ %result.filename @ ")<br><color:555555><font:verdana:12>RTB Archive";
+          position = "33 10";
+          extent = "549 25";
+          minextent = "0 0";
+          autoResize = true;
+        };
+
+        %resultSwatch.add(%resultSwatch.image);
+      }
 
       %resultSwatch.add(%resultSwatch.text);
       %results.add(%resultSwatch);
       %resultSwatch.verticalMatchChildren(0, 10);
+
+      if(%result.isRTB)
+        %resultSwatch.image.centerY();
+
       if(%last)
-        %resultSwatch.placeBelow(%last, 10);
+        %resultSwatch.placeBelow(%last, 5);
 
       %last = %resultSwatch;
     }
@@ -228,6 +274,8 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
   %results.placeBelow(%container.searchOptions, 10);
 
   %container.searchResults = %results;
+
+  %container.verticalMatchChildren(0, 10);
   GlassModManagerGui.resizePage();
 }
 
@@ -271,6 +319,10 @@ function GMM_SearchPage::search(%this) {
   %author = GMM_SearchPage_Author.getValue();
   if(strlen(%author) > 0) {
     %search = trim(%search NL "author" TAB %author);
+  }
+
+  if(GMM_SearchPage_RTB.getValue()) {
+    %search = trim(%search NL "rtb\t1");
   }
 
   echo(%search);
