@@ -36,7 +36,7 @@ function GMM_SearchPage::open(%this, %preserve) {
     text = "\c1Search...";
     command = "GMM_SearchPage_SearchBar.onUpdate();";
     accelerator = "enter";
-    altcommand = "GMM_SearchPage_SearchBar.search();";
+    altcommand = "GMM_SearchPage.search();";
     filler = 1;
   };
 
@@ -98,7 +98,7 @@ function GMM_SearchPage::open(%this, %preserve) {
     visible = false;
   };
 
-  %container.searchOptions.board = new GuiPopUpMenuCtrl() {
+  %container.searchOptions.board = new GuiPopUpMenuCtrl(GMM_SearchPage_Board) {
     profile = "GuiPopUpMenuProfile";
     horizSizing = "right";
     vertSizing = "center";
@@ -109,14 +109,15 @@ function GMM_SearchPage::open(%this, %preserve) {
     enabled = false;
   };
 
-  %container.searchOptions.author = new GuiTextEditCtrl() {
+  %container.searchOptions.author = new GuiTextEditCtrl(GMM_SearchPage_Author) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "106 52";
     extent = "100 20";
     clipToParent = "1";
-    text = "Loading...";
+    text = "";
+    command = "GMM_SearchPage.search();";
   };
 
   %container.searchOptions.add(%container.searchOptions.text);
@@ -205,7 +206,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
       %resultSwatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> by " @ %result.author @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : %result.summary);
+        text = "<font:verdana bold:13>" @ %result.title @ "<font:verdana:13> by " @ %result.author.username @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : %result.summary);
         position = "10 10";
         extent = "575 25";
         minextent = "0 0";
@@ -236,7 +237,6 @@ function GMM_SearchPage_SearchBar::onUpdate(%this, %a) {
     if(strlen(%text) < 10) {
       %this.setValue("\c1Search...");
       %this.setCursorPos(0);
-      GMM_SearchPage.container.searchResults.delete();
     } else {
       %char = getsubstr(%text, %this.getCursorPos()-1, 1);
       %text = %char;
@@ -249,23 +249,31 @@ function GMM_SearchPage_SearchBar::onUpdate(%this, %a) {
     %this.filler = true;
     %this.setValue("\c1Search...");
     %this.setCursorPos(0);
-    GMM_SearchPage.container.searchResults.delete();
   }
 
   if(!%this.filler) {
     if(GlassSettings.get("MM::LiveSearch")) {
-      GMM_SearchPage_SearchBar.search();
+      GMM_SearchPage.search();
     }
   }
 }
 
-function GMM_SearchPage_SearchBar::search(%this) {
-  %query = trim(%this.getValue());
-  if(%this.filler)
-    return;
+function GMM_SearchPage::search(%this) {
+  %query = trim(GMM_SearchPage_SearchBar.getValue());
+  echo(%query);
+  if(GMM_SearchPage_SearchBar.filler)
+    %query = "";
 
-  if(strlen(%query) == 0)
-    return;
+  if(strlen(%query) > 0) {
+    %search = "name" TAB %query;
+  }
 
-  %this.lastTCP = GlassModManager::placeCall("search", "type\taddon\nby\tname" NL "query" TAB %query, "GMM_SearchPage.handleSearchResults");
+  %author = GMM_SearchPage_Author.getValue();
+  if(strlen(%author) > 0) {
+    %search = trim(%search NL "author" TAB %author);
+  }
+
+  echo(%search);
+
+  %this.lastTCP = GlassModManager::placeCall("search", %search, "GMM_SearchPage.handleSearchResults");
 }
