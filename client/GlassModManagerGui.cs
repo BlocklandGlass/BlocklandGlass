@@ -48,7 +48,7 @@ function GlassModManagerGui::loadContext(%context) {
       GlassModManagerGui.openPage(GMM_SearchPage);
 
     case "colorset":
-      GlassModManagerGui.openPage(GMM_ColorsetPage);
+      GlassModManagerGui.openPage(GMM_ColorsetsPage);
 
     case "myaddons":
       GlassModManagerGui.openPage(GMM_MyAddonsPage);
@@ -269,6 +269,7 @@ exec("./submodules/modmanager/errorPage.cs");
 exec("./submodules/modmanager/addonPage.cs");
 exec("./submodules/modmanager/boardsPage.cs");
 exec("./submodules/modmanager/boardPage.cs");
+exec("./submodules/modmanager/colorsetsPage.cs");
 exec("./submodules/modmanager/searchPage.cs");
 exec("./submodules/modmanager/rtbImport.cs");
 exec("./submodules/modmanager/myAddonsPage.cs");

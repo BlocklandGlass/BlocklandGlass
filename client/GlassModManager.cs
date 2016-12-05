@@ -5,6 +5,7 @@ function GlassModManager::init() {
   GMM_AddonPage::init();
   GMM_BoardsPage::init();
   GMM_BoardPage::init();
+  GMM_ColorsetsPage::init();
   GMM_ErrorPage::init();
   GMM_MyAddonsPage::init();
   GMM_SearchPage::init();
@@ -32,23 +33,6 @@ function GlassModManager::init() {
   } else {
     GlassModManagerGui_HostButton.setVisible(false);
   }
-}
-
-function GlassModManager::toggleHost() {
-  if(Glass.alt_address $= "") {
-    Glass.alt_address = "blocklandglass.com";
-  }
-
-  if(Glass.address $= "localhost") {
-    Glass.address = Glass.alt_address;
-  } else {
-    Glass.alt_address = Glass.address;
-    Glass.address = "localhost";
-  }
-
-  GlassAuth.ident = "";
-  GlassAuth.heartbeat();
-  GlassModManagerGui_HostButton.setText(Glass.address);
 }
 
 function GlassModManagerImageMouse::onMouseDown(%this) {
@@ -358,10 +342,6 @@ function GlassModManager::scanForRTB() {
 //====================================
 // Home
 //====================================
-
-function GlassModManager::loadHome() {
-  GlassModManager::placeCall("home");
-}
 
 //====================================
 // My Add-Ons

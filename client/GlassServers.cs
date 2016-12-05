@@ -14,7 +14,7 @@ function GlassServers::init() {
     %this.favorite[%this.favorites] = getField(%favs, %i);
     %this.favorites++;
   }
-  
+
   GlassFavoriteServers.scanServers();
 }
 
@@ -34,11 +34,11 @@ function GlassFavoriteServers::changeGui() {
 function GlassFavoriteServers::toggleFavorite(%this, %ip) {
   if(%ip $= "")
     return;
-	
+
   %favs = GlassSettings.get("Servers::Favorites");
-   
+
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
-    if(getField(%favs, %i) $= %ip) { 
+    if(getField(%favs, %i) $= %ip) {
 	  GlassSettings.update("Servers::Favorites", removeField(%favs, %i));
       glassMessageBoxOk("Removed", "This server has been removed from your favorites!");
 	  GlassServerPreview_Favorite.mColor = "46 204 113 220";
@@ -47,17 +47,17 @@ function GlassFavoriteServers::toggleFavorite(%this, %ip) {
       return;
     }
   }
-  
+
   glassMessageBoxOk("Success", "This server has been added to your favorites!");
   GlassSettings.update("Servers::Favorites", trim(%favs TAB %ip));
   GlassServerPreview_Favorite.mColor = "231 76 60 220";
   GlassServerPreview_Favorite.setText("Remove Favorite");
   GlassServers::init();
 }
-	
+
 
 function GlassFavoriteServers::buildList(%this) {
-	
+
   for(%i = 0; %i < GlassFavoriteServerSwatch.getCount(); %i++) {
     %obj = GlassFavoriteServerSwatch.getObject(%i);
 	%name = %obj.getName();
@@ -113,13 +113,13 @@ function GlassFavoriteServers::buildList(%this) {
       %swatch.placeBelow(%placeBelow, 5);
 
     %placeBelow = %swatch;
-	
+
 	%server = GlassFavoriteServers.onlineFavorite[%i];
-	echo("Server:" SPC %server);
+
 	%password = getField(%server, 3);
 	GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %i, getField(%server, 2), getField(%server, 4), getField(%server, 5), getField(%server, 6), getField(%server, 0) @ getField(%server, 1));
   }
-  
+
   if(%this.favorites $= "" || %this.favorites == 0) {
     GlassFavoriteServerSwatch.extent = "290 60";
 	GlassFavoriteServerGui_Tutorial.setVisible(true);
@@ -127,7 +127,7 @@ function GlassFavoriteServers::buildList(%this) {
   } else if(%this.onlineFavoriteCount == 0) {
 	  GlassFavoriteServerGui_NoServers.setVisible(true);
 	  GlassFavoriteServerGui_Tutorial.setVisible(false);
-  } else { 
+  } else {
 	GlassFavoriteServerGui_Tutorial.setVisible(false);
 	GlassFavoriteServerGui_NoServers.setVisible(false);
   }
@@ -140,7 +140,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   //if(%swatch.text $= "")
     %swatch.text = %swatch.getObject(0);
 
-  echo(%status SPC %id SPC %title SPC %players SPC %maxPlayers SPC %map SPC %addr);
+
   %swatch.server = new ScriptObject() {
     name = trim(%title);
     pass = (%status $= "passworded" ? "Yes" : "No");
@@ -174,7 +174,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
 function GlassFavoriteServers::scanServers() {
 	if(!isObject(GlassFavoriteServers))
 	  return;
-  
+
   connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
 }
 
@@ -198,7 +198,7 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 	for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
       %line = getLine(%this.buffer, %i);
 	  %serverIP = trim(getField(%line, 0) @ ":" @ getField(%line, 1));
-	  
+
 	  for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
 	    %fav = GlassFavoriteServers.favorite[%j];
 		if(%fav $= %serverIP) {
@@ -304,11 +304,11 @@ function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreviewWindowGui.openServerName = %server.name;
 
   GlassServerPreview::getServerBuild(%server.ip, GlassServerPreview_Preview);
-  
+
   if(GlassSettings.get("Servers::EnableFavorites")) {
     for(%i = 0; %i < GlassFavoriteServers.favorites; %i++) {
       %fav = GlassFavoriteServers.favorite[%i];
-    
+
 	  if(%fav $= %server.ip) {
 	  	GlassServerPreview_Favorite.mColor = "231 76 60 220";
 	  	GlassServerPreview_Favorite.setText("Remove Favorite");
@@ -404,7 +404,7 @@ function joinServerGui::preview(%this) {
 function clientCmdGlass_setLoadingBackground(%url, %filetype) {
   if(GlassSettings.get("Servers::LoadingImages") == 0)
 	  return;
-  
+
   if(!LoadingGUI.isAwake())
 	return;
 
