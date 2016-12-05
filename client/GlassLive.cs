@@ -77,7 +77,7 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox");
-  
+
   GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers *", "Servers", "checkbox");
   GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox");
 
@@ -97,7 +97,7 @@ function GlassLive::init() {
     %box = "GlassModManagerGui_Prefs_" @ %setting;
     %box.setValue(GlassSettings.get("MM::" @ %setting));
   }
-  
+
   %settings = "LoadingImages EnableFavorites";
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
@@ -864,7 +864,7 @@ function GlassLive::createBlockhead() {
 
 function GlassLive::BlockheadRandomAnim() {
   %rand = getRandom(0, 8);
-  
+
   switch (%rand) {
 	  case 0:
 		%thread = "talk";
@@ -888,10 +888,10 @@ function GlassLive::BlockheadRandomAnim() {
 	  case 8:
 		%thread = "armReadyBoth";
   }
-  
+
   if(%time $= "")
     %time = 400;
-  
+
   GlassLive::BlockheadAnim(%thread, %time);
 }
 
@@ -899,17 +899,17 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
   %blockhead = GlassFriendsGui_Blockhead;
   if(!isObject(%blockhead))
     return;
-  
+
    if(GlassSettings.get("Live::TalkingAnimation") == 0 && %thread $= "talk")
 	  return;
-  
+
   cancel(%blockhead.rootSchedule);
-  
+
   if(%type $= "")
 	  %type = 1;
-  
+
   GlassFriendsGui_Blockhead.setSequence("", %type, %thread, 1);
-  
+
   %blockhead.rootSchedule = %blockhead.schedule(%time, "setSequence", "", 1, "root", 1);
 }
 
@@ -968,6 +968,64 @@ function GlassLive::updateBlockhead() {
   %obj.setMouse(1, 0);
   %obj.schedule(800, "setOrbitDist", 5.5);
   %obj.schedule(800, "setCameraRot", 0.22, 0.5, 2.8);
+}
+
+function GlassLive::sendAvatarData() {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "avatar");
+
+  %partArray = JettisonArray();
+
+  for(%i = 0; %i < $numFace; %i++) {
+    if(strStr($Face[%i], $Pref::Avatar::FaceName) >= 0)
+	    %faceDecal = %i;
+  }
+
+  for(%i = 0; %i < $numDecal; %i++) {
+    if(strStr($Decal[%i], $Pref::Avatar::DecalName) >= 0)
+  	  %shirtDecal = %i;
+  }
+
+  %obj.set("face", "string", %faceDecal);
+  %obj.set("decal", "string", %shirtDecal);
+  %obj.set("headColor", "string", $Pref::Avatar::HeadColor);
+  %obj.set("torsoColor", "string", $Pref::Avatar::TorsoColor);
+
+  %accent = getWord($accentsAllowed[$hat[$Pref::Avatar::Hat]], $Pref::Avatar::Accent);
+  if(%accent !$= "" && %accent !$= "none") {
+    %obj.set("accent", "string", %accent);
+    %obj.set("accentColor", "string", $Pref::Avatar::AccentColor);
+  }
+
+  %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
+  for(%i = 0; %i <= 11; %i++) {
+    %currPart = getWord(%bodyParts, %i);
+    %numPart = $num[%currPart];
+
+  	for(%j = 0; %j <= %numPart; %j++) {
+  	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
+  	  %equipCurrPartColor = eval("return $Pref::Avatar::" @ %currPart @ "Color;");
+  	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];");
+
+  	  if(%currCheck $= "" || %currCheck $= "None")
+  		  continue;
+
+        echo(%currCheck);
+
+      %partObj = JettisonObject();
+      %partObj.set("part", "string", %currCheck);
+      %partObj.set("color", "string", %equipCurrPartColor);
+
+      %partArray.push("object", %partObj);
+    }
+  }
+
+  %obj.set("parts", "object", %partArray);
+
+  echo(jettisonStringify("object", %obj));
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 //================================================================
