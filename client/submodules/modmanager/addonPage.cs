@@ -291,6 +291,19 @@ function GMM_AddonPage::handleResults(%this, %obj) {
         %last = %spacer;
       }
 
+      if(%action.title !$= "") {
+        switch$(%action.title) {
+          case "Administrator":
+            %color = GlassLive.color_admin;
+
+          case "Moderator":
+            %color = GlassLive.color_mod;
+
+          case "Mod Reviewer":
+            %color = GlassLive.color_bot;
+        }
+      }
+
       %swatch = new GuiSwatchCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
@@ -303,7 +316,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.author = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:13>" @ %action.author @ "<br><font:verdana:12>" @ (%action.title !$= "" ? %action.title @ "<br>" : "") @ %action.authorBlid @ "<br><br>" @ %action.date;
+        text = "<font:verdana bold:13>" @ %action.author @ "<br><font:verdana:12><color:333333>" @ %action.authorBlid @ "<br>" @ (%action.title !$= "" ? "<font:verdana bold:12><color:" @ %color @ ">" @ %action.title : "") @ "<br><br>";
         position = "10 10";
         extent = "125 16";
         minextent = "0 0";
@@ -313,21 +326,34 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana:13>" @ %action.comment;
-        position = "140 10";
-        extent = "445 16";
+        text = "<font:verdana:13><color:333333>" @ %action.comment;
+        position = "145 10";
+        extent = "440 16";
         minextent = "0 0";
         autoResize = true;
       };
 
+      %swatch.date = new GuiTextCtrl(Date) {
+        horizSizing = "right";
+        vertSizing = "bottom";
+
+        profile = "GuiTextVerdanaProfile";
+        text = %action.date;
+        extent = "125 16";
+        position = "10 0";
+      };
+
       %swatch.add(%swatch.author);
       %swatch.add(%swatch.text);
+      %swatch.add(%swatch.date);
 
       %activity.add(%swatch);
 
       %swatch.text.forceReflow();
       %swatch.author.forceReflow();
-      %swatch.verticalMatchChildren(0, 10);
+      %swatch.verticalMatchChildren(70, 10);
+
+      %swatch.date.position = 10 SPC getWord(%swatch.extent, 1)-26;
     } else if(%type $= "update") {
       %swatch = new GuiSwatchCtrl() {
         horizSizing = "right";
@@ -340,7 +366,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.title = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana:13>Updated to <font:verdana bold:13>" @ %action.version @ "<br><br><font:verdana:12>" @ %action.date;
+        text = "<font:verdana:13>Updated to <font:verdana bold:13>" @ %action.version;
         position = "10 10";
         extent = "125 16";
         minextent = "0 0";
@@ -350,20 +376,33 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:13>Change-Log:<br><font:verdana:12>" @ (%action.changelog !$= "" ? %action.changelog : "None");
-        position = "140 10";
-        extent = "450 16";
+        text = "<font:verdana bold:13>Change Log:<br><br><font:verdana:12><color:333333>" @ (%action.changelog !$= "" ? %action.changelog : "None");
+        position = "145 10";
+        extent = "440 16";
         minextent = "0 0";
         autoResize = true;
       };
 
+      %swatch.date = new GuiTextCtrl(Date) {
+        horizSizing = "right";
+        vertSizing = "bottom";
+
+        profile = "GuiTextVerdanaProfile";
+        text = %action.date;
+        extent = "125 16";
+        position = "10 0";
+      };
+
       %swatch.add(%swatch.title);
       %swatch.add(%swatch.text);
+      %swatch.add(%swatch.date);
       %activity.add(%swatch);
 
       %swatch.text.forceReflow();
       %swatch.title.forceReflow();
       %swatch.verticalMatchChildren(0, 10);
+
+      %swatch.date.position = 10 SPC getWord(%swatch.extent, 1)-26;
     }
 
 
