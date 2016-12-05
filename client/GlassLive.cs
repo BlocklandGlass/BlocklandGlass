@@ -856,10 +856,15 @@ function GlassLive::createBlockhead() {
   };
 
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
-  GlassFriendsGui_Blockhead.setObject("", "base/data/shapes/player/m.dts", "", 100);
   GlassFriendsGui_Blockhead.setVisible(false);
-
-  GlassLive::updateBlockhead();
+  GlassFriendsGui_Blockhead.position = "120 -5";
+  GlassFriendsGui_Blockhead.lightDirection = "0 0.2 0.2";
+  GlassFriendsGui_Blockhead.createBlockhead();
+  GlassFriendsGui_InfoSwatch.add(GlassFriendsGui_Blockhead);
+  
+  GlassFriendsGui_Blockhead.schedule(500, "setVisible", true);
+  GlassFriendsGui_Blockhead.schedule(200, "setOrbitDist", 5.5);
+  GlassFriendsGui_Blockhead.schedule(200, "setCameraRot", 0.22, 0.5, 2.8);
 }
 
 function GlassLive::BlockheadRandomAnim() {
@@ -913,28 +918,65 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
   %blockhead.rootSchedule = %blockhead.schedule(%time, "setSequence", "", 1, "root", 1);
 }
 
-function GlassLive::updateBlockhead() {
-  if(!isObject(GlassFriendsGui_Blockhead))
-	  GlassLive::createBlockhead();
-
-  %obj = GlassFriendsGui_Blockhead;
-  %obj.position = "120 -5";
-  %obj.forceFOV = 18;
-  %obj.lightDirection = "0 0.2 0.2";
-
-  GlassFriendsGui_InfoSwatch.add(%obj);
-
+function GuiObjectView::createBlockhead(%this, %json) {
+  %this.forceFOV = 18;
+  
+  %this.setObject("", "base/data/shapes/player/m.dts", "", 100);
+  if(!%json) {
+    %FaceName = $Pref::Avatar::FaceName;
+    %DecalName = $Pref::Avatar::DecalName;
+    %HeadColor = $Pref::Avatar::HeadColor;
+    
+    %accent = $Pref::Avatar::accent;
+    %accentColor = $Pref::Avatar::accentColor;
+    
+    %hat = $Pref::Avatar::hat;
+    %hatColor = $Pref::Avatar::hatColor;
+    
+    %chest = $Pref::Avatar::chest;
+    %chestColor = $Pref::Avatar::chestColor;
+    %TorsoColor = $Pref::Avatar::TorsoColor;
+    
+    %pack = $Pref::Avatar::pack;
+    %packColor = $Pref::Avatar::packColor;
+    
+    %secondPack = $Pref::Avatar::secondPack;
+    %secondPack = $Pref::Avatar::secondPackColor;
+    
+    %larm = $Pref::Avatar::larm;
+    %larmColor = $Pref::Avatar::larmColor;
+    
+    %rarm = $Pref::Avatar::rarm;
+    %rarmColor = $Pref::Avatar::rarmColor;
+    
+    %lhand = $Pref::Avatar::lhand;
+    %lhandColor = $Pref::Avatar::lhandColor;
+      
+    %rhand = $Pref::Avatar::rhand;
+    %rhandColor = $Pref::Avatar::rhandColor;
+    
+    %hip = $Pref::Avatar::hip;
+    %hipColor = $Pref::Avatar::hipColor;
+      
+    %lleg = $Pref::Avatar::lleg;
+    %llegColor = $Pref::Avatar::llegColor;
+      
+    %rleg = $Pref::Avatar::rleg;
+    %rlegColor = $Pref::Avatar::rlegColor; 
+  }
+ 
+  
   for(%i = 0; %i < $numFace; %i++)
-	if(strStr($Face[%i], $Pref::Avatar::FaceName) >= 0)
+	if(strStr($Face[%i], %FaceName) >= 0)
 	  %faceDecal = %i;
 
   for(%i = 0; %i < $numDecal; %i++)
-    if(strStr($Decal[%i], $Pref::Avatar::DecalName) >= 0)
+    if(strStr($Decal[%i], %DecalName) >= 0)
 	  %shirtDecal = %i;
 
-  %obj.setIFLFrame("", "face", %faceDecal);
-  %obj.setIFLFrame("", "decal",%shirtDecal);
-  %obj.setNodeColor("", "ALL", $Pref::Avatar::HeadColor);
+  %this.setIFLFrame("", "face", %faceDecal);
+  %this.setIFLFrame("", "decal",%shirtDecal);
+  %this.setNodeColor("", "ALL", %HeadColor);
 
   %bodyParts = "accent hat chest pack secondpack larm rarm lhand rhand hip lleg rleg";
   for(%i = 0; %i <= 11; %i++) {
@@ -942,32 +984,33 @@ function GlassLive::updateBlockhead() {
     %numPart = $num[%currPart];
 
 	for(%j = 0; %j <= %numPart; %j++) {
-	  %equipCurrPart = eval("return $Pref::Avatar::" @ %currPart @ ";");
-	  %equipCurrPartColor = eval("return $Pref::Avatar::" @ %currPart @ "Color;");
-	  %currCheck = eval("return $" @ %currPart @ "[" @ %j @ "];");
+	  eval("%equipCurrPart = %" @ %currPart @ ";");
+	  eval("%equipCurrPartColor = %" @ %currPart @ "Color;");
+	  eval("%currCheck = $" @ %currPart @ "[" @ %j @ "];");
 
 	  if(%currCheck $= "" || %currCheck $= "None")
 		  continue;
 
 	  if(%j $= %equipCurrPart) {
-      %obj.unHideNode("", %currCheck);
-      %obj.setNodeColor("", %currCheck, %equipCurrPartColor);
+      %this.unHideNode("", %currCheck);
+      %this.setNodeColor("", %currCheck, %equipCurrPartColor);
 	  }
 	  else
-      %obj.hideNode("", %currCheck);
+      %this.hideNode("", %currCheck);
     }
   }
-  %accent = getWord($accentsAllowed[$hat[$Pref::Avatar::Hat]], $Pref::Avatar::Accent);
+  %accent = getWord($accentsAllowed[$hat[%hat]], %accent);
   if(%accent !$= "" && %accent !$= "none") {
-    %obj.unhidenode("", %accent);
-    %obj.hideNode("", "plume");
-    %obj.setnodeColor("", %accent, $Pref::Avatar::AccentColor);
+    %this.unhidenode("", %accent);
+    %this.hideNode("", "plume");
+    %this.setnodeColor("", %accent, %accentColor);
   }
+  
+  %this.hideNode("", "rski");
+  %this.hideNode("", "lski");
 
-  %obj.setNodeColor("", $chest[$Pref::Avatar::Chest], $Pref::Avatar::TorsoColor);
-  %obj.setMouse(1, 0);
-  %obj.schedule(800, "setOrbitDist", 5.5);
-  %obj.schedule(800, "setCameraRot", 0.22, 0.5, 2.8);
+  %this.setNodeColor("", $chest[%chest], %torsoColor);
+  %this.setMouse(1, 1);
 }
 
 function GlassLive::sendAvatarData() {
@@ -2127,6 +2170,144 @@ function GlassLive::createUserWindow(%uo) {
   %uo.window = %window;
   return %window;
 }
+
+// NEW USER WINDOWS // Not finished
+/////////////////////////////////////
+function GlassLive::createUserWindow2(%uo) {
+   if(isObject(%uo.window)) {
+    GlassOverlayGui.pushToBack(%uo.window);
+    //%uo.window.delete();
+    return %uo.window;
+  }
+  
+  %window = new GuiWindowCtrl() {
+    profile = "GlassWindowProfile";
+    horizSizing = "center";
+    vertSizing = "center";
+    position = "235 157";
+    extent = "320 320";
+    text = "Glass User";
+    maxLength = "255";
+    resizeWidth = "0";
+    resizeHeight = "0";
+    canMinimize = "0";
+    canMaximize = "0";
+  };
+  
+  %window.infoSwatch = new GuiSwatchCtrl() {
+	color = "210 210 210 255";
+	position = "10 33";
+	extent = "300 60";
+  };
+  
+  %window.blockhead = new GuiObjectView() {
+    position = "2 -30";
+	extent = "270 140";
+	forceFov = 18;
+	lightDirection = "-1 -1 -1";
+  };
+
+  %window.headerText = new GuiMLTextCtrl() {
+	position = "10 5";
+	extent = "280 26";
+	text = "";
+  };
+   
+  %window.statusSwatch = new GuiBitmapButtonCtrl() {
+	profile = "GlassBlockButtonProfile";
+	bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+	text = "";
+	mColor = "255 255 255 110";
+	position = "222 35";
+	extent = "70 22";
+  };
+  
+  %window.statusText = new GuiMLTextCtrl() {
+	position = "2 3";
+	extent = "65 16";
+	minExtent = "8 2";
+	text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
+  };
+  
+  
+  %window.add(%window.infoSwatch);
+  %window.infoSwatch.add(%window.blockhead);
+  %window.infoSwatch.add(%window.headerText);
+  %window.infoSwatch.add(%window.statusSwatch);
+  
+  %window.statusSwatch.add(%window.statusText);
+ 
+  
+  %window.closeCommand = %window.getId() @ ".delete();";
+
+  GlassOverlayGui.add(%window);
+  
+   %window.setName("GlassUserGui");
+   %uo.window = %window;
+   return %window;
+}
+
+
+function GlassLive::openUserWindow2(%blid) {
+  %uo = GlassLiveUser::getFromBlid(%blid);
+  if(%uo) {
+    %window = GlassLive::createUserWindow(%uo);
+
+    switch$(%uo.getStatus()) {
+      case "online":
+        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
+		%statusColor = "84 217 140 100";
+      case "busy":
+        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:13> Busy";
+		%statusColor = "231 76 60 100";
+      case "away":
+        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:13> Away";
+		%statusColor = "241 196 15 100";
+      default:
+        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
+		%statusColor = "210 210 210 255";
+    }
+	
+	
+	%window.statusText.setText(%status);
+	%window.infoSwatch.color = %statusColor;
+	%window.headerText.setText("<just:right><font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid);
+
+	%window.blockhead.createBlockhead();
+    %window.blockhead.setSequence("", 0, "crouch", 1);
+    %window.blockhead.setSequence("test", 1, "headside", 1);
+	%window.blockhead.setOrbitDist(18);
+	%window.blockhead.setCameraRot(3, 0, 1.5);
+	
+    if(%uo.isFriend()) {
+      %window.friendButton.mcolor = "255 200 200 200";
+      %window.friendButton.command = "GlassLive::removeFriendPrompt(" @ %uo.blid @ ");";
+      %window.friendButton.text = "Unfriend";
+    } else {
+      %window.friendButton.mcolor = "200 255 200 200";
+      %window.friendButton.command = "GlassLive::addFriendPrompt(" @ %uo.blid @ ");";
+      %window.friendButton.text = "Add Friend";
+    }
+
+    if(%uo.isBlocked()) {
+      %window.blockButton.mcolor = "237 184 105 200";
+      %window.blockButton.command = "GlassLive::userUnblock(" @ %uo.blid @ ");";
+      %window.blockButton.text = "Unblock";
+    } else {
+      %window.blockButton.mcolor = "237 118 105 200";
+      %window.blockButton.command = "GlassLive::userBlock(" @ %uo.blid @ ");";
+      %window.blockButton.text = "Block";
+    }
+
+    %window.messageButton.enabled = true;
+
+    if(!%window.centered) {
+      %window.forceCenter();
+      %window.centered = true;
+    }
+  }
+}
+////////////////////// not done ///////////////////////// END
 
 function GlassLive::createBanWindow(%blid, %name, %type) {
   if(!GlassOverlayGui.isMember(GlassBanWindowGui))
@@ -3766,7 +3947,7 @@ package GlassLivePackage {
 
   function Avatar_Done() {
 	parent::Avatar_Done();
-    GlassLive::updateBlockhead();
+    GlassFriendsGui_Blockhead.createBlockhead();
   }
 };
 activatePackage(GlassLivePackage);
