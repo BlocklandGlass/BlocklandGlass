@@ -223,7 +223,161 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %container.add(%container.screenshots);
   %container.screenshots.placeBelow(%container.description, 5);
 
+  %activity = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 255";
+    position = "10 0";
+    extent = "615 30";
+  };
+
+  %activity.text = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    text = "<font:verdana bold:13>Activity";
+    position = "10 10";
+    extent = "595 16";
+    minextent = "0 0";
+    autoResize = true;
+  };
+
+  %activity.add(%activity.text);
+  %container.add(%activity);
+  %activity.placeBelow(%screenshots, 10);
+
+  if(%obj.activity $= "") {
+    %comment = JettisonObject();
+    %comment.set("type", "string", "comment");
+    %comment.set("date", "string", "4:48 12/5/2016");
+
+    %comment.set("author", "string", "Jincux");
+    %comment.set("authorBlid", "string", "9789");
+    %comment.set("title", "string", "Administrator");
+
+    %comment.set("comment", "string", "Sick comments");
+
+    %update = JettisonObject();
+    %update.set("type", "string", "update");
+    %update.set("date", "string", "4:48 12/5/2016");
+    %update.set("version", "string", "4.0.0");
+
+    %obj.activity = JettisonArray();
+    %obj.activity.push("object", %comment);
+    %obj.activity.push("object", %comment);
+    %obj.activity.push("object", %comment);
+    %obj.activity.push("object", %update);
+    %obj.activity.push("object", %comment);
+  }
+
+  for(%i = 0; %i < %obj.activity.length; %i++) {
+    %action = %obj.activity.value[%i];
+
+    %type = %action.type;
+    %date = %action.date;
+
+    echo("action: " @ %type);
+
+    if(%type $= "comment") {
+      if(%last.type $= "comment") {
+        %spacer = new GuiSwatchCtrl() {
+          horizSizing = "right";
+          vertSizing = "bottom";
+          color = "84 217 140 128";
+          position = "10 30";
+          extent = "595 1";
+        };
+        %activity.add(%spacer);
+        %spacer.placeBelow(%last);
+        %last = %spacer;
+      }
+
+      %swatch = new GuiSwatchCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        //color = ((%odd = !%odd) ? "230 230 230" : "240 240 240") SPC 255;
+        color = "240 240 240 255";
+        position = "10 30";
+        extent = "595 30";
+      };
+
+      %swatch.author = new GuiMLTextCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        text = "<font:verdana bold:13>" @ %action.author @ "<br><font:verdana:12>" @ (%action.title !$= "" ? %action.title @ "<br>" : "") @ %action.authorBlid @ "<br><br>" @ %action.date;
+        position = "10 10";
+        extent = "125 16";
+        minextent = "0 0";
+        autoResize = true;
+      };
+
+      %swatch.text = new GuiMLTextCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        text = "<font:verdana:13>" @ %action.comment;
+        position = "140 10";
+        extent = "445 16";
+        minextent = "0 0";
+        autoResize = true;
+      };
+
+      %swatch.add(%swatch.author);
+      %swatch.add(%swatch.text);
+
+      %activity.add(%swatch);
+
+      %swatch.text.forceReflow();
+      %swatch.author.forceReflow();
+      %swatch.verticalMatchChildren(0, 10);
+    } else if(%type $= "update") {
+      %swatch = new GuiSwatchCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        color = "84 217 140 170";
+        position = "10 30";
+        extent = "595 30";
+      };
+
+      %swatch.title = new GuiMLTextCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        text = "<font:verdana:13>Updated to <font:verdana bold:13>" @ %action.version @ "<br><br><font:verdana:12>" @ %action.date;
+        position = "10 10";
+        extent = "125 16";
+        minextent = "0 0";
+        autoResize = true;
+      };
+
+      %swatch.text = new GuiMLTextCtrl() {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        text = "<font:verdana bold:13>Change-Log:<br><font:verdana:12>" @ (%action.changelog !$= "" ? %action.changelog : "None");
+        position = "140 10";
+        extent = "450 16";
+        minextent = "0 0";
+        autoResize = true;
+      };
+
+      %swatch.add(%swatch.title);
+      %swatch.add(%swatch.text);
+      %activity.add(%swatch);
+
+      %swatch.text.forceReflow();
+      %swatch.title.forceReflow();
+      %swatch.verticalMatchChildren(0, 10);
+    }
+
+
+    %swatch.type = %type;
+
+    if(%last)
+      %swatch.placeBelow(%last);
+
+    %last = %swatch;
+  }
+
+  %activity.verticalMatchChildren(20, 10);
   %container.verticalMatchChildren(0, 10);
+  GlassModManagerGui.resizePage();
 
   return;
 
