@@ -3,6 +3,9 @@ function GMM_SearchPage::init() {
 }
 
 function GMM_SearchPage::open(%this, %preserve) {
+  GMM_Navigation.clear();
+  GMM_Navigation.addStep("Search", "GlassModManagerGui.openPage(GMM_SearchPage);");
+
   if(isObject(%this.container)) {
     GlassModManagerGui.schedule(0, pageDidLoad, %this);
     return %this.container;
@@ -215,6 +218,9 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
           color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
           position = "10 25";
           extent = "595 30";
+
+          id = %result.id;
+          isRTB = false;
         };
 
         %resultSwatch.text = new GuiMLTextCtrl() {
@@ -233,6 +239,9 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
           color = (%odd = !%odd) ? "240 240 240 255" : "235 235 235 255";
           position = "10 25";
           extent = "595 30";
+
+          id = %result.rtb_id;
+          isRTB = true;
         };
 
         %resultSwatch.image = new GuiBitmapCtrl() {
@@ -276,6 +285,8 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
       if(%last)
         %resultSwatch.placeBelow(%last, 5);
 
+      GlassHighlightSwatch::addToSwatch(%resultSwatch, "5 5 5", "GMM_SearchPage.interact");
+
       %last = %resultSwatch;
     }
   }
@@ -288,6 +299,15 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
 
   %container.verticalMatchChildren(0, 10);
   GlassModManagerGui.resizePage();
+}
+
+function GMM_SearchPage::interact(%this, %swatch) {
+  if(%swatch.isRTB) {
+    echo(%swatch.id);
+    GlassModManagerGui.openPage(GMM_RTBAddonPage, %swatch.id);
+  } else {
+    GlassModManagerGui.openPage(GMM_AddonPage, %swatch.id);
+  }
 }
 
 function GMM_SearchPage_SearchBar::onUpdate(%this, %a) {

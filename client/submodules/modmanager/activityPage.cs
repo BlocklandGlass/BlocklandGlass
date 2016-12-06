@@ -5,6 +5,9 @@ function GMM_ActivityPage::init() {
 }
 
 function GMM_ActivityPage::open(%this) {
+  GMM_Navigation.clear();
+  GMM_Navigation.addStep("Activity", "GlassModManagerGui.openPage(GMM_ActivityPage);");
+  
   if(isObject(%this.container)) {
     %this.container.deleteAll();
     %this.container.delete();

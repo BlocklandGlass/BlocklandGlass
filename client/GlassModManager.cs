@@ -9,6 +9,7 @@ function GlassModManager::init() {
   GMM_ErrorPage::init();
   GMM_MyAddonsPage::init();
   GMM_SearchPage::init();
+  GMM_RTBAddonPage::init();
 
   GMM_Navigation::init();
 
@@ -76,7 +77,7 @@ function GlassModManager::catalogAddons() {
 
 function GlassModManagerGui_Window::onWake(%this) {
   if(!GlassModManagerGui.firstWake) {
-    GlassModManagerGui::loadContext("home");
+    GlassModManagerGui.loadContext("home");
     GlassModManagerGui.firstWake = true;
   }
 }
@@ -984,9 +985,9 @@ package GlassModManager {
     }
 
     if(%link $= "home") {
-      GlassModManagerGui::loadContext("home");
+      GlassModManagerGui.loadContext("home");
     } else if(%link $= "boards") {
-      GlassModManagerGui::loadContext("addons");
+      GlassModManagerGui.loadContext("addons");
     }
   }
 };

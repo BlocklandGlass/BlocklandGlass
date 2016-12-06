@@ -148,6 +148,10 @@ function GlassLive::openModManager() {
   }
   GlassModManagerGui_Window.setVisible(!GlassModManagerGui_Window.visible);
 
+  if(GlassModManagerGui.page $= "") {
+    GlassModManagerGui.openPage(GMM_ActivityPage);
+  }
+
   GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 }
 

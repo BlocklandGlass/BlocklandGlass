@@ -633,7 +633,7 @@ new GuiControl(GlassOverlayGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"addons\");";
+            command = "GlassModManagerGui::setPane(1); GlassModManagerGui.loadContext(\"addons\");";
             text = "Add-Ons";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -655,7 +655,7 @@ new GuiControl(GlassOverlayGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"home\");";
+            command = "GlassModManagerGui::setPane(1); GlassModManagerGui.loadContext(\"home\");";
             text = "Activity";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -732,7 +732,7 @@ new GuiControl(GlassOverlayGui) {
             enabled = "1";
             visible = "0";
             clipToParent = "1";
-            command = "GlassModManagerGui::setPane(1); GlassModManagerGui::loadContext(\"builds\");";
+            command = "GlassModManagerGui::setPane(1); GlassModManagerGui.loadContext(\"builds\");";
             text = "Builds";
             groupNum = "-1";
             buttonType = "PushButton";

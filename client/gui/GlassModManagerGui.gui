@@ -33,7 +33,7 @@ new GuiControl(GlassModManagerGui) {
       minSize = "50 50";
       closeCommand = "GlassLive::closeModManager();";
 
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassModManagerGui_Tab_Search) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -43,7 +43,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::loadContext(\"search\");";
+         command = "GlassModManagerGui.loadContext(\"search\");";
          text = "Search";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -137,7 +137,7 @@ new GuiControl(GlassModManagerGui) {
             maxLength = "255";
          };
       };
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassModManagerGui_Tab_Colorset) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -147,7 +147,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::loadContext(\"colorset\");";
+         command = "GlassModManagerGui.loadContext(\"colorset\");";
          text = "My Colorsets";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -159,7 +159,7 @@ new GuiControl(GlassModManagerGui) {
          mKeepCached = "0";
          mColor = "84 217 140 150";
       };
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassModManagerGui_Tab_Activity) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -169,7 +169,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::loadContext(\"activity\");";
+         command = "GlassModManagerGui.loadContext(\"activity\");";
          text = "Activity";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -181,7 +181,7 @@ new GuiControl(GlassModManagerGui) {
          mKeepCached = "0";
          mColor = "255 255 255 128";
       };
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassModManagerGui_Tab_Boards) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -191,7 +191,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::loadContext(\"boards\");";
+         command = "GlassModManagerGui.loadContext(\"boards\");";
          text = "Boards";
          groupNum = "-1";
          buttonType = "PushButton";
@@ -203,7 +203,7 @@ new GuiControl(GlassModManagerGui) {
          mKeepCached = "0";
          mColor = "255 255 255 128";
       };
-      new GuiBitmapButtonCtrl() {
+      new GuiBitmapButtonCtrl(GlassModManagerGui_Tab_MyAddons) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
@@ -213,7 +213,7 @@ new GuiControl(GlassModManagerGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassModManagerGui::loadContext(\"myaddons\");";
+         command = "GlassModManagerGui.loadContext(\"myaddons\");";
          text = "My Add-Ons";
          groupNum = "-1";
          buttonType = "PushButton";

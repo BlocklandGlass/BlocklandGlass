@@ -39,11 +39,17 @@ function GlassModManagerGui::resizePage(%this) {
   GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
-function GlassModManagerGui::loadContext(%context) {
+function GlassModManagerGui::loadContext(%this, %context) {
   //contexts are essentially just different starting points
   //for the dynamic guis
   //home, addons, build
 
+  %old = %this.contextTab;
+  if(isObject(%old)) {
+    %old.mColor = %old.oColor;
+  }
+
+  %obj = "GlassModManagerGui_Tab_" @ %context;
 
   switch$(%context) {
     case "activity":
@@ -61,6 +67,10 @@ function GlassModManagerGui::loadContext(%context) {
     case "myaddons":
       GlassModManagerGui.openPage(GMM_MyAddonsPage);
   }
+
+  %obj.oColor = %obj.mColor;
+  %obj.mColor = "131 195 243 180";
+  %this.contextTab = %obj;
 }
 
 function GlassModManagerGui::setLoading(%this, %bool) {
@@ -272,13 +282,19 @@ function GlassModManagerGui_BoardButton::onAdd(%this) {
   %this.position = "0 0";
 }
 
-exec("./submodules/modmanager/trending.cs");
+
 exec("./submodules/modmanager/errorPage.cs");
-exec("./submodules/modmanager/addonPage.cs");
+
+exec("./submodules/modmanager/activityPage.cs");
+exec("./submodules/modmanager/searchPage.cs");
 exec("./submodules/modmanager/boardsPage.cs");
 exec("./submodules/modmanager/boardPage.cs");
+exec("./submodules/modmanager/addonPage.cs");
+
 exec("./submodules/modmanager/colorsetsPage.cs");
-exec("./submodules/modmanager/searchPage.cs");
-exec("./submodules/modmanager/rtbImport.cs");
 exec("./submodules/modmanager/myAddonsPage.cs");
+
+exec("./submodules/modmanager/rtbImport.cs");
+exec("./submodules/modmanager/rtbAddonPage.cs");
+
 exec("./gui/elements/GMM_Navigation.cs");

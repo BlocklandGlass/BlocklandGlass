@@ -28,6 +28,10 @@ function GMM_AddonPage::open(%this, %modId) {
   return %container;
 }
 
+function GMM_AddonPage::close(%this) {
+  %this.container.deleteAll();
+}
+
 function GMM_AddonPage::handleResults(%this, %obj) {
   GlassModManagerGui.pageDidLoad(%this);
   //obj:

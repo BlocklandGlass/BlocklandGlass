@@ -66,6 +66,32 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
   %last = %header;
 
+  if(%addons.length == 0) {
+    %swatch = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = (%odd = !%odd) ? "235 235 235 255" : "230 230 230 255";
+      position = "10 10";
+      extent = "595 40";
+
+      aid = %aid;
+    };
+
+    %swatch.title = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<color:666666><font:Verdana Bold:12><just:center>No Add-Ons Found";
+      position = "0 5";
+      extent = "595 15";
+    };
+
+    %swatch.add(%swatch.title);
+    %swatch.title.centerY();
+
+    %body.add(%swatch);
+    %swatch.placeBelow(%last, 0);
+  }
+
   for(%i = 0; %i < %addons.length; %i++) {
     %addon = %addons.value[%i];
 
@@ -108,7 +134,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %swatch.downloads = new GuiMLTextCtrl() {
       horizSizing = "left";
       vertSizing = "bottom";
-      text = "<color:333333><font:verdana:13><just:right>11";
+      text = "<color:333333><font:verdana:13><just:right>" @ %downloads;
       position = "500 12";
       extent = "85 45";
     };
@@ -145,9 +171,6 @@ function _glassPageNav(%board, %id) {
 }
 
 function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
-  $Glass::MM_PreviousBoard = %bid;
-  $Glass::MM_PreviousPage = %page;
-
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -155,8 +178,6 @@ function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
     position = "10 10";
     extent = "595 25";
   };
-
-  %back = "<a:glass://boards><< Back</a>";
 
   if(%pages <= 1) {
     %pageText = "[1]";
@@ -186,7 +207,7 @@ function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
-    text = "<color:333333><font:verdana:15><just:left>" @ %back @ "<just:right>" @ %pageText;
+    text = "<color:333333><font:verdana:15><just:right>" @ %pageText;
     position = "0 0";
     extent = "595 45";
   };
