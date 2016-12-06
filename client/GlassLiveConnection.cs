@@ -238,7 +238,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         return;
 
       if(GlassSettings.get("Live::RoomNotification"))
-        GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+        GlassNotificationManager::newNotification("Entered Room", "You've entered " @ %data.title, "add", 0);
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
@@ -276,7 +276,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "roomJoin":
       if(GlassSettings.get("Live::RoomNotification"))
-        GlassNotificationManager::newNotification("Joined Room", "You've joined " @ %data.title, "add", 0);
+        GlassNotificationManager::newNotification("Entered Room", "You've entered " @ %data.title, "add", 0);
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 

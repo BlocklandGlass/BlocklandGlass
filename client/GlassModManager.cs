@@ -40,7 +40,7 @@ function GlassModManagerImageMouse::onMouseDown(%this) {
 }
 
 // function GlassModManager::updateLiveSearch() {
-  // %val = GlassModManagerGui_Prefs_LiveSearch.getValue();
+  // %val = GlassSettingsGui_Prefs_LiveSearch.getValue();
 
   // GlassModManager.liveSearch = %val;
   // // GlassSettings.update("MM::LiveSearch", %val);
@@ -122,7 +122,7 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   GlobalActionMap.bind(%device, %key, "GlassLive_keybind");
   GlassModManager_Remapper.delete();
-  GlassModManagerGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
+  GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(%key));
   GlassSettings.update("Live::Keybind", %device TAB %key);
 }
 

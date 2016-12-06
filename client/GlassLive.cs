@@ -51,59 +51,58 @@ function GlassLive::init() {
   GlassOverlayGui.add(GlassIconSelectorWindow);
   GlassIconSelectorWindow.updateIcons();
 
-  // glass pref, description/name, category, type
-  GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox");
-  GlassSettings.drawSetting("Live::TalkingAnimation", "Animate Avatar on Message", "Live", "checkbox");
+  // glass pref, description/name, category, type, properties (for dropdowns), information
+  GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
+  GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
+  GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
+  GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
+  GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
+  GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
+  GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
+  GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
+  GlassSettings.drawSetting("Live::TalkingAnimation", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
 
-  GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox");
+  GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
   GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
 
-  // GlassSettings.drawSetting("Live::RoomShowAwake", "Share Awake Status", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom.");
+  GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in the chatroom.");
   GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomNotification", "Entered/Exited Notifications", "Chatroom", "checkbox");
-  GlassSettings.drawSetting("Live::RoomShowBlocked", "Show Blocked Users", "Chatroom", "checkbox");
+  GlassSettings.drawSetting("Live::RoomNotification", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live.");
+  GlassSettings.drawSetting("Live::RoomShowBlocked", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
 
   GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messaging", "checkbox");
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox");
-  GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox");
+  GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
 
-  GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers *", "Servers", "checkbox");
-  GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox");
+  GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers", "Servers", "checkbox"); // add restart msgbox callback
+  GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
 
-  %settings = "TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo";
-  // removed: Live::RoomAutoJoin, Live::MessageAnyone, Live::RoomShowAwake
+  GlassSettings.drawSetting("Live::FakeSetting", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
 
-  for(%i = 0; %i < getWordCount(%settings); %i++) {
-    %setting = getWord(%settings, %i);
-    %box = "GlassModManagerGui_Prefs_" @ %setting;
-    %box.setValue(GlassSettings.get("Live::" @ %setting));
-  }
+  %settings["Live"] = "TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
+  // removed: Live::RoomAutoJoin, Live::MessageAnyone
+  %settings["MM"] = "UseDefault LiveSearch";
+  %settings["Servers"] = "LoadingImages EnableFavorites";
 
-  %settings = "UseDefault LiveSearch";
+  %settings = "Live MM Servers";
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
-    %setting = getWord(%settings, %i);
-    %box = "GlassModManagerGui_Prefs_" @ %setting;
-    %box.setValue(GlassSettings.get("MM::" @ %setting));
-  }
+    %prefix = getWord(%settings, %i);
+    %group = %settings[%prefix];
+    for(%o = 0; %o < getWordCount(%group); %o++) {
+      %setting = getWord(%group, %o);
+      %box = "GlassSettingsGui_Prefs_" @ %setting;
 
-  %settings = "LoadingImages EnableFavorites";
-
-  for(%i = 0; %i < getWordCount(%settings); %i++) {
-    %setting = getWord(%settings, %i);
-    %box = "GlassModManagerGui_Prefs_" @ %setting;
-    %box.setValue(GlassSettings.get("Servers::" @ %setting));
+      switch$(%box.profile) {
+        case "GlassCheckBoxProfile":
+          %box.setValue(GlassSettings.get(%prefix @ "::" @ %setting));
+        case "GuiPopUpMenuProfile":
+          %box.setText(GlassSettings.get(%prefix @ "::" @ %setting));
+      }
+    }
   }
 
   GlassLive::createBlockhead();
@@ -221,11 +220,11 @@ function GlassLive::closeOverlay() {
 }
 
 function GlassLive::updateSetting(%category, %setting) {
-  %box = "GlassModManagerGui_Prefs_" @ %setting;
+  %box = "GlassSettingsGui_Prefs_" @ %setting;
   GlassSettings.update(%category @ "::" @ %setting, %box.getValue());
   %box.setValue(GlassSettings.get(%category @ "::" @ %setting));
 
-  if(strLen(%callback = GlassSettings.obj[%setting].callback)) {
+  if(strlen(%callback = GlassSettings.obj[%setting].callback)) {
     if(isFunction(%callback)) {
       call(%callback);
     }
@@ -851,7 +850,7 @@ function GlassLive::createBlockhead() {
   };
 
   if(isObject(GlassFriendsGui_BlockheadAnim))
-	GlassFriendsGui_BlockheadAnim.delete();
+    GlassFriendsGui_BlockheadAnim.delete();
 
   new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
     extent = "74 176";

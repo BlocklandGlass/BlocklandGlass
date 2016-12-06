@@ -38,7 +38,7 @@ function GlassLiveRoom::leaveRoom(%this) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   if(GlassSettings.get("Live::RoomNotification")) {
-    GlassNotificationManager::newNotification("Left Room", "You've left " @ %this.name, "delete", 0);
+    GlassNotificationManager::newNotification("Exited Room", "You've exited " @ %this.name, "delete", 0);
   }
 
   %this.view.window.removeTab(%this.view);
@@ -184,28 +184,6 @@ function GlassLiveRoom::sendCommand(%this, %msg) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
-
-// function GlassLiveRoom::setUserAwake(%this, %blid, %awake) {
-  // %this.awake[%blid] = %awake;
-  // %icon = %this.userListSwatch[%blid].icon;
-  // if(isObject(%icon)) {
-    // %icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ (%awake ? "user.png" : "user_yellow.png"));
-  // }
-// }
-
-// function GlassLiveRoom::setAwake(%this, %bool) {
-  // if(!GlassSettings.get("Live::RoomShowAwake"))
-    // %bool = false;
-
-  // %this.awake = %bool;
-
-  // %obj = JettisonObject();
-  // %obj.set("type", "string", "roomAwake");
-  // %obj.set("id", "string", %this.id);
-  // %obj.set("bool", "string", %bool);
-
-  // GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-// }
 
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();

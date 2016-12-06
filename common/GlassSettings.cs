@@ -24,7 +24,6 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
     GlassSettings.registerSetting("client", "Live::RoomShowBlocked", false);
     GlassSettings.registerSetting("client", "Live::AutoJoinRoom", true);
-    // GlassSettings.registerSetting("client", "Live::RoomShowAwake", true, "chatroomAwakeCallback");
     GlassSettings.registerSetting("client", "Live::RoomNotification", false); // joined room / left room notifications
 
     GlassSettings.registerSetting("client", "Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
@@ -40,16 +39,17 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
 	
-	GlassSettings.registerSetting("client", "Servers::EnableFavorites", true);
+    GlassSettings.registerSetting("client", "Servers::EnableFavorites", true);
     GlassSettings.registerSetting("client", "Servers::LoadingImages", true);
 
-	
+    GlassSettings.registerSetting("client", "Live::FakeSetting", "One");
+
   // } else if(%context $= "server") {
     // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
     // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
 
-	GlassSettings.registerSetting("client", "Servers::Favorites", "");
+    GlassSettings.registerSetting("client", "Servers::Favorites", "");
   }
 
   GlassSettings.loadData(%context);
@@ -92,7 +92,7 @@ function GlassSettings::resetToDefaults(%this, %context) {
       %this.update(%setting.name, %setting.defaultValue);
 
       %name = getsubstr(%setting.name, strpos(%setting.name, "::") + 2, strlen(%setting.name));
-      %box = "GlassModManagerGui_Prefs_" @ %name;
+      %box = "GlassSettingsGui_Prefs_" @ %name;
 
       if(isObject(%box)) {
         %box.setValue(%setting.defaultValue);
@@ -134,7 +134,7 @@ function GlassSettings::createSettingHeader(%name) {
   return %gui;
 }
 
-function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
+function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %properties, %desc) {
   if(GlassSettings.get(%pref) $= "") {
     error("Non-existent setting.");
     return;
@@ -179,18 +179,18 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
   %suffix = getSubStr(%suffix, 2, strlen(%suffix));
   %command = "GlassLive::updateSetting(\"" @ %prefix @ "\", \"" @ %suffix @ "\");";
 
-  if(isObject("GlassModManagerGui_Prefs_" @ %suffix)) {
-    error("Setting already exists in GUI.");
+  if(isObject("GlassSettingsGui_Prefs_" @ %suffix)) {
+    error("Setting '" @ %suffix @ "' already exists in GUI.");
     return;
   }
 
   switch$(%type) {
     case "checkbox":
-      %ctrl = new GuiCheckBoxCtrl("GlassModManagerGui_Prefs_" @ %suffix) {
+      %ctrl = new GuiCheckBoxCtrl("GlassSettingsGui_Prefs_" @ %suffix) {
         profile = "GlassCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "center";
-        position = "28 -3";
+        position = "28 3";
         extent = "180 30";
         minExtent = "8 2";
         enabled = "1";
@@ -201,12 +201,32 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
         groupNum = "-1";
         buttonType = "ToggleButton";
       };
-    case "slider":
-      // to do
-    case "button":
-      // to do
+    case "dropdown": // unfinished - need to add GUI text (using %name) explaining what the dropdown text is for; also need to tweak extent/placement of dropdown ctrl.
+      %setting.extent = "250 50";
+      %ctrl = new GuiPopUpMenuCtrl("GlassSettingsGui_Prefs_" @ %suffix) {
+        profile = "GuiPopUpMenuProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "28 3";
+        extent = "60 20";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        command = %command;
+        maxLength = "255";
+        maxPopupHeight = "200";
+      };
+      
+      for(%i = 0; %i < getWordCount(%properties); %i++) {
+        %ctrl.add(getWord(%properties, %i), %i + 1);
+      }
+    case "slider": // for audio stuff
+      // to-do
+    case "button": // reset button
+      // to-do
     case "keybind":
-      // to do
+      // to-do
     default:
       error("Non-existent setting type.");
       return;
@@ -214,11 +234,62 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type) {
 
   %setting.add(%ctrl);
 
+  if(%desc !$= "")
+    %infoColor = "255 255 255 255";
+  else
+    %infoColor = "180 180 180 255";
+
+  %info = new GuiBitmapCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "8 -4";
+    extent = "15 15";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/help.png";
+    wrap = "0";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    keepCached = "0";
+    mColor = %infoColor;
+    mMultiply = "0";
+
+    new GuiMouseEventCtrl("GlassSettingsGui_Info") {
+      setting = %name;
+      description = %desc;
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "0 0";
+      extent = "15 15";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      lockMouse = "0";
+    };
+  };
+  %setting.add(%info);
+
   GlassSettingsGui_ScrollOverlay.settingsCount++;
   GlassSettingsGui_ScrollOverlay.add(%setting);
 
   GlassSettingsGui_ScrollOverlay.verticalMatchChildren(40, 10);
   GlassSettingsGui_ScrollOverlay.setVisible(true);
+}
+
+function GlassSettingsGui_Info::onMouseUp(%this) {
+  %desc = %this.description;
+
+  if(%desc $= "")
+    %desc = "No information available.";
+
+  glassMessageBoxOk(%this.setting, %desc);
 }
 
 function GlassSettings::loadData(%this, %context) {

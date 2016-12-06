@@ -95,7 +95,7 @@ new GuiControl(GlassSettingsGui) {
                   text = "Keybind:";
                   maxLength = "255";
                };
-               new GuiTextCtrl(GlassModManagerGui_Prefs_Keybind) {
+               new GuiTextCtrl(GlassSettingsGui_Prefs_Keybind) {
                   profile = "GuiTextVerdanaProfile";
                   horizSizing = "right";
                   vertSizing = "center";

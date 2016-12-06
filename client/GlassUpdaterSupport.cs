@@ -134,10 +134,10 @@ function GlassUpdaterSupport::updateProgressBar(%queueObj, %float) {
 }
 
 // if(!$Server::Dedicated)
-  // GlassModManagerGui_Prefs_Updater.setValue(GlassSettings.get("MM::UseDefault"));
+  // GlassSettingsGui_Prefs_Updater.setValue(GlassSettings.get("MM::UseDefault"));
 
 function GlassUpdaterSupport::updateSetting() {
-  // %i = GlassModManagerGui_Prefs_UseDefault.getValue();
+  // %i = GlassSettingsGui_Prefs_UseDefault.getValue();
   // GlassSettings.update("MM::UseDefault", %i);
   %i = GlassSettings.get("MM::UseDefault");
   // if(%i) {
