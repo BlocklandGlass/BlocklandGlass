@@ -415,6 +415,10 @@ function GlassLiveConnection::onLine(%this, %line) {
         %uo.setStatus(%friend.status);
         %uo.setIcon(%friend.icon);
 
+        if(isObject(%data.locationData)) {
+          %uo.updateLocation(%data.locationData.location, %data.locationData.serverTitle, %data.locationData.address);
+        }
+
         GlassLive::addFriendToList(%uo);
       }
       GlassLive::createFriendList();

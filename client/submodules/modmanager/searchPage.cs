@@ -4,7 +4,7 @@ function GMM_SearchPage::init() {
 
 function GMM_SearchPage::open(%this, %preserve) {
   GMM_Navigation.clear();
-  GMM_Navigation.addStep("Search", "GlassModManagerGui.openPage(GMM_SearchPage);");
+  GMM_Navigation.addStep("Search", "GlassModManagerGui.openPage(GMM_SearchPage, true);");
 
   if(isObject(%this.container)) {
     GlassModManagerGui.schedule(0, pageDidLoad, %this);
