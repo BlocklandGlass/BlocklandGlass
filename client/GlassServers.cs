@@ -420,12 +420,12 @@ function joinServerGui::preview(%this) {
   GlassServerPreviewGui.open();
 }
 
-function clientCmdGlass_setLoadingBackground(%url, %filetype) {
+function clientCmdGlass_setLoadingBackground(%url, %filetype, %crc) {
   if(GlassSettings.get("Servers::LoadingImages") == 0)
 	  return;
 
   if(!LoadingGUI.isAwake())
-	return;
+	 return;
 
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
@@ -433,16 +433,27 @@ function clientCmdGlass_setLoadingBackground(%url, %filetype) {
   LoadingGUI.lastDownload = $Sim::Time;
 
   if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
-	echo("Cannot download loading screen background as it does not have a legal file type.");
-	return;
+  	echo("\c2Server sent illegal LoadingGui image format");
+  	return;
   }
 
   %method = "GET";
-  %downloadPath = "config/client/BLG/loadingBackground." @ %fileType;
+  %downloadPath = "config/client/BLG/loadingImages/" @ sha1(%url) @ "." @ %fileType;
   %className = "GlassServerBackgroundTCP";
+
+  echo("Downloading from " @ %url @ " to " @ %downloadPath);
+
+  if(isFile(%downloadPath)) {
+    if(%crc $= "" || getFileCRC(%downloadPath) $= %crc) {
+      echo("Map picture stored locally!");
+      LOAD_MapPicture.setBitmap(%downloadPath);
+      return;
+    }
+  }
 
   %tcp = connectToUrl(%url, %method, %downloadPath, %className);
   %tcp.fileType = %fileType;
+  %tcp.imageLocation = %downloadPath;
 }
 
 function GlassServerBackgroundTCP::onBinChunk(%this, %chunk) {
@@ -455,10 +466,11 @@ function GlassServerBackgroundTCP::onBinChunk(%this, %chunk) {
 function GlassServerBackgroundTCP::onDone(%this, %error) {
   if(%error) {
     echo("GlassServerBackgroundTCP error:" SPC %error);
-	return;
+    return;
   }
+
   LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
-  LOAD_MapPicture.setBitmap("config/client/BLG/loadingBackground." @ %this.fileType);
+  LOAD_MapPicture.setBitmap(%this.imageLocation);
 }
 
 package GlassServers {
@@ -491,11 +503,12 @@ package GlassServers {
   }
 
   function LoadingGui::onWake(%this) {
-	LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
+	  LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
     if(isFunction(LoadingGui, onWake))
       parent::onWake(%this);
 
-    LoadingGui.pushToBack(GlassLoadingGui);
+    NewChatHud.add(GlassLoadingGui);
+    //LoadingGui.pushToBack(GlassLoadingGui);
   }
 
   function NewPlayerListGui::UpdateWindowTitle(%gui) {
