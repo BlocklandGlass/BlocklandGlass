@@ -1,4 +1,3 @@
-
 function GlassLiveUser::create(%username, %blid) {
   if(isObject(GlassLiveUsers.user[%blid])) {
     GlassLiveUsers.user[%blid].username = getASCIIString(%username);
@@ -224,12 +223,9 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj) {
 
   //%this.avatarGui.setSequence("", 0, "crouch", 1);
   //%this.avatarGui.setSequence("test", 1, "headside", 1);
-  %this.avatarGui.setOrbitDist(18);
-  %this.avatarGui.setCameraRot(0, 0, $pi*1.2);
+  %this.avatarGui.setOrbitDist(10);
+  %this.avatarGui.setCameraRot(0, 0, $pi * 1.2);
   %this.avatarGui.lightDirection = "0 0.2 0.2";
-  %this.avatarGui.position = "-60 0";
-
-  echo(%this.avatarGui);
 }
 
 function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress) {

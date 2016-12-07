@@ -1052,6 +1052,14 @@ function GuiObjectView::createBlockhead(%this, %json) {
     %this.hideNode("", "plume");
     %this.setnodeColor("", %accent, %accentColor);
   }
+  
+  if($Hip[%hip] !$= "skirtHip") {
+	%this.hideNode("", "SkirtTrimLeft");
+	%this.hideNode("", "SkirtTrimRight");
+  } else {
+	%this.hideNode("", "rShoe");
+	%this.hideNode("", "lShoe");
+  }
 
   %this.hideNode("", "rski");
   %this.hideNode("", "lski");
@@ -1135,7 +1143,6 @@ function GlassLive::sendAvatarData() {
   %obj.set("rleg", "string", %rleg);
   %obj.set("rlegColor", "string", %rlegColor);
 
-  echo(jettisonStringify("object", %obj));
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   %obj.delete();
@@ -1649,7 +1656,6 @@ function GlassLive::updateLocation(%inServer) {
     %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
 
     %obj.set("address", "string", %location);
-    echo("playing" TAB %location TAB %name);
   }
 
   //echo(jettisonStringify("object", %obj));
@@ -1993,268 +1999,7 @@ function GlassLive::removeFriendPrompt(%blid) {
     glassMessageBoxYesNo("Remove Friend", "Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
 }
 
-function GlassLive::openUserWindow(%blid) {
-  %uo = GlassLiveUser::getFromBlid(%blid);
-  if(%uo) {
-    %window = GlassLive::createUserWindow(%uo);
-
-    switch$(%uo.getStatus()) {
-      case "online":
-        %status = "<color:33CC33>Online";
-      case "busy":
-        %status = "<color:FF3300>Busy";
-      case "away":
-        %status = "<color:FF751A>Away";
-      case "offline":
-        %status = "<color:404040>Offline";
-      default:
-        // %status = "<color:404040>Unknown";
-        %status = "<color:404040>Offline";
-    }
-
-    %text = "<font:verdana bold:13>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><font:verdana bold:12>" @ %status;
-    %window.text.setValue(%text);
-    %window.text.forceReflow();
-    %window.text.centerY();
-
-    if(%uo.isFriend()) {
-      %window.friendButton.mcolor = "255 200 200 200";
-      %window.friendButton.command = "GlassLive::removeFriendPrompt(" @ %uo.blid @ ");";
-      %window.friendButton.text = "Unfriend";
-    } else {
-      %window.friendButton.mcolor = "200 255 200 200";
-      %window.friendButton.command = "GlassLive::addFriendPrompt(" @ %uo.blid @ ");";
-      %window.friendButton.text = "Add Friend";
-    }
-
-    if(%uo.isBlocked()) {
-      %window.blockButton.mcolor = "237 184 105 200";
-      %window.blockButton.command = "GlassLive::userUnblock(" @ %uo.blid @ ");";
-      %window.blockButton.text = "Unblock";
-    } else {
-      %window.blockButton.mcolor = "237 118 105 200";
-      %window.blockButton.command = "GlassLive::userBlock(" @ %uo.blid @ ");";
-      %window.blockButton.text = "Block";
-    }
-
-    %window.messageButton.enabled = true;
-
-    if(!%window.centered) {
-      %window.forceCenter();
-      %window.centered = true;
-    }
-  }
-}
-
 function GlassLive::createUserWindow(%uo) {
-  if(isObject(%uo.window)) {
-    GlassOverlayGui.pushToBack(%uo.window);
-    //%uo.window.delete();
-    return %uo.window;
-  }
-
-  %isMod = GlassLiveUser::getFromBlid(getNumKeyId()).isMod();
-
-  if(%isMod)
-	  %windowExtent = "170 336";
-  else
-	  %windowExtent = "170 211";
-
-
-  %window = new GuiWindowCtrl() {
-    profile = "GlassWindowProfile";
-    horizSizing = "center";
-    vertSizing = "center";
-    position = "235 157";
-    extent = %windowExtent;
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    text = "Glass User";
-    maxLength = "255";
-    resizeWidth = "0";
-    resizeHeight = "0";
-    canMove = "1";
-    canClose = "1";
-    canMinimize = "0";
-    canMaximize = "0";
-    minSize = "50 50";
-  };
-
-  %window.textcontainer = new GuiSwatchCtrl(GlassUserTextContainer) {
-    profile = "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "10 35";
-    extent = "150 60";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    color = "220 220 220 255";
-  };
-
-  %window.text = new GuiMLTextCtrl(GlassUserText) {
-   profile = "GuiMLTextProfile";
-   horizSizing = "right";
-   vertSizing = "bottom";
-   position = "10 10";
-   extent = "130 14";
-   minExtent = "8 2";
-   enabled = "1";
-   visible = "1";
-   clipToParent = "1";
-   lineSpacing = "2";
-   allowColorChars = "0";
-   maxChars = "-1";
-   maxBitmapHeight = "-1";
-   selectable = "1";
-   autoResize = "1";
-  };
-
-  %window.messageButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "10 100";
-    extent = "150 30";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    text = "Message";
-    groupNum = "-1";
-    buttonType = "PushButton";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    lockAspectRatio = "0";
-    alignLeft = "0";
-    alignTop = "0";
-    overflowImage = "0";
-    mKeepCached = "0";
-    mColor = "255 255 255 200";
-    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}";
-  }; // move to a function ^^
-
-  %window.friendButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "10 135";
-    extent = "150 30";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    text = "Unfriend";
-    groupNum = "-1";
-    buttonType = "PushButton";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    lockAspectRatio = "0";
-    alignLeft = "0";
-    alignTop = "0";
-    overflowImage = "0";
-    mKeepCached = "0";
-    mColor = "255 200 200 200";
-  };
-
-  %window.blockButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "10 170";
-    extent = "150 30";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    text = "Block";
-    groupNum = "-1";
-    buttonType = "PushButton";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    lockAspectRatio = "0";
-    alignLeft = "0";
-    alignTop = "0";
-    overflowImage = "0";
-    mKeepCached = "0";
-    mColor = "237 118 105 200";
-  };
-
-  %window.add(%window.textcontainer);
-  %window.textcontainer.add(%window.text);
-  %window.add(%window.messageButton);
-  %window.add(%window.friendButton);
-  %window.add(%window.blockButton);
-
-  if(%isMod) {
-
-	%window.muteButton = new GuiBitmapButtonCtrl() {
-	  profile = "GlassBlockButtonProfile";
-	  position = "10 220";
-	  extent = "150 22";
-	  text = "Mute";
-	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-	  mColor = "241 196 15 200";
-	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Mute\");";
-	};
-
-	%window.kickButton = new GuiBitmapButtonCtrl() {
-	  profile = "GlassBlockButtonProfile";
-	  position = "10 248";
-	  extent = "150 22";
-	  text = "Kick";
-	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-	  mColor = "230 126 34 200";
-	  command = "GlassLive::sendRoomCommand(\"/kickid" SPC %uo.blid @ "\"," @ GlassChatroomWindow.activeTab.id @ ");";
-	};
-
-	%window.banButton = new GuiBitmapButtonCtrl() {
-	  profile = "GlassBlockButtonProfile";
-	  position = "10 276";
-	  extent = "150 22";
-	  text = "Ban";
-	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-	  mColor = "237 118 105 200";
-	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Ban\");";
-	};
-
-	%window.barButton = new GuiBitmapButtonCtrl() {
-	  profile = "GlassBlockButtonProfile";
-	  position = "10 304";
-	  extent = "150 22";
-	  text = "Bar";
-	  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-	  mColor = "231 76 60 200";
-	  command = "GlassLive::createBanWindow(" @ %uo.blid @ ",\"" SPC %uo.username @ "\", \"Bar\");";
-	};
-
-	%window.hr = new GuiSwatchCtrl() {
-	  position = "10 209";
-	  extent = "150 2";
-	  color = "220 220 220 220";
-	};
-
-	%window.add(%window.muteButton);
-	%window.add(%window.kickButton);
-	%window.add(%window.banButton);
-	%window.add(%window.barButton);
-	%window.add(%window.hr);
-
-  }
-
-  %window.closeCommand = %window.getId() @ ".delete();";
-
-  GlassOverlayGui.add(%window);
-
-  %window.setName("GlassUserGui");
-  %uo.window = %window;
-  return %window;
-}
-
-
-// NEW USER WINDOWS // Not finished
-/////////////////////////////////////
-function GlassLive::createUserWindow2(%uo) {
    if(isObject(%uo.window)) {
     GlassOverlayGui.pushToBack(%uo.window);
     //%uo.window.delete();
@@ -2266,7 +2011,7 @@ function GlassLive::createUserWindow2(%uo) {
     horizSizing = "center";
     vertSizing = "center";
     position = "235 157";
-    extent = "320 320";
+    extent = "270 250";
     text = "Glass User";
     maxLength = "255";
     resizeWidth = "0";
@@ -2276,21 +2021,21 @@ function GlassLive::createUserWindow2(%uo) {
   };
 
   %window.infoSwatch = new GuiSwatchCtrl() {
-	color = "210 210 210 255";
-	position = "10 33";
-	extent = "300 60";
+	color = "220 220 220 220";
+	position = "8 33";
+	extent = "100 210";
   };
 
   %window.blockhead = new GuiObjectView() {
-    position = "2 -30";
-	extent = "270 140";
+    position = "-34 40";
+	extent = "170 160";
 	forceFov = 18;
 	lightDirection = "-1 -1 -1";
   };
 
   %window.headerText = new GuiMLTextCtrl() {
-	position = "10 5";
-	extent = "280 26";
+	position = "10 30";
+	extent = "250 26";
 	text = "";
   };
 
@@ -2299,7 +2044,7 @@ function GlassLive::createUserWindow2(%uo) {
 	bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 	text = "";
 	mColor = "255 255 255 110";
-	position = "222 35";
+	position = "22 40";
 	extent = "70 22";
   };
 
@@ -2310,13 +2055,96 @@ function GlassLive::createUserWindow2(%uo) {
 	text = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
   };
 
+  %window.messageButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "114 108";
+    extent = "150 30";
+    text = "Message";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/Tab1";
+    mColor = "255 255 255 200";
+    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}";
+  }; 
+  
+  %window.friendButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "114 143";
+    extent = "150 30";
+    text = "Unfriend";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/Tab1";
+    mColor = "255 200 200 200";
+  };
+
+  %window.blockButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "114 178";
+    extent = "150 30";
+    text = "Block";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/Tab1";
+    mColor = "237 118 105 200";
+  };
+  
+  %window.inviteButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "114 213";
+    extent = "150 30";
+    text = "Invite to Server";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/Tab1";
+    mColor = "85 172 238 200";
+	command = ""; // Invite friend to server function
+  };
+  
+  %window.locationSwatch = new GuiBitmapButtonCtrl() {
+	profile = "GlassBlockButtonProfile";
+	mColor = "220 220 220 120";
+	position = "114 58";
+	extent = "150 22";
+	bitmap = "Add-Ons/System_BlocklandGlass/image/gui/Tab1";
+	text = "Unknown";
+	buttonType = "";
+  };
+  
+  %window.serverText = new GuiTextCtrl() {
+	profile = "GlassFriendTextProfile";
+	position = "2 3";
+	extent = "146 30";
+	text = "Crown's Jailbreak - Desert";
+  };
+  
+   %window.serverSwatch = new GuiSwatchCtrl() {
+	color = "220 220 220 0";
+	position = "115 80";
+	extent = "148 20";
+	text = %window.serverText;
+	visible = 0;
+  };
+  
+  %window.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = %window.serverSwatch.extent;
+
+    swatch = %window.serverSwatch;
+  };
 
   %window.add(%window.infoSwatch);
   %window.infoSwatch.add(%window.blockhead);
-  %window.infoSwatch.add(%window.headerText);
-  %window.infoSwatch.add(%window.statusSwatch);
-
+  
+  %window.add(%window.statusSwatch);
   %window.statusSwatch.add(%window.statusText);
+  
+  %window.add(%window.locationSwatch);
+  
+  %window.add(%window.serverSwatch);
+  %window.serverSwatch.add(%window.serverText);
+  %window.serverSwatch.add(%window.mouse);
+  
+  %window.add(%window.headerText);
+  %window.add(%window.messageButton);
+  %window.add(%window.friendButton);
+  %window.add(%window.blockButton);
+  %window.add(%window.inviteButton);
 
 
   %window.closeCommand = %window.getId() @ ".delete();";
@@ -2329,36 +2157,62 @@ function GlassLive::createUserWindow2(%uo) {
 }
 
 
-function GlassLive::openUserWindow2(%blid) {
+function GlassLive::openUserWindow(%blid) {
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
-    %window = GlassLive::createUserWindow2(%uo);
+    %window = GlassLive::createUserWindow(%uo);
 
     switch$(%uo.getStatus()) {
       case "online":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
-        %statusColor = "84 217 140 100";
-
       case "busy":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:13> Busy";
-        %statusColor = "231 76 60 100";
-
       case "away":
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:13> Away";
-        %statusColor = "241 196 15 100";
-
       default:
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
-        %statusColor = "210 210 210 255";
     }
 
-
+	switch$ (%location = %uo.getLocation()) {
+	  case "menus":
+		%locationColor = "220 220 220 220";
+		%locationDisplay = "In Menus";
+	  case "playing":
+		%locationColor = "46 204 113 220";
+		%locationDisplay = "Playing";
+	  case "playing_lan":
+	    %locationColor = "46 204 113 220";
+		%locationDisplay = "Playing LAN";
+	  case "hosting":
+		%locationColor = "85 172 238";
+		%locationDisplay = "Hosting";
+	  case "hosting_lan":
+		%locationColor = "85 172 238";
+		%locationDisplay = "Hosting LAN";
+	  case "singleplayer":
+		%locationColor = "231 76 60 220";
+		%locationDisplay = "Single Player";
+	 default:
+		%locationColor = "220 220 220 120";
+		%locationDisplay = "Unknown";
+	}
+	if(%locationDisplay $= "Unknown")
+	  %window.locationSwatch.setVisible(false);
+	
+	%window.locationSwatch.mColor = %locationColor;
+	%window.locationSwatch.setText(%locationDisplay);
+	
+	%serverName = %uo.getServerTitle();
+	if(%serverName !$= "" && %serverName !$= "1") {
+	  %window.serverText.setText(%serverName);
+	  %window.serverSwatch.setVisible(true);
+	  %window.mouse.currentServer = %uo.getServerAddress();
+	}
+	
   	%window.statusText.setText(%status);
-  	%window.infoSwatch.color = %statusColor;
   	%window.headerText.setText("<just:right><font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid);
 
     %uo.getAvatar(%window.blockhead);
-    //this is now asyncronous, handle camera in GlassLiveUser::gotAvatar
 
     if(%uo.isFriend()) {
       %window.friendButton.mcolor = "255 200 200 200";
@@ -2388,7 +2242,6 @@ function GlassLive::openUserWindow2(%blid) {
     }
   }
 }
-////////////////////// not done ///////////////////////// END
 
 function GlassLive::createBanWindow(%blid, %name, %type) {
   if(!GlassOverlayGui.isMember(GlassBanWindowGui))
@@ -4030,5 +3883,5 @@ package GlassLivePackage {
 	parent::Avatar_Done();
     GlassFriendsGui_Blockhead.createBlockhead();
   }
-};
+};   
 activatePackage(GlassLivePackage);

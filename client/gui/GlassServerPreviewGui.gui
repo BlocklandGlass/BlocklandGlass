@@ -265,7 +265,7 @@ new GuiControl(GlassServerPreviewGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassServerPreviewGui.close(); JoinServerGui.join();";
+         command = "GlassServerPreviewGui.close(); GlassServerPreview::connectToServer();";
          accelerator = "enter";
          text = "Connect";
          groupNum = "-1";

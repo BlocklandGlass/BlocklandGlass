@@ -277,6 +277,17 @@ function GlassServerPreviewGui::close(%this) {
   }
 }
 
+function getServerFromIP(%ip) {
+  if(!isObject(ServerInfoGroup))
+	  JoinServerGui.queryWebMaster();
+  for(%i=0; %i < ServerInfoGroup.getCount(); %i++) {
+	%search = ServerInfoGroup.getObject(%i);
+	if(%search.ip $= %ip)
+		return %search;
+  }
+  return -1;
+}
+
 function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreviewWindowGui.forceCenter();
 
@@ -319,6 +330,15 @@ function GlassServerPreviewGui::onWake(%this) {
     }
   }
 }
+
+function GlassServerPreview::connectToServer() {
+  %server = GlassServerPreviewWindowGui.openServerIP;
+  if(%server $= "")
+	return;
+  
+  ConnectToServer(%server, "", "1", "1");
+}
+	
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
   %addr = strReplace(%addr, ".", "-");
