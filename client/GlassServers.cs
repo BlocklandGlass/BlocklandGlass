@@ -27,7 +27,6 @@ function GlassServers::init() {
 
 function GlassFavoriteServers::changeGui() {
   if(!isObject(GlassFavoriteServerSwatch)) {
-    exec("./gui/elements/GlassHighlightSwatch.cs");
     exec("./gui/GlassFavoriteServer.gui");
   }
 

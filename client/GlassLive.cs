@@ -104,8 +104,6 @@ function GlassLive::init() {
       }
     }
   }
-
-  GlassLive::createBlockhead();
 }
 
 function GlassLive_keybind(%down) {
@@ -132,6 +130,8 @@ function GlassLive::onAuthSuccess() {
 
   GlassLive::sendAvatarData();
   GlassLive::updateLocation();
+
+  GlassLive::createBlockhead();
 }
 
 function GlassLive::openOverlay() {
@@ -874,7 +874,7 @@ function GlassLive::createBlockhead() {
 }
 
 function GlassLive::BlockheadRandomAnim() {
-  %rand = getRandom(0, 8);
+  %rand = getRandom(0, 7);
 
   switch (%rand) {
 	  case 0:
@@ -886,17 +886,14 @@ function GlassLive::BlockheadRandomAnim() {
 	  case 3:
 		%thread = "spearReady";
 		%time = 800;
-	  case 4:
-	    GlassLive::BlockheadAnim("look", 200);
-	    GlassLive::BlockheadAnim("look", 400, 1);
 		return;
-	  case 5:
+	  case 4:
 		%thread = "undo";
-	  case 6:
+	  case 5:
 		%thread = "back";
-	  case 7:
+	  case 6:
 		%thread = "headside";
-	  case 8:
+	  case 7:
 		%thread = "armReadyBoth";
   }
 
