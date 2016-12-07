@@ -38,9 +38,10 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
-	
+
     GlassSettings.registerSetting("client", "Servers::EnableFavorites", true);
     GlassSettings.registerSetting("client", "Servers::LoadingImages", true);
+    GlassSettings.registerSetting("client", "Servers::LoadingGUI", true);
 
     GlassSettings.registerSetting("client", "Live::FakeSetting", "One");
 

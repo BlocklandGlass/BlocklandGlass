@@ -1,9 +1,12 @@
 function GlassServers::init() {
-  if(GlassSettings.get("Servers::EnableFavorites") == 0)
+  if(GlassSettings.get("Servers::LoadingGUI"))
+    GlassLoading::changeGui();
+
+  if(!GlassSettings.get("Servers::EnableFavorites"))
     return;
+
   GlassServerPreview_Favorite.setVisible(true);
   GlassFavoriteServers::changeGui();
-  GlassLoading::changeGui();
 
   new ScriptObject(GlassFavoriteServers);
   %this = GlassFavoriteServers;
