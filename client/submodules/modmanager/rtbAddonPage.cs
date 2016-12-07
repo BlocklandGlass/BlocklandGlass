@@ -60,7 +60,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %body.rtb = new GuiBitmapCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "10 15";
+    position = "10 12";
     extent = "32 32";
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks_large.png";
   };
@@ -169,7 +169,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %description.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ %obj.description;
+    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ trim(%obj.description);
     position = "10 10";
     extent = "595 16";
     minextent = "0 0";
@@ -183,10 +183,9 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %container.description.placeBelow(%container.info0, 5);
 
   %container.description.text.forceReflow();
-  %container.description.verticalMatchChildren(30, 10);
-  %container.verticalMatchChildren(0, 0);
+  %container.description.verticalMatchChildren(10, 10);
 
-  %screenshots = new GuiSwatchCtrl() {
+  %download = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "255 255 255 255";
@@ -194,46 +193,28 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
     extent = "615 30";
   };
 
-  %screenshots.text = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana bold:13>Screenshots";
-    position = "10 10";
-    extent = "595 16";
-    minextent = "0 0";
-    autoResize = true;
+  %download.dlButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonWhiteProfile";
+    position = mfloor((595/2)-60) SPC 10;
+    extent = "120 35";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+
+    text = "Download";
+
+    command = "GMM_RTBAddonPage.downloadClick(" @ %obj.aid @ ");";
+
+    mColor = "231 76 60 255";
   };
 
-  %screenshots.add(%screenshots.text);
+  %download.add(%download.dlButton);
+  %download.verticalMatchChildren(30, 10);
 
-  %x = 10;
-  for(%i = 0; %i < %obj.screenshots.length; %i++) {
-    %ss = %obj.screenshots.value[%i];
-    %screenshotHolder = new GuiSwatchCtrl(GlassScreenshot) {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 255";
-      position = %x SPC 10;
-      extent =  "96 96";
-
-      thumb = %ss.thumbnail;
-      url = %ss.url;
-      id = %ss.id;
-      display_extent = %ss.extent;
-    };
-
-    %screenshotHolder.loadThumb();
-
-    %x += 106;
-
-    %screenshots.add(%screenshotHolder);
-  }
-
-  %screenshots.verticalMatchChildren(36, 10);
-
-  %container.screenshots = %screenshots;
-  %container.add(%container.screenshots);
-  %container.screenshots.placeBelow(%container.description, 5);
+  %container.download = %download;
+  %container.add(%download);
+  if(%obj.screenshots.length)
+    %container.download.placeBelow(%container.screenshots, 10);
+  else
+    %container.download.placeBelow(%container.description, 10);
 
   %container.verticalMatchChildren(0, 10);
   GlassModManagerGui.resizePage();

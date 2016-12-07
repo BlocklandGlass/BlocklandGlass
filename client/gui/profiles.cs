@@ -217,6 +217,12 @@ if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonPro
   fontColor = "64 64 64 255";
 };
 
+if(!isObject(GlassBlockButtonWhiteProfile)) new GuiControlProfile(GlassBlockButtonWhiteProfile : BlockButtonProfile) {
+  fontType = "Verdana Bold";
+  fontSize = 15;
+  fontColor = "250 250 250 255";
+};
+
 if(!isObject(GlassRoundedButtonProfile)) new GuiControlProfile(GlassRoundedButtonProfile : BlockButtonProfile) {
   fontType = "Verdana Bold";
   fontSize = 16;

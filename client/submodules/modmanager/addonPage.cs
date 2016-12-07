@@ -178,7 +178,58 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %container.description.verticalMatchChildren(30, 10);
   %container.verticalMatchChildren(0, 0);
 
-  %screenshots = new GuiSwatchCtrl() {
+  if(%obj.screenshots.length > 0) {
+    %screenshots = new GuiSwatchCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      color = "255 255 255 255";
+      position = "10 0";
+      extent = "615 30";
+    };
+
+    %screenshots.text = new GuiMLTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      text = "<font:verdana bold:13>Screenshots";
+      position = "10 10";
+      extent = "595 16";
+      minextent = "0 0";
+      autoResize = true;
+    };
+
+    %screenshots.add(%screenshots.text);
+
+    %x = 10;
+    for(%i = 0; %i < %obj.screenshots.length; %i++) {
+      %ss = %obj.screenshots.value[%i];
+      %screenshotHolder = new GuiSwatchCtrl(GlassScreenshot) {
+        horizSizing = "right";
+        vertSizing = "bottom";
+        color = "200 200 200 255";
+        position = %x SPC 10;
+        extent =  "96 96";
+
+        thumb = %ss.thumbnail;
+        url = %ss.url;
+        id = %ss.id;
+        display_extent = %ss.extent;
+      };
+
+      %screenshotHolder.loadThumb();
+
+      %x += 106;
+
+      %screenshots.add(%screenshotHolder);
+    }
+
+    %screenshots.verticalMatchChildren(36, 10);
+
+    %container.screenshots = %screenshots;
+    %container.add(%container.screenshots);
+    %container.screenshots.placeBelow(%container.description, 5);
+  }
+
+  %download = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     color = "255 255 255 255";
@@ -186,46 +237,46 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     extent = "615 30";
   };
 
-  %screenshots.text = new GuiMLTextCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    text = "<font:verdana bold:13>Screenshots";
-    position = "10 10";
-    extent = "595 16";
-    minextent = "0 0";
-    autoResize = true;
+  %download.dlButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonWhiteProfile";
+    position = mfloor((595/2)-125) SPC 10;
+    extent = "120 35";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+
+    text = "Download";
+
+    command = "GMM_AddonPage.downloadClick(" @ %obj.aid @ ");";
+
+    mColor = "84 217 140 255";
   };
 
-  %screenshots.add(%screenshots.text);
+  %download.commentButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonWhiteProfile";
+    position = mfloor((595/2)+5) SPC 10;
+    extent = "120 35";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
-  %x = 10;
-  for(%i = 0; %i < %obj.screenshots.length; %i++) {
-    %ss = %obj.screenshots.value[%i];
-    %screenshotHolder = new GuiSwatchCtrl(GlassScreenshot) {
-      horizSizing = "right";
-      vertSizing = "bottom";
-      color = "200 200 200 255";
-      position = %x SPC 10;
-      extent =  "96 96";
+    text = "Comment";
 
-      thumb = %ss.thumbnail;
-      url = %ss.url;
-      id = %ss.id;
-      display_extent = %ss.extent;
-    };
+    command = "GMM_AddonPage.commentClick(" @ %obj.aid @ ");";
 
-    %screenshotHolder.loadThumb();
+    mColor = "131 195 243 255";
+  };
 
-    %x += 106;
+  //%download.add(%download.text);
+  %download.add(%download.dlButton);
+  %download.add(%download.commentButton);
+  //%download.dlButton.placeBelow(%download.text);
+  //%download.commentButton.placeBelow(%download.text);
 
-    %screenshots.add(%screenshotHolder);
-  }
+  %download.verticalMatchChildren(30, 10);
 
-  %screenshots.verticalMatchChildren(36, 10);
-
-  %container.screenshots = %screenshots;
-  %container.add(%container.screenshots);
-  %container.screenshots.placeBelow(%container.description, 5);
+  %container.download = %download;
+  %container.add(%download);
+  if(%obj.screenshots.length)
+    %container.download.placeBelow(%container.screenshots, 10);
+  else
+    %container.download.placeBelow(%container.description, 10);
 
   %activity = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -247,7 +298,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %activity.add(%activity.text);
   %container.add(%activity);
-  %activity.placeBelow(%screenshots, 10);
+  %activity.placeBelow(%download, 10);
 
   if(%obj.activity $= "") {
     %comment = JettisonObject();
