@@ -223,9 +223,9 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj) {
 
   //%this.avatarGui.setSequence("", 0, "crouch", 1);
   //%this.avatarGui.setSequence("test", 1, "headside", 1);
-  %this.avatarGui.setOrbitDist(10);
-  %this.avatarGui.setCameraRot(0, 0, $pi * 1.2);
-  %this.avatarGui.lightDirection = "0 0.2 0.2";
+  %this.avatarGui.setOrbitDist(6);
+  %this.avatarGui.setCameraRot(0, 0, $pi * 1.1);
+  %this.avatarGui.lightDirection = "0 0.2 0.3";
 }
 
 function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress) {
