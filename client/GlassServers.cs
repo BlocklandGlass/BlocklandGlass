@@ -508,7 +508,14 @@ package GlassServers {
       parent::onWake(%this);
 
     NewChatHud.add(GlassLoadingGui);
-    //LoadingGui.pushToBack(GlassLoadingGui);
+    NewChatHud.pushToBack(GlassLoadingGui); // This isn't working but it should put the GUI under the actual chat.
+  }
+  
+  function LoadingGui::onSleep(%this) {
+    if(isFunction(LoadingGui, onSleep))
+      parent::onSleep(%this);
+
+	GuiGroup.add(GlassLoadingGui);
   }
 
   function NewPlayerListGui::UpdateWindowTitle(%gui) {
