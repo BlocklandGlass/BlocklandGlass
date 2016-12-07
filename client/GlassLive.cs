@@ -117,6 +117,8 @@ function GlassLive_keybind(%down) {
 }
 
 function GlassLive::onAuthSuccess() {
+  GlassLive::createBlockhead();
+
   GlassLive_StatusSwatch.setVisible(true);
   GlassFriendsGui_StatusSelect::selectStatus("Online");
 
@@ -130,8 +132,6 @@ function GlassLive::onAuthSuccess() {
 
   GlassLive::sendAvatarData();
   GlassLive::updateLocation();
-
-  GlassLive::createBlockhead();
 }
 
 function GlassLive::openOverlay() {

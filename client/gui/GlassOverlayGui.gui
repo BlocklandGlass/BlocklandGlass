@@ -65,7 +65,7 @@ new GuiControl(GlassOverlayGui) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
-      position = "6 402";
+      position = "6 362";
       extent = "122 30";
       minExtent = "8 2";
       enabled = "1";
@@ -87,7 +87,7 @@ new GuiControl(GlassOverlayGui) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
-      position = "6 442";
+      position = "6 402";
       extent = "150 30";
       minExtent = "8 2";
       enabled = "1";
@@ -109,7 +109,7 @@ new GuiControl(GlassOverlayGui) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
-      position = "6 482";
+      position = "6 442";
       extent = "120 30";
       minExtent = "8 2";
       enabled = "1";
@@ -119,6 +119,28 @@ new GuiControl(GlassOverlayGui) {
       groupNum = "-1";
       buttonType = "PushButton";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_settings";
+      lockAspectRatio = "0";
+      alignLeft = "0";
+      alignTop = "0";
+      overflowImage = "0";
+      mKeepCached = "0";
+      mColor = "255 255 255 255";
+      text = "";
+    };
+    new GuiBitmapButtonCtrl() {
+      profile = "GlassRoundedButtonProfile";
+      horizSizing = "right";
+      vertSizing = "top";
+      position = "6 482";
+      extent = "93 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      command = "GlassLive::openManual();";
+      groupNum = "-1";
+      buttonType = "PushButton";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_manual";
       lockAspectRatio = "0";
       alignLeft = "0";
       alignTop = "0";
