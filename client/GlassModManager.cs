@@ -17,37 +17,20 @@ function GlassModManager::init() {
     GlassModManager.delete();
   }
 
-  new ScriptObject(GlassModManager) {
-
-  };
+  new ScriptObject(GlassModManager);
 
   GlassModManager::catalogAddons();
   GlassModManager::scanForRTB();
 
-  GlassModManagerGui::setPane(1);
-
   GlassModManager_MyColorsets::init();
-
-  if(Glass.dev) {
-    GlassModManagerGui_HostButton.setVisible(true);
-    GlassModManagerGui_HostButton.setText(Glass.address);
-  } else {
-    GlassModManagerGui_HostButton.setVisible(false);
-  }
 }
 
 function GlassModManagerImageMouse::onMouseDown(%this) {
   canvas.popDialog(GlassModManagerImage);
 }
 
-// function GlassModManager::updateLiveSearch() {
-  // %val = GlassSettingsGui_Prefs_LiveSearch.getValue();
-
-  // GlassModManager.liveSearch = %val;
-  // // GlassSettings.update("MM::LiveSearch", %val);
-// }
-
 function GlassModManager::setAddonStatus(%aid, %status) {
+  error("Depreciated GlassModManager::setAddonStatus");
   // status:
   // - installed
   // - downloading
@@ -57,6 +40,7 @@ function GlassModManager::setAddonStatus(%aid, %status) {
 }
 
 function GlassModManager::getAddonStatus(%aid) {
+  error("Depreciated GlassModManager::getAddonStatus");
   return GlassModManager.addonStatus[%aid];
 }
 
@@ -82,6 +66,9 @@ function GlassModManagerGui_Window::onWake(%this) {
   }
 }
 
+//
+// possible name change or relocation
+//
 function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:111111>Press any key ...");
   GlassModManagerGui_KeybindOverlay.setVisible(true);
@@ -93,6 +80,11 @@ function GlassModManager::changeKeybind(%this) {
   GlobalActionMap.unbind(getField(%bind, 0), getField(%bind, 1));
   //swatch
 }
+
+
+//
+// possible name change or relocation
+//
 
 function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
   if(%device $= "mouse0") {
@@ -179,11 +171,14 @@ function GlassModManagerTCP::onDone(%this, %error) {
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";
       GlassAuth.heartbeat();
+      error("Call was killed due to auth heartbeat, need to resend");
     }
 
     if(%this.glass_uniqueReturn !$= "") {
       eval(%this.glass_uniqueReturn @ "(%ret);");
       return;
+    } else {
+      error("GlassModManager call handled in a poor way: " @ %ret.action);
     }
 
     if(%ret.status $= "success") {
@@ -341,10 +336,6 @@ function GlassModManager::scanForRTB() {
 }
 
 //====================================
-// Home
-//====================================
-
-//====================================
 // My Add-Ons
 //====================================
 
@@ -404,6 +395,11 @@ function GlassModManager::deleteAddOn(%this, %addon) {
   GlassModManager.schedule(1, populateMyAddons);
 }
 
+
+//
+// possible name change or relocation
+//
+
 function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
   %name = %this.addon.name;
 
@@ -429,6 +425,11 @@ function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
   glassMessageBoxYesNo("Delete Add-On", "Are you sure you want to delete <font:verdana bold:13>" @ %name, "GlassModManager.deleteAddon(\"" @ %this.addon @ "\");");
 }
 
+
+//
+// possible name change or relocation
+//
+
 function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
   $Glass::MM_PreviousPage = -1;
   $Glass::MM_PreviousBoard = -1;
@@ -436,15 +437,30 @@ function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
   GlassModManagerGui::fetchAndRenderAddon(%this.addon.glassdata.id).action = "render";
 }
 
+
+//
+// possible name change or relocation
+//
+
 function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {
   %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
   %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
 }
 
+
+//
+// possible name change or relocation
+//
+
 function GlassModManagerGui_AddonHighlight::onMouseLeave(%this) {
   %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
   %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
 }
+
+
+//
+// possible name change or relocation
+//
 
 function GlassModManagerGui_AddonHighlight::onMouseUp(%this) {
   %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
@@ -484,6 +500,11 @@ function GlassModManager::deleteColorset(%this, %colorset) {
 
   GlassModManager.schedule(1, populateColorsets);
 }
+
+
+//
+// possible name change or relocation
+//
 
 function GlassModManager::populateColorsets() {
   %this = GlassModManager_MyColorsets;
@@ -756,33 +777,6 @@ function GlassModManager_MyColorsets::init() {
   }
 }
 
-function GlassModManager_MyColorsets::def() {
-  GlassSettings.update("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
-
-  if(!isFile(GlassSettings.get("MM::Colorset"))) {
-    error(%default SPC "not found.");
-    return;
-  }
-
-  GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
-  GlassModManager::populateColorsets();
-  filecopy("config/server/colorset.txt", "config/server/colorset.old");
-  filecopy_hack(GlassSettings.get("MM::Colorset"), "config/server/colorset.txt");
-}
-
-function GlassModManager_MyColorsets::apply() {
-  if(GlassModManager_MyColorsets.selected $= "") {
-    return;
-  }
-
-  GlassSettings.update("MM::Colorset", GlassModManager_MyColorsets.colorsetFile[GlassModManager_MyColorsets.selected]);
-  GlassModManager::populateColorsets();
-  GlassModManager_MyColorsets.selected = "";
-  //do file stuff
-  filecopy("config/server/colorset.txt", "config/server/colorset.old");
-  filecopy_hack(GlassSettings.get("MM::Colorset"), "config/server/colorset.txt");
-}
-
 //filecopy doesnt like zips
 function filecopy_hack(%source, %destination) {
   %fo_source = new FileObject();
@@ -799,6 +793,7 @@ function filecopy_hack(%source, %destination) {
 }
 
 function GlassModManager_MyColorsets::renderColorset(%this, %file) {
+  error("Depreciated GlassModManager_MyColorsets::renderColorset");
   %fo = new FileObject();
   %fo.openforread(%file);
   %this.divs = 0;
@@ -874,13 +869,21 @@ function GlassModManager_MyColorsets::renderColorset(%this, %file) {
 // id - addon id
 // beta - bool
 // progressBar - additional progress bar to update other than mod manager
-function GlassModManager::downloadAddon(%id, %beta, %progressBar) {
+function GlassModManager::downloadAddon(%this, %id, %progressBar, %progressText) {
+  error("Depreciated GlassModManager::downloadAddon - use GlassDownloadManager directly");
+  if(GlassModManager.getId() != %this.getId()) {
+    error("Legacy download addon");
+    return;
+  }
+
   if(!isObject(GlassModManagerQueue)) {
     new ScriptGroup(GlassModManagerQueue);
   }
 
-  %dl = GlassDownloadManager::newDownload(%id, %beta ? 2 : 1);
+  %dl = GlassDownloadManager::newDownload(%id, 1);
   %dl.progressBar = %progressBar;
+  %dl.progressText = %progressText;
+
   %dl.addHandle("done", "GlassModManagerQueue_Done");
   %dl.addHandle("progress", "GlassModManagerQueue_Progress");
   %dl.addHandle("failed", "GlassModManagerQueue_Failed");
@@ -888,6 +891,12 @@ function GlassModManager::downloadAddon(%id, %beta, %progressBar) {
   GlassModManagerQueue.add(%dl);
   GlassModManagerQueue.next();
 }
+
+
+//
+// possible name change or relocation
+// is this needed if GlassDownloadManager is localized?
+//
 
 function GlassModManagerQueue::next(%this) {
   if(isObject(%this.current) && %this.isMember(%this.current))
@@ -903,45 +912,62 @@ function GlassModManagerQueue::next(%this) {
   %this.current = %this.getObject(0);
   %this.current.startDownload();
 
-  GlassModManagerGui::setProgress(0, "Connecting..." @ " (" @ GlassModManagerQueue.getCount() @ " remaining)");
+  //GlassModManagerGui::setProgress(0, "Connecting..." @ " (" @ GlassModManagerQueue.getCount() @ " remaining)");
 }
 
 function GlassModManagerQueue_Done(%this) {
   echo("Downloaded " @ %this.filename);
 
-  GlassModManager::setAddonStatus(%this.addonId, "installed");
+  setModPaths(getModPaths());
 
-  %name = "GlassModManagerGui_DlButton_" @ %this.addonId @ "_" @ %this.branchId;
-  if(isObject(%name)) {
-    %name.setValue("<font:Verdana Bold:15><just:center>Downloaded<br><font:verdana:14>" @ strcap(%name.getGroup().mouse.branch));
-    GlassModManagerGui::fetchAndRenderAddon(%this.addonId).action = "render";
-  }
+  GlassModManagerQueue.remove(%this);
+  GlassModManagerQueue.next();
 
   %file = getsubstr(%this.filename, 0, strlen(%this.filename) - 4);
 
-  setModPaths(getModPaths());
-
   if(getsubstr(strlwr(%file), 0, 7) $= "client_")
     exec("Add-Ons/" @ %file @ "/client.cs");
-
-  GlassModManagerQueue.remove(%this);
-  GlassModManagerQueue.next();
 }
 
-function GlassModManagerQueue_Progress(%this, %float) {
+function GlassModManagerQueue_Progress(%this, %float, %tcp) {
   cancel(GlassModManagerGui.progressSch);
 
-  GlassModManager::setAddonStatus(%this.addonId, "downloading");
-  GlassModManagerGui::setProgress(%float, "Downloading " @ %this.filename @ " (" @ GlassModManagerQueue.getCount() @ " remaining)");
+  %fileSize = %tcp.headerField["Content-Length"];
+
+  %this.progressBar.setValue(%float);
+  %this.progressText.setText("Downloaded " @ stringifyFileSize(%float*%fileSize, 2));
 }
 
 function GlassModManagerQueue_Failed(%this, %error) {
-  error("Failed to download add-on " @ %this.addonId @ " (branch " @ %this.branchId @ ")");
+  error("Failed to download add-on " @ %this.addonId);
+
+  //clean-up gui
+
   GlassModManagerQueue.remove(%this);
   GlassModManagerQueue.next();
 }
 
+
+//
+// possible name change or relocation
+//
+
+function stringifyFileSize(%size, %dec) {
+  %osize = %size;
+  %num = " KMG";
+  %base = 0;
+  while(%size >= 1024) {
+    %size /= 1024;
+    %base++;
+  }
+
+  %letter = trim(getSubStr(%num, %base, 1));
+
+  return mFloatLength(%size, %dec) @ " " @ %letter @ "b";
+}
+
 package GlassModManager {
+  // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") != -1) {
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");

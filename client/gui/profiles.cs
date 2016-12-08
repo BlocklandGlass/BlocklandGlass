@@ -307,3 +307,10 @@ if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio)
   description = "AudioGui";
   preload = true;
 };
+
+
+if(!isObject(GlassProgressProfile)) new GuiControlProfile(GlassProgressProfile : GuiProgressProfile) {
+  borderColor = "100 100 100 255";
+  fillColor = "46 204 113 200";
+  borderThickness = 0.5;
+};

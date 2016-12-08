@@ -68,7 +68,7 @@ function GlassDownloadTCP::setProgressBar(%tcp, %float) {
 	%this = %tcp.downloadObject;
 
 	if(isFunction(%this.handler["progress"]))
-		call(%this.handler["progress"], %this, %float);
+		call(%this.handler["progress"], %this, %float, %tcp);
 }
 
 function GlassDownloadTCP::onDone(%tcp, %error) {

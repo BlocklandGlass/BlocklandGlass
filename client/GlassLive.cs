@@ -1,6 +1,6 @@
-exec("./GlassLiveConnection.cs");
-exec("./GlassLiveUser.cs");
-exec("./GlassLiveRoom.cs");
+exec("./submodules/live/GlassLiveConnection.cs");
+exec("./submodules/live/GlassLiveUser.cs");
+exec("./submodules/live/GlassLiveRoom.cs");
 // exec("./GlassLiveGroup.cs");
 
 //Settings:

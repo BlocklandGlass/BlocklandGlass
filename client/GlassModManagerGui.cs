@@ -39,6 +39,11 @@ function GlassModManagerGui::resizePage(%this) {
   GlassModManagerGui_MainDisplay.setVisible(true);
 }
 
+
+//
+// possible name change or relocation
+//
+
 function GlassModManagerGui::loadContext(%this, %context) {
   //contexts are essentially just different starting points
   //for the dynamic guis
@@ -74,6 +79,11 @@ function GlassModManagerGui::loadContext(%this, %context) {
 }
 
 function GlassModManagerGui::setLoading(%this, %bool) {
+  if(%this.getId() != GlassModManagerGui.getId()) {
+    error("Depreciated GlassModManagerGui::setLoading usage");
+    return;
+  }
+
   %swatch = GlassModManagerGui_LoadingSwatch;
   %swatch.loading = %bool;
 
@@ -128,160 +138,8 @@ function GlassModManagerGui::animationTick(%this) {
 }
 
 function GlassModManagerGui::setProgress(%float, %text) {
-  if(%float $= "" || isObject(%float)) {
-    GlassModManagerGui_Window.extent = "675 550";
-    GlassModManagerGui_ProgressBar.setVisible(false);
-  } else {
-    GlassModManagerGui_Window.extent = "675 585";
-    GlassModManagerGui_ProgressBar.setVisible(true);
-
-    GlassModManagerGui_ProgressBar.setValue(%float);
-    GlassModManagerGui_ProgressBar.getObject(0).setText(%text);
-  }
+  error("Depreciated ::setProgress");
 }
-
-//================================
-// Gui Classes
-//================================
-
-function GlassModManagerGui_AddonButton::onMouseEnter(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = vectoradd(%swatch.color, "20 20 20");
-}
-
-function GlassModManagerGui_AddonButton::onMouseLeave(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = %swatch.ocolor;
-}
-
-function GlassModManagerGui_AddonButton::onMouseDown(%this) {
-  if(!%this.rtb) {
-    %obj = GlassModManagerGui::fetchAndRenderAddon(%this.aid);
-    %obj.action = "render";
-  } else {
-    GlassModManager::placeCall("rtbaddon", "id" TAB %this.aid);
-  }
-}
-
-function GlassModManagerGui_AddonButton::onAdd(%this) {
-  %this.extent = %this.swatch.extent;
-  %this.position = "0 0";
-}
-
-
-
-function GlassModManagerGui_AddonDownloadButton::onMouseEnter(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = "255 255 255";
-}
-
-function GlassModManagerGui_AddonDownloadButton::onMouseLeave(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = %swatch.ocolor;
-}
-
-function GlassModManagerGui_AddonDownloadButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
-  GlassModManagerGui::doDownloadSprite(%pos, vectorAdd(GlassModManagerGui_ProgressBar.getCanvasPosition(), GlassModManagerGui_ProgressBar.getCenter()), 100);
-
-  %this.swatch.info.setValue("<font:Verdana Bold:15><just:center>Queued..<br><font:verdana:14>" @ strcap(%this.branch));
-  //something about redrawing the button?
-
-  %tcp = GlassModManager::downloadAddon(%this.aid);
-}
-
-function GlassModManagerGui_AddonDownloadButton::onAdd(%this) {
-  %this.extent = %this.swatch.extent;
-  %this.position = "0 0";
-}
-
-
-
-function GlassModManagerGui_ForumButton::onMouseEnter(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = vectoradd(%swatch.color, "20 20 20");
-}
-
-function GlassModManagerGui_ForumButton::onMouseLeave(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = %swatch.ocolor;
-}
-
-function GlassModManagerGui_ForumButton::onMouseDown(%this) {
-  if(%this.type $= "topic") {
-    GlassForumBrowser::getAddon(%this.topic);
-  } else if(%this.type $= "board") {
-    GlassForumBrowser::getBoard(%this.board);
-  } else if(%this.type $= "external") {
-    glassMessageBoxYesNo("Open Web Browser", "Pressing yes will open your web browser to the following page:<br><br>" @ %this.link, "gotoWebpage(\"" @ expandEscape(%this.link) @ "\");");
-  }
-}
-
-function GlassModManagerGui_ForumButton::onAdd(%this) {
-  %this.extent = %this.swatch.extent;
-  %this.position = "0 0";
-}
-
-
-
-function GlassModManagerGui_ScreenshotButton::onMouseEnter(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = "255 255 255";
-}
-
-function GlassModManagerGui_ScreenshotButton::onMouseLeave(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = %swatch.ocolor;
-}
-
-function GlassModManagerGui_ScreenshotButton::onMouseDown(%this, %a, %pos, %c, %d, %e) {
-  GlassModManagerGui::downloadAndDisplayScreenshot(%this.aid, %this.screenshotId); // TODO check to see if it's downloaded, if now download; render
-}
-
-function GlassModManagerGui_AddonScreenshotButton::onAdd(%this) {
-  %this.extent = %this.swatch.extent;
-  %this.position = "0 0";
-}
-
-
-function GlassModManagerGui_BoardButton::onMouseEnter(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color ="240 240 240 255";
-}
-
-function GlassModManagerGui_BoardButton::onMouseLeave(%this) {
-  %swatch = %this.swatch;
-  if(%swatch.ocolor $= "") %swatch.ocolor = %swatch.color;
-
-  %swatch.color = %swatch.ocolor;
-}
-
-function GlassModManagerGui_BoardButton::onMouseDown(%this) {
-  GlassModManagerGui.openPage(GMM_BoardPage, %this.bid);
-}
-
-function GlassModManagerGui_BoardButton::onAdd(%this) {
-  %this.extent = %this.swatch.extent;
-  %this.position = "0 0";
-}
-
 
 exec("./submodules/modmanager/errorPage.cs");
 

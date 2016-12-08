@@ -9,6 +9,8 @@ function GMM_AddonPage::open(%this, %modId) {
     color = "255 0 255 0";
     position = "0 0";
     extent = "635 498";
+
+    addonId = %modId;
   };
 
   %body = new GuiSwatchCtrl() {
@@ -263,11 +265,43 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     mColor = "131 195 243 255";
   };
 
+  %download.progress = new GuiProgressCtrl() {
+    profile = "GlassProgressProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 0";
+    extent = "595 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "0";
+    clipToParent = "1";
+  };
+
+  %download.progress.text = new GuiTextCtrl() {
+    profile = "GuiProgressTextProfile";
+    horizSizing = "center";
+    vertSizing = "center";
+    position = "0 0";
+    extent = "595 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Connecting...";
+    maxLength = "255";
+  };
+
+  %download.progress.add(%download.progress.text);
+  %download.progress.text.centerY();
+
   //%download.add(%download.text);
   %download.add(%download.dlButton);
   %download.add(%download.commentButton);
   //%download.dlButton.placeBelow(%download.text);
   //%download.commentButton.placeBelow(%download.text);
+
+  %download.add(%download.progress);
+  %download.progress.placeBelow(%download.dlButton, 10);
 
   %download.verticalMatchChildren(30, 10);
 
@@ -468,6 +502,8 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
     %last = %swatch;
   }
+
+  %container.activity = %activity;
 
   %activity.verticalMatchChildren(20, 10);
   %container.verticalMatchChildren(0, 10);
@@ -987,4 +1023,75 @@ function GlassDownloadSprite::tick(%this) {
   GlassModManagerGui.pushToBack(%this);
 
   %this.schedule(%tickLength, tick);
+}
+
+function GMM_AddonPage::downloadClick(%this, %swatch) {
+  %download = %this.container.download;
+  %download.progress.setVisible(true);
+  %download.verticalMatchChildren(30, 10);
+
+  %activity = %this.container.activity;
+  %activity.placeBelow(%download, 10);
+
+  %download.progress.setValue(0);
+  %download.progress.text.setValue("Connecting...");
+
+  %dl = GlassDownloadManager::newDownload(%this.container.addonId, 1);
+  %dl.progressBar = %download.progress;
+  %dl.progressText = %download.progress.text;
+
+  %dl.addHandle("done", "GMM_AddonPage_downloadDone");
+  %dl.addHandle("progress", "GMM_AddonPage_downloadProgress");
+  %dl.addHandle("failed", "GMM_AddonPage_downloadFailed");
+  %dl.addHandle("unwritable", "GMM_AddonPage_downloadUnwritable");
+
+  %dl.startDownload();
+  echo(%dl);
+
+  %this.container.verticalMatchChildren(498, 10);
+  GlassModManagerGui.resizePage();
+
+  //GlassModManager.downloadAddon(%this.container.addonId, %download.progress, %download.progress.text);
+}
+
+function GMM_AddonPage::hideDownload(%this) {
+  %download = %this.container.download;
+  %download.progress.setVisible(false);
+  %download.verticalMatchChildren(30, 10);
+
+  %activity = %this.container.activity;
+  %activity.placeBelow(%download, 10);
+
+  %this.container.verticalMatchChildren(498, 10);
+  GlassModManagerGui.resizePage();
+}
+
+function GMM_AddonPage_downloadDone(%dl) {
+  %this = GMM_AddonPage;
+
+  %this.schedule(500, hideDownload);
+}
+
+function GMM_AddonPage_downloadProgress(%dl, %float, %tcp) {
+  %this = GMM_AddonPage;
+
+  cancel(GlassModManagerGui.progressSch);
+  echo("progress");
+
+  %fileSize = %tcp.headerField["Content-Length"];
+
+  %dl.progressBar.setValue(%float);
+  %dl.progressText.setText("Downloaded " @ stringifyFileSize(%float*%fileSize, 2));
+}
+
+function GMM_AddonPage_downloadFailed(%dl, %error) {
+  %this = GMM_AddonPage;
+
+  error("Failed to download add-on " @ %dl.addonId);
+}
+
+function GMM_AddonPage_downloadUnwritable(%dl) {
+  %this = GMM_AddonPage;
+
+  error("Download path unwritable");
 }

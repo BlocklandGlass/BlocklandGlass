@@ -30,7 +30,7 @@ new GuiControl(GlassSettingsGui) {
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "GlassLive::closeSettings();";
-      
+
       new GuiMLTextCtrl(GlassSettingsResize) {
         profile = "GuiMLTextProfile";
         horizSizing = "relative";
@@ -39,7 +39,7 @@ new GuiControl(GlassSettingsGui) {
         extent = "300 474";
         visible = "0";
       };
-      
+
       new GuiScrollCtrl(GlassSettingsGui_Scroll) {
          profile = "GlassScrollProfile";
          horizSizing = "right";
@@ -69,7 +69,7 @@ new GuiControl(GlassSettingsGui) {
             visible = "1";
             clipToParent = "1";
             color = "255 255 255 255";
-            
+
             new GuiSwatchCtrl() {
                profile = "GuiDefaultProfile";
                horizSizing = "right";
@@ -128,7 +128,7 @@ new GuiControl(GlassSettingsGui) {
                   alignTop = "0";
                   overflowImage = "0";
                   mKeepCached = "0";
-                  mColor = "255 255 255 255";
+                  mColor = "220 220 220 255";
                };
             };
          };

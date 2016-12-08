@@ -191,8 +191,8 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
         profile = "GlassCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "center";
-        position = "28 3";
-        extent = "180 30";
+        position = "28 4";
+        extent = "180 16";
         minExtent = "8 2";
         enabled = "1";
         visible = "1";
@@ -218,7 +218,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
         maxLength = "255";
         maxPopupHeight = "200";
       };
-      
+
       for(%i = 0; %i < getWordCount(%properties); %i++) {
         %ctrl.add(getWord(%properties, %i), %i + 1);
       }
@@ -244,8 +244,8 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "8 -4";
-    extent = "15 15";
+    position = "7 4";
+    extent = "16 16";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -267,7 +267,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
       horizSizing = "right";
       vertSizing = "bottom";
       position = "0 0";
-      extent = "15 15";
+      extent = "16 16";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -276,6 +276,9 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
     };
   };
   %setting.add(%info);
+
+  %setting.verticalMatchChildren(20, 4);
+  %info.centerY();
 
   GlassSettingsGui_ScrollOverlay.settingsCount++;
   GlassSettingsGui_ScrollOverlay.add(%setting);
