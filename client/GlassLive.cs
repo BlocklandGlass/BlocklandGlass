@@ -1220,12 +1220,12 @@ function GlassLive::displayLocation(%data) {
 function GlassLive::joinFriendServer(%blid) {
 	%user = GlassLiveUser::getFromBlid(%blid);
 	%server = getServerFromIP(%user.getServerAddress());
-	
+
 	if(!isObject(%server)) {
 		glassMessageBoxOk("Uh oh", %user.username SPC "is not currently playing a joinable server.");
 		return;
 	}
-	
+
 	GlassServerPreviewGui.open(%server);
 }
 
@@ -1915,39 +1915,44 @@ function GlassLive::friendListExit(%swatch) {
 
 function GlassLive::friendListClick(%swatch, %pos) {
   %this = %swatch.glassHighlight;
-  %pos = vectorSub(%pos, %this.getCanvasPosition());
-  if(%this.type $= "request") {
-    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
-      GlassLive::friendDecline(%this.blid);
-    } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-      glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
-      GlassLive::friendAccept(%this.blid);
-    } else {
-      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
-        %window.delete();
-      else
-        GlassLive::openUserWindow(%this.blid);
-    }
-  } else if(%this.type $= "blocked") {
-    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been unblocked.");
-      GlassLive::userUnblock(%this.blid);
-    }
-  } else if(%this.type $= "toggle") {
-      eval(%this.toggleVar @ " = !" @ %this.toggleVar @ ";");
-      GlassLive::createFriendList();
-  } else {
-    if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-      if(%this.online) {
-        GlassLive::openDirectMessage(%this.blid);
+
+  switch$(%this.type) {
+    case "request":
+      echo(%pos);
+      if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+        glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
+        GlassLive::friendDecline(%this.blid);
+      } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
+        glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
+        GlassLive::friendAccept(%this.blid);
+      } else {
+        if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+          %window.delete();
+        else
+          GlassLive::openUserWindow(%this.blid);
       }
-    } else {
-      if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
-        %window.delete();
-      else
-        GlassLive::openUserWindow(%this.blid);
-    }
+
+    case "blocked":
+      if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+        glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been unblocked.");
+        GlassLive::userUnblock(%this.blid);
+      }
+
+    case "toggle":
+        eval(%this.toggleVar @ " = !" @ %this.toggleVar @ ";");
+        GlassLive::createFriendList();
+
+    default:
+      if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
+        if(%this.online) {
+          GlassLive::openDirectMessage(%this.blid);
+        }
+      } else {
+        if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+          %window.delete();
+        else
+          GlassLive::openUserWindow(%this.blid);
+      }
   }
 }
 
@@ -2106,7 +2111,7 @@ function GlassLive::createUserWindow(%uo) {
     mColor = "85 172 238 200";
     command = ""; // Invite friend to server function
   };
-  
+
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     position = "217 213";
