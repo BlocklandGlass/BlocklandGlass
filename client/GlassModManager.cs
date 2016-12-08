@@ -1,6 +1,7 @@
 function GlassModManager::init() {
   exec("./GlassModManagerGui.cs");
 
+  // TODO this can probably be cleaned up
   GMM_ActivityPage::init();
   GMM_AddonPage::init();
   GMM_BoardsPage::init();
@@ -14,49 +15,16 @@ function GlassModManager::init() {
   GMM_Navigation::init();
 
   if(isObject(GlassModManager)) {
-    GlassModManager.delete();
+    return;
   }
 
   new ScriptObject(GlassModManager);
 
-  GlassModManager::catalogAddons();
   GlassModManager::scanForRTB();
-
-  GlassModManager_MyColorsets::init();
 }
 
 function GlassModManagerImageMouse::onMouseDown(%this) {
   canvas.popDialog(GlassModManagerImage);
-}
-
-function GlassModManager::setAddonStatus(%aid, %status) {
-  error("Depreciated GlassModManager::setAddonStatus");
-  // status:
-  // - installed
-  // - downloading
-  // - queued
-  // - outdated
-  GlassModManager.addonStatus[%aid] = %status;
-}
-
-function GlassModManager::getAddonStatus(%aid) {
-  error("Depreciated GlassModManager::getAddonStatus");
-  return GlassModManager.addonStatus[%aid];
-}
-
-function GlassModManager::catalogAddons() {
-  %pattern = "Add-ons/*/glass.json";
-	%idArrayLen = 0;
-	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
-    %name = getsubstr(%file, 8, strlen(%file)-19);
-    if(strpos(%name, "/") >= 0) { //removes sub-directories
-      continue;
-    }
-
-    jettisonReadFile("Add-Ons/" @ %name @ "/glass.json");
-    %json = $JSON::Value;
-    GlassModManager::setAddonStatus(%json.get("id"), "installed");
-  }
 }
 
 function GlassModManagerGui_Window::onWake(%this) {
@@ -67,7 +35,7 @@ function GlassModManagerGui_Window::onWake(%this) {
 }
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 //
 function GlassModManager::changeKeybind(%this) {
   GlassModManagerGui_KeybindText.setText("<font:verdana:16><just:center><color:111111>Press any key ...");
@@ -83,7 +51,7 @@ function GlassModManager::changeKeybind(%this) {
 
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 //
 
 function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
@@ -182,114 +150,6 @@ function GlassModManagerTCP::onDone(%this, %error) {
     }
 
     if(%ret.status $= "success") {
-      GlassModManagerGui::setLoading(false);
-      switch$(%this.glass_call) {
-        case "home":
-          Glass::debug(%this.buffer);
-          GlassModManagerGui::renderHome(%ret.data);
-
-        case "addon":
-          Glass::debug(%this.buffer);
-
-          if(%ret.authors.length == 1) {
-            %author = "<font:verdana bold:14>" @ %ret.authors.value[0].name;
-          }
-
-          if(%ret.authors.length == 2) {
-            %author = %ret.authors.value[0].name @ " and " @ %ret.authors.value[1].name;
-          }
-
-          %obj = new ScriptObject() {
-            class = "GlassAddonData";
-
-            id = %ret.aid;
-            name = GetASCIIString(%ret.name);
-            filename = %ret.filename;
-            board = %ret.board;
-            description = %ret.description;
-
-            date = %ret.date;
-            downloads = %ret.downloads;
-
-            rating = %ret.rating;
-
-            screenshots = %ret.screenshots;
-
-            author = GetASCIIString(%author);
-
-            buffer = %this.buffer;
-          };
-
-          for(%i = 0; %i < %ret.branches.length; %i++) {
-            %branch = %ret.branches.value[%i];
-            %obj.branches = trim(%obj.branches SPC %branch.id);
-            %obj.branchVersion[%branch.id] = %branch.version;
-            %obj.branchName[%branch.id] = %branch.name;
-          }
-
-          if(%this.action $= "render") {
-            GlassModManagerGui::renderAddon(%obj);
-          } else if(%this.action $= "download") {
-            // echo("Action: download"); // is this used?
-            %ret = GlassModManager::downloadAddon(%ret.aid, false, %this.rtbImportProgress);
-          }
-
-        case "boards":
-          %str = "";
-          if(%ret.status $= "success") {
-            GlassModManagerGui::renderBoards(%ret);
-          } else {
-            // TODO error
-          }
-
-        case "board":
-          Glass::debug(%this.buffer);
-          for(%i = 0; %i < %ret.addons.length; %i++) {
-            %addon = %ret.addons.value[%i];
-            %name = %addon.name;
-            %id = %addon.id;
-            %rating = %addon.rating;
-            %author = %addon.author;
-            %downloads = %addon.downloads;
-
-            %listing = %listing @ %id TAB %name TAB %author TAB %rating TAB %downloads NL "";
-          }
-          GlassModManagerGui::renderBoardPage(%ret.board_id, %ret.board_name, trim(%listing), %ret.page, %ret.pages, %ret.rtb);
-
-        case "comments":
-          Glass::debug(%this.buffer);
-          GlassModManagerGui::renderAddonComments(%ret.comments);
-
-        case "search":
-          if(GlassModManagerGui_SearchBar.lastTCP == %this)
-            GlassModManagerGui::searchResults(%ret.results);
-
-        case "rating":
-          Glass::debug(%this.buffer);
-          GlassModManagerGui::displayAddonRating(%ret.rating);
-
-        case "rtbaddon":
-          Glass::debug(%this.buffer);
-          glassMessageBoxOk("Open In Browser", "<a:http://blocklandglass.com/addons/rtb/view.php?id=" @ %ret.addon.id @ ">Link</a>");
-
-        case "rtb":
-          %newArray = JettisonArray();
-          %addons = %ret.addons;
-          for(%i = 0; %i < %addons.length; %i++) {
-            %addon = %addons.value[%i];
-            if(GlassModManager.rtbAddon[%addon.id] !$= "") {
-              %newArray.push("object", %addon);
-              %addon.set("filename", "string", GlassModManager.rtbAddon[%addon.id]);
-            }
-          }
-
-          if(%newArray.length > 0) {
-            GlassModManagerGui.firstWake = true;
-            GlassLive::openModManager();
-            GlassModManagerGui::openRTBImport(%newArray);
-
-          }
-      }
 
     } else {
       GlassModManagerGui.openPage(GMM_ErrorPage, "status_" @ %ret.status, %this.buffer);
@@ -364,6 +224,10 @@ function isDefaultAddOn(%file) {
   return false;
 }
 
+//
+// TODO this shouldn't include GUI functions, should be wrapped instead
+//
+
 function GlassModManager::deleteAddOn(%this, %addon) {
   %name = %addon.name;
 
@@ -388,7 +252,6 @@ function GlassModManager::deleteAddOn(%this, %addon) {
   }
 
   fileDelete(%dir @ %name @ ".zip");
-  GlassModManager::setAddonStatus(%addon.glassdata.id, "");
 
   glassMessageBoxOk("Add-On Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
 
@@ -397,7 +260,7 @@ function GlassModManager::deleteAddOn(%this, %addon) {
 
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 //
 
 function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
@@ -427,7 +290,7 @@ function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
 
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 //
 
 function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
@@ -437,42 +300,17 @@ function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
   GlassModManagerGui::fetchAndRenderAddon(%this.addon.glassdata.id).action = "render";
 }
 
-
-//
-// possible name change or relocation
-//
-
-function GlassModManagerGui_AddonHighlight::onMouseEnter(%this) {
-  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
-  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
-}
-
-
-//
-// possible name change or relocation
-//
-
-function GlassModManagerGui_AddonHighlight::onMouseLeave(%this) {
-  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
-  %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
-}
-
-
-//
-// possible name change or relocation
-//
-
-function GlassModManagerGui_AddonHighlight::onMouseUp(%this) {
-  %swatch = "GlassModManager_AddonListing_" @ %this.addonId;
-  %button = %swatch.getObject(1);
-  %button.setValue(!%button.getValue());
-}
-
 //====================================
 // Colorsets
 //====================================
 
+//
+// TODO this function should still be used to delete a colorset, but a wrapper
+// should be made around it to do gui updates
+//
+
 function GlassModManager::deleteColorset(%this, %colorset) {
+
   %name = %colorset.name;
 
   if(isDefaultAddon(%name)) {
@@ -483,243 +321,25 @@ function GlassModManager::deleteColorset(%this, %colorset) {
   %dir = "Add-Ons/";
 
   if(!isFile(%dir @ %name @ ".zip")) {
-    if(getFileCount(%dir @ %name @ "/*.cs"))
+    if(getFileCount(%dir @ %name @ "/*.cs")) {
       error("Will not delete folders.");
-    else
+    } else {
       error(%dir @ %name @ ".zip not found.");
+    }
     return;
   }
 
-  if(GlassSettings.get("MM::Colorset") $= ("Add-Ons/" @ %name @ "/colorSet.txt"))
-    GlassModManager_MyColorsets::def();
-
-  fileDelete(%dir @ %name @ ".zip");
-  GlassModManager::setAddonStatus(%colorset.glassdata.id, "");
-
-  glassMessageBoxOk("Colorset Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
-
-  GlassModManager.schedule(1, populateColorsets);
-}
-
-
-//
-// possible name change or relocation
-//
-
-function GlassModManager::populateColorsets() {
-  %this = GlassModManager_MyColorsets;
-
-  %this.colorsets = 0;
-  %pattern = "Add-Ons/*/colorSet.txt";
-	%idArrayLen = 0;
-	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
-    %name = getsubstr(%file, 8, strlen(%file)-21);
-    if(strpos(%name, "/") >= 0) { //removes sub-directories
-      continue;
-    }
-
-    if(%name !$= "Colorset_Default" && getFileCRC(%file) == -1147879122) continue; //default colorset
-
-    %so = new ScriptObject() {
-      class = "GlassModManager_MyColorset";
-      name = %name;
-      isRTB = isfile("Add-Ons/" @ %name @ "/rtbInfo.txt");
-      isBLG = isfile("Add-Ons/" @ %name @ "/glass.json");
-    };
-
-    if(%so.isBLG) {
-      %buffer = "";
-      %fo = new FileObject();
-      %fo.openforread("Add-Ons/" @ %name @ "/glass.json");
-      while(!%fo.isEOF()) {
-        if(%buffer !$= "") {
-          %buffer = %buffer NL getASCIIString(%fo.readLine());
-        } else {
-          %buffer = getASCIIString(%fo.readLine());
-        }
-      }
-      %fo.close();
-      %fo.delete();
-      jettisonParse(collapseEscape(%buffer));
-      %so.glassdata = $JSON::Value;
-    }
-
-    %this.colorsetFile[%this.colorsets] = %file;
-    %this.colorsetName[%this.colorsets] = %name;
-    %this.colorsetData[%this.colorsets] = %so;
-    %this.colorsets++;
-	}
-
-  GlassModManagerGui_MyColorsets.clear();
-  %currentY = 10;
-  for(%i = 0; %i < %this.colorsets; %i++) {
-    if(GlassSettings.get("MM::Colorset") $= %this.colorsetFile[%i]) {
-      %color = "153 204 119 255";
-    } else {
-      %color = "204 119 119 255";
-    }
-    %cs = new GuiSwatchCtrl("GlassModManager_ColorsetListing_" @ %i) {
-       profile = "GuiDefaultProfile";
-       horizSizing = "right";
-       vertSizing = "bottom";
-       position = 10 SPC %currentY;
-       extent = "230 30";
-       minExtent = "8 2";
-       enabled = "1";
-       visible = "1";
-       clipToParent = "1";
-       dcolor = %color;
-       color = %color;
-
-       new GuiMLTextCtrl() {
-          profile = "GuiMLTextProfile";
-          horizSizing = "right";
-          vertSizing = "center";
-          position = "10 7";
-          extent = "429 16";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          lineSpacing = "2";
-          allowColorChars = "0";
-          maxChars = "-1";
-          text = "<font:Verdana Bold:15>" @ %this.colorsetName[%i];
-          maxBitmapHeight = "-1";
-          selectable = "1";
-          autoResize = "1";
-       };
-       new GuiMouseEventCtrl("GlassModManager_ColorsetButton") {
-          colorsetId = %i;
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "bottom";
-          position = "0 0";
-          extent = "465 30";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          lockMouse = "0";
-       };
-       new GuiBitmapCtrl() {
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "center";
-          position = "200 7";
-          extent = "16 16";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/cross.png";
-          wrap = "0";
-          lockAspectRatio = "0";
-          alignLeft = "0";
-          alignTop = "0";
-          overflowImage = "0";
-          keepCached = "0";
-          mColor = "255 255 255 255";
-          mMultiply = "0";
-
-          new GuiMouseEventCtrl("GlassModManager_ColorsetDelete") {
-            colorset = %this.colorsetData[%i];
-            profile = "GuiDefaultProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "0 0";
-            extent = "16 16";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            lockMouse = "0";
-          };
-       };
-       new GuiBitmapCtrl() {
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "center";
-          position = "180 7";
-          extent = "16 16";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = isDefaultAddon(%this.colorsetName[%i]);
-          clipToParent = "1";
-          bitmap = "Add-Ons/System_BlocklandGlass/image/icon/blLogo.png";
-          wrap = "0";
-          lockAspectRatio = "0";
-          alignLeft = "0";
-          alignTop = "0";
-          overflowImage = "0";
-          keepCached = "0";
-          mColor = "255 255 255 255";
-          mMultiply = "0";
-       };
-     new GuiBitmapCtrl() {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "center";
-        position = "180 7";
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = %this.colorsetData[%i].isRTB && !%this.colorsetData[%i].isBLG && !isDefaultAddon(%this.colorsetName[%i]);
-        clipToParent = "1";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks.png";
-        wrap = "0";
-        lockAspectRatio = "0";
-        alignLeft = "0";
-        alignTop = "0";
-        overflowImage = "0";
-        keepCached = "0";
-        mColor = "255 255 255 255";
-        mMultiply = "0";
-     };
-     new GuiBitmapCtrl() {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "center";
-        position = "180 7";
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = %this.colorsetData[%i].isBLG && !isDefaultAddon(%this.colorsetName[%i]);
-        clipToParent = "1";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo.png";
-        wrap = "0";
-        lockAspectRatio = "0";
-        alignLeft = "0";
-        alignTop = "0";
-        overflowImage = "0";
-        keepCached = "0";
-        mColor = "255 255 255 255";
-        mMultiply = "0";
-
-        new GuiMouseEventCtrl("GlassModManager_ColorsetRedirect") {
-          colorset = %this.colorsetData[%i];
-          profile = "GuiDefaultProfile";
-          horizSizing = "right";
-          vertSizing = "bottom";
-          position = "0 0";
-          extent = "16 16";
-          minExtent = "8 2";
-          enabled = "1";
-          visible = "1";
-          clipToParent = "1";
-          lockMouse = "0";
-        };
-     };
-    };
-    %currentY += 35;
-    GlassModManagerGui_MyColorsets.add(%cs);
-    GlassModManagerGui_MyColorsets.verticalMatchChildren(498, 10);
-    GlassModManagerGui_MyColorsets.setVisible(true);
-    GlassModManagerGui_MyColorsets.getGroup().scrollToTop();
+  if(GlassSettings.get("MM::Colorset") $= ("Add-Ons/" @ %name @ "/colorSet.txt")) {
+    GlassSettings.update("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
   }
 
-  GlassModManager_MyColorsets.renderColorset(GlassSettings.get("MM::Colorset"));
+  fileDelete(%dir @ %name @ ".zip");
 }
+
+
+//
+// TODO possible name change or relocation
+//
 
 function GlassModManager_ColorsetDelete::onMouseUp(%this) {
   %name = %this.colorset.name;
@@ -741,40 +361,15 @@ function GlassModManager_ColorsetDelete::onMouseUp(%this) {
   glassMessageBoxYesNo("Delete Colorset", "Are you sure you want to delete <font:verdana bold:13>" @ %name, "GlassModManager.deleteColorset(\"" @ %this.colorset @ "\");");
 }
 
+//
+// TODO possible name change or relocation
+//
+
 function GlassModManager_ColorsetRedirect::onMouseUp(%this) {
   $Glass::MM_PreviousPage = -1;
   $Glass::MM_PreviousBoard = -1;
   GlassModManagerGui::setPane(1);
   GlassModManagerGui::fetchAndRenderAddon(%this.colorset.glassdata.id).action = "render";
-}
-
-function GlassModManager_ColorsetButton::onMouseDown(%this) {
-  if(GlassModManager_MyColorsets.selected !$= "") {
-    %swatch = "GlassModManager_ColorsetListing_" @ GlassModManager_MyColorsets.selected;
-    %swatch.color = %swatch.dcolor;
-  }
-
-  GlassModManager_MyColorsets.renderColorset(GlassModManager_MyColorsets.colorsetFile[%this.colorsetId]);
-  GlassModManager_MyColorsets.selected = %this.colorsetId;
-  %swatch = "GlassModManager_ColorsetListing_" @ GlassModManager_MyColorsets.selected;
-  %swatch.color = "119 119 204 255";
-  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
-}
-
-function GlassModManager_ColorsetButton::onMouseEnter(%this) {
-  %swatch = "GlassModManager_ColorsetListing_" @ %this.colorsetId;
-  %swatch.color = vectorAdd(%swatch.color, "50 50 50") SPC 255;
-}
-
-function GlassModManager_ColorsetButton::onMouseLeave(%this) {
-  %swatch = "GlassModManager_ColorsetListing_" @ %this.colorsetId;
-  %swatch.color = vectorAdd(%swatch.color, "-50 -50 -50") SPC 255;
-}
-
-function GlassModManager_MyColorsets::init() {
-  if(!isObject(GlassModManager_MyColorsets)) {
-    new ScriptObject(GlassModManager_MyColorsets);
-  }
 }
 
 //filecopy doesnt like zips
@@ -790,76 +385,6 @@ function filecopy_hack(%source, %destination) {
   %fo_dest.close();
   %fo_source.delete();
   %fo_dest.delete();
-}
-
-function GlassModManager_MyColorsets::renderColorset(%this, %file) {
-  error("Depreciated GlassModManager_MyColorsets::renderColorset");
-  %fo = new FileObject();
-  %fo.openforread(%file);
-  %this.divs = 0;
-  %this.divPointer = 0;
-  while(!%fo.isEOF()) {
-    %line = %fo.readLine();
-    if(%line $= "") {
-      continue;
-    }
-
-    if(strpos(%line, "DIV:") == 0) {
-      %this.divCount[%this.divs] = %this.divPointer;
-      %this.divs++;
-      %this.divPointer = 0;
-      continue;
-    }
-
-    if(strpos(getWord(%line, 0), ".") > 0) { //float color
-      %r = mFloor(getword(%line, 0)*255);
-      %g = mFloor(getword(%line, 1)*255);
-      %b = mFloor(getword(%line, 2)*255);
-      %a = mFloor(getword(%line, 3)*255);
-      %this.color[%this.divs @ "_" @ %this.divPointer] = %r SPC %g SPC %b SPC %a;
-      %this.divPointer++;
-    } else {
-      %this.color[%this.divs @ "_" @ %this.divPointer] = %line;
-      %this.divPointer++;
-    }
-  }
-  %fo.close();
-  %fo.delete();
-
-  GlassModManagerGui_ColorsetPreview.clear();
-  GlassModManager_MyColorsets.selected = "";
-  %maxY = 8;
-  %currentX = 8;
-  %currentY = 8;
-  for(%a = 0; %a < %this.divs; %a++) {
-    for(%b = 0; %b < %this.divCount[%a]; %b++) {
-      %swatch = new GuiSwatchCtrl() {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = %currentX SPC %currentY;
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = "1";
-        clipToParent = "1";
-        color = %this.color[%a @ "_" @ %b];
-      };
-      GlassModManagerGui_ColorsetPreview.add(%swatch);
-      %currentY += 16;
-      if(%currentY > %maxY) {
-        %maxY = %currentY;
-      }
-    }
-    %currentX += 16;
-    %currentY = 8;
-  }
-  GlassModManagerGui_ColorsetPreview.extent = %currentX+8 SPC %maxY+8;
-  //center
-  %parent = GlassModManagerGui_ColorsetPreview.getGroup();
-  %x = (getWord(%parent.extent, 0)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 0)/2);
-  %y = (getWord(%parent.extent, 1)/2) - (getWord(GlassModManagerGui_ColorsetPreview.extent, 1)/2);
-  GlassModManagerGui_ColorsetPreview.position = mFloor(%x) SPC mFloor(%y);
 }
 
 //====================================
@@ -894,7 +419,7 @@ function GlassModManager::downloadAddon(%this, %id, %progressBar, %progressText)
 
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 // is this needed if GlassDownloadManager is localized?
 //
 
@@ -949,7 +474,7 @@ function GlassModManagerQueue_Failed(%this, %error) {
 
 
 //
-// possible name change or relocation
+// TODO possible name change or relocation
 //
 
 function stringifyFileSize(%size, %dec) {

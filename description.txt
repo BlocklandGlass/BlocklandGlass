@@ -1,0 +1,7 @@
+Title:          Blockland Glass
+Author:         Jincux (blf: Scout31, blid: 9789)
+Contributors:   Shock (blf: Paperwork, blid: 636)
+                Crown (blf: Crøwn, blid: 2143)
+                
+Description:    General Blockland enhancement suite, focused on add-on management
+                  and community building
