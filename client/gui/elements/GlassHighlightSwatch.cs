@@ -47,6 +47,7 @@ function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {
 }
 
 function GlassHighlightMouse::onMouseLeave(%this) {
+  %this.down = false;
   if(!%this.enabled)
     return;
 
@@ -61,6 +62,7 @@ function GlassHighlightMouse::onMouseLeave(%this) {
 }
 
 function GlassHighlightMouse::onMouseEnter(%this) {
+  %this.down = false;
   if(!%this.enabled)
     return;
 
@@ -74,15 +76,15 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
 
 function GlassHighlightMouse::onMouseDown(%this) {
-  if(%this.online) {
-    %this.down = 1;
-  }
+  %this.down = true;
 }
 
 function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
+  %this.down = false;
+
   %pos = vectorSub(%pos, %this.getCanvasPosition());
 
-  if(%this.command !$= "") {
+  if(%this.command !$= "" && %this.down) {
     eval(%this.command @ "(%this.getGroup().getId(), %pos);");
   }
 }

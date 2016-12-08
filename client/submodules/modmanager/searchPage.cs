@@ -111,6 +111,7 @@ function GMM_SearchPage::open(%this, %preserve) {
     clipToParent = "1";
     text = "Loading...";
     enabled = false;
+    command = "GMM_SearchPage.search();";
   };
 
   %container.searchOptions.author = new GuiTextEditCtrl(GMM_SearchPage_Author) {
@@ -358,10 +359,16 @@ function GMM_SearchPage::search(%this) {
     %search = trim(%search NL "rtb\t1");
   }
 
-  if(%author $= "" && %query $= "") {
+  if(%author $= "" && %query $= "" && isObject(%this.container.searchResults)) {
     %this.container.searchResults.deleteAll();
     %this.container.searchResults.delete();
     return;
+  }
+
+  //board
+  if(GMM_SearchPage_Board.getSelected() != -1) {
+    %search = trim(%search NL "board" TAB GMM_SearchPage_Board.getSelected());
+    echo(%search);
   }
 
   //search
