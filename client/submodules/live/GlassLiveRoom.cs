@@ -30,14 +30,14 @@ function GlassLiveRoom::getFromId(%id) {
     return false;
 }
 
-function GlassLiveRoom::leaveRoom(%this) {
+function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
   %obj = JettisonObject();
   %obj.set("type", "string", "roomLeave");
   %obj.set("id", "string", %this.id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  if(GlassSettings.get("Live::RoomNotification")) {
+  if(GlassSettings.get("Live::RoomNotification") && !%inhibitNotification) {
     GlassNotificationManager::newNotification("Exited Room", "You've exited " @ %this.name, "delete", 0);
   }
 
@@ -528,7 +528,7 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
 		  GlassServerPreviewGui.open(%server);
 	  return;
 	}
-  
+
     if(%this.user.blid == getNumKeyId()) {
       if(GlassIconSelectorWindow.visible)
         GlassLive::closeIconSelector();

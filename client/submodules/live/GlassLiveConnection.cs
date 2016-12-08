@@ -234,8 +234,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoinAuto":
-      if(!GlassSettings.get("Live::AutoJoinRoom"))
+      // TODO temporary work around, need to change this whole call
+      //which requires server changes too
+      if(!GlassSettings.get("Live::AutoJoinRoom")) {
+        %room = GlassLiveRooms::create(%data.id, %data.title);
+        %room.createView();
+        %room.leaveRoom(true);
         return;
+      }
 
       if(GlassSettings.get("Live::RoomNotification"))
         GlassNotificationManager::newNotification("Entered Room", "You've entered " @ %data.title, "add", 0);
