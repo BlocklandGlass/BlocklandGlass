@@ -80,11 +80,10 @@ function GlassHighlightMouse::onMouseDown(%this) {
 }
 
 function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
-  %this.down = false;
-
   %pos = vectorSub(%pos, %this.getCanvasPosition());
 
   if(%this.command !$= "" && %this.down) {
     eval(%this.command @ "(%this.getGroup().getId(), %pos);");
   }
+  %this.down = false;
 }
