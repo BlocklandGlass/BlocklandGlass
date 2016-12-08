@@ -2405,7 +2405,6 @@ function GlassChatroomWindow::addTab(%this, %tabObj) {
 
   %tabObj.window = %this;
 
-  %this.setTabsVisible(true);
   %this.renderTabs();
 
   //always open to the added tab
@@ -2631,26 +2630,6 @@ function GlassChatroomWindow::renderTabs(%this) {
       %this.extent = %minWidth SPC getWord(%this.extent, 1);
     }
   }
-}
-
-function GlassChatroomWindow::setTabsVisible(%this, %toggle) {
-  if(%toggle) {
-    %position = "0 60";
-    %extent = "455 290";
-  } else {
-    %position = "0 35";
-    %extent = "475 290";
-  }
-
-  %this.extent = %extent;
-
-  for(%i = 0; %i < %this.tabs; %i++) {
-    %tabObj = %this.tab[%i];
-
-    %tabObj.position = %position;
-  }
-
-  %this.tabSwatch.setVisible(%toggle);
 }
 
 function GlassChatroomWindow::openTab(%this, %id) {
@@ -2881,6 +2860,7 @@ function GlassChatroomTab::flashTick(%this, %bool) {
 }
 
 function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
+
   %window = %this.getGroup();
   %extent = %window.extent;
   %position = %window.position;
@@ -2939,7 +2919,7 @@ function GlassLive::createChatroomView(%id) {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "bottom";
-    position = "0 35";
+    position = "0 60";
     extent = "450 215";
     minExtent = "8 2";
     enabled = "1";
