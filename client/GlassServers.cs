@@ -338,6 +338,7 @@ function GlassServerPreview::connectToServer() {
   if(%server $= "")
 	return;
   
+  NPL_List.clear();
   ConnectToServer(%server, "", "1", "1");
 }
 	

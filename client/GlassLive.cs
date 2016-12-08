@@ -1217,6 +1217,18 @@ function GlassLive::displayLocation(%data) {
  %ml.setValue(%text);
 }
 
+function GlassLive::joinFriendServer(%blid) {
+	%user = GlassLiveUser::getFromBlid(%blid);
+	%server = getServerFromIP(%user.getServerAddress());
+	
+	if(!isObject(%server)) {
+		glassMessageBoxOk("Uh oh", %user.username SPC "is not currently playing a joinable server.");
+		return;
+	}
+	
+	GlassServerPreviewGui.open(%server);
+}
+
 function GlassLive::openDirectMessage(%blid, %username) {
   if(%blid < 0 || %blid $= "" || %blid == getNumKeyId()) {
     return false;
@@ -2088,11 +2100,21 @@ function GlassLive::createUserWindow(%uo) {
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     position = "120 213";
-    extent = "190 30";
-    text = "Invite to Server";
+    extent = "93 30";
+    text = "Invite";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "85 172 238 200";
     command = ""; // Invite friend to server function
+  };
+  
+  %window.joinButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "217 213";
+    extent = "93 30";
+    text = "Join";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+    mColor = "46 204 113 200";
+    command = "GlassLive::joinFriendServer(" @ %uo.blid @ ");";
   };
 
   %window.locationSwatch = new GuiBitmapButtonCtrl() {
@@ -2148,6 +2170,7 @@ function GlassLive::createUserWindow(%uo) {
   %window.add(%window.friendButton);
   %window.add(%window.blockButton);
   %window.add(%window.inviteButton);
+  %window.add(%window.joinButton);
 
 
   %window.closeCommand = %window.getId() @ ".delete();";
