@@ -743,6 +743,11 @@ function GlassLive::userBlock(%blid) {
   if(%blid == getNumKeyId())
     return;
 
+  if(wordPos(GlassLive.friendRequestList, %blid) != -1) {
+    GlassLive::friendDecline(%blid);
+    return;
+  }
+
   %user = GlassLiveUser::getFromBlid(%blid);
 
   %blockedIcon = "wall";
