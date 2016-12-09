@@ -31,7 +31,7 @@ function GMM_AddonPage::open(%this, %modId) {
 }
 
 function GMM_AddonPage::close(%this) {
-  %this.container.deleteAll();
+  //nothing special
 }
 
 function GMM_AddonPage::handleResults(%this, %obj) {
@@ -1094,4 +1094,103 @@ function GMM_AddonPage_downloadUnwritable(%dl) {
   %this = GMM_AddonPage;
 
   error("Download path unwritable");
+}
+
+function GMM_AddonPage::commentClick(%this) {
+  %window = GlassModManagerGui_CommentWindow;
+  %window.setVisible(true);
+  %window.deleteAll();
+
+  %window.scroll = new GuiScrollCtrl() {
+    profile = "GlassScrollProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 35";
+    extent = "380 155";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    willFirstRespond = "0";
+    hScrollBar = "alwaysOff";
+    vScrollBar = "alwaysOn";
+    constantThumbHeight = "0";
+    childMargin = "5 5";
+    rowHeight = "40";
+    columnWidth = "30";
+  }
+  ;
+  %window.textSwatch = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = "255 255 255 0";
+    position = "5 5";
+    extent = "365 14";
+  };
+
+  %window.textEdit = new GuiMLTextEditCtrl(GMM_AddonPage_CommentText) {
+    profile = "GlassMLTextEditProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "365 14";
+    autoResize = true;
+  };
+
+  %window.submit = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonWhiteProfile";
+
+    position = "340 197";
+    extent = "50 20";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+
+    text = "Post";
+
+    command = "GMM_AddonPage.submitComment();";
+
+    mColor = "84 217 140 255";
+  };
+
+  %window.textSwatch.add(%window.textEdit);
+  %window.scroll.add(%window.textSwatch);
+  %window.add(%window.scroll);
+  %window.add(%window.submit);
+
+  %window.forceCenter();
+}
+
+function GMM_AddonPage_CommentText::onResize(%this) {
+  %window = GlassModManagerGui_CommentWindow;
+  %height = (getLineCount(%window.textEdit.getValue()))*12;
+
+  if(%height < 14)
+    %height = 14;
+
+  %window.textSwatch.extent = 365 SPC %height;
+  %window.textSwatch.setVisible(true);
+  %window.scroll.scrollToBottom();
+  %window.textEdit.makeFirstResponder(true);
+}
+
+function GMM_AddonPage::submitComment(%this) {
+  %text = GMM_AddonPage_CommentText.getValue();
+  if(strlen(trim(%text)) == 0) {
+    glassMessageBoxOk("Blank Comment", "You didn't comment anything!");
+    GMM_AddonPage_CommentText.setValue("");
+    return;
+  }
+
+  GMM_AddonPage_CommentText.enabled = false;
+  GlassModManager::placeCall("comment", %str = "id" TAB %this.container.addonId NL "newcomment" TAB expandEscape(%text), "GMM_AddonPage.commentSubmitted");
+}
+
+function GMM_AddonPage::commentSubmitted(%this, %res) {
+  if(%res.status $= "success") {
+    glassMessageBoxOk("Comment Submitted", "Your comment has been posted.");
+    GlassModManagerGui_CommentWindow.setVisible(false);
+    GMM_Navigation.steps--;
+    GlassModManagerGui.openPage(GMM_AddonPage, %this.container.addonId);
+  } else {
+    glassMessageBoxOk("Comment Failed", "Your comment could not be posted.");
+  }
 }
