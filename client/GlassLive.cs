@@ -190,7 +190,8 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
-  GlassFriendsGui_Blockhead.setVisible(false);
+  if(isObject(GlassFriendsGui_Blockhead))
+	GlassFriendsGui_Blockhead.setVisible(false);
 }
 
 function GlassLive::enterRoomDragMode(%obj, %pos) {
@@ -1781,6 +1782,7 @@ function GlassLive::createUserWindow(%uo) {
     canMinimize = "0";
     canMaximize = "0";
   };
+  %window.uo = %uo;
 
   %window.infoSwatch = new GuiSwatchCtrl() {
 	color = "235 235 235 255";
