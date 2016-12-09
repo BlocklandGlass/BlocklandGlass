@@ -31,7 +31,7 @@ function GlassLive::init() {
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
-
+  
   if(!isObject(GlassLiveUsers))
     new ScriptGroup(GlassLiveUsers);
 
@@ -388,7 +388,7 @@ function GlassFriendsGui_StatusSelect::updateStatus() {
 	case "Away":
 	  %selector.position = "14 40";
 	case "Busy":
-	  %selector.position = "14 15";
+	  %selector.position = "14 14";
 	default:
 		return;
   }
@@ -962,14 +962,14 @@ function GlassLive::displayLocation(%data) {
 
 function GlassLive::joinFriendServer(%blid) {
 	%user = GlassLiveUser::getFromBlid(%blid);
-	%server = getServerFromIP(%user.getServerAddress());
+	%server = %user.getServerAddress();
 
-	if(!isObject(%server)) {
+	if(%server $= "") {
 		glassMessageBoxOk("Error", "<font:verdana bold:13>" @ %user.username SPC "<font:verdana:13>is not currently playing on a joinable server.");
 		return;
 	}
 
-	GlassServerPreviewGui.open(%server);
+	ConnectToServer(%server, "", "1", "1");
 }
 
 function GlassLive::openDirectMessage(%blid, %username) {
@@ -1863,8 +1863,8 @@ function GlassLive::createUserWindow(%uo) {
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "46 204 113 200";
-    command = "GlassLive::joinFriendServer(" @ %uo.blid @ ");";
-  };
+	command = "glassMessageBoxYesNo(\"Warning\", \"Would you like to join" SPC %uo.username @ "'s server?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
+  };      
 
   %window.add(%window.infoSwatch);
   %window.infoSwatch.add(%window.blockhead);

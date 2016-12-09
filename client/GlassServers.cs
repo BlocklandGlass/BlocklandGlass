@@ -117,7 +117,7 @@ function GlassFavoriteServers::buildList(%this) {
 
   	%server = GlassFavoriteServers.onlineFavorite[%i];
 
-  	%password = getField(%server, 3);
+  	%passworded = getField(%server, 3);
   	GlassFavoriteServers.renderServer((%passworded ? "passworded" : "online"), %i, getField(%server, 2), getField(%server, 4), getField(%server, 5), getField(%server, 6), getField(%server, 0) @ getField(%server, 1));
   }
 
@@ -280,8 +280,6 @@ function GlassServerPreviewGui::close(%this) {
 }
 
 function getServerFromIP(%ip) {
-  if(!isObject(ServerInfoGroup))
-	  JoinServerGui.queryWebMaster();
   for(%i=0; %i < ServerInfoGroup.getCount(); %i++) {
 	%search = ServerInfoGroup.getObject(%i);
 	if(%search.ip $= %ip)
