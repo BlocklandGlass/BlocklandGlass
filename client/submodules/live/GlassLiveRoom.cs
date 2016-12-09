@@ -123,7 +123,7 @@ function GlassLiveRoom::onUserJoin(%this, %blid) {
   %this.addUser(%blid);
 }
 
-function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
+function GlassLiveRoom::onUserLeave(%this, %blid) {
   %chatroom = %this.view;
 
   %this.removeUser(%blid);
@@ -131,35 +131,11 @@ function GlassLiveRoom::onUserLeave(%this, %blid, %reason) {
   %user = GlassLiveUser::getFromBlid(%blid);
 
   if(GlassSettings.get("Live::ShowJoinLeave")) {
-    switch(%reason) {
-      case -1:
-        %text = "No Reason";
-
-      case 0:
-        %text = "Left";
-
-      case 1:
-        %text = "Disconnected";
-
-      case 2:
-        %text = "Kicked";
-
-      case 3:
-        %text = "Quit";
-
-      case 4:
-        %text = "Updates";
-
-      default:
-        %text = "Unhandled: " @ %reason;
-    }
-
     if(%user == false)
       %user = "BLID_" @ %blid; // todo local caching
     else
       %user = %user.username;
 
-    //%text = "<font:verdana:12><color:666666>" @ %user @ " left the room. [" @ %text @ "]";
     %text = "<font:verdana:12><color:666666>" @ %user @ " (" @ %blid @ ") exited the room.";
     %this.pushText(%text);
   }

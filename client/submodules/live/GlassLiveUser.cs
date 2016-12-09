@@ -168,7 +168,7 @@ function GlassLiveUser::setIcon(%this, %icon, %roomid) {
     } else {
       for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
         %window = GlassOverlayGui.getObject(%i);
-        if(%window.getName() $= "GlassChatroomWindow" || %window.getName() $= "GlassGroupchatWindow") {
+        if(%window.getName() $= "GlassChatroomWindow") {
           %window.activeTab.room.renderUserList();
         }
       }
@@ -232,6 +232,9 @@ function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAd
   %this.location = %location;
   %this.serverTitle = %serverTitle;
   %this.serverAddress = %serverAddress;
+
+  if(isObject(%this.window))
+    GlassLive::openUserWindow(%this.blid);
 }
 
 function GlassLiveUser::getLocation(%this) {

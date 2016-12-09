@@ -1,0 +1,117 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassManualGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "1024 768";
+   minExtent = "8 8";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl(GlassManualWindow) {
+      profile = "GlassWindowProfile";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "215 145";
+      extent = "570 460";
+      minExtent = "300 200";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Glass Manual";
+      maxLength = "255";
+      resizeWidth = "1";
+      resizeHeight = "1";
+      canMove = "1";
+      canClose = "1";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+      closeCommand = "GlassLive::closeManual();";
+
+      new GuiScrollCtrl() {
+         profile = "GlassScrollProfile";
+         horizSizing = "right";
+         vertSizing = "height";
+         position = "8 31";
+         extent = "132 423";
+         minExtent = "8 8";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         willFirstRespond = "1";
+         hScrollBar = "alwaysOff";
+         vScrollBar = "dynamic";
+         constantThumbHeight = "0";
+         childMargin = "0 0";
+         rowHeight = "10";
+         columnWidth = "30";
+
+         new GuiTextListCtrl(GlassManualGui_List) {
+            profile = "GuiTextListProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "1 1";
+            extent = "130 144";
+            minExtent = "8 8";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            enumerate = "0";
+            resizeCell = "1";
+            columns = "0";
+            fitParentWidth = "1";
+            clipColumnText = "0";
+         };
+      };
+      new GuiScrollCtrl() {
+         profile = "GlassScrollProfile";
+         horizSizing = "width";
+         vertSizing = "height";
+         position = "143 31";
+         extent = "421 423";
+         minExtent = "8 8";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         willFirstRespond = "1";
+         hScrollBar = "alwaysOff";
+         vScrollBar = "alwaysOn";
+         constantThumbHeight = "0";
+         childMargin = "0 0";
+         rowHeight = "40";
+         columnWidth = "30";
+
+         new GuiMLTextCtrl(GlassManualGui_Text) {
+            profile = "GuiMLTextProfile";
+            horizSizing = "width";
+            vertSizing = "bottom";
+            position = "1 1";
+            extent = "403 1090";
+            minExtent = "8 8";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            lineSpacing = "2";
+            allowColorChars = "0";
+            maxChars = "-1";
+            maxBitmapHeight = "-1";
+            selectable = "1";
+            autoResize = "1";
+               TML_listBulletIndent = "2";
+               TML_fontColor = "000000";
+               TML_fontCacheSizes = "14";
+               TML_skipFont = "1";
+               TML_listTextIndent = "2";
+               TML_fontCacheTypes = "Verdana";
+               TML_fontSize = "16";
+               TML_listLevel = "0";
+               TML_fontCacheColors = "000000";
+               TML_fontType = "Verdana";
+         };
+      };
+   };
+};
+//--- OBJECT WRITE END ---

@@ -99,7 +99,7 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
         %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
       }
 
-      %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
+    %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
 
     %url = "http://" @ "test.blocklandglass.com" @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
 

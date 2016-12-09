@@ -23,7 +23,6 @@ function GMM_RTBAddonPage::open(%this, %modId) {
   %this.body = %body;
   %container.add(%body);
 
-  echo("Place call");
   GlassModManager::placeCall("rtbaddon", "id" TAB %modId, "GMM_RTBAddonPage.handleResults");
 
   return %container;
@@ -34,7 +33,6 @@ function GMM_RTBAddonPage::close(%this) {
 }
 
 function GMM_RTBAddonPage::handleResults(%this, %obj) {
-  echo("Got results");
   GlassModManagerGui.pageDidLoad(%this);
 
   %obj = %obj.addon;

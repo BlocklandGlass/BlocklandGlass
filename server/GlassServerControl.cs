@@ -111,17 +111,6 @@ function serverCmdGlassSetAdmin(%client, %blid, %rank, %auto) {
   }
 }
 
-// function serverCmdGetGlassUsers(%client) {
-  // %users = 0;
-  // for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    // %cl = ClientGroup.getObject(%i);
-    // if(%cl.hasGlass) {
-      // %users++;
-    // }
-  // }
-  // messageClient(%client, '', %users);
-// }
-
 function GlassServerControlS::setAdmin(%blid, %rank, %auto) {
   if(%blid == getNumKeyID()) {
     return;

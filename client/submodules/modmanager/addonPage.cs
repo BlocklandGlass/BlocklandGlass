@@ -389,7 +389,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
             %color = GlassLive.color_mod;
 
           case "Mod Reviewer":
-            %color = GlassLive.color_bot;
+            %color = GlassLive.color_friend;
         }
       }
 

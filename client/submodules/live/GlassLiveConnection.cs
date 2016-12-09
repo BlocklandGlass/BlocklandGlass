@@ -375,7 +375,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomUserLeave": //other user got removed
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
-        %room.onUserLeave(%data.blid, %data.reason);
+        %room.onUserLeave(%data.blid);
 
     case "roomUserStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
@@ -389,7 +389,6 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.setIcon(%data.icon, %data.id);
 
     case "roomKicked": //we got removed from a room
-      // TODO: roomKicked for reason
       glassMessageBoxOk("Kicked", "You've been kicked:<br><br>" @ %data.reason);
       GlassLive.noReconnect = true;
 
@@ -498,38 +497,6 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo = GlassLiveUser::create(%data.username, %data.blid);
 
       %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
-
-    case "groupJoin":
-      %group = GlassLiveGroup::create(%data.id, %data.clients);
-      %group.createGui();
-
-    case "groupInvite":
-      %id = %data.id;
-      %name = %data.inviterName;
-      %blid = %data.inviterBlid;
-      %users = %data.users;
-
-      GlassNotificationManager::newNotification("Groupchat Invite", "You've been invited to group chat by <font:verdana bold:13>" @ %name, "group", 1, "GlassLive::joinGroupPrompt(" @ %id @ ");");
-
-    case "groupMessage":
-      %group = GlassLiveGroup::getFromId(%data.id);
-
-      %name = %data.senderName;
-      %blid = %data.senderBlid;
-
-      %user = GlassLiveUser::getFromBlid(%blid);
-      %group.pushMessage(%user, %data.msg);
-
-    case "groupClientEnter":
-      %client = GlassLiveUser::create(%data.username, %data.blid);
-      %group = GlassLiveGroup::getFromId(%data.id);
-
-      %group.addUser(%client.blid);
-      %group.pushText("<font:verdana:12><color:666666>" @ %client.username @ " entered the group.");
-
-    case "groupClientLeave":
-      %group = GlassLiveGroup::getFromId(%data.id);
-      %group.removeUser(%data.blid);
 
     case "location":
       GlassLive::displayLocation(%data);
