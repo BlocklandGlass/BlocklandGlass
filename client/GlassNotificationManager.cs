@@ -275,7 +275,7 @@ package GlassNotificationManager {
     } else if(%content.getName() $= "MainMenuGui") {
       if(GlassSettings.get("Live::StartupNotification")) {
         if(!$Glass::StartupNotified) {
-          Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 1, "GlassLive::openOverlay();");
+          Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 1, "GlassOverlay::open();");
           $Glass::StartupNotified = true;
         }
       }

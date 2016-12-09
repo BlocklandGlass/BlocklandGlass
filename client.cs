@@ -35,9 +35,7 @@ function Glass::execClient() {
 	exec("./client/gui/GlassServerPreviewGui.gui");
 	exec("./client/gui/GlassJoinServerGui.gui");
 	exec("./client/gui/GlassManualGui.gui");
-
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
-
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -51,6 +49,7 @@ function Glass::execClient() {
 	exec("./client/GlassClientManager.cs");
 
 	exec("./client/GlassAuth.cs");
+	exec("./client/GlassOverlay.cs");
 	exec("./client/GlassLive.cs");
 	exec("./client/GlassModManager.cs");
 	exec("./client/GlassPreferencesBridge.cs");

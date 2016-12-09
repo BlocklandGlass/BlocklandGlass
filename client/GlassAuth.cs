@@ -1,5 +1,5 @@
 function GlassAuth::init() {
-  GlassFriendsGui_HeaderText.position = "10 13";
+  GlassFriendsGui_HeaderText.position = "10 19";
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   GlassLive::setPowerButton(0);
   GlassFriendsGui_InfoSwatch.color = "210 210 210 255";

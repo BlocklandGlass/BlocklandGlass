@@ -40,7 +40,7 @@ new GuiControl(GlassOverlayGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassLive::closeOverlay();";
+      command = "GlassOverlay::close();";
       accelerator = "escape";
       groupNum = "-1";
       buttonType = "PushButton";
@@ -71,7 +71,7 @@ new GuiControl(GlassOverlayGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassLive::openChatroom();";
+      command = "GlassOverlay::openChatroom();";
       groupNum = "-1";
       buttonType = "PushButton";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_chatroom";
@@ -93,7 +93,7 @@ new GuiControl(GlassOverlayGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassLive::openModManager();";
+      command = "GlassOverlay::openModManager();";
       groupNum = "-1";
       buttonType = "PushButton";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_modmanager";
@@ -115,7 +115,7 @@ new GuiControl(GlassOverlayGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassLive::openSettings();";
+      command = "GlassOverlay::openSettings();";
       groupNum = "-1";
       buttonType = "PushButton";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_settings";
@@ -137,7 +137,7 @@ new GuiControl(GlassOverlayGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "GlassLive::openManual();";
+      command = "GlassOverlay::openManual();";
       groupNum = "-1";
       buttonType = "PushButton";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_manual";

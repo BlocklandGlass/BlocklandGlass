@@ -108,16 +108,6 @@ function GlassLive::init() {
   }
 }
 
-function GlassLive_keybind(%down) {
-  if(%down) {
-    if(!GlassOverlayGui.isAwake()) {
-      GlassLive::openOverlay();
-    } else {
-      GlassLive::closeOverlay();
-    }
-  }
-}
-
 function GlassLive::onAuthSuccess() {
   GlassLive::createBlockhead();
 
@@ -136,109 +126,6 @@ function GlassLive::onAuthSuccess() {
   GlassLive::updateLocation();
 }
 
-function GlassLive::openOverlay() {
-  canvas.pushDialog(GlassOverlayGui);
-  GlassNotificationManager.dismissAll();
-}
-
-function GlassLive::openModManager() {
-  GlassLive::openOverlay();
-  if(GlassModManagerGui.getCount() > 0) {
-    GlassOverlayGui.add(GlassModManagerGui_Window);
-    GlassModManagerGui_Window.forceCenter();
-    GlassModManagerGui_Window.visible = false;
-  }
-  GlassModManagerGui_Window.setVisible(!GlassModManagerGui_Window.visible);
-
-  if(GlassModManagerGui.page $= "") {
-    GlassModManagerGui.openPage(GMM_ActivityPage);
-  }
-
-  GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
-}
-
-function GlassLive::closeModManager() {
-  GlassModManagerGui_Window.setVisible(false);
-}
-
-function GlassLive::openManual() {
-  if(isObject(GlassManualWindow)) {
-    GlassManualWindow.setVisible(!GlassManualWindow.visible);
-  }
-
-  if(GlassManualWindow.visible) {
-    GlassOverlayGui.pushToBack(GlassManualWindow);
-  }
-}
-
-function GlassLive::closeManual() {
-  GlassManualWindow.setVisible(false);
-}
-
-function GlassLive::openSettings() {
-  if(isObject(GlassSettingsWindow)) {
-    GlassSettingsWindow.setVisible(!GlassSettingsWindow.visible);
-    GlassSettingsGui_ScrollOverlay.setVisible(true);
-  }
-
-  if(GlassSettingsWindow.visible) {
-    GlassOverlayGui.pushToBack(GlassSettingsWindow);
-  }
-}
-
-function GlassLive::closeSettings() {
-  GlassSettingsWindow.setVisible(false);
-}
-
-function GlassLive::openIconSelector() {
-  if(isObject(GlassIconSelectorWindow)) {
-    GlassIconSelectorWindow.onWake();
-    GlassIconSelectorWindow.setVisible(!GlassIconSelectorWindow.visible);
-  }
-
-  if(GlassIconSelectorWindow.visible) {
-    GlassOverlayGui.pushToBack(GlassIconSelectorWindow);
-  }
-}
-
-function GlassLive::closeIconSelector() {
-  GlassIconSelectorWindow.setVisible(false);
-}
-
-function GlassLive::openChatroom() {
-  %chatFound = false;
-
-  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
-    %window = GlassOverlayGui.getObject(%i);
-    if(%window.getName() $= "GlassChatroomWindow") {
-      %chatFound = true;
-
-      %window.setVisible(!%window.visible);
-    }
-  }
-
-  if(!%chatFound) {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
-      if(GlassLiveConnection.connected) {
-      glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
-      } else {
-      glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
-      }
-    } else {
-      if(GlassLiveConnection.connected) {
-        GlassLive::disconnect($Glass::Disconnect["Manual"]);
-        GlassLive.schedule(100, connectToServer);
-      } else {
-        GlassLive.schedule(0, connectToServer);
-      }
-    }
-  }
-}
-
-function GlassLive::closeOverlay() {
-  canvas.popDialog(GlassOverlayGui);
-}
-
 function GlassLive::updateSetting(%category, %setting) {
   %box = "GlassSettingsGui_Prefs_" @ %setting;
   GlassSettings.update(%category @ "::" @ %setting, %box.getValue());
@@ -249,58 +136,6 @@ function GlassLive::updateSetting(%category, %setting) {
       call(%callback);
     }
   }
-}
-
-function GlassOverlayGui::onWake(%this) {
-  %x = getWord(getRes(), 0);
-  %y = getWord(getRes(), 1);
-  GlassOverlay.resize(0, 0, %x, %y);
-
-  if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
-    GlassLiveLogo.setVisible(true);
-  else if(!GlassSettings.get("Live::OverlayLogo") && GlassLiveLogo.visible)
-    GlassLiveLogo.setVisible(false);
-
-  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
-    %window = GlassOverlayGui.getObject(%i);
-    if(%window.getName() $= "GlassChatroomWindow") {
-      if(isObject(%window.activeTab)) {
-        %tab = %window.activeTab;
-        if(%tab.chattext.didUpdate) {
-          %tab.chattext.forceReflow();
-          %tab.chattext.didUpdate = false;
-        }
-        %tab.scrollSwatch.verticalMatchChildren(0, 2);
-        %tab.scrollSwatch.setVisible(true);
-
-        %tab.scroll.scrollToBottom();
-      }
-    }
-    if(%window.getName() $= "GlassMessageGui") {
-      %window.chattext.forceReflow();
-      %window.scrollSwatch.verticalMatchChildren(0, 3);
-      %window.scrollSwatch.setVisible(true);
-      %window.scroll.scrollToBottom();
-    }
-  }
-
-  if(!isObject(GlassOverlayResponder)) {
-    new GuiTextEditCtrl(GlassOverlayResponder) {
-      profile = "GuiTextEditProfile";
-      position = "-100 -100";
-      extent = "10 10";
-      visible = 1;
-    };
-    GlassOverlayGui.add(GlassOverlayResponder);
-  }
-
-  GlassOverlayResponder.schedule(1, makeFirstResponder, true);
-
-  if(isObject(GlassFriendsGui_Blockhead)) {
-    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
-    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
-  }
-  //instantly close all notifications
 }
 
 function GlassLive::chatColorCheck(%this) {
@@ -357,28 +192,6 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
   GlassFriendsGui_Blockhead.setVisible(false);
 }
-
-// function GlassLive::showUserStatus() {
-  // %str = "<font:verdana:15><color:333333><tab:110>";
-  // %val[%vals++] = "BLID\t9789";
-  // %val[%vals++] = "";
-  // %val[%vals++] = "Status\tOnline";
-  // %val[%vals++] = "Location\tCrown's Prison Escape";
-  // %val[%vals++] = "";
-  // %val[%vals++] = "Forum Account\t<a:forum.blockland.us>Scout31</a>";
-  // for(%i = 0; %i < %vals; %i++) {
-    // %line = %val[%i+1];
-    // if(%line $= "") {
-      // %str = %str @ "<br><br>";
-    // } else {
-      // %str = %str @ "<font:verdana bold:15>" @ getField(%line, 0) @ ":\t<font:verdana:15>" @ getField(%line, 1) @ "<br>";
-    // }
-  // }
-
-  // echo(%str);
-
-  // GlassUserStatus.setValue(%str);
-// }
 
 function GlassLive::enterRoomDragMode(%obj, %pos) {
   if(isObject(GlassLiveDrag) || GlassLive.dragMode)
@@ -489,13 +302,6 @@ function GlassLiveDrag::updatePosition(%this, %pos) {
   GlassOverlayGui.pushToBack(%this);
 }
 
-function wordPos(%str, %word) {
-  for(%i = 0; %i < getWordCount(%str); %i++)
-    if(getWord(%str, %i) $= %word)
-      return %i;
-  return -1;
-}
-
 function GlassLive::addFriendToList(%user) {
   if(wordPos(GlassLive.friendList, %user.blid) != -1) {
     return;
@@ -531,7 +337,7 @@ function GlassLive::removeFriendRequestFromList(%blid) {
 function GlassLive::checkPendingFriendRequests() {
   if(GlassSettings.get("Live::PendingReminder")) {
     if((%pending = getWordCount(GlassLive.friendRequestList)) > 0) {
-      GlassNotificationManager::newNotification("Pending Friend Requests", "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).", "new_email", 0, "GlassLive::openOverlay();");
+      GlassNotificationManager::newNotification("Pending Friend Requests", "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).", "new_email", 0, "GlassOverlay::open();");
 
       alxPlay(GlassBellAudio);
     }
@@ -541,6 +347,13 @@ function GlassLive::checkPendingFriendRequests() {
 //================================================================
 //= 3.2.0 things that we'll organize later                        =
 //================================================================
+
+function wordPos(%str, %word) {
+  for(%i = 0; %i < getWordCount(%str); %i++)
+    if(getWord(%str, %i) $= %word)
+      return %i;
+  return -1;
+}
 
 function secondsToTimeString(%total) { // Crown
   %days = mFloor(%total / 86400);
@@ -663,78 +476,6 @@ function GlassLive::setIcon(%icon) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   %obj.delete();
-
-  GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
-}
-
-function GlassIconSelectorWindow::updateIcons(%this) {
-  %allowed = "Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt";
-  if(!isFile(%allowed)) {
-    error(%allowed SPC "not found, unable to create icon list.");
-    return;
-  }
-  %swatch = GlassIconSelectorWindow_Swatch;
-
-  if(!isObject(%swatch)) {
-    error("Could not find icon list swatch.");
-    return;
-  }
-
-  %path = "Add-Ons/System_BlocklandGlass/image/icon/";
-  %iconCount = -1;
-
-  %file = new FileObject();
-  %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt");
-  while(!%file.isEOF()) {
-    %line = %file.readLine();
-    %icon = %path @ %line;
-
-    if(!isFile(%icon @ ".png"))
-      continue;
-
-    %iconCount++;
-
-    if(%iconCount % 14 == 0)
-      %column = 0;
-
-    %row = mFloor(%iconCount / 14);
-    %position = (20 * %column) + 3 SPC (%row * 20) + 3;
-    %column++;
-
-    %bitmap = new GuiBitmapCtrl() {
-      bitmap = %icon;
-      position = %position;
-      extent = "16 16";
-    };
-    %button = new GuiButtonBaseCtrl() {
-      position = %position;
-      extent = "16 16";
-      command = "GlassIconSelectorWindow_Preview.setBitmap(\"Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ "\");";
-    };
-    GlassIconSelectorWindow_Swatch.add(%bitmap);
-    GlassIconSelectorWindow_Swatch.add(%button);
-  }
-  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
-  GlassIconSelectorWindow_Swatch.setVisible(true);
-}
-
-function GlassIconSelectorWindow::selectIcon(%this) {
-  if(!GlassLiveConnection.connected) {
-    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to change your icon.");
-    return;
-  }
-
-  GlassLive::setIcon(strreplace(GlassIconSelectorWindow_Preview.bitmap, "Add-Ons/System_BlocklandGlass/image/icon/", ""));
-  GlassLive::closeIconSelector();
-}
-
-function GlassIconSelectorWindow::onWake(%this) {
-  %this.forceCenter();
-
-  %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
-
-  if(%icon $= "")
-    %icon = "ask_and_answer";
 
   GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
 }
@@ -3642,29 +3383,79 @@ function GlassSettingsGui_ScrollOverlay::onWake(%this) {
   }
 }
 
-package GlassLivePackage {
-  function GlassOverlayGui::onWake(%this) {
-    parent::onWake(%this);
+function GlassIconSelectorWindow::updateIcons(%this) {
+  %allowed = "Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt";
+  if(!isFile(%allowed)) {
+    error(%allowed SPC "not found, unable to create icon list.");
+    return;
+  }
+  %swatch = GlassIconSelectorWindow_Swatch;
 
-    if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
-      %pos = GlassSettings.get("Live::FriendsWindow_Pos");
-      %ext = GlassSettings.get("Live::FriendsWindow_Ext");
-
-      if(%pos > getWord(getRes(), 0))
-        %pos = (getWord(getRes(), 0) - 280) SPC 50;
-
-      if(%ext > getWord(getRes(), 1))
-        %ext = "230 380";
-
-      GlassFriendsWindow.position = %pos;
-      GlassFriendsWindow.extent = %ext;
-
-      GlassOverlayGui.add(GlassFriendsWindow);
-
-      GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));
-    }
+  if(!isObject(%swatch)) {
+    error("Could not find icon list swatch.");
+    return;
   }
 
+  %path = "Add-Ons/System_BlocklandGlass/image/icon/";
+  %iconCount = -1;
+
+  %file = new FileObject();
+  %file.openForRead("Add-Ons/System_BlocklandGlass/resources/icons_allowed.txt");
+  while(!%file.isEOF()) {
+    %line = %file.readLine();
+    %icon = %path @ %line;
+
+    if(!isFile(%icon @ ".png"))
+      continue;
+
+    %iconCount++;
+
+    if(%iconCount % 14 == 0)
+      %column = 0;
+
+    %row = mFloor(%iconCount / 14);
+    %position = (20 * %column) + 3 SPC (%row * 20) + 3;
+    %column++;
+
+    %bitmap = new GuiBitmapCtrl() {
+      bitmap = %icon;
+      position = %position;
+      extent = "16 16";
+    };
+    %button = new GuiButtonBaseCtrl() {
+      position = %position;
+      extent = "16 16";
+      command = "GlassIconSelectorWindow_Preview.setBitmap(\"Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ "\");";
+    };
+    GlassIconSelectorWindow_Swatch.add(%bitmap);
+    GlassIconSelectorWindow_Swatch.add(%button);
+  }
+  GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
+  GlassIconSelectorWindow_Swatch.setVisible(true);
+}
+
+function GlassIconSelectorWindow::selectIcon(%this) {
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to change your icon.");
+    return;
+  }
+
+  GlassLive::setIcon(strreplace(GlassIconSelectorWindow_Preview.bitmap, "Add-Ons/System_BlocklandGlass/image/icon/", ""));
+  GlassOverlay::closeIconSelector();
+}
+
+function GlassIconSelectorWindow::onWake(%this) {
+  %this.forceCenter();
+
+  %icon = GlassLiveUser::getFromBlid(getNumKeyId()).icon;
+
+  if(%icon $= "")
+    %icon = "ask_and_answer";
+
+  GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+}
+
+package GlassLivePackage {
   function disconnectedCleanup(%doReconnect) {
     GlassLive::updateLocation(false);
 

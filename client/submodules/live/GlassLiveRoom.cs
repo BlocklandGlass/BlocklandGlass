@@ -507,9 +507,9 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
 
     if(%this.user.blid == getNumKeyId()) {
       if(GlassIconSelectorWindow.visible)
-        GlassLive::closeIconSelector();
+        GlassOverlay::closeIconSelector();
       else
-        GlassLive::openIconSelector();
+        GlassOverlay::openIconSelector();
     } else if(%this.user.isBot()) {
       glassMessageBoxOk("Oh", "That's a bot.");
     } else {
