@@ -231,6 +231,11 @@ function isDefaultAddOn(%file) {
 function GlassModManager::deleteAddOn(%this, %addon) {
   %name = %addon.name;
 
+  if(isObject(ServerConnection)) {
+    error("Will not delete while on a server.");
+    return;
+  }
+
   if(isDefaultAddon(%name)) {
     error("Will not delete default add-ons.");
     return;
@@ -265,6 +270,11 @@ function GlassModManager::deleteAddOn(%this, %addon) {
 
 function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
   %name = %this.addon.name;
+
+  if(isObject(ServerConnection)) {
+    glassMessageBoxOk("Delete Add-On", "Please discontinue playing on a server before trying to delete add-ons.");
+    return;
+  }
 
   if(isDefaultAddon(%name)) {
     glassMessageBoxOk("Delete Add-On", "Sorry, you may not delete default add-ons from the Glass Mod Manager.");
