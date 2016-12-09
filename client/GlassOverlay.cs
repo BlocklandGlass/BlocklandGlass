@@ -22,13 +22,22 @@ function GlassOverlayGui::onWake(%this) {
 
         %tab.scroll.scrollToBottom();
       }
-    }
-    if(%window.getName() $= "GlassMessageGui") {
+    } else if(%window.getName() $= "GlassMessageGui") {
       %window.chattext.forceReflow();
       %window.scrollSwatch.verticalMatchChildren(0, 3);
       %window.scrollSwatch.setVisible(true);
       %window.scroll.scrollToBottom();
+    } else if(%window.getName() $= "GlassUserGui") {
+      if(isObject(%window.Blockhead)) {
+        %window.Blockhead.schedule(1, "setOrbitDist", 6);
+        %window.Blockhead.schedule(1, "setCameraRot", 0, 0, $pi * 1.1);
+      }
     }
+  }
+
+  if(isObject(GlassFriendsGui_Blockhead)) {
+    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
+    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
   }
 
   if(!isObject(GlassOverlayResponder)) {
@@ -42,11 +51,6 @@ function GlassOverlayGui::onWake(%this) {
   }
 
   GlassOverlayResponder.schedule(1, makeFirstResponder, true);
-
-  if(isObject(GlassFriendsGui_Blockhead)) {
-    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
-    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
-  }
 
   if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
     %pos = GlassSettings.get("Live::FriendsWindow_Pos");
