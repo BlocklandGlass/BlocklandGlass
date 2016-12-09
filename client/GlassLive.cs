@@ -1935,12 +1935,6 @@ function GlassLive::openUserWindow(%blid) {
         %locationDisplay = "Unknown";
     }
 
-  	%serverName = %uo.getServerTitle();
-  	if(%serverName !$= "" && %serverName !$= "1") {
-  	  %window.serverText.setText(%serverName);
-  	  %window.mouse.currentServer = %uo.getServerAddress();
-  	}
-
   	%window.statusText.setText(%status);
   	%window.headerText.setText("<font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid @ "<br><br><color:" @ %locationColor @ ">" @ strCap(%locationDisplay) @ "<br><font:verdana bold:12>" @ %uo.getServerTitle());
 
@@ -2006,7 +2000,7 @@ function GlassLive::createChatroomWindow() {
     vertSizing = "bottom";
     position = "135 130";
     minExtent = "475 290";
-    extent = "600 425";
+    extent = "699 421";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
