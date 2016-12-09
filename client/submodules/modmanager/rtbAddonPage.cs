@@ -67,7 +67,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %body.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:left>" @ %obj.title;
+    text = "<font:verdana bold:20><just:left>" @ getASCIIString(%obj.title);
     position = "52 10";
     extent = "553 20";
     minextent = "0 0";
@@ -79,7 +79,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %body.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:12><just:left>Uploaded by " @ %obj.author @ "<just:right><color:444444>" @ %obj.date;
+    text = "<font:verdana:12><just:left>Uploaded by " @ getASCIIString(%obj.author) @ "<just:right><color:444444>" @ %obj.date;
     position = "52 20";
     extent = "553 12";
     minextent = "0 0";
@@ -167,7 +167,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %description.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ trim(%obj.description);
+    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ getASCIIString(trim(%obj.description));
     position = "10 10";
     extent = "595 16";
     minextent = "0 0";

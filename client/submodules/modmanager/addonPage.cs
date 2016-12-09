@@ -65,7 +65,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %body.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:left>" @ %obj.name;
+    text = "<font:verdana bold:20><just:left>" @ getASCIIString(%obj.name);
     position = "10 10";
     extent = "300 24";
     minextent = "0 0";
@@ -77,7 +77,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %body.author = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana:12><just:left>Uploaded by " @ %obj.author @ "<just:right><color:444444>" @ %obj.date;
+    text = "<font:verdana:12><just:left>Uploaded by " @ getASCIIString(%obj.author) @ "<just:right><color:444444>" @ getASCIIString(%obj.date);
     position = "10 20";
     extent = "595 12";
     minextent = "0 0";
@@ -163,7 +163,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %description.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ %obj.description;
+    text = "<font:verdana bold:13>Description<br><br><color:444444><font:verdana:13>" @ getASCIIString(%obj.description);
     position = "10 10";
     extent = "595 16";
     minextent = "0 0";
@@ -405,7 +405,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.author = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:13>" @ %action.author @ "<br><font:verdana:12><color:333333>" @ %action.authorBlid @ "<br>" @ (%action.title !$= "" ? "<font:verdana bold:12><color:" @ %color @ ">" @ %action.title : "") @ "<br><br>";
+        text = "<font:verdana bold:13>" @ getASCIIString(%action.author) @ "<br><font:verdana:12><color:333333>" @ %action.authorBlid @ "<br>" @ (%action.title !$= "" ? "<font:verdana bold:12><color:" @ %color @ ">" @ %action.title : "") @ "<br><br>";
         position = "10 10";
         extent = "125 16";
         minextent = "0 0";
@@ -415,7 +415,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana:13><color:333333>" @ %action.comment;
+        text = "<font:verdana:13><color:333333>" @ getASCIIString(%action.comment);
         position = "145 10";
         extent = "440 16";
         minextent = "0 0";
@@ -465,7 +465,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana bold:13>Change Log:<br><br><font:verdana:12><color:333333>" @ (%action.changelog !$= "" ? %action.changelog : "None");
+        text = "<font:verdana bold:13>Change Log:<br><br><font:verdana:12><color:333333>" @ (%action.changelog !$= "" ? getASCIIString(%action.changelog) : "None");
         position = "145 10";
         extent = "440 16";
         minextent = "0 0";
