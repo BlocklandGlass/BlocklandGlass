@@ -512,7 +512,6 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "userAvatar":
       %user = GlassLiveUser::getFromBlid(%data.blid);
       %blid = %data.blid;
-      echo(%line);
       %avatarData = %data.avatar;
 
       %user.gotAvatar(%avatarData);

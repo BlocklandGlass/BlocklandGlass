@@ -3466,8 +3466,8 @@ package GlassLivePackage {
 
   function Avatar_Done() {
     parent::Avatar_Done();
-
     GlassFriendsGui_Blockhead.createBlockhead();
+	GlassLive::sendAvatarData();
   }
 };
 activatePackage(GlassLivePackage);
