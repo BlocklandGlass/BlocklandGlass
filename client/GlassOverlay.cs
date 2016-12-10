@@ -1,3 +1,8 @@
+
+//================================================================
+//= Overlay Gui                                                  =
+//================================================================
+
 function GlassOverlayGui::onWake(%this) {
   %x = getWord(getRes(), 0);
   %y = getWord(getRes(), 1);
@@ -96,6 +101,10 @@ function GlassOverlay::close() {
   canvas.popDialog(GlassOverlayGui);
 }
 
+//================================================================
+//= Mod Manager                                                  =
+//================================================================
+
 function GlassOverlay::openModManager() {
   GlassOverlay::open();
   if(GlassModManagerGui.getCount() > 0) {
@@ -116,6 +125,10 @@ function GlassOverlay::closeModManager() {
   GlassModManagerGui_Window.setVisible(false);
 }
 
+//================================================================
+//= Manual                                                       =
+//================================================================
+
 function GlassOverlay::openManual() {
   if(isObject(GlassManualWindow)) {
     GlassManualWindow.setVisible(!GlassManualWindow.visible);
@@ -129,6 +142,10 @@ function GlassOverlay::openManual() {
 function GlassOverlay::closeManual() {
   GlassManualWindow.setVisible(false);
 }
+
+//================================================================
+//= Setings                                                      =
+//================================================================
 
 function GlassOverlay::openSettings() {
   if(isObject(GlassSettingsWindow)) {
@@ -145,6 +162,10 @@ function GlassOverlay::closeSettings() {
   GlassSettingsWindow.setVisible(false);
 }
 
+//================================================================
+//= Icon Selector                                                =
+//================================================================
+
 function GlassOverlay::openIconSelector() {
   if(isObject(GlassIconSelectorWindow)) {
     GlassIconSelectorWindow.onWake();
@@ -159,6 +180,10 @@ function GlassOverlay::openIconSelector() {
 function GlassOverlay::closeIconSelector() {
   GlassIconSelectorWindow.setVisible(false);
 }
+
+//================================================================
+//= Chatroom                                                     =
+//================================================================
 
 function GlassOverlay::openChatroom() {
   %chatFound = false;
@@ -175,9 +200,9 @@ function GlassOverlay::openChatroom() {
   if(!%chatFound) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
       if(GlassLiveConnection.connected) {
-      glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+        glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
       } else {
-      glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
+        glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
       }
     } else {
       if(GlassLiveConnection.connected) {
@@ -188,4 +213,37 @@ function GlassOverlay::openChatroom() {
       }
     }
   }
+}
+
+//================================================================
+//= Moderation                                                   =
+//================================================================
+
+function GlassOverlay::openModeration() {
+  if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
+	  return;
+
+  if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
+    GlassModeratorWindow_Selection.add("Ban", 0);
+    GlassModeratorWindow_Selection.add("Bar", 1);
+    GlassModeratorWindow_Selection.add("Kick", 2);
+    GlassModeratorWindow_Selection.add("Mute", 3);
+    GlassOverlayGui.add(GlassModeratorWindow);
+    GlassModeratorWindow.forceCenter();
+  }
+
+  if(GlassModeratorWindow.visible) {
+	  GlassModeratorWindow.setVisible(false);
+	  return;
+  } else {
+  	GlassOverlayGui.pushToBack(GlassModeratorWindow);
+  	GlassModeratorWindow.setVisible(true);
+  }
+
+  GlassModeratorWindow_Reason.enabled = false;
+  GlassModeratorWindow_Duration.enabled = false;
+  //GlassModeratorWindow_ReasonBlocker.setVisible(true);
+  //GlassModeratorWindow_DurationBlocker.setVisible(true);
+
+  GlassModeratorGui::refreshPlayerlist();
 }
