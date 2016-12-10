@@ -1926,7 +1926,7 @@ function GlassUserGui_Blockhead::onWake(%this) {
 }
 //end of "torque is shit"
 
-function GlassLive::openUserWindow(%blid, %location) {
+function GlassLive::openUserWindow(%blid) {
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
@@ -1942,7 +1942,7 @@ function GlassLive::openUserWindow(%blid, %location) {
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
     }
 
-    //%location = %uo.getLocation()
+    %location = %uo.getLocation();
     switch$(%location) {
       case "menus":
         //%locationColor = "AFAFAF";
