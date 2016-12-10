@@ -290,41 +290,6 @@ new GuiControl(GlassModeratorGui) {
             clipToParent = "1";
             color = "220 220 220 220";
          };
-         new GuiBitmapCtrl() {
-            profile = "GuiDefaultProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "200 291";
-            extent = "16 16";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            bitmap = "~/System_BlocklandGlass/image/icon/arrow_refresh";
-            wrap = "0";
-            lockAspectRatio = "0";
-            alignLeft = "0";
-            alignTop = "0";
-            overflowImage = "0";
-            keepCached = "0";
-            mColor = "255 255 255 255";
-            mMultiply = "0";
-
-            new GuiButtonBaseCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "0 0";
-               extent = "16 16";
-               minExtent = "8 2";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               command = "GlassModeratorGui::AddPlayers();";
-               groupNum = "-1";
-               buttonType = "PushButton";
-            };
-         };
       };
    };
 };

@@ -61,7 +61,7 @@ new GuiControl(GlassOverlayGui) {
       visible = "0";
       bitmap = "Add-Ons/System_BlocklandGlass/image/logoWhite";
     };
-    new GuiBitmapButtonCtrl() {
+    new GuiBitmapButtonCtrl(GlassLiveModeratorButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -69,7 +69,7 @@ new GuiControl(GlassOverlayGui) {
       extent = "135 30";
       minExtent = "8 2";
       enabled = "1";
-      visible = "1";
+      visible = "0";
       clipToParent = "1";
       command = "GlassOverlay::openModeration();";
       groupNum = "-1";

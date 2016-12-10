@@ -124,6 +124,7 @@ function GlassLive::onAuthSuccess() {
 
   GlassLive::sendAvatarData();
   GlassLive::updateLocation();
+  schedule(1000, 0, "GlassCheckModeratorButton");
 }
 
 function GlassLive::updateSetting(%category, %setting) {
@@ -2016,20 +2017,22 @@ function GlassLive::openUserWindow(%blid) {
   }
 }
 
+function GlassCheckModeratorButton() {
+  if(GlassLiveUser::getFromBlid(getNumKeyId()).isMod()) 
+	GlassLiveModeratorButton.setVisible(true);
+}
+
 function GlassOverlay::openModeration() {
   if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
 	return;
 	
-  if(!GlassModeratorWindow_Selection.added) {
-  	GlassModeratorWindow_Selection.add("Ban", 0);
+  if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
+	GlassModeratorWindow_Selection.add("Ban", 0);
   	GlassModeratorWindow_Selection.add("Bar", 1);
   	GlassModeratorWindow_Selection.add("Kick", 2);
   	GlassModeratorWindow_Selection.add("Mute", 3);
-  	GlassModeratorWindow_Selection.added = 1;
-  }
-	
-  if(!GlassOverlayGui.isMember(GlassModeratorWindow))
     GlassOverlayGui.add(GlassModeratorWindow);
+  }
   
   if(GlassModeratorWindow.visible) {
 	  GlassModeratorWindow.setVisible(false);
@@ -2043,10 +2046,10 @@ function GlassOverlay::openModeration() {
   GlassModeratorWindow_ReasonBlocker.setVisible(true);
   GlassModeratorWindow_DurationBlocker.setVisible(true);
   
-  GlassModeratorGui::AddPlayers();
+  GlassModeratorGui::refreshPlayerlist();
 }
 
-function GlassModeratorGui::AddPlayers() {
+function GlassModeratorGui::refreshPlayerlist() {
   GlassModeratorWindow_Playerlist.clear();
 
   %room = GlassLiveRoom::getFromID(0);
