@@ -126,7 +126,7 @@ new GuiControl(GlassModeratorGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana:22>Crown<br><font:verdana:16>2143";
+            text = "<font:verdana bold:13>Select a User";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -175,11 +175,11 @@ new GuiControl(GlassModeratorGui) {
             sinkAllKeyEvents = "0";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiTextVerdanaProfile";
+            profile = "GuiMlTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "11 90";
-            extent = "56 16";
+            extent = "53 16";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -187,7 +187,7 @@ new GuiControl(GlassModeratorGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana:16><just:right>Reason:";
+            text = "<font:verdana:13><just:right>Reason:";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -209,11 +209,11 @@ new GuiControl(GlassModeratorGui) {
             sinkAllKeyEvents = "0";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiTextVerdanaProfile";
+            profile = "GuiMlTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "6 125";
-            extent = "66 16";
+            position = "11 125";
+            extent = "53 16";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -221,7 +221,7 @@ new GuiControl(GlassModeratorGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana:16>Duration:";
+            text = "<font:verdana:13><just:right>Duration:";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -249,11 +249,11 @@ new GuiControl(GlassModeratorGui) {
             mColor = "84 217 140 200";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiTextVerdanaProfile";
+            profile = "GuiMlTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "11 58";
-            extent = "56 16";
+            extent = "53 16";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -261,7 +261,7 @@ new GuiControl(GlassModeratorGui) {
             lineSpacing = "2";
             allowColorChars = "0";
             maxChars = "-1";
-            text = "<font:verdana:16><just:right>Type:";
+            text = "<font:verdana:13><just:right>Type:";
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
@@ -270,25 +270,25 @@ new GuiControl(GlassModeratorGui) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "68 91";
-            extent = "144 18";
+            position = "68 92";
+            extent = "144 16";
             minExtent = "8 2";
             enabled = "1";
-            visible = "0";
+            visible = "1";
             clipToParent = "1";
-            color = "220 220 220 220";
+            color = "0 0 0 64";
          };
          new GuiSwatchCtrl(GlassModeratorWindow_DurationBlocker) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "68 123";
-            extent = "66 18";
+            position = "68 124";
+            extent = "66 16";
             minExtent = "8 2";
             enabled = "1";
-            visible = "0";
+            visible = "1";
             clipToParent = "1";
-            color = "220 220 220 220";
+            color = "0 0 0 64";
          };
       };
    };

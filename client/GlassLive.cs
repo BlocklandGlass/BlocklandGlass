@@ -348,7 +348,7 @@ function GlassLive::checkPendingFriendRequests() {
 }
 
 //================================================================
-//= 3.2.0 things that we'll organize later                        =
+//= 3.2.0 things that we'll organize later                       =
 //================================================================
 
 function wordPos(%str, %word) {
@@ -898,14 +898,6 @@ function GlassLive::sendAvatarData() {
 //= Communication                                                =
 //================================================================
 
-function GlassLive::linkForumAccount(%url) {
-  %obj = JettisonObject();
-  %obj.set("type", "string", "linkForum");
-  %obj.set("url", "string", %url);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
-
 function GlassLive::joinRoom(%id) {
   %room = GlassLiveRoom::getFromId(%id);
 
@@ -925,40 +917,6 @@ function GlassLive::joinRoom(%id) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   // GlassChatroomWindow.schedule(0, openRoomBrowser);
-}
-
-function GlassLive::viewLocation(%blid) {
-  %obj = JettisonObject();
-  %obj.set("type", "string", "locationGet");
-  %obj.set("target", "string", %blid);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  GlassFriendsGui_ScrollOverlay.setVisible(true);
-  GlassFriendsGui_ScrollOverlay.deleteAll();
-  %ml = new GuiMlTextCtrl() {
-    profile = "GuiMlTextProfile";
-    position = "20 20";
-    extent = "170 210";
-    text = "<font:verdana bold:15>" @ %blid @ "<font:verdana:12><br><br>Loading...";
-  };
-  GlassFriendsGui_ScrollOverlay.ml = %ml;
-  GlassFriendsGui_ScrollOverlay.add(%ml);
-}
-
-function GlassLive::displayLocation(%data) {
- %ml = GlassFriendsGui_ScrollOverlay.ml;
- %user = GlassLiveUser::getFromBlid(%data.blid);
-
- %text = "<font:verdana bold:15>";
- %text = %text @ %user.username;
- %text = %text @ "<br><br>";
- %text = %text @ "<font:verdana bold:14>Activity: <font:verdana:14>";
- %text = %text @ %data.activity;
- %text = %text @ "<br><font:verdana bold:14>Location: <font:verdana:14>";
- %text = %text @ %data.location;
-
- %ml.setValue(%text);
 }
 
 function GlassLive::joinFriendServer(%blid) {
@@ -2014,35 +1972,12 @@ function GlassLive::openUserWindow(%blid) {
 }
 
 function GlassCheckModeratorButton() {
-  if(GlassLiveUser::getFromBlid(getNumKeyId()).isMod()) 
-	GlassLiveModeratorButton.setVisible(true);
-}
-
-function GlassOverlay::openModeration() {
-  if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
-    return;
-	
-  if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
-    GlassModeratorWindow_Selection.add("Ban", 0);
-  	GlassModeratorWindow_Selection.add("Bar", 1);
-  	GlassModeratorWindow_Selection.add("Kick", 2);
-  	GlassModeratorWindow_Selection.add("Mute", 3);
-    GlassOverlayGui.add(GlassModeratorWindow);
-    GlassModeratorWindow.forceCenter();
-  }
-  
-  if(GlassModeratorWindow.visible) {
-	  GlassModeratorWindow.setVisible(false);
-	  return;
+  if(%uo = GlassLiveUser::getFromBlid(getNumKeyId())) {
+    if(%uo.isMod())
+  	  GlassLiveModeratorButton.setVisible(true);
   } else {
-    GlassOverlayGui.pushToBack(GlassModeratorWindow);
-    GlassModeratorWindow.setVisible(true);
+    schedule(1000, 0, GlassCheckModeratorButton);
   }
-  
-  GlassModeratorWindow_ReasonBlocker.setVisible(true);
-  GlassModeratorWindow_DurationBlocker.setVisible(true);
-  
-  GlassModeratorGui::refreshPlayerlist();
 }
 
 function GlassOverlay::closeModeration() {
@@ -2059,7 +1994,7 @@ function GlassModeratorGui::refreshPlayerlist() {
       continue;
     GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
-  
+
   GlassModeratorWindow_Playerlist.sort(0, 1);
 }
 
@@ -2067,23 +2002,29 @@ function GlassModeratorWindow_Selection::onSelect(%this) {
   %selection = %this.getValue();
   GlassModeratorWindow.selection = %selection;
   if(%selection $= "Ban" || %selection $= "Bar") {
-    GlassModeratorWindow_ReasonBlocker.setVisible(false);
-    GlassModeratorWindow_DurationBlocker.setVisible(false);
+  	GlassModeratorWindow_ReasonBlocker.setVisible(false);
+  	GlassModeratorWindow_DurationBlocker.setVisible(false);
+    GlassModeratorWindow_Reason.enabled = true;
+    GlassModeratorWindow_Duration.enabled = true;
   } else if(%selection $= "Kick") {
-    GlassModeratorWindow_ReasonBlocker.setVisible(true);
-    GlassModeratorWindow_DurationBlocker.setVisible(true);
+  	GlassModeratorWindow_ReasonBlocker.setVisible(true);
+  	GlassModeratorWindow_DurationBlocker.setVisible(true);
+    GlassModeratorWindow_Reason.enabled = false;
+    GlassModeratorWindow_Duration.enabled = false;
   } else if(%selection $= "Mute") {
-    GlassModeratorWindow_ReasonBlocker.setVisible(true);
-    GlassModeratorWindow_DurationBlocker.setVisible(false);
+  	GlassModeratorWindow_ReasonBlocker.setVisible(true);
+  	GlassModeratorWindow_DurationBlocker.setVisible(false);
+    GlassModeratorWindow_Reason.enabled = false;
+    GlassModeratorWindow_Duration.enabled = true;
   }
   GlassModeratorWindow.selection = %selection;
 }
- 
+
 function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
   %blid = getField(%rowText, 1);
   %name = getField(%rowText, 0);
-  
-  GlassModeratorGui_PlayerHeader.setText("<font:verdana:22>" @ %name NL "<font:verdana:16>" @ %blid);
+
+  GlassModeratorGui_PlayerHeader.setText("<font:verdana bold:18>" @ %name NL "<font:verdana:15>" @ %blid);
   GlassModeratorWindow.blid = %blid;
 }
 
@@ -2097,7 +2038,7 @@ function GlassModeratorGui::SwapTabs(%this) {
     GlassModeratorGui_LogsTab.setVisible(false);
     GlassModeratorWindow_SwapButton.setText("Logs");
   }
-} 
+}
 
 function GlassModeratorGui::submit(%this) {
   %blid = GlassModeratorWindow.blid;
@@ -2105,7 +2046,7 @@ function GlassModeratorGui::submit(%this) {
   if(%type !$= "Mute" && %type !$= "Kick")
     %reason = GlassModeratorWindow_Reason.getValue();
   %duration = GlassModeratorWindow_Duration.getValue();
-  
+
   if(%reason !$= "")
 	%reason = " " @ %reason;
 
@@ -2113,7 +2054,7 @@ function GlassModeratorGui::submit(%this) {
     GlassLive::sendRoomCommand("/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
     GlassLive::sendRoomCommand("/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
- 
+
   GlassBanWindowGui.setVisible(false);
 }
 
