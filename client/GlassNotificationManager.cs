@@ -2,7 +2,7 @@ function GlassNotificationManager::init() {
   if(!isObject(GlassNotificationManager)) {
     new ScriptGroup(GlassNotificationManager) {
       offset = 0;
-      tickRate = 50;
+      tickRate = 20;
 
       enterTime = 500;
     };
@@ -205,9 +205,9 @@ function GlassNotification::onAdd(%this) {
     return;
 
   if(%this.darkMode) {
-    %color = "0 0 0 192";
+    %color = "0 0 0 150";
   } else {
-    %color = "255 255 255 128";
+    %color = "255 255 255 150";
   }
 
   GlassNotificationManager.index[%this.index] = %this;
@@ -268,9 +268,9 @@ function GlassNotification::onAdd(%this) {
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = (%this.darkMode ? "<color:ffffff>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
-    position = "28 0";
-    extent = "172 12";
+    text = (%this.darkMode ? "<color:eeeeee>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
+    position = "28 5";
+    extent = "210 12";
     minextent = "0 0";
     autoResize = true;
     maxBitmapHeight = "12";
@@ -283,19 +283,22 @@ function GlassNotification::onAdd(%this) {
     extent = %swatch.extent;
   };
 
-  %swatch.body.add(%swatch.text);
   %swatch.body.add(%swatch.image);
 
   %swatch.add(%swatch.head);
   %swatch.add(%swatch.body);
   %swatch.add(%swatch.foot);
 
+  %swatch.add(%swatch.text);
+
   %swatch.add(%swatch.mouse);
   %swatch.position = getRes();
+
   Canvas.getObject(canvas.getCount()-1).add(%swatch);
 
+
   %swatch.text.forceReflow();
-  %swatch.body.verticalMatchChildren(10, 0);
+  %swatch.body.extent = 250 SPC getWord(%swatch.text.extent, 1)-10;
   %swatch.foot.placeBelow(%swatch.body);
 
   %swatch.verticalMatchChildren(20, 0);
@@ -310,7 +313,6 @@ function GlassNotification::onAdd(%this) {
   %this.action = "waiting";
 
   if(!isEventPending(GlassNotificationManager.sch)) {
-    echo("Calling tick");
     GlassNotificationManager.schedule(1, tick);
   }
 }
@@ -331,13 +333,13 @@ function GlassNotificationMouse::onMouseEnter(%this) {
 function GlassNotificationMouse::onMouseLeave(%this) {
   %swatch = %this.swatch;
   if(%this.notification.darkMode) {
-    %swatch.head.mcolor = "0 0 0 192";
-    %swatch.body.color = "0 0 0 192";
-    %swatch.foot.mcolor = "0 0 0 192";
+    %swatch.head.mcolor = "0 0 0 150";
+    %swatch.body.color = "0 0 0 150";
+    %swatch.foot.mcolor = "0 0 0 150";
   } else {
-    %swatch.head.mcolor = "255 255 255 128";
-    %swatch.body.color = "255 255 255 128";
-    %swatch.foot.mcolor = "255 255 255 128";
+    %swatch.head.mcolor = "255 255 255 150";
+    %swatch.body.color = "255 255 255 150";
+    %swatch.foot.mcolor = "255 255 255 150";
   }
 }
 
