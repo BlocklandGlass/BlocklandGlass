@@ -18,6 +18,7 @@ new GuiControl(GlassModeratorGui) {
       extent = "418 350";
       minExtent = "8 2";
       enabled = "1";
+      visible = "0";
       clipToParent = "1";
       text = "Glass Moderator";
       maxLength = "255";
