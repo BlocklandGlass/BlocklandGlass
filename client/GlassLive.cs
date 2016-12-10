@@ -1774,7 +1774,7 @@ function GlassLive::createUserWindow(%uo) {
     horizSizing = "center";
     vertSizing = "center";
     position = "265 157";
-    extent = "320 255";
+    extent = "340 260";
     text = "Glass User";
     maxLength = "255";
     resizeWidth = "0";
@@ -1787,7 +1787,7 @@ function GlassLive::createUserWindow(%uo) {
   %window.infoSwatch = new GuiSwatchCtrl() {
   	color = "235 235 235 255";
   	position = "10 35";
-  	extent = "100 210";
+  	extent = "100 215";
   };
 
   %window.blockheadSwatch = new GuiSwatchCtrl() {
@@ -1806,10 +1806,18 @@ function GlassLive::createUserWindow(%uo) {
     firstOpen = true;
   };
 
-  %window.headerText = new GuiMLTextCtrl() {
+
+  %window.headerSwatch = new GuiSwatchCtrl() {
+    color = "235 235 235 255";
   	position = "120 35";
-  	extent = "300 35";
+  	extent = "210 72";
+  };
+
+  %window.headerText = new GuiMLTextCtrl() {
+  	position = "10 5";
+  	extent = "180 62";
   	text = "";
+    autoResize = true;
   };
 
   %window.statusSwatch = new GuiBitmapButtonCtrl() {
@@ -1831,8 +1839,8 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.messageButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
-    position = "120 108";
-    extent = "190 30";
+    position = "120 116";
+    extent = "210 30";
     text = "Message";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "255 255 255 200";
@@ -1841,8 +1849,8 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.friendButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
-    position = "120 143";
-    extent = "190 30";
+    position = "120 151";
+    extent = "210 30";
     text = "Unfriend";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "255 200 200 200";
@@ -1850,8 +1858,8 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.blockButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
-    position = "120 178";
-    extent = "190 30";
+    position = "120 186";
+    extent = "210 30";
     text = "Block";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "237 118 105 200";
@@ -1859,8 +1867,8 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
-    position = "120 213";
-    extent = "93 30";
+    position = "120 221";
+    extent = "102 30";
     text = "Invite";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "85 172 238 200";
@@ -1869,8 +1877,8 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
-    position = "217 213";
-    extent = "93 30";
+    position = "228 221";
+    extent = "102 30";
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "46 204 113 200";
@@ -1885,7 +1893,9 @@ function GlassLive::createUserWindow(%uo) {
   %window.statusSwatch.add(%window.statusText);
   %window.statusSwatch.centerX();
 
-  %window.add(%window.headerText);
+  %window.add(%window.headerSwatch);
+  %window.headerSwatch.add(%window.headerText);
+
   %window.add(%window.messageButton);
   %window.add(%window.friendButton);
   %window.add(%window.blockButton);
@@ -1916,7 +1926,7 @@ function GlassUserGui_Blockhead::onWake(%this) {
 }
 //end of "torque is shit"
 
-function GlassLive::openUserWindow(%blid) {
+function GlassLive::openUserWindow(%blid, %location) {
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
@@ -1932,38 +1942,48 @@ function GlassLive::openUserWindow(%blid) {
         %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
     }
 
-    switch$(%location = %uo.getLocation()) {
+    //%location = %uo.getLocation()
+    switch$(%location) {
       case "menus":
-        %locationColor = "AFAFAF";
-        %locationDisplay = "In Menus";
+        //%locationColor = "AFAFAF";
+        %locationRGB = "235 235 235 255";
+        %locationDisplay = "<br>In Menus";
 
       case "playing":
-        %locationColor = "2ECC71";
+        //%locationColor = "2ECC71";
+        %locationRGB = "46 204 113 100";
         %locationDisplay = "Playing";
 
       case "playing_lan":
-        %locationColor = "2ECC71";
-        %locationDisplay = "Playing LAN";
+        //%locationColor = "2ECC71";
+        %locationRGB = "241 196 15 100";
+        %locationDisplay = "<br>Playing a LAN server";
 
       case "hosting":
-        %locationColor = "55ACEE";
+        //%locationColor = "55ACEE";
+        %locationRGB = "85 172 238 100";
         %locationDisplay = "Hosting";
 
       case "hosting_lan":
-        %locationColor = "55ACEE";
-        %locationDisplay = "Hosting LAN";
+        //%locationColor = "55ACEE";
+        %locationRGB = "241 196 15 100";
+        %locationDisplay = "<br>Hosting a LAN server";
 
       case "singleplayer":
-        %locationColor = "E74C3C";
-        %locationDisplay = "Single Player";
+        //%locationColor = "E74C3C";
+        %locationRGB = "241 196 15 100";
+        %locationDisplay = "<br>Playing Singleplayer";
 
       default:
-        %locationColor = "AFAFAF";
-        %locationDisplay = "Unknown";
+        //%locationColor = "AFAFAF";
+        %locationRGB = "235 235 235 255";
+        %locationDisplay = "<br>Unknown";
     }
+    %locationColor = "333333";
 
   	%window.statusText.setText(%status);
-  	%window.headerText.setText("<font:verdana bold:14>" @ %uo.username NL "<font:verdana:12>" @ %uo.blid @ "<br><br><color:" @ %locationColor @ ">" @ strCap(%locationDisplay) @ "<br><font:verdana bold:12>" @ %uo.getServerTitle());
+  	%window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><color:" @ %locationColor @ ">" @ strCap(%locationDisplay) @ "<br><font:verdana bold:12>" @ %uo.getServerTitle());
+    %window.headerSwatch.color = %locationRGB;
 
     %uo.getAvatar(%window.blockhead);
 
