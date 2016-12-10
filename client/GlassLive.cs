@@ -2032,13 +2032,13 @@ function GlassOverlay::openModeration() {
   	GlassModeratorWindow_Selection.add("Kick", 2);
   	GlassModeratorWindow_Selection.add("Mute", 3);
     GlassOverlayGui.add(GlassModeratorWindow);
+	GlassModeratorWindow.forceCenter();
   }
   
   if(GlassModeratorWindow.visible) {
 	  GlassModeratorWindow.setVisible(false);
 	  return;
   } else {
-	GlassModeratorWindow.forceCenter();
 	GlassOverlayGui.pushToBack(GlassModeratorWindow);
 	GlassModeratorWindow.setVisible(true);
   }
