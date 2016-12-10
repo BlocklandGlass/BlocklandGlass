@@ -1,8 +1,12 @@
 function GlassNotificationManager::init() {
-  if(!isObject(GlassNotificationManager))
+  if(!isObject(GlassNotificationManager)) {
     new ScriptGroup(GlassNotificationManager) {
       offset = 0;
+      tickRate = 50;
+
+      enterTime = 500;
     };
+  }
 }
 
 function GlassNotificationManager::refocus(%this) {
@@ -59,15 +63,97 @@ function orderNumWords(%list) {
   return %ret;
 }
 
+function GlassNotificationManager::tick(%this) {
+  cancel(%this.sch);
+  %this.sch = "";
+
+  if(!%this.getCount()) {
+    %this.offset = 0;
+    return;
+  }
+
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %note = %this.getObject(%i);
+    %swatch = %note.swatch;
+
+    %action[%note.action]++;
+    switch$(%note.action) {
+      case "waiting":
+
+      case "enter":
+        %swatch.position = vectorSub(%swatch.position, "10 0");
+        if(getWord(%swatch.position, 0) < getWord(getRes(), 0)-260) {
+          %swatch.position = getWord(getRes(), 0)-260 SPC getWord(%swatch.position, 1);
+          %note.action = "displaying";
+          %note.ticksRemaining = mCeil(%note.time/%this.tickRate);
+        }
+
+      case "displaying":
+        %note.ticksRemaining--;
+
+      case "dismiss":
+        if(getWord(%swatch.position, 0) > getWord(getRes(), 0)) {
+          %swatch.deleteAll();
+          %swatch.delete();
+          %note.delete();
+          %i--;
+        } else {
+          %swatch.position = vectorAdd(%swatch.position, "10 0");
+        }
+
+      case "condense":
+        %note.ticksRemaining--;
+        %note.condenseTicks++;
+        %vector = vectorSub(%swatch.condensePos, %swatch.origin);
+        %diff = vectorScale(%vector, %note.condenseTicks/20);
+        %swatch.position = vectorAdd(%swatch.origin, %diff);
+
+        if(%note.condenseTicks >= 20) {
+          %swatch.position = %swatch.condensePos;
+          %note.action = "displaying";
+        }
+    }
+  }
+
+  %moving = %action["enter"]+%action["dismiss"]+%action["condense"];
+  if(%moving == 0) { //none are moving
+    %ct = %this.condense();
+
+    if(%ct == 0) {
+      %offset = 0;
+      for(%i = 0; %i < %this.getCount(); %i++) {
+        %indexList = %indexList SPC %this.getObject(%i).index;
+      }
+
+      %indexList = orderNumWords(%indexList);
+
+      for(%i = 0; %i < getWordCount(%indexList); %i++) {
+        %note = %this.index[getWord(%indexList, %i)];
+        %offset += getWord(%note.swatch.extent, 1)+10;
+
+        if(%note.action $= "displaying") {
+          if(%note.ticksRemaining <= 0) {
+            %note.action = "dismiss";
+          }
+        } else if(%note.action $= "waiting") {
+          %note.action = "enter";
+          %note.swatch.position = getWord(getRes(), 0) SPC getWord(getRes(), 1)-%offset;
+        }
+      }
+    }
+  }
+
+  %this.sch = %this.schedule(%this.tickRate, tick);
+}
+
 function GlassNotificationManager::condense(%this) {
   %offset = 10;
   %indexList = "";
   for(%i = 0; %i < %this.getCount(); %i++) {
-    if(%this.getObject(%i).swatch.action !$= "hold") {
-      return;
-    } else {
-      %indexList = %indexList SPC %this.getObject(%i).index;
-    }
+    if(%this.getObject(%i).action $= "waiting")
+      continue;
+
+    %indexList = %indexList SPC %this.getObject(%i).index;
   }
 
   %indexList = orderNumWords(%indexList);
@@ -75,13 +161,21 @@ function GlassNotificationManager::condense(%this) {
   for(%i = 0; %i < getWordCount(%indexList); %i++) {
     %note = %this.index[getWord(%indexList, %i)];
     %pos = getWord(%note.swatch.position, 0) SPC getWord(getRes(), 1)-%offset-getWord(%note.swatch.extent, 1);
+
     %offset += 10+getWord(%note.swatch.extent, 1);
-    %note.swatch.conPos = %pos;
-    %note.swatch.action = "condense";
-    %note.swatch.animate();
+
+    if(%pos !$= %note.swatch.position) {
+      %ct++;
+      %note.swatch.condensePos = %pos;
+      %note.swatch.origin = %note.swatch.position;
+      %note.action = "condense";
+
+      %note.condenseTicks = 0;
+    }
   }
 
   GlassNotificationManager.offset = %offset-10;
+  return %ct;
 }
 
 function GlassNotificationManager::dismissAll(%this) {
@@ -92,6 +186,8 @@ function GlassNotificationManager::dismissAll(%this) {
   }
   %this.condense();
 }
+
+function GlassNotificationSwatch::animate() {}
 
 function GlassNotification::dismiss(%this) {
   %this.swatch.action = "out";
@@ -105,6 +201,9 @@ function GlassNotification::instantDismiss(%this) {
 }
 
 function GlassNotification::onAdd(%this) {
+  if(%this.swatch)
+    return;
+
   if(%this.darkMode) {
     %color = "0 0 0 192";
   } else {
@@ -204,65 +303,15 @@ function GlassNotification::onAdd(%this) {
   %swatch.image.centerY();
 
   %swatch.position = vectorAdd(getRes(), getWord(%swatch.extent, 0) SPC -getWord(%swatch.extent, 1)-10-GlassNotificationManager.offset);
+
   GlassNotificationManager.offset += getWord(%swatch.extent, 1)+10;
+
   %this.swatch = %swatch;
+  %this.action = "waiting";
 
-  %swatch.action = "in";
-  %swatch.animate();
-}
-
-function GlassNotificationSwatch::animate(%this) {
-  if(%this.sch)
-    cancel(%this.sch);
-
-  switch$(%this.action) {
-    case "in":
-      %this.position = vectorSub(%this.position, "5 0");
-      if(getWord(%this.position, 0) < getWord(canvas.getExtent(), 0)-260) {
-        %this.position = getWord(canvas.getExtent(), 0)-260 SPC getWord(%this.position, 1);
-        %this.action = "hold";
-        %this.sch = %this.schedule(%this.notification.time, animate);
-        %this.arrived = getRealTime();
-      } else {
-        %this.sch = %this.schedule(10, animate);
-      }
-
-    case "hold":
-      if(!%this.notification.sticky) {
-        %this.action = "out";
-        %this.sch = %this.schedule(0, animate);
-      }
-
-    case "out":
-      %this.position = vectorAdd(%this.position, "5 0");
-      if(getWord(%this.position, 0) > getWord(canvas.getExtent(), 0)) {
-        %this.notification.delete();
-        %this.delete();
-        GlassNotificationManager.condense();
-      } else {
-        %this.sch = %this.schedule(10, animate);
-      }
-
-    case "condense":
-      if(%this.conIter == 0) {
-        %this.conVel = getWord(vectorSub(%this.position, %this.conPos), 1)/50;
-      }
-      %this.conIter++;
-      %this.position = vectorSub(%this.position, 0 SPC %this.conVel);
-      if(%this.conIter >= 50) {
-        %this.position = %this.conPos;
-        %this.conIter = 0;
-        %this.action = "hold";
-
-        if(%this.notification.sticky) {
-          %time = %this.notification.time-(getRealTime()-%this.arrived);
-          %this.sch = %this.schedule(%time, animate);
-        } else {
-          %this.sch = %this.schedule(10, animate);
-        }
-      } else {
-        %this.sch = %this.schedule(10, animate);
-      }
+  if(!isEventPending(GlassNotificationManager.sch)) {
+    echo("Calling tick");
+    GlassNotificationManager.schedule(1, tick);
   }
 }
 
