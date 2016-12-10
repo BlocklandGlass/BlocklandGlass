@@ -420,9 +420,7 @@ function GlassFriendsGui_StatusSelect::selectStatus(%status) {
 
 function GlassLive::setFriendStatus(%blid, %status) {
   %uo = GlassLiveUser::getFromBlid(%blid);
-  // echo("Set Status: " @ %status);
   %uo.setStatus(%status);
-  // echo("Status: " @ %uo.getStatus());
 
   GlassLive::createFriendList();
 
@@ -1933,16 +1931,7 @@ function GlassLive::openUserWindow(%blid) {
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
 
-    switch$(%uo.getStatus()) {
-      case "online":
-        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_online><font:verdana bold:13> Online";
-      case "busy":
-        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_busy><font:verdana bold:13> Busy";
-      case "away":
-        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_away><font:verdana bold:13> Away";
-      default:
-        %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_offline><font:verdana bold:13> Offline";
-    }
+    %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_" @ %uo.status @ "><font:verdana bold:13> " @ strCap(%uo.status);
 
     %location = %uo.getLocation();
     switch$(%location) {
@@ -1984,7 +1973,13 @@ function GlassLive::openUserWindow(%blid) {
     %locationColor = "333333";
 
   	%window.statusText.setText(%status);
-  	%window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ "<br><br><color:" @ %locationColor @ ">" @ strCap(%locationDisplay) @ "<br><font:verdana bold:12>" @ %uo.getServerTitle());
+
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %uo.getServerTitle();
+
+    if(%uo.status !$= "offline")
+      %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ %serverInfo);
+    else
+      %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid);
     %window.headerSwatch.color = %locationRGB;
 
     %uo.getAvatar(%window.blockhead);
@@ -2025,23 +2020,23 @@ function GlassCheckModeratorButton() {
 
 function GlassOverlay::openModeration() {
   if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
-	return;
+    return;
 	
   if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
-	GlassModeratorWindow_Selection.add("Ban", 0);
+    GlassModeratorWindow_Selection.add("Ban", 0);
   	GlassModeratorWindow_Selection.add("Bar", 1);
   	GlassModeratorWindow_Selection.add("Kick", 2);
   	GlassModeratorWindow_Selection.add("Mute", 3);
     GlassOverlayGui.add(GlassModeratorWindow);
-	GlassModeratorWindow.forceCenter();
+    GlassModeratorWindow.forceCenter();
   }
   
   if(GlassModeratorWindow.visible) {
 	  GlassModeratorWindow.setVisible(false);
 	  return;
   } else {
-	GlassOverlayGui.pushToBack(GlassModeratorWindow);
-	GlassModeratorWindow.setVisible(true);
+    GlassOverlayGui.pushToBack(GlassModeratorWindow);
+    GlassModeratorWindow.setVisible(true);
   }
   
   GlassModeratorWindow_ReasonBlocker.setVisible(true);
@@ -2050,15 +2045,19 @@ function GlassOverlay::openModeration() {
   GlassModeratorGui::refreshPlayerlist();
 }
 
+function GlassOverlay::closeModeration() {
+  GlassModeratorWindow.setVisible(false);
+}
+
 function GlassModeratorGui::refreshPlayerlist() {
   GlassModeratorWindow_Playerlist.clear();
 
   %room = GlassLiveRoom::getFromID(0);
   for(%i = 0; %i < %room.getCount(); %i++) {
-	%user = %room.getUser(%i);
-	if(%user.blid < 0)
-		continue;
-	GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+    %user = %room.getUser(%i);
+    if(%user.blid < 0)
+      continue;
+    GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
   
   GlassModeratorWindow_Playerlist.sort(0, 1);
@@ -2068,14 +2067,14 @@ function GlassModeratorWindow_Selection::onSelect(%this) {
   %selection = %this.getValue();
   GlassModeratorWindow.selection = %selection;
   if(%selection $= "Ban" || %selection $= "Bar") {
-	GlassModeratorWindow_ReasonBlocker.setVisible(false);
-	GlassModeratorWindow_DurationBlocker.setVisible(false);
+    GlassModeratorWindow_ReasonBlocker.setVisible(false);
+    GlassModeratorWindow_DurationBlocker.setVisible(false);
   } else if(%selection $= "Kick") {
-	GlassModeratorWindow_ReasonBlocker.setVisible(true);
-	GlassModeratorWindow_DurationBlocker.setVisible(true);
+    GlassModeratorWindow_ReasonBlocker.setVisible(true);
+    GlassModeratorWindow_DurationBlocker.setVisible(true);
   } else if(%selection $= "Mute") {
-	GlassModeratorWindow_ReasonBlocker.setVisible(true);
-	GlassModeratorWindow_DurationBlocker.setVisible(false);
+    GlassModeratorWindow_ReasonBlocker.setVisible(true);
+    GlassModeratorWindow_DurationBlocker.setVisible(false);
   }
   GlassModeratorWindow.selection = %selection;
 }
@@ -2090,13 +2089,13 @@ function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
 
 function GlassModeratorGui::SwapTabs(%this) {
   if(GlassModeratorGui_PlayerTab.visible) {
-	GlassModeratorGui_PlayerTab.setVisible(false);
-	GlassModeratorGui_LogsTab.setVisible(true);
-	GlassModeratorWindow_SwapButton.setText("Players");
+    GlassModeratorGui_PlayerTab.setVisible(false);
+    GlassModeratorGui_LogsTab.setVisible(true);
+    GlassModeratorWindow_SwapButton.setText("Players");
   } else {
-	GlassModeratorGui_PlayerTab.setVisible(true);
-	GlassModeratorGui_LogsTab.setVisible(false);
-	GlassModeratorWindow_SwapButton.setText("Logs");
+    GlassModeratorGui_PlayerTab.setVisible(true);
+    GlassModeratorGui_LogsTab.setVisible(false);
+    GlassModeratorWindow_SwapButton.setText("Logs");
   }
 } 
 

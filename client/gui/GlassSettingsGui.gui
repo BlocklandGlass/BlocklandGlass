@@ -15,7 +15,7 @@ new GuiControl(GlassSettingsGui) {
       horizSizing = "center";
       vertSizing = "center";
       position = "170 3";
-      extent = "300 474";
+      extent = "300 600";
       minExtent = "300 474";
       enabled = "1";
       visible = "1";

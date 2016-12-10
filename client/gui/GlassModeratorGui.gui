@@ -20,7 +20,7 @@ new GuiControl(GlassModeratorGui) {
       enabled = "1";
       visible = "0";
       clipToParent = "1";
-      text = "Glass Moderator";
+      text = "Glass Moderation";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
