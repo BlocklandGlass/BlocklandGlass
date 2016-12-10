@@ -2016,27 +2016,101 @@ function GlassLive::openUserWindow(%blid) {
   }
 }
 
-function GlassLive::createBanWindow(%blid, %name, %type) {
-  if(!GlassOverlayGui.isMember(GlassBanWindowGui))
-    GlassOverlayGui.add(GlassBanWindowGui);
-
-  if(%type $= "Mute")
-    GlassBanWindowReasonBlocker.setVisible(true);
-  else
-    GlassBanWindowReasonBlocker.setVisible(false);
-  GlassBanWindowGui.punishType = %type;
-  GlassBanWindowGui.blid = %blid;
-  GlassBanWindowLabel.setText("<just:center><font:verdana bold:14>" @ %type @ %name SPC "(" @ %blid @ ")");
-  GlassBanWindowGui.forceCenter();
-  GlassOverlayGui.pushToBack(GlassBanWindowGui);
-  GlassBanWindowGui.setVisible(true);
+function GlassOverlay::openModeration() {
+  if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
+	return;
+	
+  if(!GlassModeratorWindow_Selection.added) {
+  	GlassModeratorWindow_Selection.add("Ban", 0);
+  	GlassModeratorWindow_Selection.add("Bar", 1);
+  	GlassModeratorWindow_Selection.add("Kick", 2);
+  	GlassModeratorWindow_Selection.add("Mute", 3);
+  	GlassModeratorWindow_Selection.added = 1;
+  }
+	
+  if(!GlassOverlayGui.isMember(GlassModeratorWindow))
+    GlassOverlayGui.add(GlassModeratorWindow);
+  
+  if(GlassModeratorWindow.visible) {
+	  GlassModeratorWindow.setVisible(false);
+	  return;
+  } else {
+	GlassModeratorWindow.forceCenter();
+	GlassOverlayGui.pushToBack(GlassModeratorWindow);
+	GlassModeratorWindow.setVisible(true);
+  }
+  
+  GlassModeratorWindow_ReasonBlocker.setVisible(true);
+  GlassModeratorWindow_DurationBlocker.setVisible(true);
+  
+  GlassModeratorGui::AddPlayers();
 }
 
-function GlassLive::submitBanWindow() {
-	%reason = GlassBanWindowReason.getValue();
-	if(%reason !$= "")
-		%reason = " " @ %reason;
-  GlassLive::sendRoomCommand("/" @ GlassBanWindowGui.punishType @ "id" SPC GlassBanWindowDuration.getValue() SPC GlassBanWindowGui.blid @ %reason, GlassChatroomWindow.activeTab.id);
+function GlassModeratorGui::AddPlayers() {
+  GlassModeratorWindow_Playerlist.clear();
+
+  %room = GlassLiveRoom::getFromID(0);
+  for(%i = 0; %i < %room.getCount(); %i++) {
+	%user = %room.getUser(%i);
+	if(%user.blid < 0)
+		continue;
+	GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+  }
+  
+  GlassModeratorWindow_Playerlist.sort(0, 1);
+}
+
+function GlassModeratorWindow_Selection::onSelect(%this) {
+  %selection = %this.getValue();
+  GlassModeratorWindow.selection = %selection;
+  if(%selection $= "Ban" || %selection $= "Bar") {
+	GlassModeratorWindow_ReasonBlocker.setVisible(false);
+	GlassModeratorWindow_DurationBlocker.setVisible(false);
+  } else if(%selection $= "Kick") {
+	GlassModeratorWindow_ReasonBlocker.setVisible(true);
+	GlassModeratorWindow_DurationBlocker.setVisible(true);
+  } else if(%selection $= "Mute") {
+	GlassModeratorWindow_ReasonBlocker.setVisible(true);
+	GlassModeratorWindow_DurationBlocker.setVisible(false);
+  }
+  GlassModeratorWindow.selection = %selection;
+}
+ 
+function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
+  %blid = getField(%rowText, 1);
+  %name = getField(%rowText, 0);
+  
+  GlassModeratorGui_PlayerHeader.setText("<font:verdana:22>" @ %name NL "<font:verdana:16>" @ %blid);
+  GlassModeratorWindow.blid = %blid;
+}
+
+function GlassModeratorGui::SwapTabs(%this) {
+  if(GlassModeratorGui_PlayerTab.visible) {
+	GlassModeratorGui_PlayerTab.setVisible(false);
+	GlassModeratorGui_LogsTab.setVisible(true);
+	GlassModeratorWindow_SwapButton.setText("Players");
+  } else {
+	GlassModeratorGui_PlayerTab.setVisible(true);
+	GlassModeratorGui_LogsTab.setVisible(false);
+	GlassModeratorWindow_SwapButton.setText("Logs");
+  }
+} 
+
+function GlassModeratorGui::submit(%this) {
+  %blid = GlassModeratorWindow.blid;
+  %type = GlassModeratorWindow_Selection.getValue();
+  if(%type !$= "Mute" && %type !$= "Kick")
+    %reason = GlassModeratorWindow_Reason.getValue();
+  %duration = GlassModeratorWindow_Duration.getValue();
+  
+  if(%reason !$= "")
+	%reason = " " @ %reason;
+
+  if(%type $= "Kick")
+    GlassLive::sendRoomCommand("/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
+  else
+    GlassLive::sendRoomCommand("/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
+ 
   GlassBanWindowGui.setVisible(false);
 }
 
