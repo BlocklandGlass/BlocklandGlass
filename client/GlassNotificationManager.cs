@@ -2,7 +2,7 @@ function GlassNotificationManager::init() {
   if(!isObject(GlassNotificationManager)) {
     new ScriptGroup(GlassNotificationManager) {
       offset = 0;
-      tickRate = 20;
+      tickRate = 10;
 
       enterTime = 500;
     };
