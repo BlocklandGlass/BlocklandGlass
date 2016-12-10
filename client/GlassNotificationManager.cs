@@ -13,17 +13,19 @@ function GlassNotificationManager::refocus(%this) {
   }
 }
 
-function GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback) {
+function GlassNotificationManager::newNotification(%title, %text, %image, %darkMode) {
   %obj = new ScriptObject(GlassNotification) {
     title = %title;
     text = %text;
     image = %image;
 
-    sticky = %sticky;
+    sticky = true;
     callback = %callback;
     time = 5000;
 
     index = GlassNotificationManager.index++;
+
+    darkMode = %darkMode;
   };
 
   GlassNotificationManager.add(%obj);
@@ -103,18 +105,58 @@ function GlassNotification::instantDismiss(%this) {
 }
 
 function GlassNotification::onAdd(%this) {
+  if(%this.darkMode) {
+    %color = "0 0 0 192";
+  } else {
+    %color = "255 255 255 128";
+  }
+
   GlassNotificationManager.index[%this.index] = %this;
   %swatch = new GuiSwatchCtrl(GlassNotificationSwatch) {
     horizSizing = "right";
     vertSizing = "bottom";
-    color = "255 255 255 128";
+    color = "255 255 255 0";
     position = "0 0";
     extent = "250 2";
 
     notification = %this;
   };
 
-  %swatch.image = new GuiBitmapCtrl(GlassDownloadSprite) {
+  %swatch.head = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "center";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/notification_top.png";
+    position = "0 0";
+    extent = "250 10";
+    minextent = "0 0";
+    clipToParent = true;
+
+    mColor = %color;
+  };
+
+  %swatch.body = new GuiSwatchCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    color = %color;
+    position = "0 10";
+    extent = "250 2";
+
+    notification = %this;
+  };
+
+  %swatch.foot = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "center";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/notification_bottom.png";
+    position = "0 0";
+    extent = "250 10";
+    minextent = "0 0";
+    clipToParent = true;
+
+    mColor = %color;
+  };
+
+  %swatch.image = new GuiBitmapCtrl() {
     horizSizing = "right";
     vertSizing = "center";
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %this.image @ ".png";
@@ -127,8 +169,8 @@ function GlassNotification::onAdd(%this) {
   %swatch.text = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
-    position = "28 5";
+    text = (%this.darkMode ? "<color:ffffff>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
+    position = "28 0";
     extent = "172 12";
     minextent = "0 0";
     autoResize = true;
@@ -142,14 +184,22 @@ function GlassNotification::onAdd(%this) {
     extent = %swatch.extent;
   };
 
-  %swatch.add(%swatch.text);
-  %swatch.add(%swatch.image);
+  %swatch.body.add(%swatch.text);
+  %swatch.body.add(%swatch.image);
+
+  %swatch.add(%swatch.head);
+  %swatch.add(%swatch.body);
+  %swatch.add(%swatch.foot);
+
   %swatch.add(%swatch.mouse);
   %swatch.position = getRes();
   Canvas.getObject(canvas.getCount()-1).add(%swatch);
 
   %swatch.text.forceReflow();
-  %swatch.verticalMatchChildren(10, 8);
+  %swatch.body.verticalMatchChildren(10, 0);
+  %swatch.foot.placeBelow(%swatch.body);
+
+  %swatch.verticalMatchChildren(20, 0);
   %swatch.mouse.extent = %swatch.extent;
   %swatch.image.centerY();
 
@@ -217,11 +267,29 @@ function GlassNotificationSwatch::animate(%this) {
 }
 
 function GlassNotificationMouse::onMouseEnter(%this) {
-  %this.swatch.color = "255 255 255 225";
+  %swatch = %this.swatch;
+  if(%this.notification.darkMode) {
+    %swatch.head.mcolor = "32 32 32 225";
+    %swatch.body.color = "32 32 32 225";
+    %swatch.foot.mcolor = "32 32 32 225";
+  } else {
+    %swatch.head.mcolor = "255 255 255 225";
+    %swatch.body.color = "255 255 255 225";
+    %swatch.foot.mcolor = "255 255 255 225";
+  }
 }
 
 function GlassNotificationMouse::onMouseLeave(%this) {
-  %this.swatch.color = "255 255 255 128";
+  %swatch = %this.swatch;
+  if(%this.notification.darkMode) {
+    %swatch.head.mcolor = "0 0 0 192";
+    %swatch.body.color = "0 0 0 192";
+    %swatch.foot.mcolor = "0 0 0 192";
+  } else {
+    %swatch.head.mcolor = "255 255 255 128";
+    %swatch.body.color = "255 255 255 128";
+    %swatch.foot.mcolor = "255 255 255 128";
+  }
 }
 
 function GlassNotificationMouse::onMouseDown(%this) {
