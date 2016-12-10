@@ -31,7 +31,7 @@ function GlassLive::init() {
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
-  
+
   if(!isObject(GlassLiveUsers))
     new ScriptGroup(GlassLiveUsers);
 
@@ -1785,16 +1785,25 @@ function GlassLive::createUserWindow(%uo) {
   %window.uo = %uo;
 
   %window.infoSwatch = new GuiSwatchCtrl() {
-	color = "235 235 235 255";
-	position = "10 35";
-	extent = "100 210";
+  	color = "235 235 235 255";
+  	position = "10 35";
+  	extent = "100 210";
   };
 
-  %window.blockhead = new GuiObjectView() {
+  %window.blockheadSwatch = new GuiSwatchCtrl() {
+  	color = "235 0 0 0";
     position = "0 40";
-  	extent = "100 170";
+    extent = "100 210";
+  };
+
+  %window.blockhead = new GuiObjectView(GlassUserGui_Blockhead) {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+  	extent = "100 210";
   	forceFov = 18;
   	lightDirection = "-1 -1 -1";
+    firstOpen = true;
   };
 
   %window.headerText = new GuiMLTextCtrl() {
@@ -1866,10 +1875,11 @@ function GlassLive::createUserWindow(%uo) {
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "46 204 113 200";
 	command = "glassMessageBoxYesNo(\"Warning\", \"Would you like to join" SPC %uo.username @ "'s server?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
-  };      
+  };
 
   %window.add(%window.infoSwatch);
-  %window.infoSwatch.add(%window.blockhead);
+  %window.infoSwatch.add(%window.blockheadSwatch);
+  %window.blockheadSwatch.add(%window.blockhead);
 
   %window.infoSwatch.add(%window.statusSwatch);
   %window.statusSwatch.add(%window.statusText);
@@ -1890,6 +1900,21 @@ function GlassLive::createUserWindow(%uo) {
   %uo.window = %window;
   return %window;
 }
+
+//this right here should be our official note on why torque is shit
+function GlassUserGui_Blockhead::onSleep(%this) {
+  %this.position = "0 -40";
+  %this.firstOpen = false;
+}
+
+function GlassUserGui_Blockhead::onWake(%this) {
+  if(!%this.firstOpen) {
+    %this.position = "0 0";
+  } else {
+    %this.position = "0 -20";
+  }
+}
+//end of "torque is shit"
 
 function GlassLive::openUserWindow(%blid) {
   %uo = GlassLiveUser::getFromBlid(%blid);
