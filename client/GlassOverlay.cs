@@ -8,6 +8,11 @@ function GlassOverlayGui::onWake(%this) {
   else if(!GlassSettings.get("Live::OverlayLogo") && GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(false);
 
+ if(GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap !$= "")
+	GlassOverlay.setBitmap("base/client/ui/vignette");
+  else if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
+    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
     if(%window.getName() $= "GlassChatroomWindow") {

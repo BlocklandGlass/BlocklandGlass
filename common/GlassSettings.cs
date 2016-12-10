@@ -14,6 +14,7 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::TalkingAnimation", true);
     GlassSettings.registerSetting("client", "Live::OverlayLogo", true);
+    GlassSettings.registerSetting("client", "Live::Vignette", true);
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
     GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", false);
