@@ -13,8 +13,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
     GlassSettings.registerSetting("client", "Live::TalkingAnimation", true);
-    GlassSettings.registerSetting("client", "Live::OverlayLogo", true);
-    GlassSettings.registerSetting("client", "Live::Vignette", true);
+    GlassSettings.registerSetting("client", "Live::OverlayLogo", true, "GlassOverlay::setLogo");
+    GlassSettings.registerSetting("client", "Live::Vignette", true, "GlassOverlay::setVignette");
     GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
     GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
     GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", false);
@@ -40,7 +40,8 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
 
-    GlassSettings.registerSetting("client", "Servers::EnableFavorites", true);
+    GlassSettings.registerSetting("client", "Servers::EnableFavorites", true, "GlassServers::init");
+    GlassSettings.registerSetting("client", "Servers::DisplayPasswordedFavorites", true, "GlassServers::init");
     GlassSettings.registerSetting("client", "Servers::LoadingImages", true);
     GlassSettings.registerSetting("client", "Servers::LoadingGUI", true);
 

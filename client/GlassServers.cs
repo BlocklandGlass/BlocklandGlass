@@ -2,8 +2,13 @@ function GlassServers::init() {
   if(GlassSettings.get("Servers::LoadingGUI"))
     GlassLoading::changeGui();
 
-  if(!GlassSettings.get("Servers::EnableFavorites"))
+  if(!GlassSettings.get("Servers::EnableFavorites")) {
+	if(GlassFavoriteServerSwatch.visible) {
+	  GlassServerPreview_Favorite.setVisible(false);
+      GlassFavoriteServerSwatch.setVisible(false);
+	}
     return;
+  }
 
   GlassServerPreview_Favorite.setVisible(true);
   GlassFavoriteServers::changeGui();
@@ -88,8 +93,8 @@ function GlassFavoriteServers::buildList(%this) {
       profile = "GuiMLTextProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "10 10";
-      extent = "250 27";
+      position = "5 5";
+      extent = "260 37";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -134,9 +139,12 @@ function GlassFavoriteServers::buildList(%this) {
   }
   GlassFavoriteServerSwatch.verticalMatchChildren(24, 10);
   GlassFavoriteServerSwatch.position = vectorSub(MainMenuButtonsGui.extent, GlassFavoriteServerSwatch.extent);
+  if(!GlassFavoriteServerSwatch.visible)
+	GlassFavoriteServerSwatch.setVisible(true);
 }
 
 function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %players, %maxPlayers, %map, %addr) {
+	  
   %swatch = "GlassFavoriteServerGui_Swatch" @ %id;
   //if(%swatch.text $= "")
     %swatch.text = %swatch.getObject(0);
@@ -156,11 +164,11 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   switch$(%status) {
     case "online":
       %swatch.color = "131 195 243 255";
-      %swatch.text.setText("<font:verdana bold:15>" @ %title @ "<br><font:verdana:13>" @ %players @ "/" @ %maxPlayers @ " Players<just:right>" @ %map);
+      %swatch.text.setText("<font:verdana bold:15>" @ %title @ "<br><font:verdana:13>" @ %players @ "/" @ %maxPlayers @ " Players<br><just:right>" @ %map);
 
     case "passworded":
       %swatch.color = "235 153 80 255";
-      %swatch.text.setText("<font:verdana bold:15>" @ trim(%title) @ " <font:verdana:13>(Passworded)<br>" @ %players @ "/" @ %maxPlayers @ " Players<just:right>" @ %map);
+      %swatch.text.setText("<font:verdana bold:15>" @ trim(%title) @ " <font:verdana:13><bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock><br>" @ %players @ "/" @ %maxPlayers @ " Players<br><just:right>" @ %map);
 
     case "offline":
       %swatch.color = "220 220 220 255";
@@ -180,11 +188,7 @@ function GlassFavoriteServers::scanServers() {
 }
 
 function GlassFavoriteServers::interact(%swatch) {
-  %server = %swatch.server;
-  if(!%server.offline)
-    GlassServerPreviewGui.open(%server);
-  else
-    glassMessageBoxOk("Offline", %server.name @ " is currently offline!");
+  GlassServerPreviewGui.open(%swatch.server);
 }
 
 function GlassFavoriteServersTCP::handleText(%this, %text) {
@@ -204,10 +208,14 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 	    %fav = GlassFavoriteServers.favorite[%j];
 		if(%fav $= %serverIP) {
 		  %passworded = getField(%line, 2);
+		  if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
+			  continue;
+		  
 		  %serverName = getField(%line, 4);
 		  %players = getField(%line, 5);
           %maxPlayers = getField(%line, 6);
           %map = getField(%line, 7);
+		  
 		  GlassFavoriteServers.onlineFavorite[%onlineCount++] = %serverIP TAB %serverPort TAB %serverName TAB %passworded TAB %players TAB %maxPlayers TAB %map;
 		}
 	  }

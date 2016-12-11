@@ -8,16 +8,6 @@ function GlassOverlayGui::onWake(%this) {
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
 
-  if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
-    GlassLiveLogo.setVisible(true);
-  else if(!GlassSettings.get("Live::OverlayLogo") && GlassLiveLogo.visible)
-    GlassLiveLogo.setVisible(false);
-
- if(GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap !$= "")
-	GlassOverlay.setBitmap("base/client/ui/vignette");
-  else if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
-    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
-
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
     if(%window.getName() $= "GlassChatroomWindow") {
@@ -99,6 +89,20 @@ function GlassOverlay::open() {
 
 function GlassOverlay::close() {
   canvas.popDialog(GlassOverlayGui);
+}
+
+function GlassOverlay::setVignette() {
+ if(GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap !$= "")
+	GlassOverlay.setBitmap("base/client/ui/vignette");
+  else if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
+    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+}
+
+function GlassOverlay::setLogo() {
+  if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
+    GlassLiveLogo.setVisible(true);
+  else if(!GlassSettings.get("Live::OverlayLogo") && GlassLiveLogo.visible)
+    GlassLiveLogo.setVisible(false);
 }
 
 //================================================================
