@@ -6,6 +6,8 @@ function GlassNotificationManager::init() {
 
       enterTime = 500;
     };
+
+
   }
 }
 
@@ -18,6 +20,7 @@ function GlassNotificationManager::refocus(%this) {
 }
 
 function GlassNotificationManager::newNotification(%title, %text, %image, %darkMode) {
+  error("Depreciated Notification Creation");
   %obj = new ScriptObject(GlassNotification) {
     title = %title;
     text = %text;
@@ -89,7 +92,8 @@ function GlassNotificationManager::tick(%this) {
         }
 
       case "displaying":
-        %note.ticksRemaining--;
+        if(!%note.sticky)
+          %note.ticksRemaining--;
 
       case "dismiss":
         if(getWord(%swatch.position, 0) > getWord(getRes(), 0)) {
@@ -201,17 +205,36 @@ function GlassNotificationManager::dismissAll(%this) {
   }
 }
 
-function GlassNotification::onAdd(%this) {
-  if(%this.swatch)
+function GlassNotification::onAdd(%this, %a, %b) {
+  if(!GlassNotificationManager.isMember(%this)) {
+    GlassNotificationManager.add(%this);
+    %this.index = GlassNotificationManager.index++;
+  } else {
     return;
+  }
+
+  if(%this.swatch) {
+    return;
+  }
+
+  if(%this.time $= "")
+    %this.time = 5000;
+
+  if(%this.darkMode $= "")
+    %this.darkMode = GlassSettings.get("Notifications::DarkMode");
+
 
   if(%this.darkMode) {
-    %color = "0 0 0 150";
+    %color = "32 32 32 170";
   } else {
-    %color = "255 255 255 150";
+    %color = "255 255 255 170";
   }
 
   GlassNotificationManager.index[%this.index] = %this;
+
+  if(GlassSettings.get("Notifications::ForceSticky"))
+    %this.sticky = true;
+
   %swatch = new GuiSwatchCtrl(GlassNotificationSwatch) {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -309,6 +332,7 @@ function GlassNotification::onAdd(%this) {
 
   %swatch.verticalMatchChildren(20, 0);
   %swatch.image.centerY();
+  %swatch.mouse.extent = %swatch.extent;
 
   %swatch.position = vectorAdd(getRes(), getWord(%swatch.extent, 0) SPC -getWord(%swatch.extent, 1)-10-GlassNotificationManager.offset);
 
@@ -326,28 +350,26 @@ function GlassNotificationMouse::onMouseEnter(%this) {
   %swatch = %this.swatch;
   %swatch.notification.isHovering = true;
   if(%this.notification.darkMode) {
-    %swatch.head.mcolor = "32 32 32 225";
-    %swatch.body.color = "32 32 32 225";
-    %swatch.foot.mcolor = "32 32 32 225";
+    %color = "32 32 32 225";
   } else {
-    %swatch.head.mcolor = "255 255 255 225";
-    %swatch.body.color = "255 255 255 225";
-    %swatch.foot.mcolor = "255 255 255 225";
+    %color = "255 255 255 225";
   }
+  %swatch.head.mcolor = %color;
+  %swatch.body.color = %color;
+  %swatch.foot.mcolor = %color;
 }
 
 function GlassNotificationMouse::onMouseLeave(%this) {
   %swatch = %this.swatch;
   %swatch.notification.isHovering = false;
   if(%this.notification.darkMode) {
-    %swatch.head.mcolor = "0 0 0 150";
-    %swatch.body.color = "0 0 0 150";
-    %swatch.foot.mcolor = "0 0 0 150";
+    %color = "32 32 32 150";
   } else {
-    %swatch.head.mcolor = "255 255 255 150";
-    %swatch.body.color = "255 255 255 150";
-    %swatch.foot.mcolor = "255 255 255 150";
+    %color = "255 255 255 150";
   }
+  %swatch.head.mcolor = %color;
+  %swatch.body.color = %color;
+  %swatch.foot.mcolor = %color;
 }
 
 function GlassNotificationMouse::onMouseDown(%this) {
@@ -382,7 +404,13 @@ package GlassNotifications {
       %icon = "note_pin";
     }
 
-    %obj = GlassNotificationManager::newNotification(%title, %message, %icon, %sticky);
+    %obj = new ScriptObject(GlassNotification) {
+      title = %title;
+      text = %message;
+      image = %icon;
+
+      sticky = %sticky;
+    };
 
     %obj.time = %holdTime;
     %obj.legacySource = "RTB";
@@ -401,7 +429,14 @@ package GlassNotifications {
     } else if(%content.getName() $= "MainMenuGui") {
       if(GlassSettings.get("Live::StartupNotification")) {
         if(!$Glass::StartupNotified) {
-          Glass.mmNotification = GlassNotificationManager::newNotification("Glass Live", "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!", "glassLogo", 1, "GlassOverlay::open();");
+          Glass.mmNotification = new ScriptObject(GlassNotification) {
+            title = "Glass Live";
+            text = "Press <color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<color:000000> to open Glass!";
+            image = "bell";
+
+            sticky = true;
+            callback = "GlassOverlay::open();";
+          };
           $Glass::StartupNotified = true;
         }
       }

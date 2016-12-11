@@ -207,7 +207,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       %image = %data.image;
       %sticky = (%data.duration == 0);
 
-      GlassNotificationManager::newNotification(%title, %text, %image, %sticky, %callback);
+      new ScriptObject(GlassNotification) {
+        title = %title;
+        text = %text;
+        image = %image;
+
+        sticky = %sticky;
+        callback = %callback;
+      };
 
     case "message":
       %user = GlassLiveUser::getFromBlid(%data.sender_id);
@@ -223,7 +230,14 @@ function GlassLiveConnection::onLine(%this, %line) {
         if(strlen(%data.message) > 85)
           %data.message = getsubstr(%data.message, 0, 85) @ "...";
 
-        GlassNotificationManager::newNotification(%sender, %data.message, "comment", 0);
+        new ScriptObject(GlassNotification) {
+          title = %sender;
+          text = %data.message;
+          image = "comment";
+
+          sticky = false;
+          callback = "GlassOverlay::open();";
+        };
       }
 
       if(GlassSettings.get("Live::MessageSound"))
@@ -243,8 +257,16 @@ function GlassLiveConnection::onLine(%this, %line) {
         return;
       }
 
-      if(GlassSettings.get("Live::RoomNotification"))
-        GlassNotificationManager::newNotification("Entered Room", "You've entered " @ %data.title, "add", 0);
+      if(GlassSettings.get("Live::RoomNotification")) {
+        new ScriptObject(GlassNotification) {
+          title = "Entered Room";
+          text = "You've entered " @ %data.title;
+          image = "add";
+
+          sticky = false;
+          callback = "";
+        };
+      }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
@@ -281,8 +303,16 @@ function GlassLiveConnection::onLine(%this, %line) {
       %room.view.userSwatch.getGroup().scrollToTop();
 
     case "roomJoin":
-      if(GlassSettings.get("Live::RoomNotification"))
-        GlassNotificationManager::newNotification("Entered Room", "You've entered " @ %data.title, "add", 0);
+      if(GlassSettings.get("Live::RoomNotification")) {
+        new ScriptObject(GlassNotification) {
+          title = "Entered Room";
+          text = "You've entered " @ %data.title;
+          image = "add";
+
+          sticky = false;
+          callback = "";
+        };
+      }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
@@ -449,11 +479,17 @@ function GlassLiveConnection::onLine(%this, %line) {
         %username = %data.sender;
         %uo = GlassLiveUser::create(%username, %blid);
 
-        GlassLive::addfriendRequestToList(%uo);
-
+        GlassLive::addFriendRequestToList(%uo);
         GlassLive::createFriendList();
 
-        GlassNotificationManager::newNotification("Friend Request", "You've been sent a friend request by <font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ")", "email_add", 0);
+        new ScriptObject(GlassNotification) {
+          title = "Friend Request";
+          text = "You've been sent a friend request by <font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ")";
+          image = "email_add";
+
+          sticky = false;
+          callback = "";
+        };
 
         alxPlay(GlassFriendRequestAudio);
       }
@@ -480,8 +516,14 @@ function GlassLiveConnection::onLine(%this, %line) {
       if(isObject(%room = GlassChatroomWindow.activeTab.room))
         %room.renderUserList();
 
-      GlassNotificationManager::newNotification("Friend Added", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been added to your friends list.", "user_add", 0);
+      new ScriptObject(GlassNotification) {
+        title = "Friend Added";
+        text = "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been added to your friends list.";
+        image = "user_add";
 
+        sticky = false;
+        callback = "";
+      };
       alxPlay(GlassFriendAddedAudio);
 
     case "friendRemove":
@@ -489,7 +531,14 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::removeFriend(%data.blid, true);
 
-      GlassNotificationManager::newNotification("Friend Removed", "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been removed from your friends list.", "user_delete", 0);
+      new ScriptObject(GlassNotification) {
+        title = "Friend Removed";
+        text = "<font:verdana bold:13>" @ %uo.username @ " (" @ %uo.blid @ ") <font:verdana:13>has been removed from your friends list.";
+        image = "user_delete";
+
+        sticky = false;
+        callback = "";
+      };
 
       alxPlay(GlassFriendRemovedAudio);
 
@@ -537,7 +586,14 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "glassUpdate":
       if(semanticVersionCompare(Glass.version, %data.version) == 2 && !Glass.updateNotified) {
-        GlassNotificationManager::newNotification("Glass Update", "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass is now available!", "glassLogo", 1, "updater.checkForUpdates();");
+        new ScriptObject(GlassNotification) {
+          title = "Glass Update";
+          text = "Version <font:verdana bold:13>" @ %data.version @ "<font:verdana:13> of Blockland Glass is now available!";
+          image = "glassLogo";
+
+          sticky = true;
+          callback = "updater.checkForUpdates();";
+        };
         alxPlay(GlassBellAudio);
 
         Glass.updateNotified = true;
@@ -558,7 +614,14 @@ function GlassLiveConnection::onLine(%this, %line) {
         %text = "Glass Live has gone offline: " @ %reason;
       }
 
-      GlassNotificationManager::newNotification((%planned ? "Planned" : "Unplanned") SPC "Shutdown", %text, "roadworks", false);
+      new ScriptObject(GlassNotification) {
+        title = (%planned ? "Planned" : "Unplanned") SPC "Shutdown";
+        text = %text;
+        image = "roadworks";
+
+        sticky = false;
+        callback = "";
+      };
 
       alxPlay(GlassBellAudio);
 

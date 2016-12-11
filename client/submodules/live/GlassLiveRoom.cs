@@ -38,7 +38,14 @@ function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   if(GlassSettings.get("Live::RoomNotification") && !%inhibitNotification) {
-    GlassNotificationManager::newNotification("Exited Room", "You've exited " @ %this.name, "delete", 0);
+    new ScriptObject(GlassNotification) {
+      title = "Exited Room";
+      text = "You've exited " @ %this.name;
+      image = "delete";
+
+      sticky = false;
+      callback = "";
+    };
   }
 
   %this.view.window.removeTab(%this.view);
@@ -121,7 +128,7 @@ function GlassLiveRoom::onUserJoin(%this, %blid) {
     %this.pushText(%text);
   }
   %this.addUser(%blid);
-  
+
   if(%this.id == 0 && GlassModeratorWindow.visible)
 	GlassModeratorGui::refreshPlayerlist();
 }
@@ -144,7 +151,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
   }
 
   %this.renderUserList();
-  
+
   if(%this.id == 0 && GlassModeratorWindow.visible)
 	GlassModeratorGui::refreshPlayerlist();
 }
@@ -227,8 +234,16 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
       if(GlassLive.lastMentioned $= "" || $Sim::Time > GlassLive.lastMentioned) {
-        if(!%this.view.isAwake())
-          GlassNotificationManager::newNotification(%this.name, "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")", "bell", 0);
+        if(!%this.view.isAwake()) {
+          new ScriptObject(GlassNotification) {
+            title = "Mentioned in " @ %this.name;
+            text = "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")";
+            image = "bell";
+
+            sticky = false;
+            callback = "";
+          };
+        }
 
         alxPlay(GlassBellAudio);
 
@@ -241,7 +256,14 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         if(strlen(%msg) > 85)
           %msg = getsubstr(%msg, 0, 85) @ "...";
 
-        GlassNotificationManager::newNotification(%this.name, %msg, "comment", 0);
+        new ScriptObject(GlassNotification) {
+          title = %this.name;
+          text = %msg;
+          image = "comment";
+
+          sticky = false;
+          callback = "";
+        };
       }
     }
   }

@@ -47,6 +47,9 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Live::FakeSetting", "One");
 
+    GlassSettings.registerSetting("client", "Notifications::DarkMode", false);
+    GlassSettings.registerSetting("client", "Notifications::ForceSticky", false);
+
   // } else if(%context $= "server") {
     // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     // GlassSettings.registerSetting("server", "SC::AEditRank", 2);

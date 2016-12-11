@@ -53,6 +53,11 @@ function GlassLive::init() {
   GlassOverlayGui.add(GlassIconSelectorWindow);
   GlassIconSelectorWindow.updateIcons();
 
+  // **
+  // this is not where or how this should be done. we have a 3 step setting
+  // registration. only one is needed
+  // **
+
   // glass pref, description/name, category, type, properties (for dropdowns), information
   GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
   GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
@@ -87,11 +92,15 @@ function GlassLive::init() {
 
   GlassSettings.drawSetting("Live::FakeSetting", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
 
+  GlassSettings.drawSetting("Notifications::DarkMode", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark-mode notifications");
+  GlassSettings.drawSetting("Notifications::ForceSticky", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with");
+
   %settings["Live"] = "Vignette TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
   %settings["MM"] = "UseDefault LiveSearch";
   %settings["Servers"] = "DisplayPasswordedFavorites LoadingGUI LoadingImages EnableFavorites";
+  %settings["Notifications"] = "DarkMode ForceSticky";
 
-  %settings = "Live MM Servers";
+  %settings = "Live MM Servers Notifications";
 
   for(%i = 0; %i < getWordCount(%settings); %i++) {
     %prefix = getWord(%settings, %i);
@@ -108,7 +117,7 @@ function GlassLive::init() {
       }
     }
   }
-  
+
   if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
 	GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
 
@@ -347,7 +356,15 @@ function GlassLive::removeFriendRequestFromList(%blid) {
 function GlassLive::checkPendingFriendRequests() {
   if(GlassSettings.get("Live::PendingReminder")) {
     if((%pending = getWordCount(GlassLive.friendRequestList)) > 0) {
-      GlassNotificationManager::newNotification("Pending Friend Requests", "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).", "new_email", 0, "GlassOverlay::open();");
+
+      new ScriptObject(GlassNotification) {
+        title = "Pending Friend Requests";
+        text = "You have<font:verdana bold:13>" SPC %pending SPC "<font:verdana:13>pending friend request(s).";
+        image = "new_email";
+
+        sticky = false;
+        callback = "GlassOverlay::open();";
+      };
 
       alxPlay(GlassBellAudio);
     }
@@ -452,7 +469,15 @@ function GlassLive::setFriendStatus(%blid, %status) {
         %icon = "user";
     }
 
-    GlassNotificationManager::newNotification(%uo.username, "is now " @ %uo.getStatus() @ ".", %icon, 0);
+    new ScriptObject(GlassNotification) {
+      title = %uo.username;
+      text = "is now " @ %uo.getStatus() @ ".";
+      image = %icon;
+
+      sticky = false;
+      callback = "";
+    };
+
   }
 }
 
