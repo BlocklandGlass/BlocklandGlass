@@ -93,8 +93,8 @@ function GlassFavoriteServers::buildList(%this) {
       profile = "GuiMLTextProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "5 5";
-      extent = "260 37";
+      position = "7 7";
+      extent = "256 37";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -102,18 +102,22 @@ function GlassFavoriteServers::buildList(%this) {
       lineSpacing = "2";
       allowColorChars = "0";
       maxChars = "-1";
-      maxBitmapHeight = "-1";
       selectable = "1";
       autoResize = "1";
+
+      maxBitmapHeight = "13";
     };
 
     %swatch.add(%swatch.text);
-
     %swatch.text.setText("<font:verdana bold:15>" @ %this.favorite[%i] @ "<br><just:center><font:verdana:13>Loading...");
 
     GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
-
     GlassFavoriteServerSwatch.add(%swatch);
+
+    if(%swatch.text.isAwake())
+      %swatch.text.forceReflow();
+
+    %swatch.verticalMatchChildren(12, 5);
 
     if(%placeBelow)
       %swatch.placeBelow(%placeBelow, 5);
@@ -144,7 +148,7 @@ function GlassFavoriteServers::buildList(%this) {
 }
 
 function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %players, %maxPlayers, %map, %addr) {
-	  
+
   %swatch = "GlassFavoriteServerGui_Swatch" @ %id;
   //if(%swatch.text $= "")
     %swatch.text = %swatch.getObject(0);
@@ -210,12 +214,12 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 		  %passworded = getField(%line, 2);
 		  if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
 			  continue;
-		  
+
 		  %serverName = getField(%line, 4);
 		  %players = getField(%line, 5);
           %maxPlayers = getField(%line, 6);
           %map = getField(%line, 7);
-		  
+
 		  GlassFavoriteServers.onlineFavorite[%onlineCount++] = %serverIP TAB %serverPort TAB %serverName TAB %passworded TAB %players TAB %maxPlayers TAB %map;
 		}
 	  }
@@ -343,11 +347,11 @@ function GlassServerPreview::connectToServer() {
   %server = GlassServerPreviewWindowGui.openServerIP;
   if(%server $= "")
 	return;
-  
+
   NPL_List.clear();
   ConnectToServer(%server, "", "1", "1");
 }
-	
+
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
   %addr = strReplace(%addr, ".", "-");
@@ -519,7 +523,7 @@ package GlassServers {
     NewChatHud.add(GlassLoadingGui);
     NewChatHud.pushToBack(GlassLoadingGui); // This isn't working but it should put the GUI under the actual chat.
   }
-  
+
   function LoadingGui::onSleep(%this) {
     if(isFunction(LoadingGui, onSleep))
       parent::onSleep(%this);

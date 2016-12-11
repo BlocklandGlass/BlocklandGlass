@@ -3,8 +3,8 @@ new GuiWindowCtrl(GlassFavoriteServerSwatch) {
   profile = "GlassWindowProfile";
   horizSizing = "left";
   vertSizing = "top";
-  position = "350 336";
-  extent = "290 60";
+  position = "350 356";
+  extent = "290 40";
   minExtent = "8 2";
   enabled = "1";
   visible = "0";
@@ -18,7 +18,7 @@ new GuiWindowCtrl(GlassFavoriteServerSwatch) {
   resizeWidth = false;
   canClose = false;
   canMove = false;
-  
+
   new GuiMLTextCtrl(GlassFavoriteServerGui_NoServers) {
     profile = "GuiMLTextProfile";
     horizSizing = "right";

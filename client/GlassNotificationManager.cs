@@ -224,7 +224,7 @@ function GlassNotification::onAdd(%this) {
 
   %swatch.head = new GuiBitmapCtrl() {
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/notification_top.png";
     position = "0 0";
     extent = "250 10";
@@ -246,7 +246,7 @@ function GlassNotification::onAdd(%this) {
 
   %swatch.foot = new GuiBitmapCtrl() {
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/notification_bottom.png";
     position = "0 0";
     extent = "250 10";
@@ -272,7 +272,7 @@ function GlassNotification::onAdd(%this) {
     text = (%this.darkMode ? "<color:eeeeee>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
     position = "28 7";
     extent = "210 12";
-    minextent = "0 0";
+    minextent = "210 12";
     autoResize = true;
     maxBitmapHeight = "12";
   };
@@ -298,12 +298,16 @@ function GlassNotification::onAdd(%this) {
   Canvas.getObject(canvas.getCount()-1).add(%swatch);
 
 
-  %swatch.text.forceReflow();
-  %swatch.body.extent = 250 SPC getWord(%swatch.text.extent, 1)-6;
+  if(%swatch.text.isAwake()) {
+    %swatch.text.forceReflow();
+    %swatch.body.extent = 250 SPC getWord(%swatch.text.extent, 1)-6;
+  } else {
+    %swatch.body.extent = 250 SPC 10;
+    %swatch.text.centerY();
+  }
   %swatch.foot.placeBelow(%swatch.body);
 
   %swatch.verticalMatchChildren(20, 0);
-  %swatch.mouse.extent = %swatch.extent;
   %swatch.image.centerY();
 
   %swatch.position = vectorAdd(getRes(), getWord(%swatch.extent, 0) SPC -getWord(%swatch.extent, 1)-10-GlassNotificationManager.offset);
