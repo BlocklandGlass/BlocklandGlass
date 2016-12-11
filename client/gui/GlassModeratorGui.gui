@@ -212,8 +212,8 @@ new GuiControl(GlassModeratorGui) {
             profile = "GuiMlTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "11 125";
-            extent = "53 16";
+            position = "6 125";
+            extent = "58 16";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";

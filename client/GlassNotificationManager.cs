@@ -131,7 +131,7 @@ function GlassNotificationManager::tick(%this) {
         %note = %this.index[getWord(%indexList, %i)];
         %offset += getWord(%note.swatch.extent, 1)+10;
 
-        if(%note.action $= "displaying") {
+        if(%note.action $= "displaying" && !%note.isHovering) {
           if(%note.ticksRemaining <= 0) {
             %note.action = "dismiss";
           }
@@ -178,26 +178,27 @@ function GlassNotificationManager::condense(%this) {
   return %ct;
 }
 
-function GlassNotificationManager::dismissAll(%this) {
-  while(%this.getCount() > 0) {
-    %obj = %this.getObject(0);
-    %obj.swatch.delete();
-    %obj.delete();
-  }
-  %this.condense();
-}
-
-function GlassNotificationSwatch::animate() {}
-
 function GlassNotification::dismiss(%this) {
-  %this.swatch.action = "out";
-  %this.swatch.sch = %this.swatch.schedule(0, animate);
+  %this.action = "dismiss";
 }
 
-function GlassNotification::instantDismiss(%this) {
+function GlassNotification::destroy(%this) {
   %this.swatch.delete();
   %this.delete();
-  GlassNotificationManager.schedule(0, condense);
+}
+
+function GlassNotificationManager::destroyAll(%this) {
+  while(%this.getCount() > 0) {
+    %obj = %this.getObject(0);
+    %obj.destroy();
+  }
+}
+
+function GlassNotificationManager::dismissAll(%this) {
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %obj = %this.getObject(%i);
+    %obj.dismiss();
+  }
 }
 
 function GlassNotification::onAdd(%this) {
@@ -269,7 +270,7 @@ function GlassNotification::onAdd(%this) {
     horizSizing = "right";
     vertSizing = "bottom";
     text = (%this.darkMode ? "<color:eeeeee>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text;
-    position = "28 5";
+    position = "28 7";
     extent = "210 12";
     minextent = "0 0";
     autoResize = true;
@@ -298,7 +299,7 @@ function GlassNotification::onAdd(%this) {
 
 
   %swatch.text.forceReflow();
-  %swatch.body.extent = 250 SPC getWord(%swatch.text.extent, 1)-10;
+  %swatch.body.extent = 250 SPC getWord(%swatch.text.extent, 1)-6;
   %swatch.foot.placeBelow(%swatch.body);
 
   %swatch.verticalMatchChildren(20, 0);
@@ -319,6 +320,7 @@ function GlassNotification::onAdd(%this) {
 
 function GlassNotificationMouse::onMouseEnter(%this) {
   %swatch = %this.swatch;
+  %swatch.notification.isHovering = true;
   if(%this.notification.darkMode) {
     %swatch.head.mcolor = "32 32 32 225";
     %swatch.body.color = "32 32 32 225";
@@ -332,6 +334,7 @@ function GlassNotificationMouse::onMouseEnter(%this) {
 
 function GlassNotificationMouse::onMouseLeave(%this) {
   %swatch = %this.swatch;
+  %swatch.notification.isHovering = false;
   if(%this.notification.darkMode) {
     %swatch.head.mcolor = "0 0 0 150";
     %swatch.body.color = "0 0 0 150";
@@ -361,7 +364,7 @@ function GlassNotificationMouse::onRightMouseDown(%this) {
   %this.swatch.animate();
 }
 
-package GlassNotificationManager {
+package GlassNotifications {
   function RTBCC_NotificationManager::push(%this, %title, %message, %icon, %key, %holdTime) {
     if(%holdTime $= "") {
       %holdTime = 3000;
@@ -419,4 +422,4 @@ package GlassNotificationManager {
     GlassNotificationManager.refocus();
   }
 };
-activatePackage(GlassNotificationManager);
+activatePackage(GlassNotifications);
