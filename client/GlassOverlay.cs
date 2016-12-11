@@ -227,6 +227,10 @@ function GlassOverlay::openModeration() {
   if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
 	  return;
 
+  if(isObject(GlassModeratorWindow)) {
+    GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
+  }
+
   if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
     GlassModeratorWindow_Selection.add("Ban", 0);
     GlassModeratorWindow_Selection.add("Bar", 1);
@@ -236,13 +240,7 @@ function GlassOverlay::openModeration() {
     GlassModeratorWindow.forceCenter();
   }
 
-  if(GlassModeratorWindow.visible) {
-	  GlassModeratorWindow.setVisible(false);
-	  return;
-  } else {
-  	GlassOverlayGui.pushToBack(GlassModeratorWindow);
-  	GlassModeratorWindow.setVisible(true);
-  }
+  GlassOverlayGui.pushToBack(GlassModeratorWindow);
 
   GlassModeratorWindow_Reason.enabled = false;
   GlassModeratorWindow_Duration.enabled = false;
@@ -250,4 +248,8 @@ function GlassOverlay::openModeration() {
   //GlassModeratorWindow_DurationBlocker.setVisible(true);
 
   GlassModeratorGui::refreshPlayerlist();
+}
+
+function GlassOverlay::closeModeration() {
+  GlassModeratorWindow.setVisible(false);
 }

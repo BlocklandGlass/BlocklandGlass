@@ -227,8 +227,8 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification") && GlassOverlayGui.isAwake()) {
-        if(strlen(%data.message) > 85)
-          %data.message = getsubstr(%data.message, 0, 85) @ "...";
+        if(strlen(%data.message) > 100)
+          %data.message = getsubstr(%data.message, 0, 100) @ "...";
 
         new ScriptObject(GlassNotification) {
           title = %sender;
@@ -402,10 +402,16 @@ function GlassLiveConnection::onLine(%this, %line) {
       if(isObject(%room))
         %room.onUserJoin(%uo.blid);
 
+      if(isObject(GlassRoomBrowser))
+        GlassChatroomWindow.openRoomBrowser();
+
     case "roomUserLeave": //other user got removed
       %room = GlassLiveRoom::getFromId(%data.id);
       if(isObject(%room))
         %room.onUserLeave(%data.blid);
+
+      if(isObject(GlassRoomBrowser))
+        GlassChatroomWindow.openRoomBrowser();
 
     case "roomUserStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);

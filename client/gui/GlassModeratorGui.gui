@@ -21,6 +21,7 @@ new GuiControl(GlassModeratorGui) {
       visible = "0";
       clipToParent = "1";
       text = "Glass Moderation";
+      closeCommand = "GlassOverlay::closeModeration();";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";

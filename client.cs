@@ -36,7 +36,7 @@ function Glass::execClient() {
 	exec("./client/gui/GlassJoinServerGui.gui");
 	exec("./client/gui/GlassManualGui.gui");
 	exec("./client/gui/GlassModeratorGui.gui");
-    exec("./client/gui/elements/GlassHighlightSwatch.cs");
+  exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -57,6 +57,7 @@ function Glass::execClient() {
 	exec("./client/GlassServerControl.cs");
 	exec("./client/GlassNotificationManager.cs");
 	exec("./client/GlassServers.cs");
+	exec("./client/GlassManual.cs");
 
   exec("./client/GlassCompatibility.cs");
 
@@ -83,6 +84,7 @@ function Glass::execClient() {
 
 	GlassModManager::init();
 	GlassServers::init();
+  GlassManual::init();
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 

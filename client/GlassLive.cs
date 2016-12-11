@@ -372,7 +372,7 @@ function GlassLive::checkPendingFriendRequests() {
 }
 
 //================================================================
-//= 3.2.0 things that we'll organize later                       =
+//= things that we'll organize later                             =
 //================================================================
 
 function wordPos(%str, %word) {
@@ -1966,10 +1966,7 @@ function GlassLive::openUserWindow(%blid) {
 
     %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %uo.getServerTitle();
 
-    if(%uo.status !$= "offline")
-      %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ %serverInfo);
-    else
-      %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid);
+    %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ %serverInfo);
     %window.headerSwatch.color = %locationRGB;
 
     %uo.getAvatar(%window.blockhead);

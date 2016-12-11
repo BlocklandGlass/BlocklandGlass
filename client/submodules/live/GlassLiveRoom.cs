@@ -253,8 +253,8 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       if(!%this.view.isAwake()) {
         %msg = %sender.username @ ": " @ %msg;
 
-        if(strlen(%msg) > 85)
-          %msg = getsubstr(%msg, 0, 85) @ "...";
+        if(strlen(%msg) > 100)
+          %msg = getsubstr(%msg, 0, 100) @ "...";
 
         new ScriptObject(GlassNotification) {
           title = %this.name;
