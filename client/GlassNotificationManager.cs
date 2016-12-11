@@ -225,7 +225,7 @@ function GlassNotification::onAdd(%this, %a, %b) {
 
 
   if(%this.darkMode) {
-    %color = "32 32 32 170";
+    %color = "16 16 16 170";
   } else {
     %color = "255 255 255 170";
   }
@@ -350,7 +350,7 @@ function GlassNotificationMouse::onMouseEnter(%this) {
   %swatch = %this.swatch;
   %swatch.notification.isHovering = true;
   if(%this.notification.darkMode) {
-    %color = "32 32 32 225";
+    %color = "16 16 16 225";
   } else {
     %color = "255 255 255 225";
   }
@@ -363,7 +363,7 @@ function GlassNotificationMouse::onMouseLeave(%this) {
   %swatch = %this.swatch;
   %swatch.notification.isHovering = false;
   if(%this.notification.darkMode) {
-    %color = "32 32 32 150";
+    %color = "16 16 16 150";
   } else {
     %color = "255 255 255 150";
   }

@@ -114,8 +114,9 @@ function GlassFavoriteServers::buildList(%this) {
     GlassHighlightSwatch::addToSwatch(%swatch, "0 0 0 0", "GlassFavoriteServers::interact");
     GlassFavoriteServerSwatch.add(%swatch);
 
-    if(%swatch.text.isAwake())
+    if(GlassFavoriteServerSwatch.isAwake()) {
       %swatch.text.forceReflow();
+    }
 
     %swatch.verticalMatchChildren(12, 5);
 
@@ -182,6 +183,18 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   %swatch.ocolor = %swatch.color;
   %swatch.hcolor = %swatch.color;
   %swatch.pushToBack(%swatch.glassHighlight);
+
+  if(GlassFavoriteServerSwatch.isAwake())
+    %swatch.text.forceReflow();
+
+  %swatch.verticalMatchChildren(40, 5);
+  for(%i = 1; %i <= %this.onlineFavoriteCount; %i++) {
+    %swatch = "GlassFavoriteServerGui_Swatch" @ %i;
+    if(%last)
+      %swatch.placeBelow(%last, 5);
+
+    %last = %swatch;
+  }
 }
 
 function GlassFavoriteServers::scanServers() {
