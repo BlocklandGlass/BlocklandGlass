@@ -1,6 +1,0 @@
-This is
-a test message
-to check if
-this can do multi-line stuff.
-
-<font:impact:50>TORQUE
