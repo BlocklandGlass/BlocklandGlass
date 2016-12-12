@@ -1,0 +1,11 @@
+<font:verdana bold:15>Loading Screens
+
+<font:verdana:12>Glass allows gamemode creators to set custom loading backgrounds for users loading their gamemode. Setup is quite simple:
+
+<lmargin:0><font:Lucida Console:10>registerLoadingScreen(%url, %fileType);
+
+<lmargin:0><font:verdana:12>Calling this function inside your gamemode makes clients who have loading backgrounds enabled to download the specified image url. Any jpeg, png, or jpg image is supported. Note that Glass has to be running on the server.
+
+Example:
+<lmargin:0><font:Lucida Console:10>registerLoadingScreen("http://mysite.com/image.png", "png");
+
