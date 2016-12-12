@@ -1,0 +1,1 @@
+todo: info on how to register glass preferences (via support_preferences) and what additional preference types are available compared to rtb

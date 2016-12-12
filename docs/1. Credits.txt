@@ -1,0 +1,25 @@
+<font:verdana bold:15>Credits
+
+<font:verdana:12>Blockland Glass is an open-source community driven project, open to development and input to all. A few users have taken advanced roles in the development of Blockland Glass, and we'd like to thank them for such.
+
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Jincux<font:verdana:12> 9789
+<lmargin:14>Project lead, website, mod manager, (it feels awkward writing my own credits someone else do this)
+<lmargin:0>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Shock<font:verdana:12> 636
+<lmargin:14>Number one bug reporter, organizer, handles paperwork (heh), manual, preferences
+<lmargin:0>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Crown<font:verdana:12> 2143
+<lmargin:14>server preview, favorites, icon selector, other stuff
+<lmargin:0>
+
+Glass relies on some other mods to work, and we'd like to thank their authors for building the backbone that we rely on.
+
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Greek2Me<font:verdana:12>
+<lmargin:14>Support_Updater, TCPClient, Preloader, SemVer
+<lmargin:0>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Port<font:verdana:12>
+<lmargin:14>Jettison
+<lmargin:0>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>TheBlackParrot<font:verdana:12>
+<lmargin:14>Support_Preferences
+<lmargin:0>
