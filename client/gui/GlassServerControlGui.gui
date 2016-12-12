@@ -32,25 +32,25 @@ new GuiControl(GlassServerControlGui) {
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "canvas.popDialog(GlassServerControlGui);";
-      
+
       new GuiTextCtrl(GlassServerControlGui_CursorFix) {
          profile = "GuiMLTextEditProfile";
          horizSizing = "relative";
          vertSizing = "relative";
          position = "0 0";
-         extent = "1 1";
+         extent = "1 18";
          minExtent = "1 1";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         lineSpacing = "2";
-         allowColorChars = "0";
-         maxChars = "-1";
-         maxBitmapHeight = "-1";
-         selectable = "1";
-         autoResize = "1";
+         maxLength = "255";
+            maxChars = "-1";
+            selectable = "1";
+            autoResize = "1";
+            lineSpacing = "2";
+            allowColorChars = "0";
+            maxBitmapHeight = "-1";
       };
-      
       new GuiBitmapButtonCtrl() {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
@@ -65,7 +65,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Administration";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
+         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -87,7 +87,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Preferences";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
+         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -109,7 +109,7 @@ new GuiControl(GlassServerControlGui) {
          text = "Other";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
+         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
@@ -121,32 +121,32 @@ new GuiControl(GlassServerControlGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "15 55";
-         extent = "470 235";
+         position = "10 55";
+         extent = "475 235";
          minExtent = "8 2";
          enabled = "1";
-         visible = "0";
+         visible = "1";
          clipToParent = "1";
-         color = "128 128 128 128";
+         color = "230 230 230 255";
 
          new GuiSwatchCtrl() {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
-            extent = "135 235";
+            extent = "140 235";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            color = "190 190 190 255";
+            color = "230 230 230 255";
 
             new GuiScrollCtrl() {
                profile = "GlassScrollProfile";
                horizSizing = "right";
                vertSizing = "bottom";
                position = "0 0";
-               extent = "136 205";
+               extent = "141 205";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -164,7 +164,7 @@ new GuiControl(GlassServerControlGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "1 1";
-                  extent = "125 203";
+                  extent = "131 203";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
@@ -182,9 +182,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 250 220 255";
-                        mouse = "16123";
                         rcolor = "220 250 220 255";
                         ocolor = "220 250 220 255";
+                        mouse = "16123";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -244,9 +244,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "170 200 255 255";
-                        mouse = "16127";
                         rcolor = "220 230 220 255";
                         ocolor = "170 200 255 255";
+                        mouse = "16127";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -298,11 +298,11 @@ new GuiControl(GlassServerControlGui) {
                };
             };
             new GuiBitmapButtonCtrl() {
-               profile = "BlockButtonProfile";
+               profile = "GlassBlockButtonProfile";
                horizSizing = "center";
                vertSizing = "bottom";
-               position = "12 210";
-               extent = "110 20";
+               position = "10 210";
+               extent = "120 20";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -311,13 +311,13 @@ new GuiControl(GlassServerControlGui) {
                text = "Update";
                groupNum = "-1";
                buttonType = "PushButton";
-               bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+               bitmap = "~/System_BlocklandGlass/image/gui/btn";
                lockAspectRatio = "0";
                alignLeft = "0";
                alignTop = "0";
                overflowImage = "0";
                mKeepCached = "0";
-               mColor = "120 220 120 255";
+               mColor = "46 204 113 255";
                   color = "255 200 200 255";
             };
          };
@@ -325,7 +325,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "GlassScrollProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "135 0";
+            position = "140 0";
             extent = "335 235";
             minExtent = "8 2";
             enabled = "1";
@@ -356,7 +356,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "GuiMLTextProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "51 110";
+            position = "53 110";
             extent = "368 14";
             minExtent = "8 2";
             enabled = "1";
@@ -375,11 +375,11 @@ new GuiControl(GlassServerControlGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "15 55";
-         extent = "470 235";
+         position = "10 55";
+         extent = "475 235";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          color = "128 128 128 128";
 
@@ -406,7 +406,7 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "170 16";
+               extent = "170 2";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -424,7 +424,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 10";
-            extent = "80 20";
+            extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -433,20 +433,20 @@ new GuiControl(GlassServerControlGui) {
             text = "Add >>";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "220 220 120 200";
+            mColor = "241 196 15 200";
                color = "255 200 200 255";
          };
          new GuiScrollCtrl() {
             profile = "GlassScrollProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "280 10";
+            position = "285 10";
             extent = "180 215";
             minExtent = "8 2";
             enabled = "1";
@@ -483,7 +483,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 35";
-            extent = "80 20";
+            extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -492,13 +492,13 @@ new GuiControl(GlassServerControlGui) {
             text = "<< Remove";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "220 120 120 200";
+            mColor = "231 76 88 200";
                color = "255 200 200 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_SuperAdminBtn) {
@@ -506,7 +506,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 154";
-            extent = "80 20";
+            extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -515,13 +515,13 @@ new GuiControl(GlassServerControlGui) {
             text = "Super Admin";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "120 220 120 200";
+            mColor = "46 204 113 200";
                color = "255 200 200 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_AdminBtn) {
@@ -529,7 +529,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 179";
-            extent = "80 20";
+            extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -538,13 +538,13 @@ new GuiControl(GlassServerControlGui) {
             text = "Admin";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "120 220 120 200";
+            mColor = "46 204 113 200";
                color = "255 200 200 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_DeAdminBtn) {
@@ -552,7 +552,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 204";
-            extent = "80 20";
+            extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -561,20 +561,20 @@ new GuiControl(GlassServerControlGui) {
             text = "De-Admin";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "220 120 120 200";
+            mColor = "231 76 60 200";
                color = "255 200 200 255";
          };
          new GuiWindowCtrl(GlassServerControlGui_AddUserBLID) {
             profile = "GlassWindowProfile";
             horizSizing = "center";
             vertSizing = "bottom";
-            position = "160 60";
+            position = "162 60";
             extent = "150 85";
             minExtent = "8 2";
             enabled = "1";
@@ -627,14 +627,13 @@ new GuiControl(GlassServerControlGui) {
                enabled = "1";
                visible = "1";
                clipToParent = "1";
+               altCommand = "GlassServerControlC::addUser();";
+               accelerator = "enter";
                maxLength = "6";
                historySize = "0";
                password = "0";
                tabComplete = "0";
                sinkAllKeyEvents = "0";
-               command = "";
-               altcommand = "GlassServerControlC::addUser();";
-               accelerator = "enter";
             };
             new GuiPopUpMenuCtrl(GlassServerControlGui_InputRank) {
                profile = "GuiPopUpMenuProfile";
@@ -659,7 +658,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "470 235";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          color = "128 128 128 128";
 
@@ -689,7 +688,7 @@ new GuiControl(GlassServerControlGui) {
                text = "Required Clients";
                groupNum = "-1";
                buttonType = "PushButton";
-               bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+               bitmap = "~/System_BlocklandGlass/image/gui/btn";
                lockAspectRatio = "0";
                alignLeft = "0";
                alignTop = "0";
@@ -961,7 +960,7 @@ new GuiControl(GlassServerControlGui) {
                text = "Update";
                groupNum = "-1";
                buttonType = "PushButton";
-               bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+               bitmap = "~/System_BlocklandGlass/image/gui/btn";
                lockAspectRatio = "0";
                alignLeft = "0";
                alignTop = "0";
@@ -1072,7 +1071,7 @@ new GuiControl(GlassServerControlGui) {
             text = "Add";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";
@@ -1094,7 +1093,7 @@ new GuiControl(GlassServerControlGui) {
             text = "Remove";
             groupNum = "-1";
             buttonType = "PushButton";
-            bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
             lockAspectRatio = "0";
             alignLeft = "0";
             alignTop = "0";

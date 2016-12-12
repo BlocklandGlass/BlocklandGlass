@@ -37,7 +37,7 @@ function GlassServerControlC::setTab(%tab) {
       %ctrl.setVisible(false);
     }
   }
-  
+
   GlassServerControlGui_CursorFix.makeFirstResponder(true);
 }
 
@@ -175,19 +175,19 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "userlist": // these should be done at some point
         %swatch = "unfinished";
-        
+
       case "button":
         %swatch = "unfinished";
-        
+
       case "rgb":
         %swatch = "unfinished";
-        
+
       case "colorset":
         %swatch = "unfinished";
-        
+
       case "datablock":
         %swatch = "unfinished";
-        
+
       case "datablocklist":
         %swatch = "unfinished";
     }
@@ -230,9 +230,9 @@ function GlassServerControlC::renderCategory(%category) {
 
 function GlassServerControlC::createCategoryTab(%cat, %odd) {
   if(%odd) {
-    %color = "220 250 220 255";
+    %color = "230 230 230 255";
   } else {
-    %color = "220 230 220 255";
+    %color = "235 235 235 255";
   }
 
   %swat = new GuiSwatchCtrl() {
@@ -273,7 +273,7 @@ function GlassServerControlC::createCategoryTab(%cat, %odd) {
   };
 
   %swat.text = new GuiTextCtrl() {
-    profile = "GuiTextProfile";
+    profile = "GuiTextVerdanaProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "24 3";
@@ -773,7 +773,7 @@ function GlassServerControlC::addSelected(%rank, %auto) {
     if(%blid !$= "") {
       GlassServerControlGui_InputBLID.setValue(%blid);
     }
-    
+
     GlassServerControlGui_InputRank.setValue("Admin");
     GlassServerControlGui_InputBLID.makeFirstResponder(true);
   } else {
