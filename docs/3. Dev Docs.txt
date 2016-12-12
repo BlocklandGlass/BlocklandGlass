@@ -1,1 +1,9 @@
-overview of what's covered, developer documentation
+<font:verdana bold:15>Developer Documentation
+
+<font:verdana:12>Glass offers a few features to developers, extending or enabling some features that wouldn't be possible without seemless server and client implementations. The following are available:
+
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Server Preferences
+
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Required Clients
+
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Loading Images
