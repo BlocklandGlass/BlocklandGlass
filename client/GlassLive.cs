@@ -3317,41 +3317,35 @@ function GlassLive::createBlockedSwatch(%name, %blid) {
 }
 
 function GlassLive::sortFriendList(%list) {
-  %friends = new GuiTextListCtrl();
+  %online = new GuiTextListCtrl();
+  %offline = new GuiTextListCtrl();
 
   for(%i = 0; %i < getWordCount(%list); %i++) {
     %blid = getWord(%list, %i);
     %uo = GlassLiveUser::getFromBlid(%blid);
+	
+	%status = %uo.getStatus();
+	if(%status $= "Offline")
+		%offline.addRow(%blid, %uo.username);
+	else
+		%online.addRow(%blid, %uo.username);
 
-    switch$(%uo.getStatus()) {
-      case "online":
-        %priority = 4;
-
-      case "away":
-        %priority = 3;
-
-      case "busy":
-        %priority = 2;
-
-      case "offline":
-        %priority = 1;
-
-      default:
-        %priority = 0;
-    }
-
-    %friends.addRow(%blid, %uo.username TAB %priority);
   }
-  %friends.sort(0, true);
-  %friends.sortNumerical(1, false);
+  %online.sort(0, true);
+  %offline.sort(0, true);
 
   %newList = "";
-  for(%i = 0; %i < %friends.rowCount(); %i++) {
-    %newList = %newList SPC %friends.getRowId(%i);
+  for(%i = 0; %i < %online.rowCount(); %i++) {
+    %newList = %newList SPC %online.getRowId(%i);
   }
+  %online.delete();
+  
+  for(%i = 0; %i < %offline.rowCount(); %i++) {
+    %newList = %newList SPC %offline.getRowId(%i);
+  }
+  %offline.delete();
 
   %newList = getSubStr(%newList, 1, strLen(%newList)-1);
-  %friends.delete();
   return %newList;
 }
 
