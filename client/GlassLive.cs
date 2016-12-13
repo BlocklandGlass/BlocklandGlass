@@ -1903,13 +1903,13 @@ function GlassLive::createUserWindow(%uo) {
 
 //this right here should be our official note on why torque is shit
 function GlassUserGui_Blockhead::onSleep(%this) {
-  %this.position = "0 -40";
+  %this.position = "0 -20";
   %this.firstOpen = false;
 }
 
 function GlassUserGui_Blockhead::onWake(%this) {
   if(!%this.firstOpen) {
-    %this.position = "0 0";
+    //%this.position = "0 0";
   } else {
     %this.position = "0 -20";
   }
@@ -3323,7 +3323,7 @@ function GlassLive::sortFriendList(%list) {
   for(%i = 0; %i < getWordCount(%list); %i++) {
     %blid = getWord(%list, %i);
     %uo = GlassLiveUser::getFromBlid(%blid);
-	
+
 	%status = %uo.getStatus();
 	if(%status $= "Offline")
 		%offline.addRow(%blid, %uo.username);
@@ -3339,7 +3339,7 @@ function GlassLive::sortFriendList(%list) {
     %newList = %newList SPC %online.getRowId(%i);
   }
   %online.delete();
-  
+
   for(%i = 0; %i < %offline.rowCount(); %i++) {
     %newList = %newList SPC %offline.getRowId(%i);
   }
