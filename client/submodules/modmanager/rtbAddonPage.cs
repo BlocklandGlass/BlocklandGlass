@@ -20,6 +20,7 @@ function GMM_RTBAddonPage::open(%this, %modId) {
   };
 
   %this.container = %container;
+  %this.container.rtbId = %modId;
   %this.body = %body;
   %container.add(%body);
 
@@ -29,7 +30,7 @@ function GMM_RTBAddonPage::open(%this, %modId) {
 }
 
 function GMM_RTBAddonPage::close(%this) {
-  %this.container.deleteAll();
+  //
 }
 
 function GMM_RTBAddonPage::handleResults(%this, %obj) {
@@ -67,7 +68,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   %body.title = new GuiMLTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    text = "<font:verdana bold:20><just:left>" @ getASCIIString(%obj.title);
+    text = "<font:verdana bold:20><just:left>" @ getASCIIString(%obj.title) @ "<just:right><font:verdana:12><color:444444>" @ %obj.filename;
     position = "52 10";
     extent = "553 20";
     minextent = "0 0";
@@ -93,7 +94,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
 
   %downloads = %obj.downloads;
 
-  %info = 4;
+  %info = 3;
   %border = 5;
   %width = mFloor((615+%border)/%info);
   for(%i = 0; %i < %info; %i++) {
@@ -132,10 +133,6 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
         %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/category.png");
 
       case 2:
-        %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.filename);
-        %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png");
-
-      case 3:
         %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.downloads+0 @ " downloads");
         %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/inbox_download.png");
     }
@@ -204,16 +201,101 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
     mColor = "231 76 60 255";
   };
 
+  %download.progress = new GuiProgressCtrl() {
+    profile = "GlassProgressProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 0";
+    extent = "595 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "0";
+    clipToParent = "1";
+  };
+
+  %download.progress.text = new GuiTextCtrl() {
+    profile = "GuiProgressTextProfile";
+    horizSizing = "center";
+    vertSizing = "center";
+    position = "0 0";
+    extent = "595 25";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "Connecting...";
+    maxLength = "255";
+  };
+
+  %download.progress.add(%download.progress.text);
+  %download.progress.text.centerY();
+
+  %download.add(%download.progress);
   %download.add(%download.dlButton);
+
+  %download.progress.placeBelow(%download.dlButton, 10);
+
   %download.verticalMatchChildren(30, 10);
 
   %container.download = %download;
   %container.add(%download);
-  if(%obj.screenshots.length)
-    %container.download.placeBelow(%container.screenshots, 10);
-  else
-    %container.download.placeBelow(%container.description, 10);
+
+  %container.download.placeBelow(%container.description, 10);
 
   %container.verticalMatchChildren(0, 10);
   GlassModManagerGui.resizePage();
+}
+
+function GMM_RTBAddonPage::downloadClick(%this, %swatch) {
+  %download = %this.container.download;
+  %download.progress.setVisible(true);
+  echo(%download.progress);
+  %download.verticalMatchChildren(30, 10);
+
+  %download.progress.setValue(0);
+  %download.progress.text.setValue("Connecting...");
+
+  %dl = GlassDownloadManager::newRTBDownload(%this.container.rtbId);
+  %dl.progressBar = %download.progress;
+  %dl.progressText = %download.progress.text;
+
+  %dl.addHandle("done", "GMM_RTBAddonPage_downloadDone");
+  %dl.addHandle("progress", "GMM_RTBAddonPage_downloadProgress");
+  %dl.addHandle("failed", "GMM_RTBAddonPage_downloadFailed");
+  %dl.addHandle("unwritable", "GMM_RTBAddonPage_downloadUnwritable");
+
+  %dl.startDownload();
+
+  %this.container.verticalMatchChildren(498, 10);
+  GlassModManagerGui.resizePage();
+}
+
+function GMM_RTBAddonPage_downloadDone(%dl) {
+  %this = GMM_RTBAddonPage;
+
+  %this.schedule(500, hideDownload);
+}
+
+function GMM_RTBAddonPage_downloadProgress(%dl, %float, %tcp) {
+  %this = GMM_RTBAddonPage;
+
+  cancel(GlassModManagerGui.progressSch);
+  echo("progress");
+
+  %fileSize = %tcp.headerField["Content-Length"];
+
+  %dl.progressBar.setValue(%float);
+  %dl.progressText.setText("Downloaded " @ stringifyFileSize(%float*%fileSize, 2));
+}
+
+function GMM_RTBAddonPage_downloadFailed(%dl, %error) {
+  %this = GMM_RTBAddonPage;
+
+  error("Failed to download add-on " @ %dl.addonId);
+}
+
+function GMM_RTBAddonPage_downloadUnwritable(%dl) {
+  %this = GMM_RTBAddonPage;
+
+  error("Download path unwritable");
 }

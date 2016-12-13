@@ -1,8 +1,8 @@
-function GMM_BoardPage::init() {
-  new ScriptObject(GMM_BoardPage);
+function GMM_RTBBoardPage::init() {
+  new ScriptObject(GMM_RTBBoardPage);
 }
 
-function GMM_BoardPage::open(%this, %id, %page) {
+function GMM_RTBBoardPage::open(%this, %boardName, %page) {
   if(%page < 1) %page = 1;
   %container = new GuiSwatchCtrl() {
     horizSizing = "right";
@@ -12,7 +12,7 @@ function GMM_BoardPage::open(%this, %id, %page) {
     extent = "635 498";
   };
 
-  %call = GlassModManager::placeCall("board", "id" TAB %id NL "page" TAB %page, "GMM_BoardPage.handleResults");
+  %call = GlassModManager::placeCall("rtbBoard", "name" TAB %boardName NL "page" TAB %page, "GMM_RTBBoardPage.handleResults");
 
   GlassModManagerGui.setLoading(true);
 
@@ -22,17 +22,14 @@ function GMM_BoardPage::open(%this, %id, %page) {
   return %container;
 }
 
-function GMM_BoardPage::close(%this) {
-  %this.container.deleteAll();
-  %this.container.delete();
+function GMM_RTBBoardPage::close(%this) {
+  //nothing
+  %this.open = false;
 }
 
-function GMM_BoardPage::handleResults(%this, %res) {
-  GlassModManagerGui.pageDidLoad(%this);
-  GlassModManagerGui.setLoading(false);
+function GMM_RTBBoardPage::handleResults(%this, %res) {
   %status = %res.status;
 
-  %id = %res.board_id;
   %name = %res.board_name;
   %page = %res.page;
   %pages = %res.pages;
@@ -41,7 +38,14 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
   %container = %this.container;
 
-  GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_BoardPage, \"" @ expandEscape(%id) @ "\", " @ expandEscape(%page) @ ");");
+  //if(GMM_Navigation.step[GMM_Navigation.steps-1] !$= %name)
+  if(!%this.open)
+    GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_RTBBoardPage, \"" @ expandEscape(%name) @ "\", " @ expandEscape(%page) @ ");");
+
+  GlassModManagerGui.pageDidLoad(%this);
+  GlassModManagerGui.setLoading(false);
+
+  %this.open = true;
 
   %container.nav = GMM_Navigation.createSwatch();
   %container.add(%container.nav);
@@ -57,8 +61,8 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
   %body.placeBelow(%container.nav, 10);
 
-  %nav = GMM_BoardPage::createBoardNav(%id, %page, %pages);
-  %header = GMM_BoardPage::createBoardHeader(%name);
+  %nav = GMM_RTBBoardPage::createBoardNav(%name, %page, %pages);
+  %header = GMM_RTBBoardPage::createBoardHeader(%name);
 
   %body.add(%nav);
   %body.add(%header);
@@ -96,12 +100,10 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %addon = %addons.value[%i];
 
     %aid = %addon.id;
-    %addonName = getASCIIString(%addon.name);
+    %addonName = getASCIIString(%addon.title);
     %author = getASCIIString(%addon.author);
-    %rating = %addon.rating;
-    %downloads = %addon.downloads;
+    %summary = getASCIIString(%addon.description);
 
-    %summary = getASCIIString(%addon.summary);
     if(%summary $= "")
       %summary = "< Missing Summary >";
 
@@ -118,60 +120,54 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %swatch.title = new GuiMLTextCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
-      text = "<color:444444><font:Verdana Bold:15>" @ %addonName @ "<br><font:verdana:13>" @ %summary;
+      text = "<color:444444><font:Verdana Bold:15>" @ %addonName @ "<br><font:verdana:12>" @ trim(%summary);
       position = "10 5";
-      extent = "325 45";
+      extent = "385 10";
     };
 
     %swatch.author = new GuiMLTextCtrl() {
       horizSizing = "left";
       vertSizing = "bottom";
-      text = "<color:333333><just:center><font:verdana:13>" @ %author;
-      position = "235 12";
-      extent = "120 16";
+      text = "<color:333333><just:center><font:verdana:13>By " @ %author;
+      position = "415 12";
+      extent = "150 16";
     };
 
-    %swatch.downloads = new GuiMLTextCtrl() {
-      horizSizing = "left";
-      vertSizing = "bottom";
-      text = "<color:333333><font:verdana:13><just:right>" @ %downloads;
-      position = "500 12";
-      extent = "85 45";
-    };
-
-    %swatch.stars = GMM_BoardPage::createStars(%rating);
-    %swatch.stars.position = "400 12";
 
     %swatch.add(%swatch.title);
     %swatch.add(%swatch.author);
-    %swatch.add(%swatch.downloads);
-    %swatch.add(%swatch.stars);
-
-    GlassHighlightSwatch::addToSwatch(%swatch, "10 10 10", "GMM_BoardPage.swatchClick");
-    %swatch.hColor = "240 240 240 255";
 
     %body.add(%swatch);
     %swatch.placeBelow(%last, 0);
 
+    %swatch.author.forceReflow();
+    %swatch.title.forceReflow();
+
+    %swatch.verticalMatchChildren(10, 5);
+
     %swatch.author.centerY();
+
+    GlassHighlightSwatch::addToSwatch(%swatch, "10 10 10", "GMM_RTBBoardPage.swatchClick");
+    %swatch.hColor = "240 240 240 255";
 
     %last = %swatch;
   }
 
   %body.verticalMatchChildren(10, 10);
   %container.verticalMatchChildren(498, 0);
+
   GlassModManagerGui.resizePage();
 }
 
-function GMM_BoardPage::swatchClick(%this, %swatch) {
-  %obj = GlassModManagerGui.openPage(GMM_AddonPage, %swatch.aid);
+function GMM_RTBBoardPage::swatchClick(%this, %swatch) {
+  %obj = GlassModManagerGui.openPage(GMM_RTBAddonPage, %swatch.aid);
 }
 
 function _glassPageNav(%board, %id) {
-  return "<a:glass://board=" @ %board @ "&page=" @ %id @ ">" @ %id @ "</a>";
+  return "<a:glass://rtbBoard=" @ strReplace(%board, " ", "_") @ "&page=" @ %id @ ">" @ %id @ "</a>";
 }
 
-function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
+function GMM_RTBBoardPage::createBoardNav(%bid, %page, %pages) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -217,7 +213,7 @@ function GMM_BoardPage::createBoardNav(%bid, %page, %pages) {
   return %swatch;
 }
 
-function GMM_BoardPage::createBoardHeader(%title) {
+function GMM_RTBBoardPage::createBoardHeader(%title) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -239,7 +235,7 @@ function GMM_BoardPage::createBoardHeader(%title) {
   return %swatch;
 }
 
-function GMM_BoardPage::createStars(%stars) {
+function GMM_RTBBoardPage::createStars(%stars) {
   %swatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";

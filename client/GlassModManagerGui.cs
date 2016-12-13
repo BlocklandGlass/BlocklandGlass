@@ -154,5 +154,7 @@ exec("./submodules/modmanager/myAddonsPage.cs");
 
 exec("./submodules/modmanager/rtbImport.cs");
 exec("./submodules/modmanager/rtbAddonPage.cs");
+exec("./submodules/modmanager/rtbBoardsPage.cs");
+exec("./submodules/modmanager/rtbBoardPage.cs");
 
 exec("./gui/elements/GMM_Navigation.cs");

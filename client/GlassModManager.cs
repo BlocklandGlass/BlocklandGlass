@@ -10,7 +10,10 @@ function GlassModManager::init() {
   GMM_ErrorPage::init();
   GMM_MyAddonsPage::init();
   GMM_SearchPage::init();
+
   GMM_RTBAddonPage::init();
+  GMM_RTBBoardsPage::init();
+  GMM_RTBBoardPage::init();
 
   GMM_Navigation::init();
 
@@ -505,26 +508,49 @@ package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") != -1) {
+
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
 
-      if(strpos(%link, "board=") != -1 && strpos(%link, "&page=") != -1) {
-        %board = getsubstr(%link, 6, strpos(%link, "&")-6);
-        %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
-      } else if(strpos(%link, "aid-") != -1) {
+      %type = getSubStr(%link, 0, strPos(%link, "="));
+      switch$(%type) {
+        case "board":
+          if(strpos(%link, "&page=") != -1) {
+            %board = getsubstr(%link, 6, strpos(%link, "&")-6);
+            %page = getsubstr(%link, 12+strlen(%board), strlen(%link)-12-strlen(%board));
+            GlassModManagerGui.openPage(GMM_BoardPage, %board, %page);
+            return;
+          }
+
+        case "rtbBoard":
+          if(strpos(%link, "&page=") != -1) {
+            %board = getsubstr(%link, 9, strpos(%link, "&")-9);
+            %board = strreplace(%board, "_", " ");
+            %page = getsubstr(%link, 15+strlen(%board), strlen(%link)-15-strlen(%board));
+
+            GlassModManagerGui.openPage(GMM_RTBBoardPage, %board, %page);
+            return;
+          }
+      }
+
+      if(strpos(%link, "aid-") != -1) {
         $Glass::MM_PreviousPage = -1;
         $Glass::MM_PreviousBoard = -1;
 
         %id = getsubstr(%link, 4, strlen(%link)-4);
       }
+
     } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=") != -1) {
       $Glass::MM_PreviousPage = -1;
       $Glass::MM_PreviousBoard = -1;
 
       %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
     } else {
+
       return parent::onURL(%this, %url);
+
     }
+
 
     if(GlassModManagerGui.getCount() > 0) {
       GlassModManagerGui.firstWake = true;
@@ -538,7 +564,7 @@ package GlassModManager {
     GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 
     if(%id+0 $= %id || %id > 0) {
-      GlassModManagerGui::fetchAndRenderAddon(%id).action = "render";
+      GlassModManagerGui.openPage(GMM_AddonPage, %id);
     }
 
     if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {

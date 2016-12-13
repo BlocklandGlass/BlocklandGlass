@@ -44,7 +44,7 @@ function GMM_Navigation::createSwatch(%this) {
     %btn = new GuiBitmapButtonCtrl() {
       profile = "GlassBlockButtonProfile";
       position = %x SPC 8;
-      extent = 20+(strlen(%this.step[%i])*8) SPC "20";
+      extent = 40+(strlen(%this.step[%i])*6) SPC "20";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
       text = %this.step[%i];
@@ -52,7 +52,7 @@ function GMM_Navigation::createSwatch(%this) {
       command = "GMM_Navigation.selectStep(" @ %i @ ");";
     };
 
-    %x += 20+(strlen(%this.step[%i])*8) + 10;
+    %x += getWord(%btn.extent, 0) + 10;
 
     %container.add(%btn);
   }

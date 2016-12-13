@@ -334,30 +334,6 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %container.add(%activity);
   %activity.placeBelow(%download, 10);
 
-  if(%obj.activity $= "") {
-    %comment = JettisonObject();
-    %comment.set("type", "string", "comment");
-    %comment.set("date", "string", "4:48 12/5/2016");
-
-    %comment.set("author", "string", "Jincux");
-    %comment.set("authorBlid", "string", "9789");
-    %comment.set("title", "string", "Administrator");
-
-    %comment.set("comment", "string", "Sick comments");
-
-    %update = JettisonObject();
-    %update.set("type", "string", "update");
-    %update.set("date", "string", "4:48 12/5/2016");
-    %update.set("version", "string", "4.0.0");
-
-    %obj.activity = JettisonArray();
-    %obj.activity.push("object", %comment);
-    %obj.activity.push("object", %comment);
-    %obj.activity.push("object", %comment);
-    %obj.activity.push("object", %update);
-    %obj.activity.push("object", %comment);
-  }
-
   for(%i = 0; %i < %obj.activity.length; %i++) {
     %action = %obj.activity.value[%i];
 

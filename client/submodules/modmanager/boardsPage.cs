@@ -125,7 +125,7 @@ function GMM_BoardsPage::handleResults(%this, %obj) {
   %rtb.ocolor = %rtb.color;
   GMM_BoardsDisplay.add(%rtb);
 
-  %rtb.mouse = new GuiMouseEventCtrl(GlassModManagerGui_RTBButton) {
+  %rtb.mouse = new GuiMouseEventCtrl(GMM_BoardsPage_RTBButton) {
     extent = %rtb.extent;
     position = "0 0";
     swatch = %rtb;
@@ -210,14 +210,22 @@ function GMM_BoardsPage::clickBoard(%this) {
   GlassModManagerGui.openPage(GMM_BoardPage, %this.boardId);
 }
 
-function GlassModManagerGui_RTBButton::onMouseDown(%this) {
-  %this.lastTCP = GlassModManager::placeCall("board", "id\trtb\npage\t1");
+function GMM_BoardsPage_RTBButton::onMouseDown(%this) {
+  %this.down = true;
 }
 
-function GlassModManagerGui_RTBButton::onMouseEnter(%this) {
+function GMM_BoardsPage_RTBButton::onMouseUp(%this) {
+  if(%this.down) {
+    GlassModManagerGui.openPage(GMM_RTBBoardsPage);
+  }
+  %this.down = false;
+}
+
+function GMM_BoardsPage_RTBButton::onMouseEnter(%this) {
   %this.swatch.color = vectoradd(%this.swatch.color, "20 20 20");
 }
 
-function GlassModManagerGui_RTBButton::onMouseLeave(%this) {
+function GMM_BoardsPage_RTBButton::onMouseLeave(%this) {
   %this.swatch.color = %this.swatch.ocolor;
+  %this.down = false;
 }

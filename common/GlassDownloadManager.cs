@@ -17,6 +17,17 @@ function GlassDownloadManager::newDownload(%id, %branchId) {
 	return %obj;
 }
 
+function GlassDownloadManager::newRTBDownload(%id) {
+	%obj = new ScriptObject() {
+		class = "GlassDownload";
+		rtb = true;
+
+		addonId = %id;
+	};
+
+	return %obj;
+}
+
 function GlassDownload::addHandle(%this, %event, %call) {
 	//handles:
 	// failed
@@ -32,7 +43,12 @@ function GlassDownload::startDownload(%this) {
 }
 
 function GlassDownload::_fetch(%this) {
-	%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
+	if(!%this.rtb) {
+		%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
+	} else {
+		%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=rtb&rtbId=" @ %this.addonId;
+	}
+	echo(%url);
 
 	%tcp = connectToURL(%url, "GET", "", "GlassDownloadTCP");
 	%tcp.downloadObject = %this;
