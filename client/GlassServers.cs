@@ -280,6 +280,28 @@ function GlassLoadingGui::onWake(%this) {
   GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
 }
 
+function GuiTextListCtrl::sortList(%this, %col) {
+  if(%this.sortedBy == %col)
+  	%this.sortedAsc = !%this.sortedAsc;
+  else
+  	%this.sortedAsc = 1;
+
+  %this.sortedBy = %col;
+  %this.sort(%this.sortedBy, %this.sortedAsc);
+
+}
+
+function GuiTextListCtrl::sortNumList(%this, %col) {
+  if(%this.sortedBy == %col)
+	%this.sortedAsc = !%this.sortedAsc;
+  else 
+	  %this.sortedAsc = 0;
+
+  %this.sortedBy = %col;
+  %this.sortNumerical(%this.sortedBy, %this.sortedAsc);
+ 
+}
+	
 //====================================
 // ServerPreview
 //====================================
