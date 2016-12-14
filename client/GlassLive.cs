@@ -2842,7 +2842,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %titleLen = strLen(%dm.text);
 
   if(%titleLen > 25) {
-    %dm.extent = %titleLen * 10.75 SPC 180; // close enough
+    %dm.extent = mFloor(%titleLen * 10.75 SPC 180); // close enough
     // %dm.minExtent = %dm.extent;
   }
 
@@ -2920,7 +2920,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     horizSizing = "right";
     vertSizing = "top";
     position = "10 155";
-    extent = "250 16";
+    extent = "220 16";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -2934,12 +2934,26 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     tabComplete = "0";
     sinkAllKeyEvents = "0";
   };
+  
+  %dm.profilePic = new GuiBitmapCtrl() {
+	extent = "16 16";
+	position = "0 0";
+	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/user";
+  };
+  
+  %dm.profileBtn = new GuiButtonBaseCtrl() {
+	extent = "16 16";
+	command = "GlassLive::openUserWindow(" @ %blid @ ");";
+  };
+  %dm.profilePic.add(%dm.profileBtn);
+  
   %dm.add(%dm.resize);
   %dm.add(%dm.scroll);
   %dm.scroll.add(%dm.scrollSwatch);
   %dm.scrollSwatch.add(%dm.chattext);
   %dm.scrollSwatch.add(%dm.typing);
   %dm.add(%dm.input);
+  %dm.add(%dm.profilePic);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
 
@@ -2956,6 +2970,7 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
   %window.input.extent = getWord(%extent, 0) - 20 SPC getWord(%window.input.extent, 1);
+  %window.profilePic.position = getWord(%extent, 0) - 45 SPC 8;
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
