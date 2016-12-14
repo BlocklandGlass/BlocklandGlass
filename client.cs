@@ -6,14 +6,12 @@ if($Pref::PreLoadScriptLauncherVersion != 2) {
 exec("./core.cs");
 
 function Glass::execClient() {
-
 	echo(" ===                Loading Preferences                 ===");
 	exec("./common/GlassSettings.cs");
-	GlassSettings::init("client");
 
   exec("./runonce/settingConversion.cs");
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
+	echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
 	exec("./support/jettison.cs");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_MetaTCP.cs");
@@ -36,7 +34,12 @@ function Glass::execClient() {
 	exec("./client/gui/GlassJoinServerGui.gui");
 	exec("./client/gui/GlassManualGui.gui");
 	exec("./client/gui/GlassModeratorGui.gui");
+  exec("./client/gui/GlassIconSelectorGui.gui");
+  exec("./client/gui/GlassOverlayGui.gui");
+  exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
+
+	GlassSettings::init("client");
 
 	echo(" ===              Executing Important Stuff             ===");
 	exec("./common/GlassFileData.cs");
@@ -88,7 +91,7 @@ function Glass::execClient() {
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
-	Glass.useWindowTheme(!GlassSetings.get("Glass::UseDefaultWindows"));
+	Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));
 
 	%bind = GlassSettings.get("MM::Keybind");
 	if(%bind !$= "") {
@@ -129,6 +132,9 @@ function clientCmdGlassHandshake(%ver) {
   }
 }
 
+function Glass::updateWindowSetting() {
+	Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));
+}
 
 function Glass::useWindowTheme(%this, %bool) {
 	%this.useWindowTheme = %bool;

@@ -318,7 +318,7 @@ if(!isObject(GlassProgressProfile)) new GuiControlProfile(GlassProgressProfile :
 package GlassTheme {
   function GuiWindowCtrl::onAdd(%this, %a) {
     if(%this.profile $= "GlassWindowProfile") {
-      if(!Glass.useWindowTheme) {
+      if(GlassSettings.get("Glass::UseDefaultWindows")) {
         %this.setProfile(BlockWindowProfile);
       }
 
