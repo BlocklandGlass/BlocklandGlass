@@ -85,15 +85,15 @@ function GlassLive::init() {
   GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox", "", "Log DMs to config/client/BLG/chat_log/DMs");
   GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
 
-  GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI."); // add restart msgbox callback
+  GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
   GlassSettings.drawSetting("Servers::DisplayPasswordedFavorites", "Show Passworded Favorites", "Servers", "checkbox", "", "Show passworded servers in your favorite server list.");
   GlassSettings.drawSetting("Servers::LoadingGUI", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
 
   GlassSettings.drawSetting("Live::FakeSetting", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
 
-  GlassSettings.drawSetting("Notifications::DarkMode", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark-mode notifications");
-  GlassSettings.drawSetting("Notifications::ForceSticky", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with");
+  GlassSettings.drawSetting("Notifications::DarkMode", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
+  GlassSettings.drawSetting("Notifications::ForceSticky", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
 
   %settings["Live"] = "Vignette TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
   %settings["MM"] = "UseDefault LiveSearch";

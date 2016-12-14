@@ -806,6 +806,10 @@ function GlassServerControlC::deAdminSelected() {
   %status = getField(%row, 2);
   %blid = getField(%row, 1);
 
+  if(%blid $= "" || %blid $= "LAN") {
+    return;
+  }
+
   commandToServer('GlassSetAdmin', %blid, 0, false);
 }
 
