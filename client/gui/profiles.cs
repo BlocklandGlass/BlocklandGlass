@@ -314,3 +314,25 @@ if(!isObject(GlassProgressProfile)) new GuiControlProfile(GlassProgressProfile :
   fillColor = "46 204 113 200";
   borderThickness = 0.5;
 };
+
+package GlassTheme {
+  function GuiWindowCtrl::onAdd(%this, %a) {
+    if(%this.profile $= "GlassWindowProfile") {
+      if(!Glass.useWindowTheme) {
+        %this.setProfile(BlockWindowProfile);
+      }
+
+      %windows = trim(Glass.windows TAB %this.getId());
+      Glass.windows = "";
+      for(%i = 0; %i < getFieldCount(%windows); %i++) {
+        if(isObject(getField(%windows, %i))) {
+          Glass.windows = Glass.windows TAB getField(%windows, %i);
+        }
+      }
+    }
+
+    if(isFunction(%this, onAdd))
+      return parent::onAdd(%this, %a);
+  }
+};
+activatePackage(GlassTheme);

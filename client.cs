@@ -88,6 +88,8 @@ function Glass::execClient() {
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
+	Glass.useWindowTheme(!GlassSetings.get("Glass::UseDefaultWindows"));
+
 	%bind = GlassSettings.get("MM::Keybind");
 	if(%bind !$= "") {
 		GlassSettings.update("Live::Keybind", %bind);
@@ -127,14 +129,38 @@ function clientCmdGlassHandshake(%ver) {
   }
 }
 
-Glass::init("client");
+
+function Glass::useWindowTheme(%this, %bool) {
+	%this.useWindowTheme = %bool;
+
+	for(%i = 0; %i < getFieldCount(%this.windows); %i++) {
+		%window = getField(%this.windows, %i);
+		if(!isObject(%window))
+			continue;
+
+		if(%bool) {
+			%window.setProfile(GlassWindowProfile);
+		} else {
+			%window.setProfile(BlockWindowProfile);
+		}
+	}
+
+	for(%i = 0; %i < canvas.getCount(); %i++) {
+		%o = canvas.getObject(%i);
+		canvas.schedule(0, popDialog, %o);
+		canvas.schedule(1, pushDialog, %o);
+	}
+}
 
 function strcap(%str) {
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
 
-package GlassMainMenu {
 
+if(!isObject(Glass))
+	Glass::init("client");
+
+package GlassMainMenu {
   function Canvas::setContent(%this, %content) {
     parent::setContent(%this, %content);
 

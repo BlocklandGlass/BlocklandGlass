@@ -15,7 +15,7 @@ new GuiControl(GlassDownloadGui) {
       horizSizing = "center";
       vertSizing = "center";
       position = "20 65";
-      extent = "600 350";
+      extent = "590 345";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -35,7 +35,7 @@ new GuiControl(GlassDownloadGui) {
          profile = "GlassScrollProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "15 35";
+         position = "10 35";
          extent = "285 300";
          minExtent = "8 2";
          enabled = "1";
@@ -54,12 +54,12 @@ new GuiControl(GlassDownloadGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "300 35";
-         extent = "285 300";
+         extent = "280 300";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         color = "170 170 170 255";
+         color = "230 230 230 255";
 
          new GuiBitmapButtonCtrl(GlassDownloadGui_Decline) {
             profile = "BlockButtonProfile";
@@ -87,7 +87,7 @@ new GuiControl(GlassDownloadGui) {
             profile = "BlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "170 255";
+            position = "165 255";
             extent = "100 30";
             minExtent = "8 2";
             enabled = "1";
