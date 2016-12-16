@@ -364,16 +364,16 @@ function GlassServerPreviewGui::onWake(%this) {
 
   if(GlassSettings.get("Servers::EnableFavorites")) {
     for(%i = 0; %i < GlassFavoriteServers.favorites; %i++) {
-      %fav = GlassFavoriteServers.favorite[%i];
+        %fav = GlassFavoriteServers.favorite[%i];
 
-	  if(%fav $= %server.ip) {
-	  	GlassServerPreview_Favorite.mColor = "231 76 60 220";
-	  	GlassServerPreview_Favorite.setText("Remove Favorite");
-	  	break;
-	  } else {
-	  	GlassServerPreview_Favorite.mColor = "46 204 113 220";
-	  	GlassServerPreview_Favorite.setText("Add Favorite");
-	  }
+      if(%fav $= %server.ip) {
+        GlassServerPreview_Favorite.mColor = "231 76 60 220";
+        GlassServerPreview_Favorite.setText("Remove Favorite");
+        break;
+      } else {
+        GlassServerPreview_Favorite.mColor = "46 204 113 220";
+        GlassServerPreview_Favorite.setText("Add Favorite");
+      }
     }
   }
 }
@@ -381,7 +381,7 @@ function GlassServerPreviewGui::onWake(%this) {
 function GlassServerPreview::connectToServer() {
   %server = GlassServerPreviewWindowGui.openServerIP;
   if(%server $= "")
-	return;
+    return;
 
   NPL_List.clear();
   ConnectToServer(%server, "", "1", "1");
