@@ -52,6 +52,8 @@ function GlassSettings::init(%context) {
 
     GlassSettings.registerSetting("client", "Glass::UseDefaultWindows", false, "Glass::updateWindowSetting");
 
+    GlassSettings.registerSetting("client", "Servers::Favorites", "");
+
     // **
     // this is not where or how this should be done. we have a 3 step setting
     // registration. only one is needed
@@ -104,6 +106,8 @@ function GlassSettings::init(%context) {
 
     %settings = "Live MM Servers Notifications Glass";
 
+    GlassSettings.loadData("client");
+
     for(%i = 0; %i < getWordCount(%settings); %i++) {
       %prefix = getWord(%settings, %i);
       %group = %settings[%prefix];
@@ -124,11 +128,8 @@ function GlassSettings::init(%context) {
     // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
     // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
     // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
-
-    GlassSettings.registerSetting("client", "Servers::Favorites", "");
+    // GlassSettings.loadData("server");
   }
-
-  GlassSettings.loadData(%context);
 }
 
 function GlassSettings::registerSetting(%this, %context, %name, %value, %callback) {

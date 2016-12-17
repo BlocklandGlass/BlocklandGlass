@@ -340,8 +340,6 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     %type = %action.type;
     %date = %action.date;
 
-    echo("action: " @ %type);
-
     if(%type $= "comment") {
       if(%last.type $= "comment") {
         %spacer = new GuiSwatchCtrl() {

@@ -22,7 +22,10 @@ function GlassManualWindow::scan(%this) {
 
     %doc = getsubstr(%text, 0, strlen(%text) - 4);
 
-    GlassManualGui_List.addRow(%id++, %doc);
+    if(strlen(trim(getsubstr(%doc, 0, 3))) > 2)
+      GlassManualGui_List.addRow(%id++, "  " @ %doc);
+    else
+      GlassManualGui_List.addRow(%id++, %doc);
   }
 
   GlassManualGui_List.sortNumerical(0, true);

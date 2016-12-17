@@ -232,7 +232,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     alxPlay(GlassChatroomMsgAudio);
 
   if(%senderblid != getNumKeyId()) {
-    if(%mentioned && GlassSettings.get("Live::RoomMentionNotification")) {
+    if(%mentioned && GlassSettings.get("Live::RoomMentionNotification") && %sender.canSendMessage()) {
       if(GlassLive.lastMentioned $= "" || $Sim::Time > GlassLive.lastMentioned) {
         if(!%this.view.isAwake()) {
           new ScriptObject(GlassNotification) {

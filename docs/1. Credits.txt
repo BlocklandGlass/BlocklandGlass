@@ -2,11 +2,11 @@
 
 <font:verdana:12>Blockland Glass is an open-source community driven project, open to development and input to all. A few users have taken advanced roles in the development of Blockland Glass, and we'd like to thank them for such.
 
-<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_green> <font:verdana bold:12>Jincux<font:verdana:12> 9789
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Jincux<font:verdana:12> 9789
 <lmargin:14>Project lead, website, mod manager, live server, live client, etc
 <lmargin:0>
 <bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Shock<font:verdana:12> 636
-<lmargin:14>Preferences, live client, settings, #1 bug reporter, issue tracker supreme
+<lmargin:14>Live client, server preferences, settings, issue tracker supreme
 <lmargin:0>
 <bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Crown<font:verdana:12> 2143
 <lmargin:14>Server preview, favorites, icon selector, loading backgrounds, user profile, and other tweaks (<bitmap:Add-Ons/System_BlocklandGlass/image/icon/weed>)

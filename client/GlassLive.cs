@@ -49,7 +49,7 @@ function GlassLive::init() {
   GlassIconSelectorWindow.updateIcons();
 
   if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
-	GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
@@ -470,9 +470,12 @@ function GlassLive::userBlock(%blid) {
 
     %user.setIcon(%blockedIcon);
 
-    if(isObject(%user.getMessageGui())) {
-      %user.getMessageGui().input.setValue("");
-      %user.getMessageGui().input.enabled = false;
+    if(isObject(%dm = %user.getMessageGui())) {
+      %dm.input.setValue("");
+      %dm.input.enabled = false;
+      %dm.blockButton.mColor = "237 184 105 200";
+      %dm.blockButton.command = "GlassLive::userUnblock(" @ %blid @ ");";
+      %dm.blockButton.text = "U";
     }
   }
 
@@ -523,8 +526,12 @@ function GlassLive::userUnblock(%blid) {
 
     %user.setIcon(%user.realIcon);
 
-    if(isObject(%user.getMessageGui()))
-      %user.getMessageGui().input.enabled = true;
+    if(isObject(%dm = %user.getMessageGui())) {
+      %dm.input.enabled = true;
+      %dm.blockButton.mColor = "237 118 105 200";
+      %dm.blockButton.command = "GlassLive::userBlock(" @ %blid @ ");";
+      %dm.blockButton.text = "B";
+    }
   }
 
   %obj = JettisonObject();
@@ -1336,8 +1343,6 @@ function GlassLive::updateLocation(%inServer) {
     %obj.set("address", "string", %location);
   }
 
-  //echo(jettisonStringify("object", %obj));
-
   if(isObject(GlassLiveConnection) && GlassLiveConnection.connected) {
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
   }
@@ -1764,7 +1769,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Message";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "255 255 255 200";
-    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}";
+    command = "GlassLive::openDirectMessage(" @ %uo.blid @ "); if(isObject(" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui())){" @ GlassLiveUser::getFromBlid(%uo.blid) @ ".getMessageGui().forceCenter();}"; // ech
   };
 
   %window.friendButton = new GuiBitmapButtonCtrl() {
@@ -1802,7 +1807,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "46 204 113 200";
-	command = "glassMessageBoxYesNo(\"Warning\", \"Would you like to join" SPC %uo.username @ "'s server?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
+    command = "glassMessageBoxYesNo(\"Warning\", \"Would you like to join" SPC %uo.username @ "'s server?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
   };
 
   %window.add(%window.infoSwatch);
@@ -1893,8 +1898,11 @@ function GlassLive::openUserWindow(%blid) {
     %locationColor = "333333";
 
   	%window.statusText.setText(%status);
+    
+    if(strlen(%serverTitle = %uo.getServerTitle()) > 28)
+      %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
 
-    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %uo.getServerTitle();
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %serverTitle;
 
     %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ %serverInfo);
     %window.headerSwatch.color = %locationRGB;
@@ -2849,8 +2857,8 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "top";
-    position = "10 155";
-    extent = "220 16";
+    position = "41 155";
+    extent = "210 16";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -2865,17 +2873,32 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     sinkAllKeyEvents = "0";
   };
 
-  %dm.profilePic = new GuiBitmapCtrl() {
-	extent = "16 16";
-	position = "0 0";
-	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/user";
+  %dm.userButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "10 155";
+    extent = "16 16";
+    text = "I";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
+    mColor = "84 217 140 200";
+    command = "if(isObject(" @ GlassLiveUser::getFromBlid(%blid) @ ".window)){" @ GlassLiveUser::getFromBlid(%blid) @ ".window.forceCenter();} GlassLive::openUserWindow(" @ %blid @ ");";
   };
 
-  %dm.profileBtn = new GuiButtonBaseCtrl() {
-	extent = "16 16";
-	command = "GlassLive::openUserWindow(" @ %blid @ ");";
+  %dm.blockButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonProfile";
+    position = "26 155";
+    extent = "16 16";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
   };
-  %dm.profilePic.add(%dm.profileBtn);
+
+  if(GlassLiveUser::getFromBlid(%blid).isBlocked()) {
+    %dm.blockButton.mColor = "237 184 105 200";
+    %dm.blockButton.command = "GlassLive::userUnblock(" @ %blid @ ");";
+    %dm.blockButton.text = "U";
+  } else {
+    %dm.blockButton.mColor = "237 118 105 200";
+    %dm.blockButton.command = "GlassLive::userBlock(" @ %blid @ ");";
+    %dm.blockButton.text = "B";
+  }
 
   %dm.add(%dm.resize);
   %dm.add(%dm.scroll);
@@ -2883,7 +2906,8 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.scrollSwatch.add(%dm.chattext);
   %dm.scrollSwatch.add(%dm.typing);
   %dm.add(%dm.input);
-  %dm.add(%dm.profilePic);
+  %dm.add(%dm.userButton);
+  %dm.add(%dm.blockButton);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
 
@@ -2899,8 +2923,8 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window.scrollSwatch.extent = getWord(%extent, 0) - 30 SPC getWord(%window.chattext.extent, 1);
   %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
-  %window.input.extent = getWord(%extent, 0) - 20 SPC getWord(%window.input.extent, 1);
-  %window.profilePic.position = getWord(%extent, 0) - 45 SPC 8;
+  %window.userButton.position = getWord(%window.userButton.position, 0) SPC getWord(%window.input.position, 1);
+  %window.blockButton.position = getWord(%window.blockButton.position, 0) SPC getWord(%window.input.position, 1);
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
