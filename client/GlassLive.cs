@@ -98,11 +98,11 @@ function GlassLive::chatColorCheck(%this) {
   // %room.pushText("<font:verdana bold:12><color:" @ %this.color_blocked @  ">Blocked: <font:verdana:12><color:333333>rambling message", 0);
 }
 
-function GlassLive::disconnect(%reason) {
+function GlassLive::disconnect() {
   GlassLive::cleanup();
 
   if(isObject(GlassLiveConnection)) {
-    GlassLiveConnection.doDisconnect(%reason);
+    GlassLiveConnection.doDisconnect();
   }
 }
 

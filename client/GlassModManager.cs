@@ -307,10 +307,8 @@ function GlassModManagerGui_AddonDelete::onMouseUp(%this) {
 //
 
 function GlassModManagerGui_AddonRedirect::onMouseUp(%this) {
-  $Glass::MM_PreviousPage = -1;
-  $Glass::MM_PreviousBoard = -1;
-  GlassModManagerGui::setPane(1);
-  GlassModManagerGui::fetchAndRenderAddon(%this.addon.glassdata.id).action = "render";
+  GlassModManagerGui.loadContext("boards");
+  GlassModManagerGui.openPage(GMM_AddonPage, %this.addon.glassdata.id);
 }
 
 //====================================
@@ -379,10 +377,8 @@ function GlassModManager_ColorsetDelete::onMouseUp(%this) {
 //
 
 function GlassModManager_ColorsetRedirect::onMouseUp(%this) {
-  $Glass::MM_PreviousPage = -1;
-  $Glass::MM_PreviousBoard = -1;
-  GlassModManagerGui::setPane(1);
-  GlassModManagerGui::fetchAndRenderAddon(%this.colorset.glassdata.id).action = "render";
+  GlassModManagerGui.loadContext("boards");
+  GlassModManagerGui.openPage(GMM_AddonPage, %this.colorset.glassdata.id);
 }
 
 //filecopy doesnt like zips
@@ -534,16 +530,10 @@ package GlassModManager {
       }
 
       if(strpos(%link, "aid-") != -1) {
-        $Glass::MM_PreviousPage = -1;
-        $Glass::MM_PreviousBoard = -1;
-
         %id = getsubstr(%link, 4, strlen(%link)-4);
       }
 
     } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=") != -1) {
-      $Glass::MM_PreviousPage = -1;
-      $Glass::MM_PreviousBoard = -1;
-
       %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
     } else {
 

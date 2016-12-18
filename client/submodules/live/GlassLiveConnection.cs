@@ -1,9 +1,3 @@
-$Glass::Disconnect["Left"] = 0; // [Left]
-$Glass::Disconnect["Manual"] = 1; // [Disconnected]
-//$Glass::Disconnect["Kicked"] = 2; // [Kicked]
-$Glass::Disconnect["Quit"] = 3; // [Quit]
-$Glass::Disconnect["Update"] = 4; // [Updates]
-
 function GlassLive::connectToServer() {
   if(isObject(GlassLiveConnection) && GlassLiveConnection.connected)
     return;
@@ -137,10 +131,9 @@ function GlassLiveConnection::disconnect(%this) {
   %this.onDisconnect();
 }
 
-function GlassLiveConnection::doDisconnect(%this, %reason) {
+function GlassLiveConnection::doDisconnect(%this) {
   %obj = JettisonObject();
   %obj.set("type", "string", "disconnect");
-  %obj.set("reason", "string", %reason);
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
   %obj.delete();
 
@@ -717,7 +710,7 @@ package GlassLiveConnectionPackage {
   function messageCallback(%this, %call) {
     if(updater.restartRequired) {
       if(%call $= "quit();") {
-        GlassLive::disconnect($Glass::Disconnect["Update"]);
+        GlassLive::disconnect();
       }
     }
     parent::messageCallback(%this, %call);
@@ -727,7 +720,7 @@ package GlassLiveConnectionPackage {
     parent::onDisconnect(%this);
 
     if(GlassLiveConnection.connected) {
-      GlassLive::disconnect($Glass::Disconnect["Manual"]);
+      GlassLive::disconnect();
     }
 
     GlassAuth.schedule(0, init);
