@@ -39,6 +39,7 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "Live::StartupNotification", true);
     GlassSettings.registerSetting("client", "Live::StartupConnect", true);
     GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
+    GlassSettings.registerSetting("client", "Live::ShowFriendLocation", true);
 
     GlassSettings.registerSetting("client", "Servers::EnableFavorites", true, "GlassServers::init");
     GlassSettings.registerSetting("client", "Servers::DisplayPasswordedFavorites", true, "GlassServers::init");
@@ -65,6 +66,7 @@ function GlassSettings::init(%context) {
     GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
     GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
     GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
+    GlassSettings.drawSetting("Live::ShowFriendLocation", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
     GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
     GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
     GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
@@ -98,7 +100,7 @@ function GlassSettings::init(%context) {
 
     GlassSettings.drawSetting("Glass::UseDefaultWindows", "Default Windows", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
 
-    %settings["Live"] = "Vignette TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
+    %settings["Live"] = "Vignette TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus ShowFriendLocation RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
     %settings["MM"] = "UseDefault LiveSearch";
     %settings["Servers"] = "DisplayPasswordedFavorites LoadingGUI LoadingImages EnableFavorites";
     %settings["Notifications"] = "DarkMode ForceSticky";

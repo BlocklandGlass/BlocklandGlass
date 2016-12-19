@@ -546,34 +546,36 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
 
-      switch$(%data.location) {
-        case "menus":
-          %message = "is now in the menus";
+      if(GlassSettings.get("Live::ShowFriendLocation")) {
+        switch$(%data.location) {
+          case "menus":
+            %message = "is now in the menus";
 
-        case "hosting":
-          %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
+          case "hosting":
+            %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
 
-        case "hosting_lan":
-          %message = "is now hosting a LAN server";
+          case "hosting_lan":
+            %message = "is now hosting a LAN server";
 
-        case "singleplayer":
-          %message = "is now playing singleplayer";
+          case "singleplayer":
+            %message = "is now playing singleplayer";
 
-        case "playing":
-          %message = "is now playing <font:verdana bold:13>" @ %data.serverTitle;
+          case "playing":
+            %message = "is now playing <font:verdana bold:13>" @ %data.serverTitle;
 
-        case "playing_lan":
-          %message = "is now playing a LAN server";
+          case "playing_lan":
+            %message = "is now playing a LAN server";
+        }
+
+        new ScriptObject(GlassNotification) {
+          title = %uo.username;
+          text = %message;
+          image = %uo.icon;
+
+          sticky = false;
+          callback = "GlassLive::openUserWindow(" @ %uo.blid @ ");";
+        };
       }
-
-      new ScriptObject(GlassNotification) {
-        title = %uo.username;
-        text = %message;
-        image = %uo.icon;
-
-        sticky = false;
-        callback = ""; //open user profile
-      };
 
     case "location":
       GlassLive::displayLocation(%data);

@@ -1807,7 +1807,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "46 204 113 200";
-    command = "glassMessageBoxYesNo(\"Warning\", \"Would you like to join" SPC %uo.username @ "'s server?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
+    command = "glassMessageBoxYesNo(\"Join\", \"Would you like to join the server <font:verdana bold:13>" @ %uo.username @ "<font:verdana:13> is on?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
   };
 
   %window.add(%window.infoSwatch);

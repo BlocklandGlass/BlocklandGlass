@@ -372,7 +372,7 @@ function GlassNotificationMouse::onMouseLeave(%this) {
   %swatch.foot.mcolor = %color;
 }
 
-function GlassNotificationMouse::onMouseDown(%this) {
+function GlassNotificationMouse::onMouseUp(%this) {
   if(%this.notification.legacySource $= "RTB") {
     RTB_Overlay.fadeIn();
   } else if(%this.notification.callback !$= "") {
@@ -381,13 +381,11 @@ function GlassNotificationMouse::onMouseDown(%this) {
     else
       eval(%this.notification.callback);
   }
-  %this.swatch.action = "out";
-  %this.swatch.animate();
+  %this.notification.dismiss();
 }
 
-function GlassNotificationMouse::onRightMouseDown(%this) {
-  %this.swatch.action = "out";
-  %this.swatch.animate();
+function GlassNotificationMouse::onRightMouseUp(%this) {
+  %this.notification.dismiss();
 }
 
 package GlassNotifications {

@@ -103,7 +103,7 @@ function GMM_MyAddonsPage::open(%this) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      command = "glassMessageBoxYesNo(\"Defaults\", \"Would you like to reset to Blockland default add-ons?\", \"GMM_MyAddonsPage::defaults();\");";
+      command = "glassMessageBoxYesNo(\"Reset\", \"Would you like to reset the enabled/disabled add-ons to Blockland default?\", \"GMM_MyAddonsPage::defaults();\");";
       text = "Defaults";
       groupNum = "-1";
       buttonType = "PushButton";
