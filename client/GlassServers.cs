@@ -3,10 +3,10 @@ function GlassServers::init() {
     GlassLoading::changeGui();
 
   if(!GlassSettings.get("Servers::EnableFavorites")) {
-	if(GlassFavoriteServerSwatch.visible) {
-	  GlassServerPreview_Favorite.setVisible(false);
+    if(GlassFavoriteServerSwatch.visible) {
+      GlassServerPreview_Favorite.setVisible(false);
       GlassFavoriteServerSwatch.setVisible(false);
-	}
+    }
     return;
   }
 
@@ -46,11 +46,11 @@ function GlassFavoriteServers::toggleFavorite(%this, %ip) {
 
   for(%i = 0; %i < getFieldCount(%favs); %i++) {
     if(getField(%favs, %i) $= %ip) {
-	  GlassSettings.update("Servers::Favorites", removeField(%favs, %i));
-    glassMessageBoxOk("Favorite Removed", "This server has been removed from your favorites!");
-	  GlassServerPreview_Favorite.mColor = "46 204 113 220";
-	  GlassServerPreview_Favorite.setText("Add Favorite");
-	  GlassServers::init();
+      GlassSettings.update("Servers::Favorites", removeField(%favs, %i));
+      glassMessageBoxOk("Favorite Removed", "This server has been removed from your favorites!");
+      GlassServerPreview_Favorite.mColor = "46 204 113 220";
+      GlassServerPreview_Favorite.setText("Add Favorite");
+      GlassServers::init();
       return;
     }
   }
@@ -198,7 +198,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
 }
 
 function GlassFavoriteServers::scanServers() {
-	if(!isObject(GlassFavoriteServers))
+	if(!isObject(GlassFavoriteServers) || !GlassSettings.get("Servers::EnableFavorites"))
 	  return;
 
   connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
@@ -563,7 +563,7 @@ package GlassServers {
     if(isFunction(LoadingGui, onSleep))
       parent::onSleep(%this);
 
-	GuiGroup.add(GlassLoadingGui);
+    GuiGroup.add(GlassLoadingGui);
   }
 
   function NewPlayerListGui::UpdateWindowTitle(%gui) {
