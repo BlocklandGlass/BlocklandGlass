@@ -469,7 +469,7 @@ function joinServerGui::preview(%this) {
 }
 
 function clientCmdGlass_setLoadingBackground(%url, %filetype, %crc) {
-  if(GlassSettings.get("Servers::LoadingImages") == 0)
+  if(!GlassSettings.get("Servers::LoadingImages"))
 	  return;
 
   if(!LoadingGUI.isAwake())

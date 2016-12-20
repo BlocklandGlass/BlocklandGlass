@@ -504,7 +504,6 @@ package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") != -1) {
-
       %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
 
@@ -528,19 +527,14 @@ package GlassModManager {
             return;
           }
       }
-
       if(strpos(%link, "aid-") != -1) {
         %id = getsubstr(%link, 4, strlen(%link)-4);
       }
-
     } else if(strpos(%url, "blocklandglass.com/addons/addon.php?id=") != -1) {
       %id = getsubstr(%url, strpos(%url, "=") + 1, strlen(%url));
     } else {
-
       return parent::onURL(%this, %url);
-
     }
-
 
     if(GlassModManagerGui.getCount() > 0) {
       GlassModManagerGui.firstWake = true;
@@ -551,20 +545,26 @@ package GlassModManager {
       GlassModManagerGui_Window.setVisible(true);
     }
 
+    GlassOverlay::open();
+
     GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 
     if(%id+0 $= %id || %id > 0) {
+      GlassModManagerGui.loadContext("boards");
       GlassModManagerGui.openPage(GMM_AddonPage, %id);
     }
 
     if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
+      GlassModManagerGui.loadContext("boards");
       GlassModManagerGui.openPage(GMM_BoardPage, %board, %page);
     }
 
-    if(%link $= "home") {
-      GlassModManagerGui.loadContext("home");
+    if(%link $= "home" || %link $= "activity") {
+      GlassModManagerGui.loadContext("activity");
     } else if(%link $= "boards") {
-      GlassModManagerGui.loadContext("addons");
+      GlassModManagerGui.loadContext("boards");
+    } else if(%link $= "search") {
+      GlassModManagerGui.loadContext("search");
     }
   }
 };

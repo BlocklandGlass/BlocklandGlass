@@ -6,7 +6,6 @@ function GlassLive::connectToServer() {
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   if(GlassFriendsGui_HeaderText.isAwake()) {
-    GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
@@ -44,7 +43,6 @@ function GlassLive::connectToServer() {
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e67e22>Connecting...");
   if(GlassFriendsGui_HeaderText.isAwake()) {
-    GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
   GlassLiveConnection.connect(%server @ ":" @ %port);
@@ -87,7 +85,6 @@ function GlassLiveConnection::onDisconnect(%this) {
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   if(GlassFriendsGui_HeaderText.isAwake()) {
-    GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
@@ -97,9 +94,9 @@ function GlassLiveConnection::onDisconnect(%this) {
 function GlassLiveConnection::onDNSFailed(%this) {
   GlassLive::setPowerButton(0);
 
+  GlassFriendsGui_HeaderText.position = "10 19";
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>DNS Failed");
   if(GlassFriendsGui_HeaderText.isAwake()) {
-    GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
@@ -112,10 +109,10 @@ function GlassLiveConnection::onDNSFailed(%this) {
 
 function GlassLiveConnection::onConnectFailed(%this) {
   GlassLive::setPowerButton(0);
+  GlassFriendsGui_HeaderText.position = "10 19";
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Connect Failed");
 
   if(GlassFriendsGui_HeaderText.isAwake()) {
-    GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
@@ -219,7 +216,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
-      if(GlassSettings.get("Live::MessageNotification") && GlassOverlayGui.isAwake()) {
+      if(GlassSettings.get("Live::MessageNotification") && !GlassOverlayGui.isAwake()) {
         if(strlen(%data.message) > 100)
           %data.message = getsubstr(%data.message, 0, 100) @ "...";
 
