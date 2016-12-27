@@ -294,14 +294,14 @@ function GuiTextListCtrl::sortList(%this, %col) {
 function GuiTextListCtrl::sortNumList(%this, %col) {
   if(%this.sortedBy == %col)
 	%this.sortedAsc = !%this.sortedAsc;
-  else 
+  else
 	  %this.sortedAsc = 0;
 
   %this.sortedBy = %col;
   %this.sortNumerical(%this.sortedBy, %this.sortedAsc);
- 
+
 }
-	
+
 //====================================
 // ServerPreview
 //====================================
@@ -557,6 +557,7 @@ package GlassServers {
 
     NewChatHud.add(GlassLoadingGui);
     NewChatHud.pushToBack(GlassLoadingGui); // This isn't working but it should put the GUI under the actual chat.
+    NewChatHud.pushToBack(NewChatText);
   }
 
   function LoadingGui::onSleep(%this) {
