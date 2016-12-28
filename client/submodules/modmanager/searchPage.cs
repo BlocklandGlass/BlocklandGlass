@@ -304,7 +304,6 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
 
 function GMM_SearchPage::interact(%this, %swatch) {
   if(%swatch.isRTB) {
-    echo(%swatch.id);
     GlassModManagerGui.openPage(GMM_RTBAddonPage, %swatch.id);
   } else {
     GlassModManagerGui.openPage(GMM_AddonPage, %swatch.id);
@@ -368,7 +367,6 @@ function GMM_SearchPage::search(%this) {
   //board
   if(GMM_SearchPage_Board.getSelected() != -1) {
     %search = trim(%search NL "board" TAB GMM_SearchPage_Board.getSelected());
-    echo(%search);
   }
 
   //search

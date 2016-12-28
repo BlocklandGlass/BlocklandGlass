@@ -262,21 +262,28 @@ function GlassLoading::changeGui() {
   LoadingGui.isGlass = true;
 }
 
-function GlassLoadingGui::updateWindowTitle(%this) {
+function GlassLoadingGui_UserList::update(%this) {
+  %this.clear();
+
+  for(%i = 0; %i < NPL_List.rowCount(); %i++) {
+    %row = getFields(NPL_List.getRowText(%i), 0, 3);
+    %id = NPL_List.getRowId(%i);
+    
+    GlassLoadingGui_UserList.addRow(%id, %row);
+  }
+  
+  NewPlayerListGui.UpdateWindowTitle();
+}
+
+function GlassLoadingGui::UpdateWindowTitle(%this) {
   %npl = NPL_Window.getValue();
-  // %name = trim(getSubStr(%npl, strPos(%npl, "-") + 2, strLen(%npl)));
 
-  // if(%name !$= "")
-    // %text = "Joining \"" @ %name @ "\"";
-  // else
-    // %text = "Joining Server";
-
-  // %this.setText(%text);
   %this.setText(%npl);
 }
 
 function GlassLoadingGui::onWake(%this) {
   GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
+
   GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
 }
 
@@ -383,12 +390,13 @@ function GlassServerPreview::connectToServer() {
   if(%server $= "")
     return;
 
-  NPL_List.clear();
   ConnectToServer(%server, "", "1", "1");
 }
 
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
+  fileDelete("config/client/BLG/ServerPreview.jpg");
+  
   %addr = strReplace(%addr, ".", "-");
   %addr = strReplace(%addr, ":", "_");
   %url = "http://image.blockland.us/detail/" @ %addr @ ".jpg";
@@ -401,11 +409,12 @@ function GlassServerPreview::getServerBuild(%addr, %obj) {
 }
 
 function GlassServerPreviewTCP::onDone(%this, %error) {
-  if(%error) {
-    echo("ERROR:" SPC %error);
+  if(!%error) {
+    if(isFile("config/client/BLG/ServerPreview.jpg"))
+      %this.bitmap.setBitmap("config/client/BLG/ServerPreview.jpg");
+    else
+      %this.bitmap.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   }
-
-  %this.bitmap.setBitmap("config/client/BLG/ServerPreview.jpg");
 }
 
 function GlassServerPreview::getServerInfo(%addr) {
@@ -518,7 +527,9 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
   }
 
   LOAD_MapPicture.setBitmap("base/client/ui/loadingBG");
-  LOAD_MapPicture.setBitmap(%this.imageLocation);
+
+  if(isFile(%this.imageLocation))
+    LOAD_MapPicture.setBitmap(%this.imageLocation);
 }
 
 package GlassServers {
@@ -532,19 +543,9 @@ package GlassServers {
   	parent::onWake(%this);
   }
 
-  function NPL_List::addRow(%this, %id, %val) {
-    GlassLoadingGui_UserList.addRow(%id, %val);
-    return parent::addRow(%this, %id, %val);
-  }
-
-  function NPL_List::clear(%this) {
-    GlassLoadingGui_UserList.clear();
-    parent::clear(%this);
-  }
-
   function MainMenuButtonsGui::onWake(%this) {
-	if(isObject(GlassFavoriteServers))
-      GlassFavoriteServers.scanServers();
+    if(isObject(GlassFavoriteServers))
+        GlassFavoriteServers.scanServers();
 
     if(isFunction(%this, onWake))
       parent::onWake(%this);
@@ -567,10 +568,22 @@ package GlassServers {
     GuiGroup.add(GlassLoadingGui);
   }
 
-  function NewPlayerListGui::UpdateWindowTitle(%gui) {
-    parent::UpdateWindowTitle(%gui);
+  function NewPlayerListGui::UpdateWindowTitle(%this) {
+    parent::UpdateWindowTitle(%this);
 
-    GlassLoadingGui.updateWindowTitle();
+    GlassLoadingGui.UpdateWindowTitle();
+  }
+
+  function NewPlayerListGui::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score) {
+    parent::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score);
+
+    GlassLoadingGui_UserList.update();
+  }
+
+  function secureClientCmd_ClientDrop(%a, %b) {
+    parent::secureClientCmd_ClientDrop(%a, %b);
+
+    GlassLoadingGui_UserList.update();
   }
 };
 activatePackage(GlassServers);
