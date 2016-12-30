@@ -994,7 +994,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
-        %message = setWord(%message, %i, %word);
+        %message = setWord(%message, %i, strlwr(%word));
       }
     }
   }

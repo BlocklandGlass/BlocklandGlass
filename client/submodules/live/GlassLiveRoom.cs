@@ -281,7 +281,7 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
         %word = "<bitmap:" @ %bitmap @ ">";
-        %msg = setWord(%msg, %i, %word);
+        %msg = setWord(%msg, %i, strlwr(%word));
       }
     }
   }
