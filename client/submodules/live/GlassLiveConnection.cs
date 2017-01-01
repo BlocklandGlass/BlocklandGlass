@@ -555,13 +555,13 @@ function GlassLiveConnection::onLine(%this, %line) {
             %message = "is now hosting a LAN server";
 
           case "singleplayer":
-            %message = "is now playing singleplayer";
+            %message = "is now playing in singleplayer";
 
           case "playing":
-            %message = "is now playing <font:verdana bold:13>" @ %data.serverTitle;
+            %message = "is now playing in <font:verdana bold:13>" @ %data.serverTitle;
 
           case "playing_lan":
-            %message = "is now playing a LAN server";
+            %message = "is now playing in a LAN server";
         }
 
         new ScriptObject(GlassNotification) {

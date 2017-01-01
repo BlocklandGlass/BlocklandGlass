@@ -21,11 +21,16 @@ function GlassManualWindow::scan(%this) {
     %text = strreplace(%file, "Add-Ons/System_BlocklandGlass/docs/", "");
 
     %doc = getsubstr(%text, 0, strlen(%text) - 4);
+    %indents = "";
 
-    if(strlen(trim(getsubstr(%doc, 0, 3))) > 2)
-      GlassManualGui_List.addRow(%id++, "  " @ %doc);
-    else
-      GlassManualGui_List.addRow(%id++, %doc);
+    for(%i = 0; %i < strlen(%doc); %i++) {
+      %letter = getsubstr(%doc, %i, 1);
+      if(%letter $= ".") {
+        %indents = %indents @ "  ";
+      }
+    }
+
+    GlassManualGui_List.addRow(%id++, %indents @ %doc);
   }
 
   GlassManualGui_List.sortNumerical(0, true);
