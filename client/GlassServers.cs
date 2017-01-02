@@ -322,6 +322,8 @@ function GlassServerPreviewGui::open(%this, %server) {
     canvas.popDialog(joinServerGui);
     %this.wakeServerGui = true;
   }
+
+  GlassServerPreview_PasswordWindow.setVisible(false);
   canvas.pushDialog(GlassServerPreviewGui);
 }
 
@@ -366,6 +368,7 @@ function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreview::getServerInfo(%server.ip);
   GlassServerPreviewWindowGui.openServerIP = %server.ip;
   GlassServerPreviewWindowGui.openServerName = %server.name;
+  GlassServerPreviewWindowGui.passworded = (%server.pass $= "Yes");
 
   GlassServerPreview::getServerBuild(%server.ip, GlassServerPreview_Preview);
 
@@ -385,12 +388,19 @@ function GlassServerPreviewGui::onWake(%this) {
   }
 }
 
-function GlassServerPreview::connectToServer() {
+function GlassServerPreview::connectToServer(%password) {
   %server = GlassServerPreviewWindowGui.openServerIP;
   if(%server $= "")
     return;
 
-  ConnectToServer(%server, "", "1", "1");
+  if(GlassServerPreviewWindowGui.passworded && %password $= "") {
+    GlassServerPreview_PasswordWindow.setVisible(true);
+    GlassServerPreview_Password.setValue("");
+    return;
+  }
+
+  connectToServer(%server, %password, "1", "1");
+  GlassServerPreviewGui.close();
 }
 
 

@@ -265,7 +265,7 @@ new GuiControl(GlassServerPreviewGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         command = "GlassServerPreviewGui.close(); GlassServerPreview::connectToServer();";
+         command = "GlassServerPreview::connectToServer();";
          accelerator = "enter";
          text = "Connect";
          groupNum = "-1";
@@ -323,6 +323,59 @@ new GuiControl(GlassServerPreviewGui) {
          mKeepCached = "0";
          mColor = "46 204 113 220";
       };
+
+      new GuiWindowCtrl(GlassServerPreview_PasswordWindow) {
+         profile = "GlassWindowProfile";
+         horizSizing = "center";
+         vertSizing = "center";
+         position = "4 4";
+         extent = "320 90";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         text = "Enter Password";
+         maxLength = "255";
+         resizeWidth = "0";
+         resizeHeight = "0";
+         canMove = "0";
+         canClose = "1";
+         canMinimize = "0";
+         canMaximize = "0";
+         minSize = "50 50";
+         closeCommand = "GlassServerPreview_PasswordWindow.setVisible(false);";
+
+         new GuiTextEditCtrl(GlassServerPreview_Password) {
+           profile = "GlassTextEditProfile";
+           position = "10 35";
+           extent = "300 16";
+           password = true;
+         };
+
+         new GuiBitmapButtonCtrl() {
+            profile = "GlassBlockButtonProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "120 55";
+            extent = "80 25";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassServerPreview::connectToServer(GlassServerPreview_Password.getValue());";
+            accelerator = "enter";
+            text = "Connect";
+            groupNum = "-1";
+            buttonType = "PushButton";
+            bitmap = "~/System_BlocklandGlass/image/gui/btn";
+            lockAspectRatio = "0";
+            alignLeft = "0";
+            alignTop = "0";
+            overflowImage = "0";
+            mKeepCached = "0";
+            mColor = "84 217 140 220";
+         };
+       };
    };
 };
 //--- OBJECT WRITE END ---
