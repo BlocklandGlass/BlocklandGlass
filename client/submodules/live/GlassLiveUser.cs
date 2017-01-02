@@ -214,8 +214,14 @@ function GlassLiveUser::getAvatar(%this, %gui) {
 }
 
 function GlassLiveUser::gotAvatar(%this, %jsonObj) {
-  %this.avatar = %jsonObj;
-  %this.avatarGui.createBlockhead(%this.avatar);
+  if(!isObject(%jsonObj) || %jsonObj.keyCount == 0) {
+    %this.avatarFiller = true;
+    %this.avatarGui.createBlockhead(false);
+  } else {
+    %this.avatarFiller = false;
+    %this.avatar = %jsonObj;
+    %this.avatarGui.createBlockhead(%this.avatar);
+  }
 
   //%this.avatarGui.setSequence("", 0, "crouch", 1);
   //%this.avatarGui.setSequence("test", 1, "headside", 1);

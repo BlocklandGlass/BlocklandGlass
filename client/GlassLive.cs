@@ -643,47 +643,49 @@ function GuiObjectView::createBlockhead(%this, %json) {
   %this.forceFOV = 18;
 
   %this.setObject("", "base/data/shapes/player/m.dts", "", 100);
-  if(!%json) {
-    %FaceName = $Pref::Avatar::FaceName;
-    %DecalName = $Pref::Avatar::DecalName;
-    %HeadColor = $Pref::Avatar::HeadColor;
+  if(!isObject(%json)) {
+    %color = "0.2 0.2 0.2 1";
 
-    %accent = $Pref::Avatar::accent;
-    %accentColor = $Pref::Avatar::accentColor;
+    %FaceName = "default";
+    %DecalName = "AAA-None";
+    %HeadColor = %color;
 
-    %hat = $Pref::Avatar::hat;
-    %hatColor = $Pref::Avatar::hatColor;
+    %accent = 0;
+    %accentColor = %color;
 
-    %chest = $Pref::Avatar::chest;
-    %chestColor = $Pref::Avatar::chestColor;
-    %TorsoColor = $Pref::Avatar::TorsoColor;
+    %hat = 0;
+    %hatColor = %color;
 
-    %pack = $Pref::Avatar::pack;
-    %packColor = $Pref::Avatar::packColor;
+    %chest = 0;
+    %chestColor = %color;
+    %TorsoColor = %color;
 
-    %secondPack = $Pref::Avatar::secondPack;
-    %secondPackColor = $Pref::Avatar::secondPackColor;
+    %pack = 0;
+    %packColor = %color;
 
-    %larm = $Pref::Avatar::larm;
-    %larmColor = $Pref::Avatar::larmColor;
+    %secondPack = 0;
+    %secondPackColor = %color;
 
-    %rarm = $Pref::Avatar::rarm;
-    %rarmColor = $Pref::Avatar::rarmColor;
+    %larm = 0;
+    %larmColor = %color;
 
-    %lhand = $Pref::Avatar::lhand;
-    %lhandColor = $Pref::Avatar::lhandColor;
+    %rarm = 0;
+    %rarmColor = %color;
 
-    %rhand = $Pref::Avatar::rhand;
-    %rhandColor = $Pref::Avatar::rhandColor;
+    %lhand = 0;
+    %lhandColor = %color;
 
-    %hip = $Pref::Avatar::hip;
-    %hipColor = $Pref::Avatar::hipColor;
+    %rhand = 0;
+    %rhandColor = %color;
 
-    %lleg = $Pref::Avatar::lleg;
-    %llegColor = $Pref::Avatar::llegColor;
+    %hip = 0;
+    %hipColor = %color;
 
-    %rleg = $Pref::Avatar::rleg;
-    %rlegColor = $Pref::Avatar::rlegColor;
+    %lleg = 0;
+    %llegColor = %color;
+
+    %rleg = 0;
+    %rlegColor = %color;
   } else {
     %FaceName = %json.faceName;
     %DecalName = %json.decalName;
@@ -1898,7 +1900,7 @@ function GlassLive::openUserWindow(%blid) {
     %locationColor = "333333";
 
   	%window.statusText.setText(%status);
-    
+
     if(strlen(%serverTitle = %uo.getServerTitle()) > 28)
       %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
 
