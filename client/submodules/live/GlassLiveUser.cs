@@ -240,14 +240,22 @@ function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAd
 }
 
 function GlassLiveUser::getLocation(%this) {
-  if(%this.status !$= "offline")
-    return %this.location;
+  if(%this.status $= "offline")
+    return "";
+
+  return %this.location;
 }
 
 function GlassLiveUser::getServerTitle(%this) {
+  if(%this.status $= "offline")
+    return "";
+
   return %this.serverTitle;
 }
 
 function GlassLiveUser::getServerAddress(%this) {
+  if(%this.status $= "offline")
+    return "";
+
   return %this.serverAddress;
 }
