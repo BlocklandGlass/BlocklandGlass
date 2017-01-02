@@ -268,10 +268,10 @@ function GlassLoadingGui_UserList::update(%this) {
   for(%i = 0; %i < NPL_List.rowCount(); %i++) {
     %row = getFields(NPL_List.getRowText(%i), 0, 3);
     %id = NPL_List.getRowId(%i);
-    
+
     GlassLoadingGui_UserList.addRow(%id, %row);
   }
-  
+
   NewPlayerListGui.UpdateWindowTitle();
 }
 
@@ -396,7 +396,7 @@ function GlassServerPreview::connectToServer() {
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
   fileDelete("config/client/BLG/ServerPreview.jpg");
-  
+
   %addr = strReplace(%addr, ".", "-");
   %addr = strReplace(%addr, ":", "_");
   %url = "http://image.blockland.us/detail/" @ %addr @ ".jpg";
@@ -557,8 +557,8 @@ package GlassServers {
       parent::onWake(%this);
 
     NewChatHud.add(GlassLoadingGui);
-    NewChatHud.pushToBack(GlassLoadingGui); // This isn't working but it should put the GUI under the actual chat.
-    NewChatHud.pushToBack(NewChatText);
+    NewChatHud.pushToBack(GlassLoadingGui);
+    NewChatHud.schedule(50, pushToBack, newChatText);
   }
 
   function LoadingGui::onSleep(%this) {

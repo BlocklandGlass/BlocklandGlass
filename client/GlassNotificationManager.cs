@@ -21,23 +21,6 @@ function GlassNotificationManager::refocus(%this) {
 
 function GlassNotificationManager::newNotification(%title, %text, %image, %darkMode) {
   error("Depreciated Notification Creation");
-  %obj = new ScriptObject(GlassNotification) {
-    title = %title;
-    text = %text;
-    image = %image;
-
-    sticky = true;
-    callback = %callback;
-    time = 5000;
-
-    index = GlassNotificationManager.index++;
-
-    darkMode = %darkMode;
-  };
-
-  GlassNotificationManager.add(%obj);
-
-  return %obj;
 }
 
 function orderNumWords(%list) {
@@ -79,6 +62,12 @@ function GlassNotificationManager::tick(%this) {
     %note = %this.getObject(%i);
     %swatch = %note.swatch;
 
+    if(!isObject(%swatch)) {
+      %note.delete();
+      %i--;
+      continue;
+    }
+
     %action[%note.action]++;
     switch$(%note.action) {
       case "waiting":
@@ -98,9 +87,8 @@ function GlassNotificationManager::tick(%this) {
       case "dismiss":
         if(getWord(%swatch.position, 0) > getWord(getRes(), 0)) {
           %swatch.deleteAll();
-          %swatch.delete();
-          %note.delete();
-          %i--;
+          %swatch.schedule(0, delete);
+          %note.schedule(0, delete);
         } else {
           %swatch.position = vectorAdd(%swatch.position, "10 0");
         }
@@ -188,7 +176,7 @@ function GlassNotification::dismiss(%this) {
 
 function GlassNotification::destroy(%this) {
   %this.swatch.delete();
-  %this.delete();
+  %this.schedule(1, delete);
 }
 
 function GlassNotificationManager::destroyAll(%this) {
