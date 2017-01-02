@@ -45,7 +45,6 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   // description
   // date
   // downloads
-  // rating
   // screenshots
   // author
   // contributors
@@ -94,12 +93,19 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %border = 5;
   %width = mFloor((615+%border)/%info);
   for(%i = 0; %i < %info; %i++) {
+    if(%i == 1) {
+      %w = (%width*2)-%border;
+    } else if(%i == 2) {
+      continue;
+    } else {
+      %w = %width-%border;
+    }
     %swatch = new GuiSwatchCtrl() {
       horizSizing = "right";
       vertSizing = "bottom";
       color = "255 255 255 255";
       position = (%width)*%i+10 SPC 0;
-      extent = %width-%border SPC 36;
+      extent = %w SPC 36;
     };
 
     %swatch.image = new GuiBitmapCtrl() {
@@ -128,9 +134,6 @@ function GMM_AddonPage::handleResults(%this, %obj) {
         %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.filename);
         %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/folder_vertical_zipper.png");
 
-      case 2:
-        %swatch.text.setText("<font:verdana:13><just:center>Rating");
-
       case 3:
         %swatch.text.setText("<font:verdana:13><just:center>" @ %obj.downloads @ " downloads");
         %swatch.image.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/inbox_download.png");
@@ -139,6 +142,8 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     %swatch.add(%swatch.text);
     %swatch.add(%swatch.image);
     %container.add(%swatch);
+
+    %swatch.text.centerX();
 
     %swatch.placeBelow(%body, %border);
     %container.info[%i] = %swatch;
@@ -635,66 +640,6 @@ function GlassScreenshotMouse::onMouseDown(%this) {
   GlassModManagerImageCtrl.setVisible(false);
   canvas.pushDialog(GlassModManagerImage);
   %this.swatch.loadScreenshot();
-}
-
-function GlassModManagerGui::displayAddonRating(%rating) {
-  glassMessageBoxOk("Rated", "Your rating has been submitted.<br>Thanks for the input!");
-  %rate = %rating;
-  %x = 380;
-  for(%i = 0; %i < 5; %i++) {
-    if(%rate >= 1) {
-      %bitmap = "star";
-    } else if(%rate >= 0.75) {
-      %bitmap = "star_frac_3";
-    } else if(%rate >= 0.50) {
-      %bitmap = "star_frac_2";
-    } else if(%rate >= 0.25) {
-      %bitmap = "star_frac_1";
-    } else {
-      %bitmap = "star_empty";
-    }
-    GlassModManagerGui_MainDisplay.container.star[%i+1].setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap);
-
-    %x += 20;
-    %rate -= 1;
-  }
-}
-
-function GlassModManagerGui_RatingMouse::onMouseEnter(%this, %x, %pos) {
-  GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos);
-}
-
-function GlassModManagerGui_RatingMouse::onMouseMove(%this, %x, %pos, %y) {
-  %x = getWord(%pos, 0)-getWord(%this.getScreenPosition(), 0);
-  %rating = mceil((%x-4)/20);
-
-  if(%rating < 1)
-    %rating = 1;
-
-  for(%i = 0; %i < 5; %i++) {
-    %star = %this.getGroup().star[%i+1];
-    if(%rating > %i)
-      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star");
-    else
-      %star.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/star_empty");
-  }
-}
-
-function GlassModManagerGui_RatingMouse::onMouseLeave(%this, %x, %pos, %y) {
-  for(%i = 0; %i < 5; %i++) {
-    %star = %this.getGroup().star[%i+1];
-    %star.setBitmap(%star.dbitmap);
-  }
-}
-
-function GlassModManagerGui_RatingMouse::onMouseDown(%this, %x, %pos, %y) {
-  %x = getWord(%pos, 0)-getWord(%this.getScreenPosition(), 0);
-  %rating = mceil((%x-4)/20);
-
-  if(%rating < 1)
-    %rating = 1;
-
-  %tcp = GlassModManager::placeCall("rating", "id" TAB %this.aid NL "rating" TAB %rating);
 }
 
 function GlassModManagerGui::loadAddonComments(%id, %swatch) {

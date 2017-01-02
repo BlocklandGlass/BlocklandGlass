@@ -98,7 +98,6 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %aid = %addon.id;
     %addonName = getASCIIString(%addon.name);
     %author = getASCIIString(%addon.author);
-    %rating = %addon.rating;
     %downloads = %addon.downloads;
 
     %summary = getASCIIString(%addon.summary);
@@ -139,13 +138,9 @@ function GMM_BoardPage::handleResults(%this, %res) {
       extent = "85 45";
     };
 
-    %swatch.stars = GMM_BoardPage::createStars(%rating);
-    %swatch.stars.position = "400 12";
-
     %swatch.add(%swatch.title);
     %swatch.add(%swatch.author);
     %swatch.add(%swatch.downloads);
-    %swatch.add(%swatch.stars);
 
     GlassHighlightSwatch::addToSwatch(%swatch, "10 10 10", "GMM_BoardPage.swatchClick");
     %swatch.hColor = "240 240 240 255";
@@ -236,68 +231,5 @@ function GMM_BoardPage::createBoardHeader(%title) {
 
   %swatch.add(%swatch.text);
   %swatch.verticalMatchChildren(0, 5);
-  return %swatch;
-}
-
-function GMM_BoardPage::createStars(%stars) {
-  %swatch = new GuiSwatchCtrl() {
-    horizSizing = "right";
-    vertSizing = "bottom";
-    color = "0 0 0 0";
-    position = "10 10";
-    extent = "100 16";
-  };
-
-  %fullStars = mfloor(%stars);
-  %fracStar = mfloor((%stars - %fullStars + 0.125)*4);
-  %emptyStars = 4-%fullStars;
-  %x = 0;
-  for(%i = 0; %i < %fullStars; %i++) {
-    %swatch.star[%i] = new GuiBitmapCtrl() {
-      horizSizing = "left";
-      vertSizing = "bottom";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star.png";
-      position = %x SPC 0;
-      extent = "16 16";
-      minextent = "0 0";
-      clipToParent = true;
-    };
-    %swatch.add(%swatch.star[%i]);
-    %x += 20;
-  }
-
-  if(%fracStar != 0) {
-    if(%fracStar > 3)
-      %fracStar = 3;
-
-    %swatch.fracstar = new GuiBitmapCtrl() {
-      horizSizing = "left";
-      vertSizing = "bottom";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_frac_" @ %fracStar @ ".png";
-      position = %x SPC 0;
-      extent = "16 16";
-      minextent = "0 0";
-      clipToParent = true;
-    };
-    %swatch.add(%swatch.fracstar);
-    %x += 20;
-  } else {
-    %emptyStars++;
-  }
-
-  for(%i = 0; %i < %emptyStars; %i++) {
-    %swatch.emptystar[%i] = new GuiBitmapCtrl() {
-      horizSizing = "left";
-      vertSizing = "bottom";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/star_empty.png";
-      position = %x SPC 0;
-      extent = "16 16";
-      minextent = "0 0";
-      clipToParent = true;
-    };
-    %swatch.add(%swatch.emptystar[%i]);
-    %x += 20;
-  }
-
   return %swatch;
 }
