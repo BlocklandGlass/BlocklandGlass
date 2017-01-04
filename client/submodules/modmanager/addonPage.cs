@@ -1037,8 +1037,8 @@ function GMM_AddonPage::commentClick(%this) {
     childMargin = "5 5";
     rowHeight = "40";
     columnWidth = "30";
-  }
-  ;
+  };
+
   %window.textSwatch = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
@@ -1052,7 +1052,8 @@ function GMM_AddonPage::commentClick(%this) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
-    extent = "365 14";
+    minextent = "355 14";
+    extent = "355 14";
     autoResize = true;
   };
 
@@ -1079,14 +1080,22 @@ function GMM_AddonPage::commentClick(%this) {
 }
 
 function GMM_AddonPage_CommentText::onResize(%this) {
+
   %window = GlassModManagerGui_CommentWindow;
-  %height = (getLineCount(%window.textEdit.getValue()))*12;
 
-  if(%height < 14)
-    %height = 14;
+  if(%this.lastValue !$= %this.getValue()) {
+    %this.lastValue = %this.getValue();
 
-  %window.textSwatch.extent = 365 SPC %height;
+    %this.extent = "355 0";
+    %window.textSwatch.extent = "365 0";
+    
+    %this.forceReflow();
+    return;
+  }
+
+  %window.textSwatch.extent = 365 SPC getWord(%this.extent, 1);
   %window.textSwatch.setVisible(true);
+
   %window.scroll.scrollToBottom();
   %window.textEdit.makeFirstResponder(true);
 }
