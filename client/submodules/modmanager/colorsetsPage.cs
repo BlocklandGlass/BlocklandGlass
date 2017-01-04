@@ -214,7 +214,37 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
       autoResize = "1";
     };
 
+    if(%data.isBLG) {
+      %icon = "glassLogo";
+    } else if(%data.isRTB) {
+      %icon = "bricks";
+    } else {
+      %icon = "blLogo";
+    }
+
+    %colorset.icon = new GuiBitmapCtrl() {
+      profile = "GuiDefaultProfile";
+      horizSizing = "left";
+      vertSizing = "center";
+      position = "207 7";
+      extent = "16 16";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
+      wrap = "1";
+      lockAspectRatio = "0";
+      alignLeft = "0";
+      alignTop = "0";
+      overflowImage = "1";
+      keepCached = "1";
+      mColor = "0 0 0 255";
+      mMultiply = "0";
+    };
+
     %colorset.add(%colorset.text);
+    %colorset.add(%colorset.icon);
 
     GlassHighlightSwatch::addToSwatch(%colorset, "10 10 10", "GMM_ColorsetsPage.interact");
 

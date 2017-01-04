@@ -32,8 +32,8 @@ new GuiWindowCtrl(GlassFavoriteServerSwatch) {
     lineSpacing = "2";
     allowColorChars = "0";
     maxChars = "-1";
-    text = "<font:verdana:13>Offline  <bitmap:Add-Ons/System_BlocklandGlass/image/icon/emotion_sleep>";
-    maxBitmapHeight = "-1";
+    text = "<font:verdana:13><just:center>All servers offline <bitmap:Add-Ons/System_BlocklandGlass/image/icon/emotion_sleep>";
+    maxBitmapHeight = "13";
     selectable = "1";
     autoResize = "1";
   };
