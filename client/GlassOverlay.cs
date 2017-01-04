@@ -93,9 +93,9 @@ function GlassOverlay::close() {
 
 function GlassOverlay::setVignette() {
  if(GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap !$= "")
-	GlassOverlay.setBitmap("base/client/ui/vignette");
+	GlassOverlay.mColor = "0 0 50 185";
   else if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
-    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+    GlassOverlay.mColor = "0 0 0 0";
 }
 
 function GlassOverlay::setLogo() {

@@ -14,8 +14,8 @@ new GuiControl(GlassServerControlGui) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
-      position = "72 90";
-      extent = "495 300";
+      position = "72 26";
+      extent = "495 428";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -44,12 +44,12 @@ new GuiControl(GlassServerControlGui) {
          visible = "1";
          clipToParent = "1";
          maxLength = "255";
+            maxBitmapHeight = "-1";
             maxChars = "-1";
             selectable = "1";
             autoResize = "1";
             lineSpacing = "2";
             allowColorChars = "0";
-            maxBitmapHeight = "-1";
       };
       new GuiBitmapButtonCtrl() {
          profile = "GlassBlockButtonProfile";
@@ -122,7 +122,7 @@ new GuiControl(GlassServerControlGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 55";
-         extent = "475 235";
+         extent = "475 364";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -134,7 +134,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
-            extent = "140 235";
+            extent = "140 360";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -146,7 +146,7 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "0 0";
-               extent = "141 205";
+               extent = "141 332";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -164,7 +164,7 @@ new GuiControl(GlassServerControlGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "1 1";
-                  extent = "131 203";
+                  extent = "131 330";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
@@ -182,9 +182,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 250 220 255";
+                        mouse = "16123";
                         rcolor = "220 250 220 255";
                         ocolor = "220 250 220 255";
-                        mouse = "16123";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -244,9 +244,9 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "170 200 255 255";
+                        mouse = "16127";
                         rcolor = "220 230 220 255";
                         ocolor = "170 200 255 255";
-                        mouse = "16127";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -301,7 +301,7 @@ new GuiControl(GlassServerControlGui) {
                profile = "GlassBlockButtonProfile";
                horizSizing = "center";
                vertSizing = "bottom";
-               position = "10 210";
+               position = "10 338";
                extent = "120 20";
                minExtent = "8 2";
                enabled = "1";
@@ -326,7 +326,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "140 0";
-            extent = "335 235";
+            extent = "335 360";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -356,7 +356,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "GuiMLTextProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "53 110";
+            position = "53 175";
             extent = "368 14";
             minExtent = "8 2";
             enabled = "1";
@@ -376,7 +376,7 @@ new GuiControl(GlassServerControlGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 55";
-         extent = "475 235";
+         extent = "475 364";
          minExtent = "8 2";
          enabled = "1";
          visible = "0";
@@ -388,7 +388,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 10";
-            extent = "180 215";
+            extent = "180 345";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -447,7 +447,7 @@ new GuiControl(GlassServerControlGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "285 10";
-            extent = "180 215";
+            extent = "180 345";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -505,7 +505,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "BlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
-            position = "195 154";
+            position = "195 284";
             extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
@@ -528,7 +528,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "BlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
-            position = "195 179";
+            position = "195 309";
             extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
@@ -551,7 +551,7 @@ new GuiControl(GlassServerControlGui) {
             profile = "BlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
-            position = "195 204";
+            position = "195 334";
             extent = "85 20";
             minExtent = "8 2";
             enabled = "1";
@@ -974,7 +974,7 @@ new GuiControl(GlassServerControlGui) {
          profile = "GuiWindowProfile";
          horizSizing = "center";
          vertSizing = "center";
-         position = "89 77";
+         position = "89 141";
          extent = "317 145";
          minExtent = "8 2";
          enabled = "1";
