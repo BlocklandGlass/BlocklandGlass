@@ -6,7 +6,7 @@ function GlassManual::init() {
 
 function GlassManualWindow::onWake(%this) {
   if(!%this.firstWake) {
-    GlassManualWindow.read("1. Credits");
+    GlassManualWindow.read("1 Credits");
     %this.firstWake = true;
   }
 }
