@@ -27,6 +27,8 @@ function GlassLive::init() {
       color_mod = "e67e22";
       color_admin = "e74c3c";
       color_bot = "9b59b6";
+      
+      afk_minutes = 10;
     };
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
@@ -140,6 +142,8 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
   if(isObject(GlassFriendsGui_Blockhead))
 	GlassFriendsGui_Blockhead.setVisible(false);
+
+  GlassLive.afkCheck(false);
 }
 
 function GlassLive::enterRoomDragMode(%obj, %pos) {
@@ -864,6 +868,93 @@ function GlassLive::sendAvatarData() {
 
   %obj.delete();
 }
+
+function GlassLive::afkCheck(%this, %on) {
+  if(%on) {
+    activatePackage(GlassAFKPackage);
+    %this.afkAction();
+  } else {
+    cancel(%this.afkTrigger);
+    deactivatePackage(GlassAFKPackage);
+  }
+}
+
+function GlassLive::afkAction(%this) {
+  cancel(%this.afkTrigger);
+
+  if(%this.isAFK && %this.lastStatus $= "online") {
+    GlassFriendsGui_StatusSelect::selectStatus(%this.lastStatus);
+
+    %this.isAFK = false;
+  }
+
+  %this.afkTrigger = %this.schedule((%this.afk_minutes * 60000) | 0, "afkTrigger");
+}
+
+function GlassLive::afkTrigger(%this) {
+  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId())))
+    %status = %self.getStatus();
+  else
+    %status = "";
+
+  if(%status $= "online") {
+    %this.lastStatus = %self.getStatus();
+
+    GlassFriendsGui_StatusSelect::selectStatus("away");
+
+    %this.isAFK = true;
+  }
+}
+
+package GlassAFKPackage {
+  function GlassLive::chatroomInputSend(%id) {
+    parent::chatroomInputSend(%id);
+
+    GlassLive.afkAction();
+  }
+
+  function GlassLive::messageInputSend(%id) {
+    parent::messageInputSend(%id);
+
+    GlassLive.afkAction();
+  }
+
+  function Canvas::popDialog(%gui, %dlg) {
+    parent::popDialog(%gui, %dlg);
+
+    GlassLive.afkAction();
+  }
+
+  function Canvas::pushDialog(%gui, %dlg) {
+    parent::pushDialog(%gui, %dlg);
+
+    GlassLive.afkAction();
+  }
+
+  function mouseFire(%on) {
+    parent::mouseFire(%on);
+
+    GlassLive.afkAction();
+  }
+
+  function Jet(%on) {
+    parent::Jet(%on);
+
+    GlassLive.afkAction();
+  }
+
+  function yaw(%amt) {
+    parent::yaw(%amt);
+
+    GlassLive.afkAction();
+  }
+
+  function pitch(%amt) {
+    parent::pitch(%amt);
+
+    GlassLive.afkAction();
+  }
+};
 
 //================================================================
 //= Communication                                                =
@@ -3390,7 +3481,6 @@ function GlassLive::createFriendList() {
     GlassFriendsGui_ScrollSwatch.add(%h);
 
     if(!GlassLive.hideBlocked) {
-
       for(%i = 0; %i < getWordCount(GlassLive.blockedList); %i++) {
         %blid = getWord(GlassLive.blockedList, %i);
         %uo = GlassLiveUser::getFromBlid(%blid);
@@ -3525,7 +3615,15 @@ package GlassLivePackage {
   function Avatar_Done() {
     parent::Avatar_Done();
     GlassFriendsGui_Blockhead.createBlockhead();
-	GlassLive::sendAvatarData();
+    GlassLive::sendAvatarData();
+  }
+  
+  function onExit() {
+    GlassSettings.update("Live::hideRequests", GlassLive.hideFriendRequests);
+    GlassSettings.update("Live::hideFriends", GlassLive.hideFriends);
+    GlassSettings.update("Live::hideBlocked", GlassLive.hideBlocked);
+
+    parent::onExit();
   }
 };
 activatePackage(GlassLivePackage);

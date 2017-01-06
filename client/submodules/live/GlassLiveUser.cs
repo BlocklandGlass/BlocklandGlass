@@ -231,12 +231,20 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj) {
 }
 
 function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress) {
+  %this.lastLocation = %this.location;
   %this.location = %location;
   %this.serverTitle = %serverTitle;
   %this.serverAddress = %serverAddress;
 
   if(isObject(%this.window))
     GlassLive::openUserWindow(%this.blid);
+}
+
+function GlassLiveUser::getLastLocation(%this) {
+  if(%this.status $= "offline")
+    return "";
+
+  return %this.lastLocation;
 }
 
 function GlassLiveUser::getLocation(%this) {

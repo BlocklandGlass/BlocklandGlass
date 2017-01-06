@@ -10,6 +10,9 @@ function GlassSettings::init(%context) {
     GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
     GlassSettings.registerSetting("client", "MM::LiveSearch", true);
 
+    GlassSettings.registerSetting("client", "Live::HideRequests", false);
+    GlassSettings.registerSetting("client", "Live::HideFriends", false);
+    GlassSettings.registerSetting("client", "Live::HideBlocked", false);
     GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
 
     GlassSettings.registerSetting("client", "Live::TalkingAnimation", true);

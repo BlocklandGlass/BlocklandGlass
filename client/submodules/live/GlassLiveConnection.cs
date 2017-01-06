@@ -53,8 +53,9 @@ function GlassLiveConnection::onConnected(%this) {
 
   GlassLive.noReconnect = false;
   GlassLive.connectionTries = 0;
-  GlassLive.hideFriendRequests = false;
-  GlassLive.hideFriends = false;
+  GlassLive.hideFriendRequests = GlassSettings.get("Live::HideRequests");
+  GlassLive.hideFriends = GlassSettings.get("Live::HideFriends");
+  GlassLive.hideBlocked = GlassSettings.get("Live::HideBlocked");
 
   %this.connected = true;
   %obj = JettisonObject();
@@ -66,10 +67,14 @@ function GlassLiveConnection::onConnected(%this) {
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:2ecc71>Authenticating...");
+
   if(GlassFriendsGui_HeaderText.isAwake()) {
     GlassFriendsGui_HeaderText.forceReflow();
     GlassFriendsGui_HeaderText.forceCenter();
   }
+
+  GlassLive.afkCheck(true);
+
   GlassLive.schedule(500, checkPendingFriendRequests);
 }
 
@@ -223,7 +228,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         new ScriptObject(GlassNotification) {
           title = %sender;
           text = %data.message;
-          image = "comment";
+          image = %user.icon;
 
           sticky = false;
           callback = "GlassOverlay::open();";
@@ -544,34 +549,36 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
 
       if(GlassSettings.get("Live::ShowFriendLocation")) {
-        switch$(%data.location) {
-          case "menus":
-            %message = "is now in the menus";
+        if(%uo.getLastLocation() !$= "") {
+          switch$(%data.location) {
+            case "menus":
+              %message = "is now in the menus";
 
-          case "hosting":
-            %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
+            case "hosting":
+              %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
 
-          case "hosting_lan":
-            %message = "is now hosting a LAN server";
+            case "hosting_lan":
+              %message = "is now hosting a LAN server";
 
-          case "singleplayer":
-            %message = "is now playing in singleplayer";
+            case "singleplayer":
+              %message = "is now playing in singleplayer";
 
-          case "playing":
-            %message = "is now playing in <font:verdana bold:13>" @ %data.serverTitle;
+            case "playing":
+              %message = "is now playing in <font:verdana bold:13>" @ %data.serverTitle;
 
-          case "playing_lan":
-            %message = "is now playing in a LAN server";
+            case "playing_lan":
+              %message = "is now playing in a LAN server";
+          }
+
+          new ScriptObject(GlassNotification) {
+            title = %uo.username;
+            text = %message;
+            image = %uo.icon;
+
+            sticky = false;
+            callback = "GlassLive::openUserWindow(" @ %uo.blid @ ");";
+          };
         }
-
-        new ScriptObject(GlassNotification) {
-          title = %uo.username;
-          text = %message;
-          image = %uo.icon;
-
-          sticky = false;
-          callback = "GlassLive::openUserWindow(" @ %uo.blid @ ");";
-        };
       }
 
     case "location":

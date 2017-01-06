@@ -26,6 +26,7 @@ function GlassCompatibility::oRBs_find() {
         text = "Blockland Glass has stopped supporting oRBs, click here for further information.";
         sticky = true;
         callback = "GlassCompatibility::oRBs_warning();";
+        image = "hourglass";
 
         sound = GlassBellAudio;
       };

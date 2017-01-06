@@ -8,9 +8,9 @@ function GlassServerControlC::init() {
 }
 
 $remapDivision[$remapCount] = "Blockland Glass";
-   $remapName[$remapCount] = "Server Settings";
-   $remapCmd[$remapCount] = "openGlassSettings";
-   $remapCount++;
+  $remapName[$remapCount] = "Server Settings";
+  $remapCmd[$remapCount] = "openGlassSettings";
+  $remapCount++;
 
 function openGlassSettings(%down) {
   if(!%down) {
