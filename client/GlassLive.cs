@@ -874,39 +874,47 @@ function GlassLive::afkCheck(%this, %on) {
     activatePackage(GlassAFKPackage);
     %this.afkAction();
   } else {
-    cancel(%this.afkTrigger);
     deactivatePackage(GlassAFKPackage);
+    cancel(%this.afkTrigger);
   }
 }
 
 function GlassLive::afkAction(%this) {
   cancel(%this.afkTrigger);
 
-  if(%this.isAFK && %this.lastStatus $= "online") {
+  if(%this.isAFK) {
     GlassFriendsGui_StatusSelect::selectStatus(%this.lastStatus);
 
     %this.isAFK = false;
-  }
+  } else {
+    if(%this.afk_minutes < 5)
+      %this.afk_minutes = 5;
 
-  %this.afkTrigger = %this.schedule((%this.afk_minutes * 60000) | 0, "afkTrigger");
+    %this.afkTrigger = %this.schedule((%this.afk_minutes * 60000) | 0, "afkTrigger");
+  }
 }
 
 function GlassLive::afkTrigger(%this) {
-  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId())))
+  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId()))) {
     %status = %self.getStatus();
-  else
-    %status = "";
 
-  if(%status $= "online") {
-    %this.lastStatus = %self.getStatus();
+    if(%status !$= "away") {
+      %this.lastStatus = %status;
 
-    GlassFriendsGui_StatusSelect::selectStatus("away");
+      GlassFriendsGui_StatusSelect::selectStatus("away");
 
-    %this.isAFK = true;
+      %this.isAFK = true;
+    }
   }
 }
 
 package GlassAFKPackage {
+  function NMH_Type::Send(%this) {
+    parent::Send(%this);
+    
+    GlassLive.afkAction();
+  }
+
   function GlassLive::chatroomInputSend(%id) {
     parent::chatroomInputSend(%id);
 
@@ -931,11 +939,11 @@ package GlassAFKPackage {
     GlassLive.afkAction();
   }
 
-  function mouseFire(%on) {
-    parent::mouseFire(%on);
+  // function mouseFire(%on) {
+    // parent::mouseFire(%on);
 
-    GlassLive.afkAction();
-  }
+    // GlassLive.afkAction();
+  // }
 
   function Jet(%on) {
     parent::Jet(%on);
@@ -943,17 +951,17 @@ package GlassAFKPackage {
     GlassLive.afkAction();
   }
 
-  function yaw(%amt) {
-    parent::yaw(%amt);
+  // function yaw(%amt) {
+    // parent::yaw(%amt);
 
-    GlassLive.afkAction();
-  }
+    // GlassLive.afkAction();
+  // }
 
-  function pitch(%amt) {
-    parent::pitch(%amt);
+  // function pitch(%amt) {
+    // parent::pitch(%amt);
 
-    GlassLive.afkAction();
-  }
+    // GlassLive.afkAction();
+  // }
 };
 
 //================================================================
