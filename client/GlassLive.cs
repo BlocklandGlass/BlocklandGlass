@@ -108,6 +108,23 @@ function GlassLive::checkPendingFriendRequests() {
   }
 }
 
+function GlassLive::inviteClick(%addr) {
+  if(isObject(ServerConnection)) {
+    if(ServerConnection.getAddress() $= %addr) {
+      glassMessageBoxOk("Already There!", "That's the server you're in right now!");
+      return;
+    }
+
+    if(ServerConnection.isLocal()) {
+      glassMessageBoxOk("Stop Hosting?", "Would you like to stop hosting and join the server?", "disconnect(); connectToServer(\"" @ expandEscape(%addr) @ "\", \"\", 1, 1);");
+    } else {
+      glassMessageBoxOk("Disconnect?", "Would you like to leave this server?", "disconnect(); connectToServer(\"" @ expandEscape(%addr) @ "\", \"\", 1, 1);");
+    }
+  } else {
+    connectToServer(%addr, "", 1, 1);
+  }
+}
+
 //================================================================
 //= System-level methods                                         =
 //================================================================
@@ -880,7 +897,7 @@ function GlassLive::inviteFriend(%blid) {
 
   %obj = JettisonObject();
   %obj.set("type", "string", "friendInvite");
-  %obj.set("target", "string", %blid);
+  %obj.set("blid", "string", %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 

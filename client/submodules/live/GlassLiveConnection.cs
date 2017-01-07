@@ -581,6 +581,31 @@ function GlassLiveConnection::onLine(%this, %line) {
         }
       }
 
+    case "friendInvite":
+      %sender = GlassLiveUser::getFromBlid(%data.sender);
+      %address = %data.address;
+      %title = %data.serverTitle;
+      %isHost = (%data.location $= "hosting");
+
+      %message = "<font:verdana bold:13>" @ %sender.username @ "<font:verdana:13> has invited you to ";
+
+      if(%isHost) {
+        %message = %message @ "their server ";
+      } else {
+        %message = %message @ "play ";
+      }
+
+      %message = %message @ "<font:verdana bold:13>" @ %title;
+
+      new ScriptObject(GlassNotification) {
+        title = "Server Invitation";
+        text = %message;
+        image = "world_go";
+
+        sticky = true;
+        callback = "GlassLive::inviteClick(\"" @ expandEscape(%address) @ "\");";
+      };
+
     case "location":
       GlassLive::displayLocation(%data);
 
