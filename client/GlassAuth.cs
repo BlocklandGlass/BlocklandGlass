@@ -33,7 +33,7 @@ function GlassAuth::check(%this) {
     %this.ident = "";
   }
 
-  if(%this.lastBlid !$= getNumKeyId && %this.lastBlid !$= "") {
+  if(%this.lastBlid !$= getNumKeyId() && %this.lastBlid !$= "") {
     warn("Key change detected, getting new identity");
     %this.ident = "";
   }

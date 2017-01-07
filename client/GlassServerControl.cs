@@ -200,9 +200,9 @@ function GlassServerControlC::renderCategory(%category) {
     }
 
     if(%odd) {
-      %swatch.color = "200 200 200 255";
-    } else {
       %swatch.color = "220 220 220 255";
+    } else {
+      %swatch.color = "230 230 230 255";
     }
 
     %odd = !%odd;
@@ -240,7 +240,7 @@ function GlassServerControlC::createCategoryTab(%cat, %odd) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = 0 SPC 0;
-    extent = "125 24";
+    extent = "135 24";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -292,7 +292,7 @@ function GlassServerControlC::createCategoryTab(%cat, %odd) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
-    extent = "125 24";
+    extent = "135 24";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -529,7 +529,7 @@ function GlassServerControlC::createInt() {
   };
 
   %swatch.ctrl = new GuiTextEditCtrl() {
-    profile = "GuiTextEditProfile";
+    profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "245 7";
@@ -628,7 +628,7 @@ function GlassServerControlC::createText() {
   };
 
   %swatch.ctrl = new GuiTextEditCtrl() {
-    profile = "GuiTextEditProfile";
+    profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "center";
     position = "175 7";
