@@ -65,8 +65,7 @@ function GlassLive::init() {
   GlassOverlayGui.add(GlassIconSelectorWindow);
   GlassIconSelectorWindow.updateIcons();
 
-  if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
-    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+  GlassOverlay::setVignette();
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);

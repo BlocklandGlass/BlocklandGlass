@@ -92,10 +92,13 @@ function GlassOverlay::close() {
 }
 
 function GlassOverlay::setVignette() {
- if(GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap !$= "")
-	GlassOverlay.mColor = "0 0 50 185";
-  else if(!GlassSettings.get("Live::Vignette") && GlassOverlay.bitmap $= "base/client/ui/vignette")
-    GlassOverlay.mColor = "0 0 0 0";
+  if(GlassSettings.get("Live::Vignette")) {
+    GlassOverlay.mColor = "0 0 50 185";
+    GlassOverlay.setBitmap("base/client/ui/vignette");
+  } else {
+    GlassOverlay.mColor = "0 0 0 185";
+    GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+  }
 }
 
 function GlassOverlay::setLogo() {
