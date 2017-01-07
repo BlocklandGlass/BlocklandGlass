@@ -10,6 +10,28 @@ if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/Gl
 // - register setting in glasssettings::init() in common/glassettings.cs
 // - if setting is to be changed by the user at will via the glass settings gui, add corresponding .drawsetting() for pref in glasslive::init() below.
 
+//================================================================
+//= Table of Contents (subhect to change)
+//=
+//= 0.   Homeless methods
+//= 1.   System-Level methods
+//= 2.   Data Management
+//= 3.   Chatroom Tabs
+//= 4.   Communcations
+//= 5.   Blockheads
+//= 6.   Friend Gui
+//= 7.   AFK Checks
+//= 8.   Direct Messages
+//= 9.   Direct Messages GUI
+//= 10.  Scroll?
+//= 11.  User Window
+//= 12.  Moderation Gui
+//= 13.  Chatroom Gui
+//= 14.  Tab Buttons
+//= 15.  Icon Selector
+//= 16.  Packages
+//================================================================
+
 function GlassLive::init() {
   if(!isObject(GlassLive)) {
     new ScriptObject(GlassLive) {
@@ -49,7 +71,6 @@ function GlassLive::init() {
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
 }
-
 
 //================================================================
 //= Homeless methods                                             =
