@@ -368,6 +368,21 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
   GlassSettingsGui_ScrollOverlay.setVisible(true);
 }
 
+function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
+  GlassSettingsGui_Scroll.extent = vectorSub(GlassSettingsWindow.extent, "20 45");
+  GlassSettingsGui_ScrollOverlay.verticalMatchChildren(getWord(GlassSettingsGui_Scroll.extent, 1), 10);
+}
+
+function GlassSettingsGui_ScrollOverlay::onWake(%this) {
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %o = %this.getObject(%i);
+
+    if(isObject(%o.text)) {
+      %o.text.forceCenter();
+    }
+  }
+}
+
 function GlassSettingsGui_Info::onMouseUp(%this) {
   %desc = %this.description;
 
