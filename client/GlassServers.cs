@@ -491,7 +491,7 @@ function clientCmdGlass_setLoadingBackground(%url, %filetype, %crc) {
   if(!GlassSettings.get("Servers::LoadingImages"))
 	  return;
 
-  if(!LoadingGUI.isAwake())
+  if(PlayGui.isAwake())
 	 return;
 
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
@@ -508,11 +508,11 @@ function clientCmdGlass_setLoadingBackground(%url, %filetype, %crc) {
   %downloadPath = "config/client/BLG/loadingImages/" @ sha1(%url) @ "." @ %fileType;
   %className = "GlassServerBackgroundTCP";
 
-  echo("Downloading from " @ %url @ " to " @ %downloadPath);
+  echo("Downloading loading image from " @ %url @ " to " @ %downloadPath);
 
   if(isFile(%downloadPath)) {
     if(%crc $= "" || getFileCRC(%downloadPath) $= %crc) {
-      echo("Map picture stored locally!");
+      echo("Map picture was found locally!");
       LOAD_MapPicture.setBitmap(%downloadPath);
       return;
     }
