@@ -28,6 +28,19 @@ function GlassAuth::heartbeat(%this) {
 }
 
 function GlassAuth::check(%this) {
+  if(%this.lastName !$= $Pref::Player::NetName && %this.lastName !$= "") {
+    warn("Name change detected, getting new identity");
+    %this.ident = "";
+  }
+
+  if(%this.lastBlid !$= getNumKeyId && %this.lastBlid !$= "") {
+    warn("Key change detected, getting new identity");
+    %this.ident = "";
+  }
+
+  %this.lastName = $Pref::Player::NetName;
+  %this.lastBlid = getNumKeyId();
+
 	%url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
 	if(%this.ident !$= "") {
 			%url = %url @ "&ident=" @ urlenc(%this.ident);

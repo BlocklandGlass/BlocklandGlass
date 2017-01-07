@@ -190,14 +190,3 @@ package GlassMainMenu {
   }
 };
 activatePackage(GlassMainMenu);
-
-// package GlassPrefs {
-	// function onExit() {
-		// parent::onExit();
-	// }
-
-	// function MM_AuthBar::blinkSuccess(%this) {
-		// parent::blinkSuccess(%this);
-	// }
-// };
-// activatePackage(GlassPrefs);

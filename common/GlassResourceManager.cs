@@ -64,5 +64,16 @@ package GlassResourceManager {
       %addonHandler.storeFileInfo(%resource, %version[%resource], %channel[%resource], %repoURL[%resource], %format[%resource], %id[%resource], false, "");
     }
   }
+
+  function MM_AuthBar::blinkSuccess(%this) {
+    parent::blinkSuccess(%this);
+
+    %countUp = getFileCount("Add-Ons/System_BlocklandGlass/resources/Support_Updater/");
+    %countPr = getFileCount("Add-Ons/System_BlocklandGlass/resources/Support_Preferences/");
+
+    if(%countUp == 0 || %countPr == 0 || 1 != 0) {
+      schedule(50, 0, glassMessageBoxOk, "Missing Submodules", "Hey there,<br><br>It looks like you may have installed Glass from git. We use 'submodules' to manage Support_Updater and Support_Preferences, so they're not installed automatically. Assuming you have git installed, open the command line and navigate to the System_BlocklandGlass folder and type the following:<br><br><color:eb9950><just:left><lmargin:20><font:Lucida Console:10>git submodule init<br>git submodule update<br><br><lmargin:0><just:center><color:000000><font:verdana bold:12>Thanks, and enjoy!");
+    }
+	}
 };
 activatePackage(GlassResourceManager);
