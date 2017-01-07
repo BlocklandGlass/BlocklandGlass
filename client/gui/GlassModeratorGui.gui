@@ -53,7 +53,7 @@ new GuiControl(GlassModeratorGui) {
          extent = "68 15";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          command = "GlassModeratorGui.swapTabs();";
          text = "Logs";

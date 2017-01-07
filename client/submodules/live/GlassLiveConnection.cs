@@ -692,7 +692,11 @@ function GlassLiveConnection::onLine(%this, %line) {
 
     case "barred": //we're not allowed to use glass live
       GlassLive.noReconnect = true;
-      glassMessageBoxOk("Barred", "You've been barred from the Glass Live service for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ ":<br><br>" @ %data.reason);
+      if(%data.duration == -1) {
+        glassMessageBoxOk("Barred", "You've been permanently barred from the Glass Live service:<br><br>" @ %data.reason);
+      } else {
+        glassMessageBoxOk("Barred", "You've been barred from the Glass Live service for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ ":<br><br>" @ %data.reason);
+      }
       GlassSettings.update("Live::StartupConnect", false);
       %this.disconnect();
 

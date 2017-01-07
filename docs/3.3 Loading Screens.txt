@@ -10,4 +10,6 @@
 
 Example:
 
-<color:eb9950><lmargin:5><font:Lucida Console:10>registerLoadingScreen("http://mysite.com/image.png", "png");
+<color:eb9950><lmargin:5><font:Lucida Console:10>registerLoadingScreen("http://mysite.com/image.png", "png");<lmargin:0>
+
+<font:verdana bold:12><color:FF0000>The background must be below 2MB in file size.

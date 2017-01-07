@@ -239,7 +239,7 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
       alignTop = "0";
       overflowImage = "1";
       keepCached = "1";
-      mColor = "0 0 0 255";
+      mColor = "255 255 255 255";
       mMultiply = "0";
     };
 

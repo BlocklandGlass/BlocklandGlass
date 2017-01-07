@@ -205,12 +205,16 @@ function GlassLiveUser::disconnected(%this) {
 
 function GlassLiveUser::getAvatar(%this, %gui) {
   %this.avatarGui = %gui;
-  %obj = JettisonObject();
-  %obj.set("type", "string", "getAvatar");
-  %obj.set("blid", "string", %this.blid);
+  if(%this.status !$= "offline" && %this.status !$= "") {
+    %obj = JettisonObject();
+    %obj.set("type", "string", "getAvatar");
+    %obj.set("blid", "string", %this.blid);
 
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-  %obj.delete();
+    GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
+  } else {
+    %this.gotAvatar();
+  }
 }
 
 function GlassLiveUser::gotAvatar(%this, %jsonObj) {
