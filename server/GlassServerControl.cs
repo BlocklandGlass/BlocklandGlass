@@ -253,21 +253,6 @@ function GlassServerControlS::removeAdmin(%blid, %auto) {
   }
 }
 
-function GlassServerControlS::sendUpdateInfo(%client) {
-  %count = updater.fileDownloader.queue.getCount();
-	for(%i = 0; %i < %count; %i ++) {
-		%item = updater.fileDownloader.queue.getObject(%i);
-		%name = %item.name;
-		%version = %item.updateVersion;
-
-		commandToClient(%client, 'GlassAddUpdate', %name, %version, (%i==0));
-	}
-
-  if(!%count) {
-    commandToClient(%client, 'GlassNoUpdates');
-  }
-}
-
 //====================================
 // Server Commands / Communication
 //====================================
