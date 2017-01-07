@@ -936,7 +936,7 @@ function GlassLive::afkAction(%this) {
 }
 
 function GlassLive::afkTrigger(%this) {
-  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId())) && !%this.isAFK) {
+  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId()))) {
     %status = %self.getStatus();
 
     if(%status !$= "away") {

@@ -38,7 +38,7 @@ function GlassCompatibility::oRBs_find() {
 
 GlassCompatibility::oRBs_find();
 
-package GlassEnableButton {
+package GlassCompatibilityPackage {
 	function ServerSettingsGui::onWake(%this) {
 		parent::onWake(%this);
 
@@ -84,4 +84,4 @@ package GlassEnableButton {
     }
 	}
 };
-activatePackage(GlassEnableButton);
+activatePackage(GlassCompatibilityPackage);
