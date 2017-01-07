@@ -2102,6 +2102,10 @@ function GlassLive::afkAction(%this) {
 }
 
 function GlassLive::afkTrigger(%this) {
+  // this is not valid
+  // no promise that a GlassLiveUser for local user exists
+  // GlassLiveUser is only a data retainer for people that are interacted with
+  // Will only exist if the user is in chatrooms, and some are not
   if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId()))) {
     %status = %self.getStatus();
 
@@ -2111,7 +2115,22 @@ function GlassLive::afkTrigger(%this) {
       GlassFriendsGui_StatusSelect::selectStatus("away");
 
       %this.isAFK = true;
+      %this.afkMousePos = Canvas.getCursorPos();
+      %this.afkMouseLoop();
     }
+  }
+}
+
+function GlassLive::afkMouseLoop(%this) {
+  cancel(%this.afkMouseLoop);
+  if(!%this.isAFK) {
+    return;
+  }
+
+  if(%this.afkMousePos !$= canvas.getCursorPos()) {
+    %this.afkAction();
+  } else {
+    %this.afkMouseLoop = %this.schedule(250, afkMouseLoop);
   }
 }
 
