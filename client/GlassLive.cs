@@ -133,14 +133,21 @@ function GlassLive::inviteClick(%addr, %blid) {
     }
 
     if(ServerConnection.isLocal()) {
-      glassMessageBoxOk("Stop Hosting?", "Would you like to stop hosting and join the server?", "disconnect(); connectToServer(\"" @ expandEscape(%addr) @ "\", \"\", 1, 1);");
+      glassMessageBoxYesNo("Stop Hosting?", "Would you like to stop hosting and join the server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\");");
     } else {
-      glassMessageBoxOk("Disconnect?", "Would you like to leave this server?", "disconnect(); connectToServer(\"" @ expandEscape(%addr) @ "\", \"\", 1, 1);");
+      glassMessageBoxYesNo("Disconnect?", "Would you like to leave this server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\");");
     }
   } else {
     connectToServer(%addr, "", 1, 1);
     canvas.pushDialog(connectingGui);
   }
+}
+
+function GlassLive::inviteAcceptBusy(%addr) {
+  //user is in server but has accepted the invite
+  disconnect();
+  GlassLive.isInviteAccepted = true;
+  GlassLive.inviteAddress = %addr;
 }
 
 //================================================================
@@ -3788,6 +3795,19 @@ package GlassLivePackage {
     GlassSettings.update("Live::hideBlocked", GlassLive.hideBlocked);
 
     parent::onExit();
+  }
+
+  function MainMenuGui::onRender(%this) {
+    if(GlassLive.isInviteAccepted) {
+      %addr = GlassLive.inviteAddress;
+      canvas.pushDialog(connectingGui);
+      Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
+      connectToServer(%addr, "", 1, 1);
+
+      GlassLive.isInviteAccepted = false;
+      GlassLive.inviteAddress = "";
+    }
+    parent::onRender(%this);
   }
 };
 activatePackage(GlassLivePackage);
