@@ -23,6 +23,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
   GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
   GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
+  GlassSettings.registerSetting("Live::DisplayFriendIDs", false, "GlassLive::createFriendList", "Display Friend BL_IDs", "Live", "checkbox", "", "Display friend's BL_IDs in the friendlist.");
   GlassSettings.registerSetting("Live::OverlayLogo", true, "GlassOverlay::setLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
   GlassSettings.registerSetting("Live::Vignette", true, "GlassOverlay::setVignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
   GlassSettings.registerSetting("Live::ShowFriendLocation", true, "", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");

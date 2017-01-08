@@ -1535,11 +1535,15 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
     hcolor = %hcolor;
   };
 
+  %displayName = %name;
+  if(GlassSettings.get("Live::DisplayFriendIDs"))
+	%displayName = %displayName SPC "(" @ %blid @ ")";
+
   %gui.text = new GuiTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassFriendTextProfile";
-    text = %name;
+    text = %displayName;
     extent = "31 18";
     position = "24 10";
   };
