@@ -107,7 +107,7 @@ function GlassLive::checkPendingFriendRequests() {
   }
 }
 
-function GlassLive::inviteClick(%addr, %blid) {
+function GlassLive::inviteClick(%addr, %blid, %isPassworded) {
   if(%blid !$= "") {
     %uo = GlassLiveUser::getFromBlid(%blid);
     if(%uo == false) {
@@ -133,21 +133,27 @@ function GlassLive::inviteClick(%addr, %blid) {
     }
 
     if(ServerConnection.isLocal()) {
-      glassMessageBoxYesNo("Stop Hosting?", "Would you like to stop hosting and join the server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\");");
+      glassMessageBoxYesNo("Stop Hosting?", "Would you like to stop hosting and join the server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
     } else {
-      glassMessageBoxYesNo("Disconnect?", "Would you like to leave this server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\");");
+      glassMessageBoxYesNo("Disconnect?", "Would you like to leave this server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
     }
   } else {
-    connectToServer(%addr, "", 1, 1);
-    canvas.pushDialog(connectingGui);
+    if(%isPassworded) {
+      $ServerInfo::Address = %addr;
+      canvas.pushDialog(JoinServerPassGui);
+    } else {
+      connectToServer(%addr, %pass, 1, 1);
+      canvas.pushDialog(connectingGui);
+    }
   }
 }
 
-function GlassLive::inviteAcceptBusy(%addr) {
+function GlassLive::inviteAcceptBusy(%addr, %isPass) {
   //user is in server but has accepted the invite
   disconnect();
   GlassLive.isInviteAccepted = true;
   GlassLive.inviteAddress = %addr;
+  GlassLive.invitePass = %isPass;
 }
 
 //================================================================
@@ -745,15 +751,6 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   %obj.delete();
 
   GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
-
-  if(GlassLiveUser::getFromBlid(getNumKeyId()).getStatus() !$= "away") {
-    for(%i = 0; %i < getWordCount(%msg); %i++) {
-      %word = getWord(%msg, %i);
-      if(%word $= "brb" || %word $= "afk") {
-        glassMessageBoxYesNo("Away", "Would you like to set your status to \"Away\"?", "GlassFriendsGui_StatusSelect::selectStatus(\"away\");");
-      }
-    }
-  }
 }
 
 function GlassLive::sendRoomCommand(%msg, %id) {
@@ -923,6 +920,8 @@ function GlassLive::inviteFriend(%blid) {
   %obj = JettisonObject();
   %obj.set("type", "string", "friendInvite");
   %obj.set("blid", "string", %blid);
+  %obj.set("passworded", "string", $ServerInfo::Password);
+  %obj.set("name", "string", $ServerInfo::Name);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
@@ -3800,12 +3799,19 @@ package GlassLivePackage {
   function MainMenuGui::onRender(%this) {
     if(GlassLive.isInviteAccepted) {
       %addr = GlassLive.inviteAddress;
-      canvas.pushDialog(connectingGui);
-      Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
-      connectToServer(%addr, "", 1, 1);
+
+      if(GlassLive.invitePass) {
+        canvas.pushDialog(connectingGui);
+        Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
+        connectToServer(%addr, "", 1, 1);
+      } else {
+        $ServerInfo::Address = %addr;
+        canvas.pushDialog(JoinServerPassGui);
+      }
 
       GlassLive.isInviteAccepted = false;
       GlassLive.inviteAddress = "";
+      GlassLive.invitePass = "";
     }
     parent::onRender(%this);
   }
