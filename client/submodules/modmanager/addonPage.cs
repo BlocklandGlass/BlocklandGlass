@@ -35,7 +35,6 @@ function GMM_AddonPage::close(%this) {
 }
 
 function GMM_AddonPage::handleResults(%this, %obj) {
-  GlassModManagerGui.pageDidLoad(%this);
   //obj:
   // aid
   // filename
@@ -50,7 +49,13 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   // contributors
   // branches
 
+  if(%obj.status !$= "success") {
+    %this.handleNonSuccess(%obj);
+    return;
+  }
+
   %container = %this.container;
+  GlassModManagerGui.pageDidLoad(%this);
 
   GMM_Navigation.addStep(%obj.name, "GlassModManagerGui.openPage(GMM_AddonPage, " @ expandEscape(%obj.aid) @ ");");
 
@@ -512,6 +517,56 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   GlassModManagerGui::loadAddonComments(%obj.id, %comments);
 
   return %container;
+}
+
+function GMM_AddonPage::handleNonSuccess(%this, %obj) {
+  GlassModManagerGui.pageDidLoad(%this);
+
+  switch$(%obj.status) {
+    case "notfound":
+      %title = "Not Found";
+      %message = "The add-on you tried to access was not found! If you believe this is an error, please post on the forums.";
+
+    case "notapproved":
+      %title = "Not Approved";
+      %message = "The add-on you tried to access is not approved yet!";
+
+    case "deleted":
+      %title = "Deleted";
+      %message = "The add-on you tried to access has been deleted from the Glass Mod Manager!";
+
+    case "private":
+      %title = "Private";
+      %message = "You don't have permission to access this add-on.";
+
+    default:
+      %message = "Unknown status: " @ %obj.status;
+  }
+
+  GMM_Navigation.addStep(%title, "");
+
+  %container = %this.container;
+  %container.nav = GMM_Navigation.createSwatch();
+  %container.add(%container.nav);
+
+  %body = %this.body;
+  %body.placeBelow(%container.nav, 10);
+
+  %body.text = new GuiMLTextCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    text = "<font:verdana bold:15>" @ %title @ "<br><br><color:444444><font:verdana:13>" @ getASCIIString(%message);
+    position = "10 10";
+    extent = "595 16";
+    minextent = "0 0";
+    autoResize = true;
+  };
+
+  %body.add(%body.text);
+
+  %body.text.forceReflow();
+  %body.verticalMatchChildren(30, 10);
+  %container.verticalMatchChildren(0, 0);
 }
 
 function GlassScreenshot::loadThumb(%this) {
@@ -1088,7 +1143,7 @@ function GMM_AddonPage_CommentText::onResize(%this) {
 
     %this.extent = "355 0";
     %window.textSwatch.extent = "365 0";
-    
+
     %this.forceReflow();
     return;
   }
