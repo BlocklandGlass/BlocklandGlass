@@ -128,9 +128,6 @@ function GlassLiveRoom::onUserJoin(%this, %blid) {
     %this.pushText(%text);
   }
   %this.addUser(%blid);
-
-  if(%this.id == 0 && GlassModeratorWindow.visible)
-	GlassModeratorGui::refreshPlayerlist();
 }
 
 function GlassLiveRoom::onUserLeave(%this, %blid) {
@@ -151,9 +148,6 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
   }
 
   %this.renderUserList();
-
-  if(%this.id == 0 && GlassModeratorWindow.visible)
-	GlassModeratorGui::refreshPlayerlist();
 }
 
 function GlassLiveRoom::sendMessage(%this, %msg) {

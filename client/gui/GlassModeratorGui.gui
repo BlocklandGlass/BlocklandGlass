@@ -18,10 +18,9 @@ new GuiControl(GlassModeratorGui) {
       extent = "418 350";
       minExtent = "8 2";
       enabled = "1";
-      visible = "0";
+      visible = "1";
       clipToParent = "1";
       text = "Glass Moderation";
-      closeCommand = "GlassOverlay::closeModeration();";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
@@ -30,8 +29,9 @@ new GuiControl(GlassModeratorGui) {
       canMinimize = "0";
       canMaximize = "0";
       minSize = "50 50";
-         selection = "Bar";
+      closeCommand = "GlassOverlay::closeModeration();";
          blid = "24523";
+         selection = "Bar";
 
       new GuiSwatchCtrl() {
          profile = "GuiDefaultProfile";
@@ -83,8 +83,8 @@ new GuiControl(GlassModeratorGui) {
             profile = "GlassScrollProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "218 2";
-            extent = "191 304";
+            position = "218 22";
+            extent = "191 284";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -102,7 +102,7 @@ new GuiControl(GlassModeratorGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "181 2";
+               extent = "173 2";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -119,7 +119,7 @@ new GuiControl(GlassModeratorGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "7 1";
-            extent = "209 38";
+            extent = "209 13";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -169,6 +169,8 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
+            command = "GlassModeratorGui.submit();";
+            accelerator = "enter";
             maxLength = "255";
             historySize = "0";
             password = "0";
@@ -176,11 +178,11 @@ new GuiControl(GlassModeratorGui) {
             sinkAllKeyEvents = "0";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiMlTextProfile";
+            profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "11 90";
-            extent = "53 16";
+            extent = "53 13";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -203,6 +205,8 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
+            command = "GlassModeratorGui.submit();";
+            accelerator = "enter";
             maxLength = "255";
             historySize = "0";
             password = "0";
@@ -210,11 +214,11 @@ new GuiControl(GlassModeratorGui) {
             sinkAllKeyEvents = "0";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiMlTextProfile";
+            profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "6 125";
-            extent = "58 16";
+            extent = "58 13";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -250,11 +254,11 @@ new GuiControl(GlassModeratorGui) {
             mColor = "84 217 140 200";
          };
          new GuiMLTextCtrl() {
-            profile = "GuiMlTextProfile";
+            profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "11 58";
-            extent = "53 16";
+            extent = "53 13";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -290,6 +294,25 @@ new GuiControl(GlassModeratorGui) {
             visible = "1";
             clipToParent = "1";
             color = "0 0 0 64";
+         };
+         new GuiTextEditCtrl(GlassModeratorWindow_Search) {
+            profile = "GlassTextEditProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "218 3";
+            extent = "191 16";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            command = "GlassModeratorGui::searchPlayers(GlassModeratorWindow_Search.getValue());";
+            accelerator = "enter";
+            text = "Search";
+            maxLength = "255";
+            historySize = "0";
+            password = "0";
+            tabComplete = "0";
+            sinkAllKeyEvents = "0";
          };
       };
    };

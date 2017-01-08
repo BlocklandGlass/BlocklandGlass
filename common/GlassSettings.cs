@@ -47,8 +47,9 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
   GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init"); // Was this finished?
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
-  // Fake Setting
-  GlassSettings.registerSetting("Live::FakeSetting", "One", "", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
+  // Privacy
+  GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "View my avatar", "Privacy", "dropdown", "Anyone Friends Me", "Set who is able to view your avatar.");
+  GlassSettings.registerSetting("Live::ViewLocation", "Anyone", "", "View my server", "Privacy", "dropdown", "Anyone Friends Me", "Set who is able to view the server you are currently playing on.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
@@ -166,7 +167,7 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
         buttonType = "ToggleButton";
       };
     case "dropdown": // unfinished - need to add GUI text (using %name) explaining what the dropdown text is for; also need to tweak extent/placement of dropdown ctrl.
-      %setting.extent = "250 50";
+      %setting.extent = "250 30";
       %ctrl = new GuiPopUpMenuCtrl("GlassSettingsGui_Prefs_" @ %suffix) {
         profile = "GuiPopUpMenuProfile";
         horizSizing = "right";
@@ -181,6 +182,12 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
         maxLength = "255";
         maxPopupHeight = "200";
       };
+	  
+	  %label = new GuiTextCtrl() {
+		vertSizing = "center";
+		text = %displayName;
+		position = "95 3";
+	  };
 
       for(%i = 0; %i < getWordCount(%properties); %i++) {
         %ctrl.add(getWord(%properties, %i), %i + 1);
@@ -197,6 +204,9 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
   }
 
   %setting.add(%ctrl);
+  
+  if(isObject(%label))
+	  %setting.add(%label);
 
   if(%desc !$= "")
     %infoColor = "255 255 255 255";
@@ -240,7 +250,8 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
   };
   %setting.add(%info);
 
-  %setting.verticalMatchChildren(20, 4);
+  if(%type $= "checkbox")
+    %setting.verticalMatchChildren(20, 4);
   %info.centerY();
 
   GlassSettingsGui_ScrollOverlay.settingsCount++;

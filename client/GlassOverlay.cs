@@ -250,7 +250,7 @@ function GlassOverlay::openModeration() {
   //GlassModeratorWindow_ReasonBlocker.setVisible(true);
   //GlassModeratorWindow_DurationBlocker.setVisible(true);
 
-  GlassModeratorGui::refreshPlayerlist();
+  GlassModeratorGui::searchPlayers();
 }
 
 function GlassOverlay::closeModeration() {

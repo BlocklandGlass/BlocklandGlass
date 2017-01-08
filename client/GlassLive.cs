@@ -2946,7 +2946,7 @@ function GlassLive::openUserWindow(%blid) {
 //================================================================
 //= Moderation Gui                                               =
 //================================================================
-
+// GlassLiveUsers
 function GlassCheckModeratorButton() {
   if(%uo = GlassLiveUser::getFromBlid(getNumKeyId())) {
     if(%uo.isMod())
@@ -2960,6 +2960,18 @@ function GlassOverlay::closeModeration() {
   GlassModeratorWindow.setVisible(false);
 }
 
+function GlassModeratorGui::searchPlayers(%search) {
+  GlassModeratorWindow_Playerlist.clear();
+  
+  for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
+	%user = GlassLiveUsers.getObject(%i);
+	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
+	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+  }
+  GlassModeratorWindow_Playerlist.sort(0, 1);
+}
+
+
 function GlassModeratorGui::refreshPlayerlist() {
   GlassModeratorWindow_Playerlist.clear();
 
@@ -2971,7 +2983,6 @@ function GlassModeratorGui::refreshPlayerlist() {
     GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
 
-  GlassModeratorWindow_Playerlist.sort(0, 1);
 }
 
 function GlassModeratorWindow_Selection::onSelect(%this) {
