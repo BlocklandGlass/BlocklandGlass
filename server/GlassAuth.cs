@@ -30,7 +30,12 @@ function GlassAuthS::heartbeat(%this) {
       %status = getSubStr(%cl.statusLetter, 0, 1);
     }
 
-    %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion;
+    %addr = %cl.getAddress();
+    if((%idx = strpos(%addr, ":")) > -1) {
+      %addr = getSubStr(%addr, %idx);
+    }
+
+    %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion TAB %addr;
   }
 
   if(%clients !$= "")
