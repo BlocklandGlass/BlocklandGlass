@@ -107,7 +107,25 @@ function GlassLive::checkPendingFriendRequests() {
   }
 }
 
-function GlassLive::inviteClick(%addr) {
+function GlassLive::inviteClick(%addr, %blid) {
+  if(%blid !$= "") {
+    %uo = GlassLiveUser::getFromBlid(%blid);
+    if(%uo == false) {
+      glassMessageBoxOk("Invitation Expired", "That invitation has expired!");
+      return;
+    }
+
+    if(%uo.getLocation() !$= "playing" && %uo.getLocation() !$= "hosting") {
+      glassMessageBoxOk("Invitation Expired", %uo.username @ " is no longer there!");
+      return;
+    }
+
+    if(%uo.getServerAddress() !$= %addr) {
+      glassMessageBoxOk("Invitation Expired", %uo.username @ " is no longer there!");
+      return;
+    }
+  }
+
   if(isObject(ServerConnection)) {
     if(ServerConnection.getAddress() $= %addr) {
       glassMessageBoxOk("Already There!", "That's the server you're in right now!");
@@ -121,6 +139,7 @@ function GlassLive::inviteClick(%addr) {
     }
   } else {
     connectToServer(%addr, "", 1, 1);
+    canvas.pushDialog(connectingGui);
   }
 }
 
@@ -2274,7 +2293,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
   }
 }
 
-function GlassLive::onMessageNotification(%message, %blid) {
+function GlassLive::onMessageNotification(%message, %blid, %create) {
   // TODO check friend, blocked, prefs, etc
 
   %user = GlassLiveUser::getFromBlid(%blid);
@@ -2282,7 +2301,11 @@ function GlassLive::onMessageNotification(%message, %blid) {
   if(!isObject(%user))
     return;
 
-  %gui = %user.getMessageGui();
+  if(!%create) {
+    %gui = %user.getMessageGui();
+  } else {
+    %gui = GlassLive::openDirectMessage(%blid, %user.username);
+  }
 
   if(%gui == false)
     return;
@@ -2810,7 +2833,7 @@ function GlassLive::createUserWindow(%uo) {
     text = "Invite";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
     mColor = "85 172 238 200";
-    command = "glassMessageBoxOk(\"Invite\", \"This feature is not currently available.<br>Check back later!\");"; // Invite friend to server function
+    command = "GlassLive::inviteFriend(" @ (%uo.blid+0) @ ");";
   };
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
@@ -2966,7 +2989,7 @@ function GlassOverlay::closeModeration() {
 
 function GlassModeratorGui::searchPlayers(%search) {
   GlassModeratorWindow_Playerlist.clear();
-  
+
   for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
 	%user = GlassLiveUsers.getObject(%i);
 	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)

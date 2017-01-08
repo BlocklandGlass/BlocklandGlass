@@ -504,7 +504,7 @@ package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
     if(strpos(%url, "glass://") != -1) {
-      %url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
+      //%url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
 
       %type = getSubStr(%link, 0, strPos(%link, "="));
@@ -526,6 +526,12 @@ package GlassModManager {
             GlassModManagerGui.openPage(GMM_RTBBoardPage, %board, %page);
             return;
           }
+
+        case "invite":
+          %addr = getSubStr(%link, 7, strlen(%link));
+          GlassLive::inviteClick(%addr);
+          echo(%addr);
+          return;
       }
       if(strpos(%link, "aid-") != -1) {
         %id = getsubstr(%link, 4, strlen(%link)-4);

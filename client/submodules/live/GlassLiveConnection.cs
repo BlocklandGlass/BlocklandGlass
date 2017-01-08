@@ -603,8 +603,10 @@ function GlassLiveConnection::onLine(%this, %line) {
         image = "world_go";
 
         sticky = true;
-        callback = "GlassLive::inviteClick(\"" @ expandEscape(%address) @ "\");";
+        callback = "GlassLive::inviteClick(\"" @ expandEscape(%address) @ "\", \"" @ expandEscape(%sender.blid) @ "\");";
       };
+
+      GlassLive::onMessageNotification("<color:eb9950>" @ %sender.username @ " has invited you to a server. <a:glass://invite=" @ %address @ ">Click here to join!</a>", %sender.blid, true);
 
     case "location":
       GlassLive::displayLocation(%data);
