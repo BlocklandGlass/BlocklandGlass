@@ -126,7 +126,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       vertSizing = "bottom";
       text = "";
       position = "0 11";
-      extent = (%width-%border) SPC "13";
+      extent = (%width-%border) + 10 SPC "13";
       minextent = (%width-20) SPC "13";
     };
 
