@@ -19,23 +19,23 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Servers::Favorites", "");
   
   // Live 
+  GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
+  GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
   GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
+  GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
   GlassSettings.registerSetting("Live::OverlayLogo", true, "GlassOverlay::setLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
   GlassSettings.registerSetting("Live::Vignette", true, "GlassOverlay::setVignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
-  GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
-  GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
-  GlassSettings.registerSetting("Live::PendingReminder", true, "", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
-  GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
-  GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
-  GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
-  GlassSettings.registerSetting("Live::ShowFriendStatus", true, "", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
   GlassSettings.registerSetting("Live::ShowFriendLocation", true, "", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
+  GlassSettings.registerSetting("Live::ShowFriendStatus", true, "", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
+  GlassSettings.registerSetting("Live::PendingReminder", true, "", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
+  GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
+  GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
   // Chatroom 
   GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.registerSetting("Live::RoomChatSound", true, "", "Chat Sounds", "Chatroom", "checkbox");
+  GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
   GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");
   GlassSettings.registerSetting("Live::RoomShowBlocked", false, "", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
-  GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
   GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom
   // Direct Messaging 
   GlassSettings.registerSetting("Live::MessageNotification", true, "", "Message Notifications", "Direct Messaging", "checkbox");
@@ -43,9 +43,9 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Direct Messaging", "checkbox", "", "Log DMs to config/client/BLG/chat_log/DMs");
   GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
   // Servers
+  GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
   GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
   GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init"); // Was this finished?
-  GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   // Fake Setting
   GlassSettings.registerSetting("Live::FakeSetting", "One", "", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
