@@ -2,222 +2,105 @@ if(!isObject(GlassSettings)) {
   new ScriptGroup(GlassSettings);
 }
 
-function GlassSettings::init(%context) {
-  echo("Loading " @ %context @ " prefs");
-
-  if(%context $= "client") {
-    GlassSettings.registerSetting("client", "MM::UseDefault", false, "GlassUpdaterSupport::updateSetting");
-    GlassSettings.registerSetting("client", "MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
-    GlassSettings.registerSetting("client", "MM::LiveSearch", true);
-
-    GlassSettings.registerSetting("client", "Live::HideRequests", false);
-    GlassSettings.registerSetting("client", "Live::HideFriends", false);
-    GlassSettings.registerSetting("client", "Live::HideBlocked", false);
-    GlassSettings.registerSetting("client", "Live::oRBsNotified", false); // do not change
-
-    GlassSettings.registerSetting("client", "Live::TalkingAnimation", true);
-    GlassSettings.registerSetting("client", "Live::OverlayLogo", true, "GlassOverlay::setLogo");
-    GlassSettings.registerSetting("client", "Live::Vignette", true, "GlassOverlay::setVignette");
-    GlassSettings.registerSetting("client", "Live::Keybind", "keyboard\tctrl space");
-    GlassSettings.registerSetting("client", "Live::ShowTimestamps", true);
-    GlassSettings.registerSetting("client", "Live::ConfirmConnectDisconnect", false);
-    GlassSettings.registerSetting("client", "Live::PendingReminder", true);
-
-    GlassSettings.registerSetting("client", "Live::RoomChatNotification", true);
-    GlassSettings.registerSetting("client", "Live::RoomChatSound", true);
-    GlassSettings.registerSetting("client", "Live::RoomMentionNotification", true);
-    GlassSettings.registerSetting("client", "Live::RoomShowBlocked", false);
-    GlassSettings.registerSetting("client", "Live::AutoJoinRoom", true);
-    GlassSettings.registerSetting("client", "Live::RoomNotification", false); // joined room / left room notifications
-
-    GlassSettings.registerSetting("client", "Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
-    GlassSettings.registerSetting("client", "Live::FriendsWindow_Ext", "230 380");
-
-    GlassSettings.registerSetting("client", "Live::MessageNotification", true);
-    GlassSettings.registerSetting("client", "Live::MessageSound", true);
-    GlassSettings.registerSetting("client", "Live::MessageLogging", true);
-    GlassSettings.registerSetting("client", "Live::MessageAnyone", true);
-
-    GlassSettings.registerSetting("client", "Live::ShowJoinLeave", true); // user connection messages in chatroom
-    GlassSettings.registerSetting("client", "Live::StartupNotification", true);
-    GlassSettings.registerSetting("client", "Live::StartupConnect", true);
-    GlassSettings.registerSetting("client", "Live::ShowFriendStatus", true);
-    GlassSettings.registerSetting("client", "Live::ShowFriendLocation", true);
-
-    GlassSettings.registerSetting("client", "Servers::EnableFavorites", true, "GlassServers::init");
-    GlassSettings.registerSetting("client", "Servers::DisplayPasswordedFavorites", true, "GlassServers::init");
-    GlassSettings.registerSetting("client", "Servers::LoadingImages", true);
-    GlassSettings.registerSetting("client", "Servers::LoadingGUI", true);
-
-    GlassSettings.registerSetting("client", "Live::FakeSetting", "One");
-
-    GlassSettings.registerSetting("client", "Notifications::DarkMode", false);
-    GlassSettings.registerSetting("client", "Notifications::ForceSticky", false);
-
-    GlassSettings.registerSetting("client", "Glass::UseDefaultWindows", false, "Glass::updateWindowSetting");
-
-    GlassSettings.registerSetting("client", "Servers::Favorites", "");
-
-    // **
-    // this is not where or how this should be done. we have a 3 step setting
-    // registration. only one is needed
-    // **
-
-    // glass pref, description/name, category, type, properties (for dropdowns), information
-    GlassSettings.drawSetting("Live::StartupConnect", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
-    GlassSettings.drawSetting("Live::StartupNotification", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
-    GlassSettings.drawSetting("Live::PendingReminder", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
-    GlassSettings.drawSetting("Live::ShowTimestamps", "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
-    GlassSettings.drawSetting("Live::ShowFriendStatus", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
-    GlassSettings.drawSetting("Live::ShowFriendLocation", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
-    GlassSettings.drawSetting("Live::ConfirmConnectDisconnect", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
-    GlassSettings.drawSetting("Live::AutoJoinRoom", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
-    GlassSettings.drawSetting("Live::OverlayLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
-    GlassSettings.drawSetting("Live::Vignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
-    GlassSettings.drawSetting("Live::TalkingAnimation", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
-
-    GlassSettings.drawSetting("MM::UseDefault", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
-    GlassSettings.drawSetting("MM::LiveSearch", "Use Live Search", "Mod Manager", "checkbox");
-
-    GlassSettings.drawSetting("Live::ShowJoinLeave", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom.");
-    GlassSettings.drawSetting("Live::RoomMentionNotification", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in the chatroom.");
-    GlassSettings.drawSetting("Live::RoomChatNotification", "Chat Notifications", "Chatroom", "checkbox");
-    GlassSettings.drawSetting("Live::RoomChatSound", "Chat Sounds", "Chatroom", "checkbox");
-    GlassSettings.drawSetting("Live::RoomNotification", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live.");
-    GlassSettings.drawSetting("Live::RoomShowBlocked", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
-
-    GlassSettings.drawSetting("Live::MessageNotification", "Message Notifications", "Direct Messaging", "checkbox");
-    GlassSettings.drawSetting("Live::MessageSound", "Message Sounds", "Direct Messaging", "checkbox");
-    GlassSettings.drawSetting("Live::MessageLogging", "Message Logging", "Direct Messaging", "checkbox", "", "Log DMs to config/client/BLG/chat_log/DMs");
-    GlassSettings.drawSetting("Live::MessageAnyone", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
-
-    GlassSettings.drawSetting("Servers::EnableFavorites", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
-    GlassSettings.drawSetting("Servers::DisplayPasswordedFavorites", "Show Passworded Favorites", "Servers", "checkbox", "", "Show passworded servers in your favorite server list.");
-    GlassSettings.drawSetting("Servers::LoadingGUI", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
-    GlassSettings.drawSetting("Servers::LoadingImages", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
-
-    GlassSettings.drawSetting("Live::FakeSetting", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
-
-    GlassSettings.drawSetting("Notifications::DarkMode", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
-    GlassSettings.drawSetting("Notifications::ForceSticky", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
-
-    GlassSettings.drawSetting("Glass::UseDefaultWindows", "Default Windows", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
-
-    %settings["Live"] = "Vignette TalkingAnimation RoomChatNotification RoomChatSound RoomMentionNotification RoomShowBlocked MessageNotification MessageSound MessageLogging MessageAnyone ShowTimestamps ShowJoinLeave StartupNotification StartupConnect ShowFriendStatus ShowFriendLocation RoomNotification ConfirmConnectDisconnect PendingReminder MessageLogging AutoJoinRoom OverlayLogo FakeSetting";
-    %settings["MM"] = "UseDefault LiveSearch";
-    %settings["Servers"] = "DisplayPasswordedFavorites LoadingGUI LoadingImages EnableFavorites";
-    %settings["Notifications"] = "DarkMode ForceSticky";
-    %settings["Glass"] = "UseDefaultWindows";
-
-    %settings = "Live MM Servers Notifications Glass";
-
-    GlassSettings.loadData("client");
-
-    for(%i = 0; %i < getWordCount(%settings); %i++) {
-      %prefix = getWord(%settings, %i);
-      %group = %settings[%prefix];
-      for(%o = 0; %o < getWordCount(%group); %o++) {
-        %setting = getWord(%group, %o);
-        %box = "GlassSettingsGui_Prefs_" @ %setting;
-
-        switch$(%box.profile) {
-          case "GlassCheckBoxProfile":
-            %box.setValue(GlassSettings.get(%prefix @ "::" @ %setting));
-          case "GuiPopUpMenuProfile":
-            %box.setText(GlassSettings.get(%prefix @ "::" @ %setting));
-        }
+function GlassSettings::init() {
+  echo("Loading client prefs");
+  // registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc)
+  // Hidden Settings
+  GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
+  GlassSettings.registerSetting("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
+  GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
+  GlassSettings.registerSetting("Live::HideRequests", false);
+  GlassSettings.registerSetting("Live::HideFriends", false);
+  GlassSettings.registerSetting("Live::HideBlocked", false);
+  GlassSettings.registerSetting("Live::oRBsNotified", false); // do not change
+  GlassSettings.registerSetting("Live::Keybind", "keyboard\tctrl space");
+  GlassSettings.registerSetting("Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
+  GlassSettings.registerSetting("Live::FriendsWindow_Ext", "230 380");
+  GlassSettings.registerSetting("Servers::Favorites", "");
+  
+  // Live 
+  GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
+  GlassSettings.registerSetting("Live::OverlayLogo", true, "GlassOverlay::setLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
+  GlassSettings.registerSetting("Live::Vignette", true, "GlassOverlay::setVignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
+  GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
+  GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
+  GlassSettings.registerSetting("Live::PendingReminder", true, "", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
+  GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
+  GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
+  GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
+  GlassSettings.registerSetting("Live::ShowFriendStatus", true, "", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
+  GlassSettings.registerSetting("Live::ShowFriendLocation", true, "", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
+  // Chatroom 
+  GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
+  GlassSettings.registerSetting("Live::RoomChatSound", true, "", "Chat Sounds", "Chatroom", "checkbox");
+  GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");
+  GlassSettings.registerSetting("Live::RoomShowBlocked", false, "", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
+  GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
+  GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom
+  // Direct Messaging 
+  GlassSettings.registerSetting("Live::MessageNotification", true, "", "Message Notifications", "Direct Messaging", "checkbox");
+  GlassSettings.registerSetting("Live::MessageSound", true, "", "Message Sounds", "Direct Messaging", "checkbox");
+  GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Direct Messaging", "checkbox", "", "Log DMs to config/client/BLG/chat_log/DMs");
+  GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
+  // Servers
+  GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
+  GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init"); // Was this finished?
+  GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
+  GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
+  // Fake Setting
+  GlassSettings.registerSetting("Live::FakeSetting", "One", "", "A Fake Setting", "Test", "dropdown", "One Two Three Four Five", "This does nothing practical.");
+  // Notifications
+  GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
+  GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
+  // Experimental
+  GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Default Windows", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
+  
+  
+  %settings = trim(GlassSettings.settingsList);
+  
+  GlassSettings.loadData();
+  
+  for(%i = 0; %i < getWordCount(%settings); %i++) {
+    %prefix = strReplace(getWord(%settings, %i), "_", " ");
+    %group = GlassSettings.settingsList[%prefix];
+    for(%o = 0; %o < getWordCount(%group); %o++) {
+      %setting = getWord(%group, %o);
+      %box = "GlassSettingsGui_Prefs_" @ %setting;
+  
+      switch$(%box.profile) {
+        case "GlassCheckBoxProfile":
+          %box.setValue(GlassSettings.get(%prefix @ "::" @ %setting));
+        case "GuiPopUpMenuProfile":
+          %box.setText(GlassSettings.get(%prefix @ "::" @ %setting));
       }
     }
-
-  // } else if(%context $= "server") {
-    // GlassSettings.registerSetting("server", "SC::SAEditRank", 3);
-    // GlassSettings.registerSetting("server", "SC::AEditRank", 2);
-    // GlassSettings.registerSetting("server", "SC::RequiredClients", "");
-    // GlassSettings.loadData("server");
   }
 }
 
-function GlassSettings::registerSetting(%this, %context, %name, %value, %callback) {
-  %obj = new ScriptObject() {
+function GlassSettings::registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc) {
+   %obj = new ScriptObject() {
     class = "GlassSetting";
 
     name = %name;
     value = %value;
     defaultValue = %value;
     callback = %callback;
-
-    context = %context;
   };
+  
   %this.obj[%name] = %obj;
   %this.add(%obj);
   %this.schedule(0, "add", %obj);
+  
+  if(%displayName $= "")
+	  return %obj;
+  
+  %categoryName = getWord(strReplace(%name, "::", " "), 0);
+  if(!hasItemOnList(GlassSettings.settingsList, %categoryName))
+	GlassSettings.settingsList = addItemToList(GlassSettings.settingsList, %categoryName);
 
-  return %obj;
-}
-
-function GlassSettings::resetToDefaults(%this, %context) {
-  if(%context $= "") {
-    error("Specify \"client\" or \"server\" settings to reset.");
-    return;
-  }
-
-  if(%context $= "server" || %context $= "client") {
-    for(%i = 0; %i < %this.getCount(); %i++) {
-      %setting = %this.getObject(%i);
-
-      if(%setting.context !$= %context)
-        continue;
-
-      if(%setting.name $= "Live::Keybind")
-        continue;
-
-      %this.update(%setting.name, %setting.defaultValue);
-
-      %name = getsubstr(%setting.name, strpos(%setting.name, "::") + 2, strlen(%setting.name));
-      %box = "GlassSettingsGui_Prefs_" @ %name;
-
-      if(isObject(%box)) {
-        %box.setValue(%setting.defaultValue);
-      }
-    }
-
-    warn("All Glass Settings have been reset!");
-  } else {
-    error("Invalid context.");
-  }
-}
-
-function GlassSettings::createSettingHeader(%name) {
-  %header = "GlassModManagerGui_Header_" @ strreplace(%name, " ", "_");
-
-  if(isObject(%header)) {
-    return %header;
-  }
-
-  %gui = new GuiSwatchCtrl(%header) {
-    position = "10 50";
-    extent = "250 25";
-    minExtent = "8 2";
-    color = "100 100 100 255";
-  };
-
-  %gui.text = new GuiTextCtrl() {
-    profile = "GlassSearchResultProfile";
-    position = "5 2";
-    vertSizing = "center";
-    horizSizing = "center";
-    extent = "12 4";
-    text = "\c3" @ %name;
-  };
-
-  %gui.add(%gui.text);
-  %gui.text.centerX();
-
-  return %gui;
-}
-
-function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %properties, %desc) {
-  if(GlassSettings.get(%pref) $= "") {
+  %this.settingsList[%categoryName] = addItemToList(%this.settingsList[%categoryName], getWord(strReplace(%name, "::", " "), 1));
+  
+  if(GlassSettings.get(%name) $= "") {
     error("Non-existent setting.");
     return;
   }
@@ -256,11 +139,10 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
 
   %this.last = %setting;
 
-  %prefix = getSubStr(%pref, 0, strpos(%pref, ":"));
-  %suffix = strchr(%pref, ":");
+  %prefix = getSubStr(%name, 0, strpos(%name, ":"));
+  %suffix = strchr(%name, ":");
   %suffix = getSubStr(%suffix, 2, strlen(%suffix));
   %command = "GlassLive::updateSetting(\"" @ %prefix @ "\", \"" @ %suffix @ "\");";
-
   if(isObject("GlassSettingsGui_Prefs_" @ %suffix)) {
     error("Setting '" @ %suffix @ "' already exists in GUI.");
     return;
@@ -279,7 +161,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
         visible = "1";
         clipToParent = "1";
         command = %command;
-        text = %name;
+        text = %displayName;
         groupNum = "-1";
         buttonType = "ToggleButton";
       };
@@ -342,7 +224,7 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
     mMultiply = "0";
 
     new GuiMouseEventCtrl("GlassSettingsGui_Info") {
-      setting = %name;
+      setting = %displayName;
       description = %desc;
       profile = "GuiDefaultProfile";
       horizSizing = "right";
@@ -366,6 +248,54 @@ function GlassSettings::drawSetting(%this, %pref, %name, %category, %type, %prop
 
   GlassSettingsGui_ScrollOverlay.verticalMatchChildren(40, 10);
   GlassSettingsGui_ScrollOverlay.setVisible(true);
+}
+
+function GlassSettings::resetToDefaults(%this) {
+  for(%i = 0; %i < %this.getCount(); %i++) {
+    %setting = %this.getObject(%i);
+  
+    if(%setting.name $= "Live::Keybind")
+      continue;
+  
+    %this.update(%setting.name, %setting.defaultValue);
+  
+    %name = getsubstr(%setting.name, strpos(%setting.name, "::") + 2, strlen(%setting.name));
+    %box = "GlassSettingsGui_Prefs_" @ %name;
+  
+    if(isObject(%box)) {
+      %box.setValue(%setting.defaultValue);
+    }
+  }
+  warn("All Glass Settings have been reset!");
+}
+
+function GlassSettings::createSettingHeader(%name) {
+  %header = "GlassModManagerGui_Header_" @ strreplace(%name, " ", "_");
+ 
+  if(isObject(%header)) {
+    return %header;
+  }
+
+  %gui = new GuiSwatchCtrl(%header) {
+    position = "10 50";
+    extent = "250 25";
+    minExtent = "8 2";
+    color = "100 100 100 255";
+  };
+
+  %gui.text = new GuiTextCtrl() {
+    profile = "GlassSearchResultProfile";
+    position = "5 2";
+    vertSizing = "center";
+    horizSizing = "center";
+    extent = "12 4";
+    text = "\c3" @ %name;
+  };
+
+  %gui.add(%gui.text);
+  %gui.text.centerX();
+
+  return %gui;
 }
 
 function GlassSettingsResize::onResize(%this, %x, %y, %h, %l) {
@@ -392,10 +322,10 @@ function GlassSettingsGui_Info::onMouseUp(%this) {
   glassMessageBoxOk(%this.setting, %desc);
 }
 
-function GlassSettings::loadData(%this, %context) {
+function GlassSettings::loadData(%this) {
   %fo = new FileObject();
-  if(isFile("config/" @ %context @ "/glass.conf")) {
-    %fo.openForRead("config/" @ %context @ "/glass.conf");
+  if(isFile("config/client/glass.conf")) {
+    %fo.openForRead("config/client/glass.conf");
     while(!%fo.isEOF()) {
       %line = %fo.readLine();
       %this.loadSetting(getField(%line, 0), collapseEscape(getField(%line, 1)));
@@ -425,21 +355,17 @@ function GlassSettings::loadData(%this, %context) {
   }
 
   %fo.delete();
-
-  %this.loaded[%context] = true;
 }
 
-function GlassSettings::saveData(%this, %context) {
+function GlassSettings::saveData(%this) {
   %fo = new FileObject();
-  %fo.openForWrite("config/" @ %context @ "/glass.conf");
+  %fo.openForWrite("config/client/glass.conf");
   %fo2 = new FileObject();
   %fo2.openForWrite("config/cache/glass.dat");
 
   for(%i = 0; %i < %this.getCount(); %i++) {
     %setting = %this.getObject(%i);
-    if(%setting.context $= %context) {
-      %fo.writeLine(%setting.name TAB expandEscape(%setting.value));
-    }
+     %fo.writeLine(%setting.name TAB expandEscape(%setting.value));
 
     if(%setting.class $= "GlassCache") {
       %fo2.writeLine(%setting.name TAB %setting.created TAB %setting.ttl TAB expandEscape(%setting.value));
@@ -521,3 +447,28 @@ package GlassSettingsPackage {
   }
 };
 activatePackage(GlassSettingsPackage);
+
+function hasItemOnList(%string,%item) {
+  for(%i=0;%i<getWordCount(%string);%i++) {
+  %word = getWord(%string,%i);
+	if(%word $= %item)
+	  return true;
+  }
+  return false;
+}
+
+function addItemToList(%string,%item) {
+  if(!hasItemOnList(%string, %item))
+  	%string = %string SPC %item;
+  return %string;
+}
+
+function removeItemFromList(%string,%item) {
+  for(%i=0;%i<getWordCount(%string);%i++) {
+  	%word = getWord(%string,%i);
+  	if(%word $= %item)
+  		continue;
+  	%fString = %fString SPC %word;
+  }
+  return trim(%fString);
+}

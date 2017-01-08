@@ -6,101 +6,101 @@ if($Pref::PreLoadScriptLauncherVersion != 2) {
 exec("./core.cs");
 
 function Glass::execClient() {
-	echo(" ===                Loading Preferences                 ===");
-	exec("./common/GlassSettings.cs");
+  echo(" ===                Loading Preferences                 ===");
+  exec("./common/GlassSettings.cs");
 
   exec("./runonce/settingConversion.cs");
 
-	echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
-	exec("./support/jettison.cs");
-	exec("./support/Support_TCPClient.cs");
-	exec("./support/Support_MetaTCP.cs");
-	exec("./support/Support_Markdown.cs");
-	exec("./support/Support_SemVer.cs");
-	exec("./support/DynamicGui.cs");
-
-	echo(" ===                 Loading Interface                  ===");
-	exec("./client/gui/profiles.cs");
-	exec("./client/gui/messageboxes.cs");
-	exec("./client/gui/GlassDownloadGui.gui");
-	exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
-	exec("./client/gui/GlassModManagerGui.gui");
-	exec("./client/gui/GlassModManagerImage.gui");
-	exec("./client/gui/GlassServerControlGui.gui");
-	exec("./client/gui/GlassChatroomGui.gui");
-	exec("./client/gui/GlassClientGui.gui");
-	exec("./client/gui/GlassBanGui.gui");
-	exec("./client/gui/GlassServerPreviewGui.gui");
-	exec("./client/gui/GlassJoinServerGui.gui");
-	exec("./client/gui/GlassManualGui.gui");
-	exec("./client/gui/GlassModeratorGui.gui");
+  echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
+  exec("./support/jettison.cs");
+  exec("./support/Support_TCPClient.cs");
+  exec("./support/Support_MetaTCP.cs");
+  exec("./support/Support_Markdown.cs");
+  exec("./support/Support_SemVer.cs");
+  exec("./support/DynamicGui.cs");
+  
+  echo(" ===                 Loading Interface                  ===");
+  exec("./client/gui/profiles.cs");
+  exec("./client/gui/messageboxes.cs");
+  exec("./client/gui/GlassDownloadGui.gui");
+  exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
+  exec("./client/gui/GlassModManagerGui.gui");
+  exec("./client/gui/GlassModManagerImage.gui");
+  exec("./client/gui/GlassServerControlGui.gui");
+  exec("./client/gui/GlassChatroomGui.gui");
+  exec("./client/gui/GlassClientGui.gui");
+  exec("./client/gui/GlassBanGui.gui");
+  exec("./client/gui/GlassServerPreviewGui.gui");
+  exec("./client/gui/GlassJoinServerGui.gui");
+  exec("./client/gui/GlassManualGui.gui");
+  exec("./client/gui/GlassModeratorGui.gui");
   exec("./client/gui/GlassIconSelectorGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
-	GlassSettings::init("client");
-
-	echo(" ===              Executing Important Stuff             ===");
-	exec("./common/GlassFileData.cs");
-	exec("./common/GlassDownloadManager.cs");
-	exec("./common/GlassResourceManager.cs");
-	exec("./common/GlassStatistics.cs");
-
-	exec("./client/GlassDownloadInterface.cs");
-	exec("./client/GlassUpdaterSupport.cs");
-
-	exec("./client/GlassClientManager.cs");
-
-	exec("./client/GlassAuth.cs");
-	exec("./client/GlassOverlay.cs");
-	exec("./client/GlassLive.cs");
-	exec("./client/GlassModManager.cs");
-	exec("./client/GlassPreferencesBridge.cs");
-	exec("./client/GlassServerControl.cs");
-	exec("./client/GlassNotificationManager.cs");
-	exec("./client/GlassServers.cs");
-	exec("./client/GlassManual.cs");
+  GlassSettings::init();
+  
+  echo(" ===              Executing Important Stuff             ===");
+  exec("./common/GlassFileData.cs");
+  exec("./common/GlassDownloadManager.cs");
+  exec("./common/GlassResourceManager.cs");
+  exec("./common/GlassStatistics.cs");
+  
+  exec("./client/GlassDownloadInterface.cs");
+  exec("./client/GlassUpdaterSupport.cs");
+  
+  exec("./client/GlassClientManager.cs");
+  
+  exec("./client/GlassAuth.cs");
+  exec("./client/GlassOverlay.cs");
+  exec("./client/GlassLive.cs");
+  exec("./client/GlassModManager.cs");
+  exec("./client/GlassPreferencesBridge.cs");
+  exec("./client/GlassServerControl.cs");
+  exec("./client/GlassNotificationManager.cs");
+  exec("./client/GlassServers.cs");
+  exec("./client/GlassManual.cs");
 
   exec("./client/GlassCompatibility.cs");
 
-	%date = getDateTime();
-	%month = getSubStr(%date, 0, 2);
-	%day = getSubStr(%date, strpos(%date, "/")+1, 2);
-	if(%month == 12 && %day >= 21 && !$Pref::Client::NoSnowflakes) {
-    exec("./client/GlassSnowflakes.cs");
-		GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/150));
-	}
-
-	echo(" ===                   Starting it up                   ===");
-
-	GlassResourceManager::execResource("Support_Preferences", "client");
-	GlassResourceManager::execResource("Support_Updater", "client");
-
-	GlassDownloadInterface::init();
-	GlassAuth::init();
-	GlassLive::init();
-	GlassDownloadManager::init();
-	GlassServerControlC::init();
-	GlassClientManager::init();
-	GlassNotificationManager::init();
-
-	GlassModManager::init();
-	GlassServers::init();
+  %date = getDateTime();
+  %month = getSubStr(%date, 0, 2);
+  %day = getSubStr(%date, strpos(%date, "/")+1, 2);
+  if(%month == 12 && %day >= 21 && !$Pref::Client::NoSnowflakes) {
+  exec("./client/GlassSnowflakes.cs");
+  	GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/150));
+  }
+  
+  echo(" ===                   Starting it up                   ===");
+  
+  GlassResourceManager::execResource("Support_Preferences", "client");
+  GlassResourceManager::execResource("Support_Updater", "client");
+  
+  GlassDownloadInterface::init();
+  GlassAuth::init();
+  GlassLive::init();
+  GlassDownloadManager::init();
+  GlassServerControlC::init();
+  GlassClientManager::init();
+  GlassNotificationManager::init();
+  
+  GlassModManager::init();
+  GlassServers::init();
   GlassManual::init();
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
-	Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));
-
-	%bind = GlassSettings.get("MM::Keybind");
-	if(%bind !$= "") {
-		GlassSettings.update("Live::Keybind", %bind);
-		GlassSettings.update("MM::Keybind", "");
-	}
-
-	%bind = GlassSettings.get("Live::Keybind");
-	GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
+  Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));
+  
+  %bind = GlassSettings.get("MM::Keybind");
+  if(%bind !$= "") {
+  	GlassSettings.update("Live::Keybind", %bind);
+  	GlassSettings.update("MM::Keybind", "");
+  }
+  
+  %bind = GlassSettings.get("Live::Keybind");
+  GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
 }
 
 function clientCmdGlassHandshake(%ver) {
