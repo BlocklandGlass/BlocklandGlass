@@ -448,13 +448,7 @@ function GlassSettings::cacheFetch(%this, %name) {
 
 package GlassSettingsPackage {
   function onExit() {
-    if(GlassSettings.loaded["client"]) {
-      GlassSettings.saveData("client");
-    }
-
-    if(GlassSettings.loaded["server"]) {
-      GlassSettings.saveData("server");
-    }
+    GlassSettings.saveData();
     parent::onExit();
   }
 };
