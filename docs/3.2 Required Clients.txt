@@ -1,0 +1,13 @@
+<font:verdana bold:15>Required Clients
+
+<font:verdana:12>Glass allows servers to set required or optional client sided add-ons to use while playing. Once it's setup Glass will automatically handle the downloads and prompting of downloads for the client. This is the function to register a required client:
+
+<color:eb9950><lmargin:5><font:Lucida Console:10>registerRequiredClient(%name, %glassId, %optional);<color:333333>
+
+<lmargin:0><font:verdana bold:12>%name <font:verdana:12>- This appears to the client when connecting, you can name your add-on whatever you like. It does not have to be the same as it is on Glass.<br>
+<font:verdana bold:12>%glassId <font:verdana:12>- The Glass ID of your add-on, this can be found in the url of the add-on. (Example: add-on.php/id=398 your ID would be 398).<br>
+<font:verdana bold:12>%optional <font:verdana:12>- Set this to 1 if you want the client to be an optional download.
+
+Example:
+
+<color:eb9950><lmargin:5><font:Lucida Console:10>registerRequiredClient("Jailbreak Client", 135, 0);
