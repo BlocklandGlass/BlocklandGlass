@@ -216,8 +216,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %mentioned = true;
     }
   }
-
-  %text = "<font:verdana bold:12><color:" @ %color @ ">" @ %sender.username @ ":<font:verdana:12><color:333333> " @ %msg;
+  %text = "<font:verdana bold:12><sPush><linkcolor:" @ %color @ "><a:gamelink_glass://user-" @ %sender.blid @ ">" @ %sender.username @ "</a><sPop>:<font:verdana:12><color:333333> " @ %msg;
   %this.pushText(%text);
 
   %this.view.setFlashing(true);
