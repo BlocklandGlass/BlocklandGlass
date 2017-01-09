@@ -142,7 +142,7 @@ function GlassLive::inviteClick(%addr, %blid, %isPassworded) {
       $ServerInfo::Address = %addr;
       canvas.pushDialog(JoinServerPassGui);
     } else {
-      connectToServer(%addr, %pass, 1, 1);
+      connectToServer(%addr, "", 1, 1);
       canvas.pushDialog(connectingGui);
     }
   }
@@ -3800,7 +3800,7 @@ package GlassLivePackage {
     if(GlassLive.isInviteAccepted) {
       %addr = GlassLive.inviteAddress;
 
-      if(GlassLive.invitePass) {
+      if(!GlassLive.invitePass) {
         canvas.pushDialog(connectingGui);
         Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
         connectToServer(%addr, "", 1, 1);
