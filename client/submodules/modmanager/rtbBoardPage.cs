@@ -38,9 +38,11 @@ function GMM_RTBBoardPage::handleResults(%this, %res) {
 
   %container = %this.container;
 
-  //if(GMM_Navigation.step[GMM_Navigation.steps-1] !$= %name)
-  if(!%this.open)
-    GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_RTBBoardPage, \"" @ expandEscape(%name) @ "\", " @ expandEscape(%page) @ ");");
+  if(%this.open) {
+    GMM_Navigation.steps--;
+  }
+
+  GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_RTBBoardPage, \"" @ expandEscape(%name) @ "\", " @ expandEscape(%page) @ ");");
 
   GlassModManagerGui.pageDidLoad(%this);
   GlassModManagerGui.setLoading(false);
