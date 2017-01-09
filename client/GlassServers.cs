@@ -403,6 +403,9 @@ function GlassServerPreview::connectToServer(%password) {
     return;
   }
 
+  if(isObject(serverConnection))
+	disconnectedCleanup();
+  
   connectToServer(%server, %password, "1", "1");
   GlassServerPreviewGui.close();
 }
