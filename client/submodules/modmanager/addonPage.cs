@@ -125,8 +125,8 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       horizSizing = "right";
       vertSizing = "bottom";
       text = "";
-      position = "0 11";
-      extent = (%width-%border) + 10 SPC "13";
+      position = "38 11";
+      extent = %w - 38 SPC 13;
       minextent = (%width-20) SPC "13";
     };
 

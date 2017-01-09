@@ -47,7 +47,7 @@ function GMM_Navigation::createSwatch(%this) {
       extent = 40+(strlen(%this.step[%i])*6) SPC "20";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
-      text = %this.step[%i];
+      text = "" SPC %this.step[%i] SPC "";
 
       command = "GMM_Navigation.selectStep(" @ %i @ ");";
     };
