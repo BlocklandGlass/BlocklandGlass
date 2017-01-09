@@ -15,26 +15,34 @@ function Glass::execServer() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
-	// exec("./support/Support_SemVer.cs");
 	exec("./support/jettison.cs");
 
 	echo(" ===              Executing Important Stuff             ===");
-	exec("./common/GlassFileData.cs");
-	exec("./common/GlassDownloadManager.cs");
 	exec("./common/GlassResourceManager.cs");
 
 	exec("./server/GlassAuth.cs");
 	exec("./server/GlassServerControl.cs");
 	exec("./server/GlassClientSupport.cs");
-	exec("./server/GlassServers.cs");
 	exec("./server/GlassServerImage.cs");
 
-	echo(" ===                   Starting it up                   ===");
+	echo(" ===                 Loading Resources                  ===");
 
 	GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
 
 	GlassAuthS::init();
+
+	Glass.serverLoaded = true;
+}
+
+function Glass::serverCleanup() {
+	GlassAuthS.delete();
+	GlassClientSupport.delete();
+
+	$Glass::Hook::RequiredClient = false;
+	$Glass::Modules::Prefs = false;
+
+	Glass.serverLoaded = false;
 }
 
 if($Server::Dedicated) {

@@ -284,7 +284,11 @@ function GlassLoadingGui::UpdateWindowTitle(%this) {
 function GlassLoadingGui::onWake(%this) {
   GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
 
-  GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
+  if(isObject(ServerConnection)) {
+    GlassServerPreview::getServerBuild(ServerConnection.getAddress(), GlassLoadingGui_Image);
+  } else {
+    GlassServerPreview::getServerBuild("local", GlassLoadingGui_Image);
+  }
 }
 
 function GuiTextListCtrl::sortList(%this, %col) {
@@ -406,6 +410,11 @@ function GlassServerPreview::connectToServer(%password) {
 
 function GlassServerPreview::getServerBuild(%addr, %obj) {
   fileDelete("config/client/BLG/ServerPreview.jpg");
+
+  if(%addr $= "local") {
+    %obj.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
+    return;
+  }
 
   %addr = strReplace(%addr, ".", "-");
   %addr = strReplace(%addr, ":", "_");

@@ -13,25 +13,32 @@ if(!$Server::Dedicated && !$ClientLoaded) {
 }
 
 package GlassPreload {
+  //all packages are disabled post-preload and pre-normal load
+  //we need to re-enable any packages
+  //
+  //we can also use this to make sure Glass loads early
   function deactivateServerPackages() {
 		parent::deactivateServerPackages();
+    activatePackage(GlassPreload);
 
-    if($ClientLoaded) {
-      if(($ServerSettingsGui::UseBLG)) {
-        $AddOn__System_BlocklandGlass = 1;
+    if(Glass.serverLoaded) {
+      //this means the server is actually shutting down
+      Glass::serverCleanup();
+      return;
+    }
 
-        export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
+    //glass executes specially, disable default execution
+    $AddOn__System_BlocklandGlass = -1;
+    export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
 
-        if(isPackage(GlassServerControlS)) {
-          activatePackage(GlassServerControlS);
-        } else {
-          exec("./server.cs");
-        }
-      } else {
-        $AddOn__System_BlocklandGlass = -1;
-
-        export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
+    if(!$Server::Dedicated) {
+      //obey settings
+      if($ServerSettingsGui::UseBLG) {
+        exec("./server.cs");
       }
+    } else {
+      //execute
+      exec("./server.cs");
     }
 	}
 
