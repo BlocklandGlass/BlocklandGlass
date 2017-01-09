@@ -44,9 +44,9 @@ function GlassDownload::startDownload(%this) {
 
 function GlassDownload::_fetch(%this) {
 	if(!%this.rtb) {
-		%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
+		%url = "http://" @ Glass.address @ "/api/3/download.php?type=addon_download&id=" @ %this.addonId @ "&branch=" @ %this.branchId;
 	} else {
-		%url = "http://" @ Glass.netAddress @ "/api/3/download.php?type=rtb&rtbId=" @ %this.addonId;
+		%url = "http://" @ Glass.address @ "/api/3/download.php?type=rtb&rtbId=" @ %this.addonId;
 	}
 	echo(%url);
 

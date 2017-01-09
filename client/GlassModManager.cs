@@ -104,7 +104,7 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
 
     %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
 
-    %url = "http://" @ "test.blocklandglass.com" @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
+    %url = "http://" @ Glass.address @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
 
     Glass::debug("Calling url: " @ %url);
 
@@ -459,7 +459,7 @@ function GlassModManagerQueue_Done(%this) {
 
   %file = getsubstr(%this.filename, 0, strlen(%this.filename) - 4);
 
-  if(getsubstr(strlwr(%file), 0, 7) $= "client_")
+  if(isFile("Add-Ons/" @ %file @ "/client.cs"))
     exec("Add-Ons/" @ %file @ "/client.cs");
 }
 
