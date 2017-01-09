@@ -7,7 +7,6 @@ exec("./core.cs");
 function Glass::execServer() {
 	echo(" ===                Loading Preferences                 ===");
 	exec("./common/GlassSettings.cs");
-	GlassSettings::init("server");
 
   if(isFile("config/BLG/client/mm.cs")) {
     exec("./runonce/settingConversion.cs");
