@@ -48,7 +48,7 @@ new GuiWindowCtrl(GlassFavoriteServerSwatch) {
     enabled = "1";
     visible = "0";
     clipToParent = "1";
-    command = "glassMessageBoxOk(\"Glass Favorite Servers\", \"1. Open the server browser and select a server.<br>2. Click 'Preview' at the bottom.<br>3. Click 'Add to Favorites' <br><br>Alternatively, you can disable favorite servers completely in the Glass options menu.\");";
+    command = "glassMessageBoxOk(\"Glass Favorite Servers\", \"1. Open the server browser and select a server.<br>2. Click 'Preview' at the bottom.<br>3. Click 'Add to Favorites' <br><br>Alternatively, you can disable favorite servers completely in Glass Settings.\");";
     text = "How do I add a server?";
     groupNum = "-1";
     buttonType = "PushButton";

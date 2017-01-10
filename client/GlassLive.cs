@@ -1562,7 +1562,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
 
   %displayName = %name;
   if(GlassSettings.get("Live::DisplayFriendIDs"))
-	%displayName = %displayName SPC "(" @ %blid @ ")";
+    %displayName = %displayName SPC "(" @ %blid @ ")";
 
   %gui.text = new GuiTextCtrl() {
     horizSizing = "right";
@@ -1588,25 +1588,6 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
     position = %gui.extent-22 SPC 5;
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/comment.png";
     visible = "0";
-  };
-
-  %gui.buttonChat = new GuiBitmapButtonCtrl() {
-    profile = "GuiButtonProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
-    command = "GlassLive::openDirectMessage(" @ %blid @ ", \"" @ expandEscape(%name) @ "\");";
-    text = "blocklandglass.com";
-    groupNum = "-1";
-    buttonType = "PushButton";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-
-    extent = "140 16";
-    position = "31 28";
-    text = "Message";
   };
 
   %gui.mouse = new GuiMouseEventCtrl(GlassHighlightMouse) {
@@ -1636,8 +1617,6 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
   %gui.add(%gui.icon);
   %gui.add(%gui.chaticon);
   %gui.add(%gui.mouse);
-
-  %gui.add(%gui.buttonChat);
 
   %gui.text.centerY();
   %gui.icon.centerY();
@@ -1802,8 +1781,12 @@ function GlassLive::friendListHover(%swatch) {
     %this.getGroup().accept.setVisible(true);
   } else if(%this.type $= "blocked") {
     %this.getGroup().unblock.setVisible(true);
-  } else if(%this.online && %this.status !$= "busy") {
-    %this.getGroup().chaticon.setVisible(true);
+  } else if(%this.online) {
+    if(%this.status $= "busy") {
+      %this.getGroup().chaticon.setVisible(false);
+    } else {
+      %this.getGroup().chaticon.setVisible(true);
+    }
   }
 
   if(getWord(%this.getGroup().text.extent, 0) > getWord(vectorSub(%this.extent, %this.pos), 0)-20)
@@ -1819,12 +1802,11 @@ function GlassLive::friendListExit(%swatch) {
     %this.getGroup().accept.setVisible(false);
   } else if(%this.type $= "blocked") {
     %this.getGroup().unblock.setVisible(false);
-  } else if(%this.online) {
+  } else if(%this.online && %this.status !$= "busy") {
     %this.getGroup().chaticon.setVisible(false);
   }
 
   %this.scrollEnd(%this.getGroup().text);
-
 }
 
 function GlassLive::friendListClick(%swatch, %pos) {
@@ -1832,7 +1814,6 @@ function GlassLive::friendListClick(%swatch, %pos) {
 
   switch$(%this.type) {
     case "request":
-      echo(%pos);
       if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
         glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
         GlassLive::friendDecline(%this.blid);
@@ -1858,7 +1839,7 @@ function GlassLive::friendListClick(%swatch, %pos) {
 
     default:
       if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-        if(%this.online) {
+        if(%this.online && %this.status !$= "busy") {
           GlassLive::openDirectMessage(%this.blid);
         }
       } else {
@@ -3662,13 +3643,18 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
 function GlassChatroomTab::setFlashing(%this, %bool) {
   if(isObject(%this)) {
     if(%bool) {
-      if(%this.visible)
+      if(%this.visible || %this.isFlashing)
         return;
+
+      %this.isFlashing = true;
 
       %this.flashSchedule = %this.schedule(0, flashTick, 1);
     } else {
       if(isObject(%this.tabButton))
         %this.tabButton.mColor = "255 255 255 200";
+
+      %this.isFlashing = false;
+
       cancel(%this.flashSchedule);
     }
   }
