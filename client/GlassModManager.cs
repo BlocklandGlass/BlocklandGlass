@@ -31,7 +31,7 @@ function getLongUTF8String(%str) {
   %word = "";
   for(%i = 0; %i < strlen(%str); %i++) {
     %char = getSubStr(%str, %i, 1);
-    if(%char $= " " || %char $= "\n" || %char $= "\t") {
+    if(%char $= " " || %char $= "\n" || %char $= "\t" || %i == strlen(%str)-1) {
       %res = %res @ getUTF8String(%word) @ %char;
       %word = "";
     } else {
@@ -46,7 +46,7 @@ function getLongASCIIString(%str) {
   %word = "";
   for(%i = 0; %i < strlen(%str); %i++) {
     %char = getSubStr(%str, %i, 1);
-    if(%char $= " " || %char $= "\n" || %char $= "\t") {
+    if(%char $= " " || %char $= "\n" || %char $= "\t" || %i == strlen(%str)-1) {
       %res = %res @ getASCIIString(%word) @ %char;
       %word = "";
     } else {
