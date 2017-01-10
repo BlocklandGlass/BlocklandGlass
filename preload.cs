@@ -41,13 +41,5 @@ package GlassPreload {
       exec("./server.cs");
     }
 	}
-
-  function GameConnection::BLP_isAllowedUse(%this) {
-    if($AddOn__System_BlocklandGlass == -1) {
-      return 0;
-    }
-
-    parent::BLP_isAllowedUse(%this);
-  }
 };
 activatePackage(GlassPreload);
