@@ -26,6 +26,36 @@ function GlassModManager::init() {
   GlassModManager::scanForRTB();
 }
 
+function getLongUTF8String(%str) {
+  %res = "";
+  %word = "";
+  for(%i = 0; %i < strlen(%str); %i++) {
+    %char = getSubStr(%str, %i, 1);
+    if(%char $= " " || %char $= "\n" || %char $= "\t") {
+      %res = %res @ getUTF8String(%word) @ %char;
+      %word = "";
+    } else {
+      %word = %word @ %char;
+    }
+  }
+  return %res;
+}
+
+function getLongASCIIString(%str) {
+  %res = "";
+  %word = "";
+  for(%i = 0; %i < strlen(%str); %i++) {
+    %char = getSubStr(%str, %i, 1);
+    if(%char $= " " || %char $= "\n" || %char $= "\t") {
+      %res = %res @ getASCIIString(%word) @ %char;
+      %word = "";
+    } else {
+      %word = %word @ %char;
+    }
+  }
+  return %res;
+}
+
 function GlassModManagerImageMouse::onMouseDown(%this) {
   canvas.popDialog(GlassModManagerImage);
 }
@@ -508,7 +538,7 @@ package GlassModManager {
 		 GlassLive::openUserWindow(getSubStr(%url, 22, strLen(%url) - 1));
 		return;
 	}
-	
+
 	// Mod Manager links
     if(strpos(%url, "glass://") != -1) {
       //%url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
