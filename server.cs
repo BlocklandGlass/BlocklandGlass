@@ -15,6 +15,7 @@ function Glass::execServer() {
 	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");
+	exec("./support/Support_SemVer.cs");
 	exec("./support/jettison.cs");
 
 	echo(" ===              Executing Important Stuff             ===");

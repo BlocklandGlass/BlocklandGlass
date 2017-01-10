@@ -279,6 +279,14 @@ package GlassServerControlS {
       commandToClient(%client, 'messageBoxOk', "Recommended Mods", "This server has some optional clients you can download:<br>" @ GlassClientSupport.getLinks());
     }
 
+    // Version check
+    %version = updater.addons.getObjectByName("Support_Preferences").version;
+    if(semanticVersionCompare(%version, "1.2.0") == 2) {
+      //outdated
+      schedule(50, 0, messageClient, %client, '', "\c2This server is running an outdated version of Support_Preferences");
+      schedule(51, 0, messageClient, %client, '', "\c2Your version is terrible broken. Please update immediately.");
+    }
+
     return %ret;
   }
 
