@@ -24,12 +24,15 @@ function GMM_BoardPage::open(%this, %id, %page) {
 
 function GMM_BoardPage::close(%this) {
   %this.container.deleteAll();
-  %this.container.delete();
   %this.open = false;
 }
 
 function GMM_BoardPage::handleResults(%this, %res) {
+  if(%this.open) {
+    GMM_Navigation.steps--;
+  }
   GlassModManagerGui.pageDidLoad(%this);
+  
   GlassModManagerGui.setLoading(false);
   %status = %res.status;
 
@@ -41,10 +44,6 @@ function GMM_BoardPage::handleResults(%this, %res) {
   %addons = %res.addons;
 
   %container = %this.container;
-
-  if(%this.open) {
-    GMM_Navigation.steps--;
-  }
   GMM_Navigation.addStep(%name, "GlassModManagerGui.openPage(GMM_BoardPage, \"" @ expandEscape(%id) @ "\", " @ expandEscape(%page) @ ");");
 
   %this.open = true;

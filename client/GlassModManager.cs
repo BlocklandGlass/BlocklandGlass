@@ -533,11 +533,11 @@ function stringifyFileSize(%size, %dec) {
 package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
-	// User links
-	if(getSubStr(%url, 0, 17) $= "gamelink_glass://") {
-		 GlassLive::openUserWindow(getSubStr(%url, 22, strLen(%url) - 1));
-		return;
-	}
+  	// User links
+  	if(getSubStr(%url, 0, 17) $= "gamelink_glass://") {
+      GlassLive::openUserWindow(getSubStr(%url, 22, strLen(%url) - 1));
+      return;
+  	}
 
 	// Mod Manager links
     if(strpos(%url, "glass://") != -1) {

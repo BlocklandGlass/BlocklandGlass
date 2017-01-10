@@ -165,7 +165,7 @@ function GMM_RTBBoardPage::swatchClick(%this, %swatch) {
   %obj = GlassModManagerGui.openPage(GMM_RTBAddonPage, %swatch.aid);
 }
 
-function _glassPageNav(%board, %id) {
+function _glassRTBPageNav(%board, %id) {
   return "<a:glass://rtbBoard=" @ strReplace(%board, " ", "_") @ "&page=" @ %id @ ">" @ %id @ "</a>";
 }
 
@@ -182,23 +182,23 @@ function GMM_RTBBoardPage::createBoardNav(%bid, %page, %pages) {
     %pageText = "[1]";
   } else {
     if(%page > 3) {
-      %pageText = _glassPageNav(%bid, "1") SPC "..." SPC "";
+      %pageText = _glassRTBPageNav(%bid, "1") SPC "..." SPC "";
     } else if(%page > 2) {
-      %pageText = _glassPageNav(%bid, "1") SPC "";
+      %pageText = _glassRTBPageNav(%bid, "1") SPC "";
     }
 
     if(%page < 2) {
-      %pageText = %pageText @ "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
+      %pageText = %pageText @ "[" @ %page @ "]" SPC _glassRTBPageNav(%bid, %page+1);
     } else if(%page+1 > %pages) {
-      %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]";
+      %pageText = %pageText @ _glassRTBPageNav(%bid, %page-1) SPC "[" @ %page @ "]";
     } else {
-      %pageText = %pageText @ _glassPageNav(%bid, %page-1) SPC "[" @ %page @ "]" SPC _glassPageNav(%bid, %page+1);
+      %pageText = %pageText @ _glassRTBPageNav(%bid, %page-1) SPC "[" @ %page @ "]" SPC _glassRTBPageNav(%bid, %page+1);
     }
 
     if(%page+2 == %pages) {
-      %pageText = %pageText SPC _glassPageNav(%bid, %pages);
+      %pageText = %pageText SPC _glassRTBPageNav(%bid, %pages);
     } else if(%page+2 < %pages) {
-      %pageText = %pageText SPC "..." SPC _glassPageNav(%bid, %pages);
+      %pageText = %pageText SPC "..." SPC _glassRTBPageNav(%bid, %pages);
     }
   }
 
