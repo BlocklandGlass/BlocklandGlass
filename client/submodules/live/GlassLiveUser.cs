@@ -219,7 +219,7 @@ function GlassLiveUser::getAvatar(%this, %gui) {
 
 function GlassLiveUser::gotAvatar(%this, %jsonObj, %private) {
   if(%private) echo("Avatar is private");
-  
+
   if(!isObject(%jsonObj) || %jsonObj.keyCount == 0 || %private) {
     %this.avatarFiller = true;
     %this.avatarGui.createBlockhead(false);
@@ -236,11 +236,12 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj, %private) {
   %this.avatarGui.lightDirection = "0 0.2 0.3";
 }
 
-function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress) {
+function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress, %serverPassworded) {
   %this.lastLocation = %this.location;
   %this.location = %location;
   %this.serverTitle = %serverTitle;
   %this.serverAddress = %serverAddress;
+  %this.serverPassworded = %serverPassworded;
 
   if(isObject(%this.window))
     GlassLive::openUserWindow(%this.blid);
@@ -272,4 +273,15 @@ function GlassLiveUser::getServerAddress(%this) {
     return "";
 
   return %this.serverAddress;
+}
+
+function GlassLiveUser::isServerPassworded(%this) {
+  if(%this.status $= "offline")
+    return false;
+
+  if(%this.location $= "playing" || %this.location $= "hosting") {
+    return %this.serverPassworded;
+  } else {
+    return false;
+  }
 }

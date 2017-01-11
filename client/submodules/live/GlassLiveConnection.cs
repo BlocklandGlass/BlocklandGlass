@@ -455,7 +455,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %uo.setIcon(%friend.icon);
 
         if(isObject(%friend.locationData)) {
-          %uo.updateLocation(%friend.locationData.location, %friend.locationData.serverTitle, %friend.locationData.address);
+          %uo.updateLocation(%friend.locationData.location, %friend.locationData.serverTitle, %friend.locationData.address, %friend.locationData.passworded);
         }
 
         GlassLive::addFriendToList(%uo);
@@ -549,7 +549,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendLocation":
       %uo = GlassLiveUser::create(%data.username, %data.blid);
 
-      %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
+      %uo.updateLocation(%data.location, %data.serverTitle, %data.address, %data.passworded);
 
       if(GlassSettings.get("Live::ShowFriendLocation")) {
         if(%uo.getLastLocation() !$= "") {

@@ -713,11 +713,13 @@ function GlassLive::updateLocation(%inServer) {
     %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
 
     %obj.set("address", "string", %location);
+    %obj.set("passworded", "string", $ServerInfo::Password);
   }
 
   if(%action $= "hosting") {
     %obj.set("port", "string", $Server::Port);
     %obj.set("serverName", "string", $Pref::Server::Name);
+    %obj.set("passworded", "string", $ServerInfo::Password);
   } else if(%inServer) {
     %obj.set("serverName", "string", $ServerInfo::Name);
   }
@@ -1959,7 +1961,12 @@ function GlassLive::joinFriendServer(%blid) {
 		return;
 	}
 
-	ConnectToServer(%server, "", "1", "1");
+  if(%user.isServerPassworded()) {
+    $ServerInfo::Address = %server;
+    canvas.pushDialog(JoinServerPassGui);
+	} else {
+    connectToServer(%server, "", "1", "1");
+  }
 }
 
 //====
@@ -2832,15 +2839,20 @@ function GlassLive::createUserWindow(%uo) {
     mColor = "237 118 105 200";
   };
 
+  %invitable = %uo.isFriend() && isObject(ServerConnection);
+
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     position = "120 221";
     extent = "102 30";
     text = "Invite";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    mColor = "85 172 238 200";
+    mColor = %invitable ? "85 172 238 200" : "200 200 200 200";
+    enabled = %invitable;
     command = "GlassLive::inviteFriend(" @ (%uo.blid+0) @ ");";
   };
+
+  %joinable = %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -2848,7 +2860,8 @@ function GlassLive::createUserWindow(%uo) {
     extent = "102 30";
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    mColor = "46 204 113 200";
+    mColor = %joinable ? "46 204 113 200" : "200 200 200 200";
+    enabled = %joinable;
     command = "glassMessageBoxYesNo(\"Join\", \"Would you like to join the server <font:verdana bold:13>" @ %uo.username @ "<font:verdana:13> is on?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
   };
 
