@@ -1,1 +1,3 @@
-todo: info on how to register glass preferences (via support_preferences) and what additional preference types are available compared to rtb
+<font:verdana bold:15>Preferences
+
+<font:verdana:12>Glass automatically brings in any old RTB preferences, already supporting nearly all RTB add-ons. You can find information for registering preferences at the <a:github.com/theblackparrot/Blockland-Preferences>Support_Preferences GitHub Page</a>.

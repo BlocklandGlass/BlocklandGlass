@@ -1,1 +1,3 @@
-tips and tricks to mod manager
+<font:verdana bold:15>Mod Manager
+
+<font:verdana:12>The Glass Mod Manager allows you to browse add-ons without ever leaving Blockland. You can browse through categories, search, view old RTB add-ons, and download add-ons right into Blockland.

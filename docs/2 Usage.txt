@@ -1,1 +1,3 @@
-stuff
+<font:verdana bold:15>Usage
+
+<font:verdana:12>You've already made it this far by installing Glass. You can use the Glass keybind anywhere in-game to bring up the Glass Overlay, allowing you access all of Glass's features.
