@@ -193,6 +193,8 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
       color = %color;
       ocolor = %color;
       index = %i;
+
+      aid = %data.aid;
     };
 
     %colorset.text = new GuiMLTextCtrl() {
@@ -256,7 +258,17 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
   }
 }
 
-function GMM_ColorsetsPage::interact(%this, %swatch) {
+function GMM_ColorsetsPage::interact(%this, %swatch, %pos) {
+  echo(%pos);
+  if(getWord(%pos, 0) > getWord(%swatch.extent, 0)-20) {
+    echo("aid: " @ %swatch.aid);
+    if(%swatch.aid !$= "") {
+      GMM_Navigation.clear();
+      GlassModManagerGui.openPage(GMM_AddonPage, %swatch.aid);
+      return;
+    }
+  }
+
   %this.renderPreview(%this.colorsets.getObject(%swatch.index).file);
 
   if(%this.selectedColorset) {
@@ -368,6 +380,15 @@ function GMM_ColorsetsPage::populateColorsets(%this) {
 
       file = %file;
     };
+
+    if(%so.isBLG) {
+      if(!jettisonReadFile("Add-Ons/" @ %name @ "/glass.json")) {
+        %so.aid = ($JSON::Value).id;
+        $JSON::Value.delete();
+      } else {
+        echo("error reading glass.json: " @ $JSON::Error);
+      }
+    }
 
     %this.colorsets.add(%so);
   }
