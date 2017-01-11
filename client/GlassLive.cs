@@ -1142,6 +1142,9 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
     %DecalName = $Pref::Avatar::DecalName;
     %HeadColor = $Pref::Avatar::HeadColor;
 
+    if(%FaceName $= "smiley")
+      %FaceName = "default";
+
     %accent = $Pref::Avatar::accent;
     %accentColor = $Pref::Avatar::accentColor;
 
@@ -1225,6 +1228,9 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
     %FaceName = %json.faceName;
     %DecalName = %json.decalName;
     %HeadColor = %json.headColor;
+
+    if(%FaceName $= "smiley")
+      %FaceName = "default";
 
     %accent = %json.accent;
     %accentColor = %json.accentColor;
