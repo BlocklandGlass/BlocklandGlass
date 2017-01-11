@@ -676,6 +676,12 @@ function GlassLive::sendAvatarData() {
 
 function GlassLive::updateLocation(%inServer) {
 
+  if(%inServer $= "") {
+    %inServer = GlassLive.inServer;
+  } else {
+    GlassLive.inServer = %inServer;
+  }
+
   if(!%inServer) {
     %action = "menus";
   } else if(ServerConnection.isLocal()) {
@@ -700,6 +706,9 @@ function GlassLive::updateLocation(%inServer) {
   %obj = JettisonObject();
   %obj.set("type", "string", "updateLocation");
   %obj.set("location", "string", %action);
+
+  if(%inServer)
+    %obj.set("serverName", "string", $ServerInfo::Name);
 
   if(%action $= "playing") {
     %location = ServerConnection.getRawIP() @ ":" @ ServerConnection.getPort();

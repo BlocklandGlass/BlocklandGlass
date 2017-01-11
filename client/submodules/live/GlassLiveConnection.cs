@@ -64,6 +64,9 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("blid", "string", getNumKeyId());
   %obj.set("version", "string", Glass.version);
 
+  %obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
+  %obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
+
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:2ecc71>Authenticating...");
