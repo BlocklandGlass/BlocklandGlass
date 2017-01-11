@@ -707,15 +707,19 @@ function GlassLive::updateLocation(%inServer) {
   %obj.set("type", "string", "updateLocation");
   %obj.set("location", "string", %action);
 
-  if(%inServer)
-    %obj.set("serverName", "string", $ServerInfo::Name);
-
   if(%action $= "playing") {
     %location = ServerConnection.getRawIP() @ ":" @ ServerConnection.getPort();
     %name = NPL_Window.getValue();
     %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
 
     %obj.set("address", "string", %location);
+  }
+
+  if(%action $= "hosting") {
+    %obj.set("port", "string", $Server::Port);
+    %obj.set("serverName", "string", $Pref::Server::Name);
+  } else if(%inServer) {
+    %obj.set("serverName", "string", $ServerInfo::Name);
   }
 
   if(isObject(GlassLiveConnection) && GlassLiveConnection.connected) {

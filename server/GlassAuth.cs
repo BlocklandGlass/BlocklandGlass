@@ -32,7 +32,7 @@ function GlassAuthS::heartbeat(%this) {
 
     %addr = %cl.getAddress();
     if((%idx = strpos(%addr, ":")) > -1) {
-      %addr = getSubStr(%addr, %idx);
+      %addr = getSubStr(%addr, 0, %idx);
     }
 
     %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion TAB %addr;
