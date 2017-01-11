@@ -125,9 +125,9 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       horizSizing = "right";
       vertSizing = "bottom";
       text = "";
-      position = "38 11";
-      extent = %w - 38 SPC 13;
-      minextent = (%width-20) SPC "13";
+      position = "26 11";
+      extent = (%w-26) SPC 13;
+      minextent = (%w-26) SPC "13";
     };
 
     switch(%i) {
@@ -148,7 +148,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     %swatch.add(%swatch.image);
     %container.add(%swatch);
 
-    %swatch.text.centerX();
+    %swatch.text.centerY();
 
     %swatch.placeBelow(%body, %border);
     %container.info[%i] = %swatch;
