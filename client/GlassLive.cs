@@ -2924,12 +2924,22 @@ function GlassLive::openUserWindow(%blid) {
         %locationRGB = "241 196 15 100";
         %locationDisplay = "<br>Playing Singleplayer";
 
+      case "private":
+        //%locationColor = "AFAFAF";
+        %locationRGB = "235 235 235 255";
+        %locationDisplay = "<br>Location Private";
+
       default:
         //%locationColor = "AFAFAF";
         %locationRGB = "235 235 235 255";
         %locationDisplay = "<br>Unknown";
     }
     %locationColor = "333333";
+
+    if(!%uo.isFriend()) {
+      %locationRGB = "235 235 235 255";
+      %locationDisplay = "<br>";
+    }
 
   	%window.statusText.setText(%status);
 

@@ -218,6 +218,8 @@ function GlassLiveUser::getAvatar(%this, %gui) {
 }
 
 function GlassLiveUser::gotAvatar(%this, %jsonObj, %private) {
+  if(%private) echo("Avatar is private");
+  
   if(!isObject(%jsonObj) || %jsonObj.keyCount == 0 || %private) {
     %this.avatarFiller = true;
     %this.avatarGui.createBlockhead(false);

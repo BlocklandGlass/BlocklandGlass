@@ -627,7 +627,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %blid = %data.blid;
       %avatarData = %data.avatar;
 
-      %user.gotAvatar(%avatarData);
+      %user.gotAvatar(%avatarData, %data.private);
 
     case "blockedList":
       %list = "";
