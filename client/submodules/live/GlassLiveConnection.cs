@@ -15,7 +15,7 @@ function GlassLive::connectToServer() {
   }
 
   if(GlassLive.connectionTries > 4) {
-    %minutes = 5;
+    %minutes = 2;
     GlassLive.reconnect = GlassLive.schedule((%minutes * 60 * 1000) | 0, connectToServer);
     GlassLive.connectionTries = 0;
     return;
@@ -691,6 +691,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %this.disconnect();
       %this.connected = false;
+      GlassLive.noReconnect = false;
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), connectToServer);
 
     case "disconnected":
