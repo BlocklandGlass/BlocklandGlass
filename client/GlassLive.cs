@@ -42,8 +42,6 @@ function GlassLive::init() {
       color_mod = "e67e22";
       color_admin = "e74c3c";
       color_bot = "9b59b6";
-
-      afk_minutes = 10;
     };
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
@@ -102,7 +100,7 @@ function GlassLive::checkPendingFriendRequests() {
         callback = "GlassOverlay::open();";
       };
 
-      alxPlay(GlassBellAudio);
+      GlassAudio::play("bell");
     }
   }
 }
@@ -128,14 +126,14 @@ function GlassLive::inviteClick(%addr, %blid, %isPassworded) {
 
   if(isObject(ServerConnection)) {
     if(ServerConnection.getAddress() $= %addr) {
-      glassMessageBoxOk("Already There!", "That's the server you're in right now!");
+      glassMessageBoxOk("Already There", "That's the server you're in right now!");
       return;
     }
 
     if(ServerConnection.isLocal()) {
-      glassMessageBoxYesNo("Stop Hosting?", "Would you like to stop hosting and join the server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
+      glassMessageBoxYesNo("Stop Hosting", "Would you like to stop hosting and join the server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
     } else {
-      glassMessageBoxYesNo("Disconnect?", "Would you like to leave this server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
+      glassMessageBoxYesNo("Disconnect", "Would you like to leave this server?", "GlassLive::inviteAcceptBusy(\"" @ expandEscape(%addr) @ "\", \"" @ expandEscape(%isPassworded) @ "\");");
     }
   } else {
     if(%isPassworded) {
@@ -565,8 +563,8 @@ function GlassLive::setStatus(%status) {
   // this is not valid. there is no promise that a glassliveuser has been created
   // for the local user
 
-  //if(%status $= GlassLiveUser::getFromBlid(getNumKeyId()).status)
-  //  return;
+  if(%status $= GlassLive.status)
+    return;
 
   if(%status $= "online" || %status $= "away" || %status $= "busy") {
     %obj = JettisonObject();
@@ -576,6 +574,8 @@ function GlassLive::setStatus(%status) {
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
     %obj.delete();
+    
+    GlassLive.status = %status;
   }
 }
 
@@ -785,8 +785,7 @@ function GlassLive::sendMessage(%blid, %msg) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
-  if(GlassSettings.get("Live::MessageSound"))
-    alxPlay(GlassUserMsgSentAudio);
+  GlassAudio::play("userMsgSent", GlassSettings.get("Volume::DirectMessage"));
 
   %obj.delete();
 }
@@ -1916,9 +1915,9 @@ function GlassLive::setFriendStatus(%blid, %status) {
   if(GlassSettings.get("Live::ShowFriendStatus") && !%uo.isBlocked()) {
     if(%uo.getStatus() $= "online" || %uo.getStatus() $= "offline") {
       %online = (%uo.getStatus() $= "offline" ? false : true);
-      %sound = (%online ? "GlassFriendOnlineAudio" : "GlassFriendOfflineAudio");
+      %sound = (%online ? "friendOnline" : "friendOffline");
 
-      alxPlay(%sound);
+      GlassSettings::play(%sound, GlassSettings.get("Volume::FriendStatus"));
     }
 
     switch$(%uo.getStatus()) {
@@ -2107,32 +2106,29 @@ function GlassLive::afkCheck(%this, %on) {
     %this.afkAction();
   } else {
     deactivatePackage(GlassAFKPackage);
-    cancel(%this.afkTrigger);
+    cancel(%this.afkTriggerSchedule);
   }
 }
 
 function GlassLive::afkAction(%this) {
-  cancel(%this.afkTrigger);
+  cancel(%this.afkTriggerSchedule);
 
   if(%this.isAFK) {
     GlassFriendsGui_StatusSelect::selectStatus(%this.lastStatus);
 
     %this.isAFK = false;
   } else {
-    if(%this.afk_minutes < 5)
-      %this.afk_minutes = 5;
+    if(GlassSettings.get("Live::AFKTime") < 5)
+      GlassSettings.update("Live::AFKTime", 5);
 
-    %this.afkTrigger = %this.schedule((%this.afk_minutes * 60000) | 0, "afkTrigger");
+    %this.afkTriggerSchedule = %this.schedule((GlassSettings.get("Live::AFKTime") * 60000) | 0, "afkTrigger");
   }
 }
 
 function GlassLive::afkTrigger(%this) {
-  // this is not valid
-  // no promise that a GlassLiveUser for local user exists
-  // GlassLiveUser is only a data retainer for people that are interacted with
-  // Will only exist if the user is in chatrooms, and some are not
-  if(isObject(%self = GlassLiveUser::getFromBlid(getNumKeyId()))) {
-    %status = %self.getStatus();
+  echo(%this.status);
+  if(%this.status !$= "") {
+    %status = %this.status;
 
     if(%status !$= "away") {
       %this.lastStatus = %status;
@@ -2148,14 +2144,14 @@ function GlassLive::afkTrigger(%this) {
 
 function GlassLive::afkMouseLoop(%this) {
   cancel(%this.afkMouseLoop);
-  if(!%this.isAFK) {
-    return;
-  }
 
-  if(%this.afkMousePos !$= canvas.getCursorPos()) {
+  if(%this.isAFK && %this.afkMousePos !$= canvas.getCursorPos()) {
     %this.afkAction();
   } else {
-    %this.afkMouseLoop = %this.schedule(250, afkMouseLoop);
+    if(%this.isAFK)
+      %this.afkMouseLoop = %this.schedule(250, afkMouseLoop);
+    else
+      %this.afkMouseLoop = %this.schedule(10000, afkMouseLoop);
   }
 }
 
@@ -3059,19 +3055,30 @@ function GlassModeratorGui::SwapTabs(%this) {
 function GlassModeratorGui::submit(%this) {
   %blid = GlassModeratorWindow.blid;
   %type = GlassModeratorWindow_Selection.getValue();
-  if(%type !$= "Mute" && %type !$= "Kick")
+
+  if(%type !$= "Mute" && %type !$= "Kick") {
     %reason = GlassModeratorWindow_Reason.getValue();
+    if(%reason $= "") {
+      glassMessageBoxOk("Error", "You must enter a reason.");
+      return;
+    }
+  }
+
   %duration = GlassModeratorWindow_Duration.getValue();
 
-  if(%reason !$= "")
-	%reason = " " @ %reason;
+  if((%duration == 0 || %duration $= "") && %duration != -1) {
+    glassMessageBoxOk("Error", "You must enter a valid duration.");
+    return;
+  }
+
+  %reason = " " @ %reason;
 
   if(%type $= "Kick")
-    GlassLive::sendRoomCommand("/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
+    GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
-    GlassLive::sendRoomCommand("/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
-
-  GlassBanWindowGui.setVisible(false);
+    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
+  
+  Glass::debug("Sent room command:" SPC %cmd);
 }
 
 //================================================================
@@ -3850,27 +3857,21 @@ package GlassAFKPackage {
     GlassLive.afkAction();
   }
 
-  // function mouseFire(%on) {
-    // parent::mouseFire(%on);
+  function mouseFire(%on) {
+    parent::mouseFire(%on);
 
-    // GlassLive.afkAction();
-  // }
+    GlassLive.afkAction();
+  }
+  
+  function Jump(%on) {
+    parent::Jump(%on);
+
+    GlassLive.afkAction();
+  }
 
   function Jet(%on) {
     parent::Jet(%on);
 
     GlassLive.afkAction();
   }
-
-  // function yaw(%amt) {
-    // parent::yaw(%amt);
-
-    // GlassLive.afkAction();
-  // }
-
-  // function pitch(%amt) {
-    // parent::pitch(%amt);
-
-    // GlassLive.afkAction();
-  // }
 };

@@ -4,7 +4,7 @@
 
 <color:eb9950><lmargin:5><font:Lucida Console:10>registerLoadingScreen(%url, %fileType[, %crc]);<color:333333>
 
-<lmargin:0><font:verdana:12>Calling this method inside your gamemode makes clients (who have loading backgrounds enabled) download the specified image url. Any jpeg, png, or jpg image is supported. Note that Glass has to be running on the server.
+<lmargin:0><font:verdana:12>Calling this method inside your gamemode makes clients (who have loading backgrounds enabled) download the specified image URL. Any jpeg, png, or jpg image is supported. Note that Glass has to be running on the server.
 
 <font:verdana bold:12>%crc<font:verdana:12> is an optional field allowing the client to cache your server's preview image. If a client already has the loading image with the given CRC downloaded, the image will load automatically without needing to be downloaded.
 
@@ -12,4 +12,4 @@ Example:
 
 <color:eb9950><lmargin:5><font:Lucida Console:10>registerLoadingScreen("http://mysite.com/image.png", "png");<lmargin:0>
 
-<font:verdana bold:12><color:FF0000>The background must be below 2MB in file size.
+<font:verdana bold:12><color:333333>The background must be below 2MB in file size, or else it won't load!

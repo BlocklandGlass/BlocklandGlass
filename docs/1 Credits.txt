@@ -23,3 +23,5 @@ Glass relies on some other mods to work, and we'd like to thank their authors fo
 <bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>TheBlackParrot<font:verdana:12>
 <lmargin:14>Support_Preferences
 <lmargin:0>
+
+We would also like to thank the many testers who have contributed by reporting bugs for helping us to create a bug-free experience.

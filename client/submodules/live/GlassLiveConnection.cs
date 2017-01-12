@@ -238,8 +238,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         };
       }
 
-      if(GlassSettings.get("Live::MessageSound"))
-        alxPlay(GlassUserMsgReceivedAudio);
+      GlassAudio::play("userMsgReceived", GlassSettings.get("Volume::DirectMessage"));
 
     case "messageNotification":
       // TODO create GlassLiveUser ? data.chat_username is sent now
@@ -495,7 +494,7 @@ function GlassLiveConnection::onLine(%this, %line) {
           callback = "";
         };
 
-        alxPlay(GlassFriendRequestAudio);
+        GlassAudio::play("friendRequest");
       }
 
     case "friendStatus":
@@ -528,7 +527,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         sticky = false;
         callback = "";
       };
-      alxPlay(GlassFriendAddedAudio);
+      GlassAudio::play("friendAdded");
 
     case "friendRemove":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
@@ -544,7 +543,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         callback = "";
       };
 
-      alxPlay(GlassFriendRemovedAudio);
+      GlassAudio::play("friendRemoved");
 
     case "friendLocation":
       %uo = GlassLiveUser::create(%data.username, %data.blid);
@@ -658,7 +657,7 @@ function GlassLiveConnection::onLine(%this, %line) {
           sticky = true;
           callback = "updater.checkForUpdates();";
         };
-        alxPlay(GlassBellAudio);
+        GlassAudio::play("bell");
 
         Glass.updateNotified = true;
       }
@@ -687,7 +686,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         callback = "";
       };
 
-      alxPlay(GlassBellAudio);
+      GlassAudio::play("bell");
 
       %this.disconnect();
       %this.connected = false;

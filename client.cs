@@ -40,18 +40,20 @@ function Glass::execClient() {
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
-  
+
   echo(" ===              Executing Important Stuff             ===");
   exec("./common/GlassFileData.cs");
   exec("./common/GlassDownloadManager.cs");
   exec("./common/GlassResourceManager.cs");
   exec("./common/GlassStatistics.cs");
-  
+
+  exec("./client/GlassAudio.cs");
+
   exec("./client/GlassDownloadInterface.cs");
   exec("./client/GlassUpdaterSupport.cs");
-  
+
   exec("./client/GlassClientManager.cs");
-  
+
   exec("./client/GlassAuth.cs");
   exec("./client/GlassOverlay.cs");
   exec("./client/GlassLive.cs");
@@ -68,7 +70,7 @@ function Glass::execClient() {
   %month = getSubStr(%date, 0, 2);
   %day = getSubStr(%date, strpos(%date, "/")+1, 2);
   if(%month == 12 && %day >= 21 && !$Pref::Client::NoSnowflakes) {
-  exec("./client/GlassSnowflakes.cs");
+    exec("./client/GlassSnowflakes.cs");
   	GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/150));
   }
   
@@ -79,6 +81,17 @@ function Glass::execClient() {
   
   GlassDownloadInterface::init();
   GlassAuth::init();
+  GlassAudio::init();
+  // move this somewhere else:
+  GlassAudio::add("bell", false);
+  GlassAudio::add("friendRequest", false);
+  GlassAudio::add("friendRemoved", false);
+  GlassAudio::add("chatroomMsg", true);
+  GlassAudio::add("friendOnline", true);
+  GlassAudio::add("friendOffline", true);
+  GlassAudio::add("userMsgSent", true);
+  GlassAudio::add("userMsgReceived", true);
+  //
   GlassLive::init();
   GlassDownloadManager::init();
   GlassServerControlC::init();

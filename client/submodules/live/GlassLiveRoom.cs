@@ -221,8 +221,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
   %this.view.setFlashing(true);
 
-  if(GlassSettings.get("Live::RoomChatSound"))
-    alxPlay(GlassChatroomMsgAudio);
+  GlassAudio::play("chatroomMsg", GlassSettings.get("Volume::RoomChat"));
 
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification") && %sender.canSendMessage()) {
@@ -238,7 +237,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
           };
         }
 
-        alxPlay(GlassBellAudio);
+        GlassAudio::play("bell");
 
         GlassLive.lastMentioned = $Sim::Time + 10;
       }

@@ -1,3 +1,6 @@
 <font:verdana bold:15>Mod Manager
 
 <font:verdana:12>The Glass Mod Manager allows you to browse add-ons without ever leaving Blockland. You can browse through categories, search, view old RTB add-ons, and download add-ons right into Blockland.
+
+For the majority of add-ons that are downloaded, they should not require a restart to be able to enable and use them.
+However, for times where you may be downloading many add-ons at once, it might be a good idea to restart the game after downloading them all just in-case.

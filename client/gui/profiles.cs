@@ -247,68 +247,6 @@ if(!isObject(GlassChatroomTabProfile)) new GuiControlProfile(GlassChatroomTabPro
   fontColors[1] = "200 64 64 255";
 };
 
-if(!isObject(GlassGuiAudio)) new AudioDescription(GlassGuiAudio) {
-  volume = 2.0;
-  isLooping = false;
-  is3D = false;
-  type = $GuiAudioType;
-};
-
-if(!isObject(GlassChatroomMsgAudio)) new AudioProfile(GlassChatroomMsgAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/chatroomMsg.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassUserMsgSentAudio)) new AudioProfile(GlassUserMsgSentAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/userMsgSent.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassUserMsgReceivedAudio)) new AudioProfile(GlassUserMsgReceivedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/userMsgReceived.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassBellAudio)) new AudioProfile(GlassBellAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/bell.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendOnlineAudio)) new AudioProfile(GlassFriendOnlineAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendOnline.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendOfflineAudio)) new AudioProfile(GlassFriendOfflineAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendOffline.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendRequestAudio)) new AudioProfile(GlassFriendRequestAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendRequest.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendAddedAudio)) new AudioProfile(GlassFriendAddedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendOnline.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-if(!isObject(GlassFriendRemovedAudio)) new AudioProfile(GlassFriendRemovedAudio) {
-  filename = "Add-Ons/System_BlocklandGlass/sound/friendRemoved.wav"; // Attrib: http://www.narfstuff.co.uk
-  description = "AudioGui";
-  preload = true;
-};
-
-
 if(!isObject(GlassProgressProfile)) new GuiControlProfile(GlassProgressProfile : GuiProgressProfile) {
   borderColor = "100 100 100 255";
   fillColor = "46 204 113 200";

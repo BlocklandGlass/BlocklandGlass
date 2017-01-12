@@ -230,10 +230,6 @@ function GlassOverlay::openModeration() {
   if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
 	  return;
 
-  if(isObject(GlassModeratorWindow)) {
-    GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
-  }
-
   if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
     GlassModeratorWindow_Selection.add("Ban", 0);
     GlassModeratorWindow_Selection.add("Bar", 1);
@@ -241,12 +237,15 @@ function GlassOverlay::openModeration() {
     GlassModeratorWindow_Selection.add("Mute", 3);
     GlassOverlayGui.add(GlassModeratorWindow);
     GlassModeratorWindow.forceCenter();
+
+    GlassModeratorWindow_Reason.enabled = false;
+    GlassModeratorWindow_Duration.enabled = false;
+  } else {
+    GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
   }
 
   GlassOverlayGui.pushToBack(GlassModeratorWindow);
 
-  GlassModeratorWindow_Reason.enabled = false;
-  GlassModeratorWindow_Duration.enabled = false;
   //GlassModeratorWindow_ReasonBlocker.setVisible(true);
   //GlassModeratorWindow_DurationBlocker.setVisible(true);
 
