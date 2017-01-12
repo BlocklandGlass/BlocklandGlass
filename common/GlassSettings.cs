@@ -108,15 +108,9 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
 	GlassSettings.settingsList = addItemToList(GlassSettings.settingsList, %categoryName);
 
   %this.settingsList[%categoryName] = addItemToList(%this.settingsList[%categoryName], getWord(strReplace(%name, "::", " "), 1));
-<<<<<<< HEAD
-  
+
   if(%name $= "") {
     error("No name specified.");
-=======
-
-  if(GlassSettings.get(%name) $= "") {
-    error("Non-existent setting.");
->>>>>>> origin/development
     return;
   }
 
@@ -198,19 +192,11 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
         maxPopupHeight = "200";
       };
 
-<<<<<<< HEAD
       %label = new GuiTextCtrl() {
         vertSizing = "center";
         text = %displayName;
         position = "95 3";
       };
-=======
-	  %label = new GuiTextCtrl() {
-		vertSizing = "center";
-		text = %displayName;
-		position = "95 3";
-	  };
->>>>>>> origin/development
 
       for(%i = 0; %i < getWordCount(%properties); %i++) {
         %ctrl.add(getWord(%properties, %i), %i + 1);

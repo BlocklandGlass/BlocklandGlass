@@ -61,7 +61,7 @@ function GlassAudio::add(%name, %volumeControlled) {
     %obj = "if(!isObject(" @ %name @ ")) new AudioProfile(" @ %name @ ") {";
     %obj = %obj NL "filename = \"" @ %location @ "\";";
     %obj = %obj NL "isLooping = false;";
-    %obj = %obj NL "description = \"GlassAudioVolume1Gui\"";
+    %obj = %obj NL "description = \"GlassAudioVolume1Gui\";";
     %obj = %obj NL "preload = true;";
     %obj = %obj NL "};";
     
