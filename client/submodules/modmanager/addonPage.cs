@@ -1020,7 +1020,6 @@ function GMM_AddonPage::downloadClick(%this, %swatch) {
   %dl.addHandle("unwritable", "GMM_AddonPage_downloadUnwritable");
 
   %dl.startDownload();
-  echo(%dl);
 
   %this.container.verticalMatchChildren(498, 10);
   GlassModManagerGui.resizePage();
@@ -1040,17 +1039,30 @@ function GMM_AddonPage::hideDownload(%this) {
   GlassModManagerGui.resizePage();
 }
 
-function GMM_AddonPage_downloadDone(%dl) {
+function GMM_AddonPage_downloadDone(%dl, %err, %tcp) {
   %this = GMM_AddonPage;
-
   %this.schedule(500, hideDownload);
+
+
+  setModPaths(getModPaths());
+
+
+  %file = getsubstr(%tcp.savePath, 8, strlen(%tcp.savePath) - 12);
+
+  if(isFile("Add-Ons/" @ %file @ "/client.cs"))
+    exec("Add-Ons/" @ %file @ "/client.cs");
+
+  GMM_ColorsetsPage.container.delete();
+  GMM_ColorsetsPage.populateColorsets();
+
+  GMM_MyAddonsPage.container.delete();
+  GMM_MyAddonsPage.populateAddons();
 }
 
 function GMM_AddonPage_downloadProgress(%dl, %float, %tcp) {
   %this = GMM_AddonPage;
 
   cancel(GlassModManagerGui.progressSch);
-  echo("progress");
 
   %fileSize = %tcp.headerField["Content-Length"];
 
@@ -1068,6 +1080,7 @@ function GMM_AddonPage_downloadUnwritable(%dl) {
   %this = GMM_AddonPage;
 
   error("Download path unwritable");
+  messageBoxOk("Unwritable", "Your add-ons folder appears to be read-only! We're unable to download anything.");
 }
 
 function GMM_AddonPage::commentClick(%this) {

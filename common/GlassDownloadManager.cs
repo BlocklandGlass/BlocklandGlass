@@ -48,7 +48,6 @@ function GlassDownload::_fetch(%this) {
 	} else {
 		%url = "http://" @ Glass.address @ "/api/3/download.php?type=rtb&rtbId=" @ %this.addonId;
 	}
-	echo(%url);
 
 	%tcp = connectToURL(%url, "GET", "", "GlassDownloadTCP");
 	%tcp.downloadObject = %this;
@@ -92,10 +91,10 @@ function GlassDownloadTCP::onDone(%tcp, %error) {
 
 	if(%error) {
 		if(isFunction(%this.handler["failed"]))
-			call(%this.handler["failed"], %this, %error);
+			call(%this.handler["failed"], %this, %error, %tcp);
 	} else {
 		if(isFunction(%this.handler["done"]))
-			call(%this.handler["done"], %this, %error);
+			call(%this.handler["done"], %this, %error, %tcp);
 	}
 
 	%this.schedule(1, delete);
