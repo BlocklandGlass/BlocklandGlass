@@ -197,6 +197,12 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
       aid = %data.aid;
     };
 
+    if(strlen(%data.name) > 18) {
+      %name = getsubstr(%data.name, 0, 18) @ "...";
+    } else {
+      %name = %data.name;
+    }
+
     %colorset.text = new GuiMLTextCtrl() {
       profile = "GuiMLTextProfile";
       horizSizing = "right";
@@ -210,7 +216,7 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
       lineSpacing = "2";
       allowColorChars = "0";
       maxChars = "-1";
-      text = "<font:Verdana Bold:15>" @ %data.name;
+      text = "<font:Verdana Bold:15>" @ %name;
       maxBitmapHeight = "-1";
       selectable = "1";
       autoResize = "1";
