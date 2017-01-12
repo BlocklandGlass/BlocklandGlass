@@ -169,7 +169,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.submit();";
+            altcommand = "GlassModeratorGui.submit();";
             accelerator = "enter";
             maxLength = "255";
             historySize = "0";
@@ -205,7 +205,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.submit();";
+            altcommand = "GlassModeratorGui.submit();";
             accelerator = "enter";
             maxLength = "255";
             historySize = "0";
@@ -313,6 +313,7 @@ new GuiControl(GlassModeratorGui) {
             password = "0";
             tabComplete = "0";
             sinkAllKeyEvents = "0";
+            searchFiller = true;
          };
       };
    };

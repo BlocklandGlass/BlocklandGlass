@@ -3022,12 +3022,34 @@ function GlassOverlay::closeModeration() {
 }
 
 function GlassModeratorGui::searchPlayers(%search) {
+  %this = GlassModeratorGui;
+  %text = GlassModeratorWindow_Search;
+  
+  if(%this.searchFiller) {
+    if(strlen(%search) < 6) {
+      echo(1);
+      %this.searchFiller = true;
+      %text.setValue("Search");
+      %search = "";
+    } else {
+      echo(2);
+      %this.searchFiller = false;
+      %text.setValue(getSubStr(%search, %text.getCursorPos()-1, 1));
+      %search = %text.getValue();
+    }
+  } else if(strlen(%search) == 0) {
+    echo(3);
+    %this.searchFiller = true;
+    %text.setValue("Search");
+    %search = "";
+  }
+
   GlassModeratorWindow_Playerlist.clear();
 
   for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
-	%user = GlassLiveUsers.getObject(%i);
-	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
-	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+  	%user = GlassLiveUsers.getObject(%i);
+  	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
+  	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
   GlassModeratorWindow_Playerlist.sort(0, 1);
 }
