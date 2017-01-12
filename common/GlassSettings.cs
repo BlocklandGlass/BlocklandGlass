@@ -17,14 +17,13 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::FriendsWindow_Ext", "230 380");
   GlassSettings.registerSetting("Servers::Favorites", "");
 
-  // Mod Manager
-  GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
-  GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
   // Volume
   GlassSettings.registerSetting("Volume::RoomChat", 0.8, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::FriendStatus", 0.8, "GlassAudio::updateVolume", "Friend Status", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::DirectMessage", 0.8, "GlassAudio::updateVolume", "Direct Messages", "Volume", "slider", "0 1 1 4");
-
+  // Mod Manager
+  GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
+  GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
   // Live
   GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
   GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
@@ -54,8 +53,8 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init"); // Was this finished?
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   // Privacy
-  GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "View my avatar *", "Privacy", "dropdown", "Anyone Friends Me", "Set who is able to view your avatar. Requires reconnect.");
-  GlassSettings.registerSetting("Live::ViewLocation", "Friends", "", "View my server *", "Privacy", "dropdown", "Friends Me", "Set who is able to view the server you are currently playing on. Requires reconnect.");
+  GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "can view my avatar *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view your avatar.<br><br><font:verdana bold:13>Requires reconnect.");
+  GlassSettings.registerSetting("Live::ViewLocation", "Friends", "", "can view my server *", "Privacy", "dropdown", "Friends Myself", "Set who is able to view the server you are currently playing on.<br><br><font:verdana bold:13>Requires reconnect.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
