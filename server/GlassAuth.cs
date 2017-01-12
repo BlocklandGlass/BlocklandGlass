@@ -26,13 +26,13 @@ function GlassAuthS::heartbeat(%this) {
       %status = "A";
     } else if(%cl.isModerator) {
       %status = "M";
-    }else if(%cl.statusLetter !$= "") {
+    } else if(%cl.statusLetter !$= "") {
       %status = getSubStr(%cl.statusLetter, 0, 1);
     }
 
     %addr = %cl.getAddress();
     if((%idx = strpos(%addr, ":")) > -1) {
-      %addr = getSubStr(%addr, %idx);
+      %addr = getSubStr(%addr, 0, %idx);
     }
 
     %clients = %clients NL %cl.netname TAB %cl.bl_id TAB %status TAB %cl._glassVersion TAB %addr;

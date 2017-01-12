@@ -482,15 +482,8 @@ function GlassModManagerQueue::next(%this) {
 function GlassModManagerQueue_Done(%this) {
   echo("Downloaded " @ %this.filename);
 
-  setModPaths(getModPaths());
-
   GlassModManagerQueue.remove(%this);
   GlassModManagerQueue.next();
-
-  %file = getsubstr(%this.filename, 0, strlen(%this.filename) - 4);
-
-  if(isFile("Add-Ons/" @ %file @ "/client.cs"))
-    exec("Add-Ons/" @ %file @ "/client.cs");
 }
 
 function GlassModManagerQueue_Progress(%this, %float, %tcp) {

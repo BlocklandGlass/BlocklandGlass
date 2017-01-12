@@ -15,7 +15,7 @@ function GlassLive::connectToServer() {
   }
 
   if(GlassLive.connectionTries > 4) {
-    %minutes = 5;
+    %minutes = 2;
     GlassLive.reconnect = GlassLive.schedule((%minutes * 60 * 1000) | 0, connectToServer);
     GlassLive.connectionTries = 0;
     return;
@@ -454,7 +454,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         %uo.setIcon(%friend.icon);
 
         if(isObject(%friend.locationData)) {
-          %uo.updateLocation(%friend.locationData.location, %friend.locationData.serverTitle, %friend.locationData.address);
+          %uo.updateLocation(%friend.locationData.location, %friend.locationData.serverTitle, %friend.locationData.address, %friend.locationData.passworded);
         }
 
         GlassLive::addFriendToList(%uo);
@@ -548,7 +548,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "friendLocation":
       %uo = GlassLiveUser::create(%data.username, %data.blid);
 
-      %uo.updateLocation(%data.location, %data.serverTitle, %data.address);
+      %uo.updateLocation(%data.location, %data.serverTitle, %data.address, %data.passworded);
 
       if(GlassSettings.get("Live::ShowFriendLocation")) {
         if(%uo.getLastLocation() !$= "") {
@@ -626,7 +626,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %blid = %data.blid;
       %avatarData = %data.avatar;
 
-      %user.gotAvatar(%avatarData);
+      %user.gotAvatar(%avatarData, %data.private);
 
     case "blockedList":
       %list = "";
@@ -690,6 +690,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %this.disconnect();
       %this.connected = false;
+      GlassLive.noReconnect = false;
       GlassLive.reconnect = GlassLive.schedule(%timeout+getRandom(0, 2000), connectToServer);
 
     case "disconnected":

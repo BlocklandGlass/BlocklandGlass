@@ -18,7 +18,7 @@ function Glass::execClient() {
   exec("./support/Support_Markdown.cs");
   exec("./support/Support_SemVer.cs");
   exec("./support/DynamicGui.cs");
-  
+
   echo(" ===                 Loading Interface                  ===");
   exec("./client/gui/profiles.cs");
   exec("./client/gui/messageboxes.cs");
@@ -73,12 +73,12 @@ function Glass::execClient() {
     exec("./client/GlassSnowflakes.cs");
   	GlassSnowflakes::doSnow(GlassOverlay, mFloor(getWord(getRes(), 0)/150));
   }
-  
+
   echo(" ===                   Starting it up                   ===");
-  
+
   GlassResourceManager::execResource("Support_Preferences", "client");
   GlassResourceManager::execResource("Support_Updater", "client");
-  
+
   GlassDownloadInterface::init();
   GlassAuth::init();
   GlassAudio::init();
@@ -97,7 +97,7 @@ function Glass::execClient() {
   GlassServerControlC::init();
   GlassClientManager::init();
   GlassNotificationManager::init();
-  
+
   GlassModManager::init();
   GlassServers::init();
   GlassManual::init();
@@ -105,13 +105,13 @@ function Glass::execClient() {
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
   Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));
-  
+
   %bind = GlassSettings.get("MM::Keybind");
   if(%bind !$= "") {
   	GlassSettings.update("Live::Keybind", %bind);
   	GlassSettings.update("MM::Keybind", "");
   }
-  
+
   %bind = GlassSettings.get("Live::Keybind");
   GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
 }
@@ -174,7 +174,6 @@ function Glass::useWindowTheme(%this, %bool) {
 function strcap(%str) {
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
-
 
 if(!isObject(Glass))
 	Glass::init("client");

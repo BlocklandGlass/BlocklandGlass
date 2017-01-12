@@ -707,15 +707,21 @@ function GlassLive::updateLocation(%inServer) {
   %obj.set("type", "string", "updateLocation");
   %obj.set("location", "string", %action);
 
-  if(%inServer)
-    %obj.set("serverName", "string", $ServerInfo::Name);
-
   if(%action $= "playing") {
     %location = ServerConnection.getRawIP() @ ":" @ ServerConnection.getPort();
     %name = NPL_Window.getValue();
     %name = getSubStr(%name, strpos(%name, "-")+2, strlen(%name));
 
     %obj.set("address", "string", %location);
+    %obj.set("passworded", "string", $ServerInfo::Password);
+  }
+
+  if(%action $= "hosting") {
+    %obj.set("port", "string", $Server::Port);
+    %obj.set("serverName", "string", $Pref::Server::Name);
+    %obj.set("passworded", "string", $ServerInfo::Password);
+  } else if(%inServer) {
+    %obj.set("serverName", "string", $ServerInfo::Name);
   }
 
   if(isObject(GlassLiveConnection) && GlassLiveConnection.connected) {
@@ -1954,7 +1960,12 @@ function GlassLive::joinFriendServer(%blid) {
 		return;
 	}
 
-	ConnectToServer(%server, "", "1", "1");
+  if(%user.isServerPassworded()) {
+    $ServerInfo::Address = %server;
+    canvas.pushDialog(JoinServerPassGui);
+	} else {
+    connectToServer(%server, "", "1", "1");
+  }
 }
 
 //====
@@ -2824,15 +2835,20 @@ function GlassLive::createUserWindow(%uo) {
     mColor = "237 118 105 200";
   };
 
+  %invitable = %uo.blid != getNumKeyId() && %uo.isFriend() && isObject(ServerConnection);
+
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
     position = "120 221";
     extent = "102 30";
     text = "Invite";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    mColor = "85 172 238 200";
+    mColor = %invitable ? "85 172 238 200" : "200 200 200 200";
+    enabled = %invitable;
     command = "GlassLive::inviteFriend(" @ (%uo.blid+0) @ ");";
   };
+
+  %joinable = %uo.blid != getNumKeyId() && %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -2840,7 +2856,8 @@ function GlassLive::createUserWindow(%uo) {
     extent = "102 30";
     text = "Join";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-    mColor = "46 204 113 200";
+    mColor = %joinable ? "46 204 113 200" : "200 200 200 200";
+    enabled = %joinable;
     command = "glassMessageBoxYesNo(\"Join\", \"Would you like to join the server <font:verdana bold:13>" @ %uo.username @ "<font:verdana:13> is on?\", \"GlassLive::joinFriendServer(" @ %uo.blid @ ");\");";
   };
 
@@ -2920,12 +2937,27 @@ function GlassLive::openUserWindow(%blid) {
         %locationRGB = "241 196 15 100";
         %locationDisplay = "<br>Playing Singleplayer";
 
+      case "private":
+        //%locationColor = "AFAFAF";
+        %locationRGB = "235 235 235 255";
+        %locationDisplay = "<br>Location Private";
+
       default:
         //%locationColor = "AFAFAF";
         %locationRGB = "235 235 235 255";
         %locationDisplay = "<br>Unknown";
     }
     %locationColor = "333333";
+
+    if(!%uo.isFriend()) {
+      %locationRGB = "235 235 235 255";
+      %locationDisplay = "<br>";
+    }
+
+    if(%uo.blid == getNumKeyId()) {
+      %locationDisplay = "<br>Chillin' like a Villain";
+
+    }
 
   	%window.statusText.setText(%status);
 
@@ -2986,12 +3018,34 @@ function GlassOverlay::closeModeration() {
 }
 
 function GlassModeratorGui::searchPlayers(%search) {
+  %this = GlassModeratorGui;
+  %text = GlassModeratorWindow_Search;
+  
+  if(%this.searchFiller) {
+    if(strlen(%search) < 6) {
+      echo(1);
+      %this.searchFiller = true;
+      %text.setValue("Search");
+      %search = "";
+    } else {
+      echo(2);
+      %this.searchFiller = false;
+      %text.setValue(getSubStr(%search, %text.getCursorPos()-1, 1));
+      %search = %text.getValue();
+    }
+  } else if(strlen(%search) == 0) {
+    echo(3);
+    %this.searchFiller = true;
+    %text.setValue("Search");
+    %search = "";
+  }
+
   GlassModeratorWindow_Playerlist.clear();
 
   for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
-	%user = GlassLiveUsers.getObject(%i);
-	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
-	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+  	%user = GlassLiveUsers.getObject(%i);
+  	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
+  	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
   GlassModeratorWindow_Playerlist.sort(0, 1);
 }
