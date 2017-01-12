@@ -2839,7 +2839,7 @@ function GlassLive::createUserWindow(%uo) {
     mColor = "237 118 105 200";
   };
 
-  %invitable = %uo.isFriend() && isObject(ServerConnection);
+  %invitable = %uo.blid != getNumKeyId() && %uo.isFriend() && isObject(ServerConnection);
 
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -2852,7 +2852,7 @@ function GlassLive::createUserWindow(%uo) {
     command = "GlassLive::inviteFriend(" @ (%uo.blid+0) @ ");";
   };
 
-  %joinable = %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
+  %joinable = %uo.blid != getNumKeyId() && %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -2956,6 +2956,11 @@ function GlassLive::openUserWindow(%blid) {
     if(!%uo.isFriend()) {
       %locationRGB = "235 235 235 255";
       %locationDisplay = "<br>";
+    }
+
+    if(%uo.blid == getNumKeyId()) {
+      %locationDisplay = "<br>Chillin' like a Villain";
+
     }
 
   	%window.statusText.setText(%status);
