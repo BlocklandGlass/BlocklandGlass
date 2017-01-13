@@ -574,7 +574,7 @@ function GlassLive::setStatus(%status) {
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
     %obj.delete();
-    
+
     GlassLive.status = %status;
   }
 }
@@ -2834,7 +2834,7 @@ function GlassLive::createUserWindow(%uo) {
     mColor = "237 118 105 200";
   };
 
-  %invitable = %uo.blid != getNumKeyId() && %uo.isFriend() && isObject(ServerConnection);
+  %invitable = %uo.getStatus !$= "offline" && %uo.blid != getNumKeyId() && %uo.isFriend() && isObject(ServerConnection);
 
   %window.inviteButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -2847,7 +2847,7 @@ function GlassLive::createUserWindow(%uo) {
     command = "GlassLive::inviteFriend(" @ (%uo.blid+0) @ ");";
   };
 
-  %joinable = %uo.blid != getNumKeyId() && %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
+  %joinable = %uo.getStatus !$= "offline" && %uo.blid != getNumKeyId() && %uo.isFriend() && (%uo.getLocation() $= "playing" || %uo.getLocation $= "hosting");
 
   %window.joinButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -3019,7 +3019,7 @@ function GlassOverlay::closeModeration() {
 function GlassModeratorGui::searchPlayers(%search) {
   %this = GlassModeratorGui;
   %text = GlassModeratorWindow_Search;
-  
+
   if(%this.searchFiller) {
     if(strlen(%search) < 6) {
       echo(1);
@@ -3131,7 +3131,7 @@ function GlassModeratorGui::submit(%this) {
     GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
     GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
-  
+
   Glass::debug("Sent room command:" SPC %cmd);
 }
 
@@ -3916,7 +3916,7 @@ package GlassAFKPackage {
 
     GlassLive.afkAction();
   }
-  
+
   function Jump(%on) {
     parent::Jump(%on);
 

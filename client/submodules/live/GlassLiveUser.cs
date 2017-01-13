@@ -194,6 +194,9 @@ function GlassLiveUser::setStatus(%this, %status) {
 }
 
 function GlassLiveUser::getStatus(%this) {
+  if(%this.status $= "")
+    return "offline";
+    
   return %this.status;
 }
 
