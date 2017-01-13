@@ -1004,9 +1004,9 @@ function GlassLive::userBlock(%blid) {
     %username = "Blockhead" @ %blid;
 
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have blocked " @ %username @ ".", %blid);
+  GlassLive::onMessageNotification("You have blocked " @ %username @ " (" @ %blid @ ").", %blid);
   if(isObject(%room = GlassChatroomWindow.activeTab.room))
-    %room.pushText("You have blocked " @ %username @ ".");
+    %room.pushText("You have blocked " @ %username @ " (" @ %blid @ ").");
 }
 
 function GlassLive::userUnblock(%blid) {
@@ -1057,9 +1057,9 @@ function GlassLive::userUnblock(%blid) {
     %username = "Blockhead" @ %blid;
 
   GlassLive::createFriendList();
-  GlassLive::onMessageNotification("You have unblocked " @ %username @ ".", %blid);
+  GlassLive::onMessageNotification("You have unblocked " @ %username @ " (" @ %blid @ ").", %blid);
   if(isObject(%room = GlassChatroomWindow.activeTab.room))
-    %room.pushText("You have unblocked " @ %username @ ".");
+    %room.pushText("You have unblocked " @ %username @ " (" @ %blid @ ").");
 }
 
 
@@ -1849,7 +1849,7 @@ function GlassLive::friendListClick(%swatch, %pos) {
 
     case "blocked":
       if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-        glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been unblocked.");
+        glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>(" @ %this.blid @ ") has been unblocked.");
         GlassLive::userUnblock(%this.blid);
       }
 
@@ -1923,7 +1923,7 @@ function GlassLive::setFriendStatus(%blid, %status) {
       %online = (%uo.getStatus() $= "offline" ? false : true);
       %sound = (%online ? "friendOnline" : "friendOffline");
 
-      GlassSettings::play(%sound, GlassSettings.get("Volume::FriendStatus"));
+      GlassAudio::play(%sound, GlassSettings.get("Volume::FriendStatus"));
     }
 
     switch$(%uo.getStatus()) {
@@ -2137,7 +2137,6 @@ function GlassLive::afkAction(%this) {
 }
 
 function GlassLive::afkTrigger(%this) {
-  echo(%this.status);
   if(%this.status !$= "") {
     %status = %this.status;
 
@@ -3045,7 +3044,8 @@ function GlassModeratorGui::searchPlayers(%search) {
   for(%i = 0; %i < GlassLiveUsers.getCount(); %i++) {
   	%user = GlassLiveUsers.getObject(%i);
   	if(strStr(strLwr(%user.username), strLwr(%search)) >= 0 || strStr(%user.blid, %search) >= 0)
-  	  GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
+      if(%user.blid > 0)
+        GlassModeratorWindow_Playerlist.addRow(%i, %user.username TAB %user.blid);
   }
   GlassModeratorWindow_Playerlist.sort(0, 1);
 }

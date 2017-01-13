@@ -550,7 +550,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %uo.updateLocation(%data.location, %data.serverTitle, %data.address, %data.passworded);
 
-      if(GlassSettings.get("Live::ShowFriendLocation")) {
+      if(GlassSettings.get("Live::ShowFriendLocation") && !%uo.isBlocked()) {
         if(%uo.getLastLocation() !$= "") {
           switch$(%data.location) {
             case "menus":
