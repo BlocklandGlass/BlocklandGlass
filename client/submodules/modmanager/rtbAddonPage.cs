@@ -118,9 +118,9 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
       horizSizing = "right";
       vertSizing = "bottom";
       text = "";
-      position = "0 11";
-      extent = (%width-%border) SPC "13";
-      minextent = (%width-20) SPC "13";
+      position = "26 11";
+      extent = (%width-26) SPC "13";
+      minextent = (%width-26) SPC "13";
     };
 
     switch(%i) {
