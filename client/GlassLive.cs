@@ -2378,7 +2378,6 @@ function GlassLive::messageImagePreview(%blid, %url, %type) {
   %gui.scrollSwatch.verticalMatchChildren(0, 3);
 
   %swat = new GuiSwatchCtrl() {
-    horizSizing = ""
     color = "200 220 255 255";
     extent = "100 42";
     position = 5 SPC (%offset+2);

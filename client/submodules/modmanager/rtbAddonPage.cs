@@ -45,6 +45,8 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
   // title
   // filename
 
+  %this.filename = %obj.filename;
+
   %container = %this.container;
 
   GMM_Navigation.addStep("RTB: " @ %obj.title, "GlassModManagerGui.openPage(GMM_RTBAddonPage, " @ expandEscape(%obj.id) @ ");");
@@ -258,6 +260,7 @@ function GMM_RTBAddonPage::downloadClick(%this, %swatch) {
   %dl = GlassDownloadManager::newRTBDownload(%this.container.rtbId);
   %dl.progressBar = %download.progress;
   %dl.progressText = %download.progress.text;
+  %dl.location = "Add-Ons/" @ %this.filename;
 
   %dl.addHandle("done", "GMM_RTBAddonPage_downloadDone");
   %dl.addHandle("progress", "GMM_RTBAddonPage_downloadProgress");

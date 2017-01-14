@@ -49,7 +49,7 @@ function GlassDownload::_fetch(%this) {
 		%url = "http://" @ Glass.address @ "/api/3/download.php?type=rtb&rtbId=" @ %this.addonId;
 	}
 
-	%tcp = connectToURL(%url, "GET", "", "GlassDownloadTCP");
+	%tcp = connectToURL(%url, "GET", %this.location, "GlassDownloadTCP");
 	%tcp.downloadObject = %this;
 
 	%this.tcp = %tcp;
