@@ -265,9 +265,7 @@ function GMM_ColorsetsPage::renderColorsetList(%this, %swatch) {
 }
 
 function GMM_ColorsetsPage::interact(%this, %swatch, %pos) {
-  echo(%pos);
   if(getWord(%pos, 0) > getWord(%swatch.extent, 0)-20) {
-    echo("aid: " @ %swatch.aid);
     if(%swatch.aid !$= "") {
       GMM_Navigation.clear();
       GlassModManagerGui.openPage(GMM_AddonPage, %swatch.aid);

@@ -562,7 +562,6 @@ package GlassModManager {
         case "invite":
           %addr = getSubStr(%link, 7, strlen(%link));
           GlassLive::inviteClick(%addr);
-          echo(%addr);
           return;
       }
       if(strpos(%link, "aid-") != -1) {

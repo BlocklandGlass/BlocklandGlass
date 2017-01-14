@@ -3033,18 +3033,15 @@ function GlassModeratorGui::searchPlayers(%search) {
 
   if(%this.searchFiller) {
     if(strlen(%search) < 6) {
-      echo(1);
       %this.searchFiller = true;
       %text.setValue("Search");
       %search = "";
     } else {
-      echo(2);
       %this.searchFiller = false;
       %text.setValue(getSubStr(%search, %text.getCursorPos()-1, 1));
       %search = %text.getValue();
     }
   } else if(strlen(%search) == 0) {
-    echo(3);
     %this.searchFiller = true;
     %text.setValue("Search");
     %search = "";

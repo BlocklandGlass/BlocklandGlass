@@ -251,7 +251,6 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
 function GMM_RTBAddonPage::downloadClick(%this, %swatch) {
   %download = %this.container.download;
   %download.progress.setVisible(true);
-  echo(%download.progress);
   %download.verticalMatchChildren(30, 10);
 
   %download.progress.setValue(0);
@@ -292,7 +291,6 @@ function GMM_RTBAddonPage_downloadProgress(%dl, %float, %tcp) {
   %this = GMM_RTBAddonPage;
 
   cancel(GlassModManagerGui.progressSch);
-  echo("progress");
 
   %fileSize = %tcp.headerField["Content-Length"];
 
