@@ -554,6 +554,19 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
     LOAD_MapPicture.setBitmap(%this.imageLocation);
 }
 
+function clientCmdGlass_setPlayerlistStatus(%blid, %letter) {
+  if(strLen(%letter) > 1)
+    return;
+	
+  for(%i = 0; %i < NPL_List.rowCount(); %i++) {
+	%row = NPL_List.getRowText(%i);
+	%id = NPL_List.getRowId(%i);
+	
+	if(getField(%row, 3) $= %blid)
+	  NPL_List.setRowById(%id, setField(%row, 0, %letter));
+  }
+}
+
 package GlassServers {
   function joinServerGui::onWake(%this) {
   	if(!%this.initializedGlass) {
