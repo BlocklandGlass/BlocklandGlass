@@ -2891,7 +2891,7 @@ function GlassLive::openUserWindow(%blid) {
     glassMessageBoxOk("Beep Boop", "That's a bot!");
     return;
   }
-  
+
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
@@ -2955,7 +2955,7 @@ function GlassLive::openUserWindow(%blid) {
 
     if(!%uo.isFriend()) {
       %locationRGB = "235 235 235 255";
-      %locationDisplay = "<br>";
+      %locationDisplay = "<br>Private";
     }
 
     if(%uo.blid == getNumKeyId()) {
