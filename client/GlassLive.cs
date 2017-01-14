@@ -2965,7 +2965,7 @@ function GlassLive::openUserWindow(%blid) {
 
   	%window.statusText.setText(%status);
 
-    if(strlen(%serverTitle = %uo.getServerTitle()) > 28)
+    if(strlen(%serverTitle = %uo.getServerTitle()) > 32)
       %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
 
     %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %serverTitle;
