@@ -273,6 +273,15 @@ function GMM_RTBAddonPage::downloadClick(%this, %swatch) {
   GlassModManagerGui.resizePage();
 }
 
+function GMM_RTBAddonPage::hideDownload(%this) {
+  %download = %this.container.download;
+  %download.progress.setVisible(false);
+  %download.verticalMatchChildren(30, 10);
+
+  %this.container.verticalMatchChildren(498, 10);
+  GlassModManagerGui.resizePage();
+}
+
 function GMM_RTBAddonPage_downloadDone(%dl) {
   %this = GMM_RTBAddonPage;
 
