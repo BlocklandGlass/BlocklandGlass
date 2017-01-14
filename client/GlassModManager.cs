@@ -292,8 +292,10 @@ function GlassModManager::deleteAddOn(%this, %addon) {
   fileDelete(%dir @ %name @ ".zip");
 
   glassMessageBoxOk("Add-On Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
-
-  GlassModManager.schedule(1, populateMyAddons);
+  
+  GMM_MyAddonsPage.container.delete();
+  GMM_MyAddonsPage.populateAddons();
+  GlassModManagerGui.schedule(1, "openPage", GMM_MyAddonsPage);
 }
 
 

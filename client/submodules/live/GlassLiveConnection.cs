@@ -267,8 +267,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
-	  %room.icon = %data.icon;
-	  
+      %room.icon = %data.icon;
+
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
@@ -315,7 +315,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 	  
-	  %room.icon = %data.icon;
+      %room.icon = %data.icon;
 	  
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
@@ -611,6 +611,8 @@ function GlassLiveConnection::onLine(%this, %line) {
         sticky = true;
         callback = "GlassLive::inviteClick(\"" @ expandEscape(%address) @ "\", \"" @ expandEscape(%sender.blid) @ "\", \"" @ %data.passworded @ "\");";
       };
+
+      GlassAudio::play("friendInvite");
 
       GlassLive::onMessageNotification("<color:eb9950>" @ %sender.username @ " has invited you to a server. <a:glass://invite=" @ %address @ ">Click here to join!</a>", %sender.blid, true);
 

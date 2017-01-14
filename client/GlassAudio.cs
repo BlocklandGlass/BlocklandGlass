@@ -106,11 +106,11 @@ function GlassAudio::updateVolume(%setting) {
 
   switch$(%setting) {
     case "Volume::RoomChat":
-      GlassAudio::play("chatroomMsg1", %volume);
+      GlassAudio::play("chatroomMsg" @ getRandom(1, 2), %volume);
     case "Volume::FriendStatus":
-      GlassAudio::play("friendOnline", %volume);
+      GlassAudio::play((getRandom(0, 1) ? "friendOnline" : "friendOffline"), %volume);
     case "Volume::DirectMessage":
-      GlassAudio::play("userMsgReceived", %volume);
+      GlassAudio::play((getRandom(0, 1) ? "userMsgSent" : "userMsgReceived"), %volume);
     default:
       error("Non-existent volume setting \"" @ %setting @ "\"");
   }

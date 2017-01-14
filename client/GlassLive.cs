@@ -1835,10 +1835,10 @@ function GlassLive::friendListClick(%swatch, %pos) {
   switch$(%this.type) {
     case "request":
       if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-        glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been declined.");
+        glassMessageBoxOk("Friend Declined", "<font:verdana bold:13>" @ %this.username SPC " (" @ %this.blid @ ") <font:verdana:13>has been declined.");
         GlassLive::friendDecline(%this.blid);
       } else if(getWord(%pos, 0) > getWord(%this.extent, 0)-50) {
-        glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>has been added.");
+        glassMessageBoxOk("Friend Added", "<font:verdana bold:13>" @ %this.username SPC " (" @ %this.blid @ ") <font:verdana:13>has been added.");
         GlassLive::friendAccept(%this.blid);
       } else {
         if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))

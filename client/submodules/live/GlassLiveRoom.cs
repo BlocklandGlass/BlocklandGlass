@@ -533,7 +533,7 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
       else
         GlassOverlay::openIconSelector();
     } else if(%this.user.isBot()) {
-      glassMessageBoxOk("Oh", "That's a bot.");
+      glassMessageBoxOk("Beep Boop", "That's a bot!");
     } else {
       if(isObject(%this.user.window))
         %this.user.window.delete();
