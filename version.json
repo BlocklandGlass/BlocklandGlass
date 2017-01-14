@@ -1,1 +1,1 @@
-{"version":"4.0.0-beta.1+indev","channel":"stable","repositories":[{"url":"http:\/\/api.blocklandglass.com\/api\/3\/repository.php","format":"JSON","id":"11"},{"url":"http:\/\/cdn.blocklandglass.com\/repository.txt","format":"JSON","id":"11"}]}
+{"version":"4.0.0","channel":"stable","repositories":[{"url":"http:\/\/api.blocklandglass.com\/api\/3\/repository.php","format":"JSON","id":"11"},{"url":"http:\/\/cdn.blocklandglass.com\/repository.txt","format":"JSON","id":"11"}]}
