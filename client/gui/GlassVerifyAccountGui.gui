@@ -50,7 +50,7 @@ new GuiControl(GlassVerifyAccountGui) {
          autoResize = "1";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "top";
          position = "15 150";
@@ -72,7 +72,7 @@ new GuiControl(GlassVerifyAccountGui) {
          mColor = "255 150 150 255";
       };
       new GuiBitmapButtonCtrl(GlassVerifyAccount_Accept) {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "top";
          position = "215 150";

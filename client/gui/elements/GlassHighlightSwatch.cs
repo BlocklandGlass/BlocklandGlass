@@ -77,6 +77,8 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
 function GlassHighlightMouse::onMouseDown(%this) {
   %this.down = true;
+  
+  alxPlay(GlassClick1Audio);
 }
 
 function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {

@@ -84,6 +84,8 @@ function Glass::execClient() {
   GlassAudio::init();
   // move this somewhere else:
   GlassAudio::add("bell", false);
+  // GlassAudio::add("click", false);
+  // GlassAudio::add("pop", false);
   GlassAudio::add("friendRequest", false);
   GlassAudio::add("friendRemoved", false);
   GlassAudio::add("friendInvite", false);

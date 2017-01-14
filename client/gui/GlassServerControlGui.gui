@@ -419,7 +419,7 @@ new GuiControl(GlassServerControlGui) {
             };
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_AddBtn) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 10";
@@ -477,7 +477,7 @@ new GuiControl(GlassServerControlGui) {
             };
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_RemoveBtn) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 35";
@@ -500,7 +500,7 @@ new GuiControl(GlassServerControlGui) {
                color = "255 200 200 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_SuperAdminBtn) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 284";
@@ -522,7 +522,7 @@ new GuiControl(GlassServerControlGui) {
             mColor = "84 217 140 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_AdminBtn) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 309";
@@ -544,7 +544,7 @@ new GuiControl(GlassServerControlGui) {
             mColor = "84 217 140 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_DeAdminBtn) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "center";
             vertSizing = "bottom";
             position = "195 334";

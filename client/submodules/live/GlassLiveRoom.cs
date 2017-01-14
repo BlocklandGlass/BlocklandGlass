@@ -512,6 +512,8 @@ function GlassLiveUserListSwatch::onMouseLeave(%this) {
 function GlassLiveUserListSwatch::onMouseDown(%this) {
   %this.swatch.color = "150 150 255 255";
   %this.down = true;
+
+  alxPlay(GlassClick1Audio);
 }
 
 function GlassLiveUserListSwatch::onMouseUp(%this) {

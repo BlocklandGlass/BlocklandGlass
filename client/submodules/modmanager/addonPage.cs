@@ -752,7 +752,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
   };
 
   %newCommentButton = new GuiBitmapButtonCtrl() {
-    profile = "BlockButtonProfile";
+    profile = "GlassBlockButtonProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "415 175";

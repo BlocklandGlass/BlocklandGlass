@@ -829,11 +829,13 @@ function GlassLive::messageTypeEnd(%blid) {
 //====
 
 function GlassLive::sendFriendRequest(%blid) {
-  if(%blid == getNumKeyId())
+  if(%blid == getNumKeyId()) {
+    glassMessageBoxOk("Invalid Request", "Blockland Glass is a social platform and as such you are not able to friend yourself at this present time.<br><br>We apologize for the inconvenience, please find some real friends instead.");
     return;
+  }
 
   if((%blid+0 !$= %blid) || %blid < 0) {
-    glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
+    glassMessageBoxOk("Invalid Request", "That is not a valid Blockland ID!");
     return;
   }
 
@@ -1981,13 +1983,16 @@ function GlassLive::addFriendPrompt(%blid) {
   }
 
   if(%user)
-    glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
+    if(getNumKeyId() == %blid)
+      glassMessageBoxYesNo("Seriously", "Add yourself as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
+    else
+      glassMessageBoxYesNo("Add Friend", "Add <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> (" @ %user.blid @ ") as a friend?", "GlassLive::sendFriendRequest(" @ %user.blid @ ");");
 }
 
 function GlassLive::removeFriendPrompt(%blid) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(%user)
-    glassMessageBoxYesNo("Remove Friend", "Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
+    glassMessageBoxYesNo("Remove Friend", "Remove <font:verdana bold:13>" @ %user.username @ "<font:verdana:13> (" @ %user.blid @ ") as a friend?", "GlassLive::removeFriend(" @ %user.blid @ ");");
 }
 
 //====
@@ -3548,6 +3553,8 @@ function GlassChatroomTabMouse::onMouseDown(%this, %a, %pos) {
 
   %this.extension = "d";
   %this.render();
+
+  alxPlay(GlassPop1Audio);
 }
 
 function GlassChatroomTabMouse::onMouseDragged(%this, %a, %pos, %c) {

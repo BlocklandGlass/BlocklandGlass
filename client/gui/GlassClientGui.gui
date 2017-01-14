@@ -68,7 +68,7 @@ new GuiControl(GlassClientGui) {
          columnWidth = "30";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "left";
          vertSizing = "top";
          position = "264 230";
@@ -91,7 +91,7 @@ new GuiControl(GlassClientGui) {
          mColor = "255 255 255 255";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "left";
          vertSizing = "top";
          position = "10 230";
@@ -114,7 +114,7 @@ new GuiControl(GlassClientGui) {
          mColor = "255 255 255 255";
       };
       new GuiBitmapButtonCtrl(GlassClientGui_Skip) {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "left";
          vertSizing = "top";
          position = "200 230";

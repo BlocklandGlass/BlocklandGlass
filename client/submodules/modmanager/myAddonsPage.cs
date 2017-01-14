@@ -94,7 +94,7 @@ function GMM_MyAddonsPage::open(%this) {
     color = "240 240 240 0";
 
     new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "center";
       vertSizing = "bottom";
       position = "22 10";
@@ -116,7 +116,7 @@ function GMM_MyAddonsPage::open(%this) {
       mColor = "85 172 238 128";
     };
     new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "center";
       vertSizing = "bottom";
       position = "22 45";
@@ -138,7 +138,7 @@ function GMM_MyAddonsPage::open(%this) {
       mColor = "255 255 255 128";
     };
     new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "center";
       vertSizing = "bottom";
       position = "22 80";
@@ -160,7 +160,7 @@ function GMM_MyAddonsPage::open(%this) {
       mColor = "255 255 255 128";
     };
     new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "center";
       vertSizing = "bottom";
       position = "22 430";

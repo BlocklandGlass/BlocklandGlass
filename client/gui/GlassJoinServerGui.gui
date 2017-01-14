@@ -21,7 +21,7 @@ new GuiWindowCtrl(GlassJS_window) {
    closeCommand = "JoinServerGui.ClickBack();";
 
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "525 34";
@@ -125,7 +125,7 @@ new GuiWindowCtrl(GlassJS_window) {
       };
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "left";
       vertSizing = "bottom";
       position = "405 1";
@@ -148,7 +148,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "454 34";
@@ -171,7 +171,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
       position = "9 440";
@@ -207,7 +207,7 @@ new GuiWindowCtrl(GlassJS_window) {
          helpTag = "0";
 
       new GuiBitmapButtonCtrl(JS_cancelQuery) {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
          position = "15 12";
@@ -256,7 +256,7 @@ new GuiWindowCtrl(GlassJS_window) {
       };
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "343 34";
@@ -279,7 +279,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "left";
       vertSizing = "top";
       position = "532 440";
@@ -314,7 +314,7 @@ new GuiWindowCtrl(GlassJS_window) {
       clipToParent = "1";
 
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
          position = "8 4";
@@ -337,7 +337,7 @@ new GuiWindowCtrl(GlassJS_window) {
             wrap = "0";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
          position = "112 4";
@@ -360,7 +360,7 @@ new GuiWindowCtrl(GlassJS_window) {
             wrap = "0";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
          position = "215 4";
@@ -383,7 +383,7 @@ new GuiWindowCtrl(GlassJS_window) {
             wrap = "0";
       };
       new GuiBitmapButtonCtrl() {
-         profile = "BlockButtonProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
          position = "320 4";
@@ -407,7 +407,7 @@ new GuiWindowCtrl(GlassJS_window) {
       };
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "394 34";
@@ -430,7 +430,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "10 34";
@@ -453,7 +453,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "161 34";
@@ -476,7 +476,7 @@ new GuiWindowCtrl(GlassJS_window) {
          wrap = "0";
    };
    new GuiBitmapButtonCtrl() {
-      profile = "BlockButtonProfile";
+      profile = "GlassBlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
       position = "45 34";

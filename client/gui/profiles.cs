@@ -1,3 +1,19 @@
+if(!isObject(GlassClick1Audio)) new AudioProfile(GlassClick1Audio)
+{
+  filename = "Add-Ons/System_BlocklandGlass/sound/click.wav";
+  isLooping = false;
+  description = "AudioGui";
+  preload = true;
+};
+
+if(!isObject(GlassPop1Audio)) new AudioProfile(GlassPop1Audio)
+{
+  filename = "Add-Ons/System_BlocklandGlass/sound/pop.wav";
+  isLooping = false;
+  description = "AudioGui";
+  preload = true;
+};
+
 if(!isObject(GlassScrollProfile)) new GuiControlProfile(GlassScrollProfile)
 {
    fillColor = "240 240 240 255";
@@ -215,18 +231,21 @@ if(!isObject(GlassBlockButtonProfile)) new GuiControlProfile(GlassBlockButtonPro
   fontType = "Verdana Bold";
   fontSize = 15;
   fontColor = "64 64 64 255";
+  soundButtonDown = "GlassPop1Audio";
 };
 
 if(!isObject(GlassBlockButtonWhiteProfile)) new GuiControlProfile(GlassBlockButtonWhiteProfile : BlockButtonProfile) {
   fontType = "Verdana Bold";
   fontSize = 15;
   fontColor = "250 250 250 255";
+  soundButtonDown = "GlassClick1Audio";
 };
 
 if(!isObject(GlassRoundedButtonProfile)) new GuiControlProfile(GlassRoundedButtonProfile : BlockButtonProfile) {
   fontType = "Verdana Bold";
   fontSize = 16;
   fontColor = "220 220 220 255";
+  soundButtonDown = "GlassClick1Audio";
 };
 
 if(!isObject(GlassUserListButtonProfile)) new GuiControlProfile(GlassUserListButtonProfile : BlockButtonProfile) {

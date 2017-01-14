@@ -62,7 +62,7 @@ new GuiControl(GlassDownloadGui) {
          color = "230 230 230 255";
 
          new GuiBitmapButtonCtrl(GlassDownloadGui_Decline) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "15 255";
@@ -84,7 +84,7 @@ new GuiControl(GlassDownloadGui) {
             mColor = "220 170 170 255";
          };
          new GuiBitmapButtonCtrl(GlassDownloadGui_Accept) {
-            profile = "BlockButtonProfile";
+            profile = "GlassBlockButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "165 255";

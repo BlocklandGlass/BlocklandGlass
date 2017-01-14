@@ -80,7 +80,7 @@ function GMM_ColorsetsPage::open(%this) {
   };
 
   %container.options.defaultButton = new GuiBitmapButtonCtrl() {
-    profile = "BlockButtonProfile";
+    profile = "GlassBlockButtonProfile";
     horizSizing = "center";
     vertSizing = "bottom";
     position = "77 10";
@@ -103,7 +103,7 @@ function GMM_ColorsetsPage::open(%this) {
   };
 
   %container.options.applyButton = new GuiBitmapButtonCtrl() {
-    profile = "BlockButtonProfile";
+    profile = "GlassBlockButtonProfile";
     horizSizing = "center";
     vertSizing = "bottom";
     position = "77 425";
