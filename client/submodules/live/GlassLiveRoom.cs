@@ -220,8 +220,10 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %this.pushText(%text);
 
   %this.view.setFlashing(true);
+  
+  GlassLive.curSound = !GlassLive.curSound;
 
-  GlassAudio::play("chatroomMsg", GlassSettings.get("Volume::RoomChat"));
+  GlassAudio::play("chatroomMsg" @ GlassLive.curSound + 1, GlassSettings.get("Volume::RoomChat"));
 
   if(%senderblid != getNumKeyId()) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification") && %sender.canSendMessage()) {

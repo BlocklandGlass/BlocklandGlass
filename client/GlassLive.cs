@@ -3121,16 +3121,13 @@ function GlassModeratorGui::submit(%this) {
       glassMessageBoxOk("Error", "You must enter a reason.");
       return;
     }
+    %duration = GlassModeratorWindow_Duration.getValue();
+    if((%duration == 0 || %duration $= "") && %duration != -1) {
+      glassMessageBoxOk("Error", "You must enter a valid duration.");
+      return;
+    }
+    %reason = " " @ %reason;
   }
-
-  %duration = GlassModeratorWindow_Duration.getValue();
-
-  if((%duration == 0 || %duration $= "") && %duration != -1) {
-    glassMessageBoxOk("Error", "You must enter a valid duration.");
-    return;
-  }
-
-  %reason = " " @ %reason;
 
   if(%type $= "Kick")
     GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);

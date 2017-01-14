@@ -106,7 +106,7 @@ function GlassAudio::updateVolume(%setting) {
 
   switch$(%setting) {
     case "Volume::RoomChat":
-      GlassAudio::play("chatroomMsg", %volume);
+      GlassAudio::play("chatroomMsg1", %volume);
     case "Volume::FriendStatus":
       GlassAudio::play("friendOnline", %volume);
     case "Volume::DirectMessage":

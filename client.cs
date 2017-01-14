@@ -86,7 +86,8 @@ function Glass::execClient() {
   GlassAudio::add("bell", false);
   GlassAudio::add("friendRequest", false);
   GlassAudio::add("friendRemoved", false);
-  GlassAudio::add("chatroomMsg", true);
+  GlassAudio::add("chatroomMsg1", true);
+  GlassAudio::add("chatroomMsg2", true);
   GlassAudio::add("friendOnline", true);
   GlassAudio::add("friendOffline", true);
   GlassAudio::add("userMsgSent", true);
