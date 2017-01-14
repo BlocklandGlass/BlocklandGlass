@@ -2118,9 +2118,11 @@ function GlassLive::addDlgClose() {
 
 function GlassLive::afkCheck(%this, %on) {
   if(%on) {
+    %this.afkMouseLoop();
     activatePackage(GlassAFKPackage);
     %this.afkAction();
   } else {
+    cancel(%this.afkMouseLoop);
     deactivatePackage(GlassAFKPackage);
     cancel(%this.afkTriggerSchedule);
   }
@@ -2169,7 +2171,6 @@ function GlassLive::afkMouseLoop(%this) {
       %this.afkMouseLoop = %this.schedule(10000, afkMouseLoop);
   }
 }
-
 
 //================================================================
 //= Direct Messages                                              =
