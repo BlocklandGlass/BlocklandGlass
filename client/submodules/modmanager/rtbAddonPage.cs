@@ -285,6 +285,21 @@ function GMM_RTBAddonPage_downloadDone(%dl) {
   %this = GMM_RTBAddonPage;
 
   %this.schedule(500, hideDownload);
+
+
+  setModPaths(getModPaths());
+
+
+  %file = getsubstr(%tcp.savePath, 8, strlen(%tcp.savePath) - 12);
+
+  if(isFile("Add-Ons/" @ %file @ "/client.cs"))
+    exec("Add-Ons/" @ %file @ "/client.cs");
+
+  GMM_ColorsetsPage.container.delete();
+  GMM_ColorsetsPage.populateColorsets();
+
+  GMM_MyAddonsPage.container.delete();
+  GMM_MyAddonsPage.populateAddons();
 }
 
 function GMM_RTBAddonPage_downloadProgress(%dl, %float, %tcp) {
