@@ -1,0 +1,14 @@
+<font:verdana bold:15>Player List
+
+<font:verdana:12>A lot of servers have more than just the normal admin and super admin ranks so Glass allows server hosts to set their client's rank on the server list. This can be done by calling a client command to update the letter.
+
+<color:eb9950><lmargin:5><font:Lucida Console:10>clientCmdGlass_setPlayerlistStatus(%blid, %char);<color:333333>
+
+<lmargin:0><font:verdana bold:12>%blid <font:verdana:12>- The BL_ID of the client you would like to change.
+
+<lmargin:0><font:verdana bold:12>%char <font:verdana:12>- The desired character. This has a limit of one letter and may not be colored.
+
+Example:
+
+<color:eb9950><lmargin:5><font:Lucida Console:10>commandToAll('Glass_setPlayerlistStatus', 2143, "J");
+<lmargin:0>

@@ -554,8 +554,12 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
     LOAD_MapPicture.setBitmap(%this.imageLocation);
 }
 
-function clientCmdGlass_setPlayerlistStatus(%blid, %letter) {
-  if(strLen(%letter) > 1)
+//====================================
+// PlayerList
+//====================================
+
+function clientCmdGlass_setPlayerlistStatus(%blid, %char) {
+  if(strLen(%char) > 1)
     return;
 	
   for(%i = 0; %i < NPL_List.rowCount(); %i++) {
@@ -563,7 +567,7 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %letter) {
 	%id = NPL_List.getRowId(%i);
 	
 	if(getField(%row, 3) $= %blid)
-	  NPL_List.setRowById(%id, setField(%row, 0, %letter));
+	  NPL_List.setRowById(%id, setField(%row, 0, %char));
   }
 }
 
