@@ -2887,6 +2887,11 @@ function GlassLive::createUserWindow(%uo) {
 }
 
 function GlassLive::openUserWindow(%blid) {
+  if(%blid < 0) {
+    glassMessageBoxOk("Beep Boop", "That's a bot!");
+    return;
+  }
+  
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
     %window = GlassLive::createUserWindow(%uo);
