@@ -251,7 +251,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         new ScriptObject(GlassNotification) {
           title = %this.name;
           text = %msg;
-          image = "comment";
+          image = %this.icon;
 
           sticky = false;
           callback = "";

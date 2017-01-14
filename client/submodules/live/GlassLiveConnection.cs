@@ -267,6 +267,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
 
+	  %room.icon = %data.icon;
+	  
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
@@ -312,7 +314,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
-
+	  
+	  %room.icon = %data.icon;
+	  
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
