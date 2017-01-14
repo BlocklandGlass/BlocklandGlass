@@ -592,6 +592,7 @@ package GlassServers {
       parent::onWake(%this);
 
     NewChatHud.add(GlassLoadingGui);
+	GlassLoadingGui.forceCenter();
     NewChatHud.pushToBack(GlassLoadingGui);
     NewChatHud.schedule(50, pushToBack, newChatText);
   }
