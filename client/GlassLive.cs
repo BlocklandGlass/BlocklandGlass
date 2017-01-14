@@ -3072,6 +3072,8 @@ function GlassModeratorGui::refreshPlayerlist() {
 function GlassModeratorWindow_Selection::onSelect(%this) {
   %selection = %this.getValue();
   GlassModeratorWindow.selection = %selection;
+  GlassModeratorWindow_Reason.setText("");
+  GlassModeratorWindow_Duration.setText("");
   if(%selection $= "Ban" || %selection $= "Bar") {
   	GlassModeratorWindow_ReasonBlocker.setVisible(false);
   	GlassModeratorWindow_DurationBlocker.setVisible(false);
@@ -3132,7 +3134,7 @@ function GlassModeratorGui::submit(%this) {
   if(%type $= "Kick")
     GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
-    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid @ %reason, 0);
+    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid @ %reason, GlassChatroomWindow.activeTab.id);
 
   Glass::debug("Sent room command:" SPC %cmd);
 }

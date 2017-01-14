@@ -242,16 +242,27 @@ function GlassOverlay::openModeration() {
     GlassModeratorWindow_Duration.enabled = false;
   } else {
     GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
+    if(!GlassModeratorWindow.visible) {
+      GlassModeratorWindow_ReasonBlocker.setVisible(false);
+      GlassModeratorWindow_DurationBlocker.setVisible(false);
+      GlassModeratorWindow_Reason.enabled = false;
+      GlassModeratorWindow_Duration.enabled = false;
+      return;
+    }
   }
 
   GlassOverlayGui.pushToBack(GlassModeratorWindow);
-
-  //GlassModeratorWindow_ReasonBlocker.setVisible(true);
-  //GlassModeratorWindow_DurationBlocker.setVisible(true);
+  
+  GlassModeratorWindow_Selection.onSelect();
 
   GlassModeratorGui::searchPlayers();
 }
 
 function GlassOverlay::closeModeration() {
+  GlassModeratorWindow_ReasonBlocker.setVisible(false);
+  GlassModeratorWindow_DurationBlocker.setVisible(false);
+  GlassModeratorWindow_Reason.enabled = false;
+  GlassModeratorWindow_Duration.enabled = false;
+  
   GlassModeratorWindow.setVisible(false);
 }
