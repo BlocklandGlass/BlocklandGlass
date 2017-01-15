@@ -281,6 +281,11 @@ function GlassLoadingGui::UpdateWindowTitle(%this) {
   %this.setText(%npl);
 }
 
+function GlassLoadingGui_UserList::onSelect(%this, %a) {
+  NewChatHud.pushToBack(GlassLoadingGui);
+  NewChatHud.schedule(50, pushToBack, newChatText);
+}
+
 function GlassLoadingGui::onWake(%this) {
   GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
 
@@ -289,6 +294,16 @@ function GlassLoadingGui::onWake(%this) {
   } else {
     GlassServerPreview::getServerBuild("local", GlassLoadingGui_Image);
   }
+
+  LoadingProgress.position = "15 335";
+  LoadingProgress.extent = "590 25";
+
+  LoadingSecondaryProgress.position = "15 335";
+  LoadingSecondaryProgress.extent = "590 25";
+}
+
+function GlassLoadingGui::close(%this) {
+
 }
 
 function GuiTextListCtrl::sortList(%this, %col) {
@@ -405,7 +420,7 @@ function GlassServerPreview::connectToServer(%password) {
 
   if(isObject(serverConnection))
 	disconnectedCleanup();
-  
+
   connectToServer(%server, %password, "1", "1");
   GlassServerPreviewGui.close();
 }
@@ -561,11 +576,11 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
 function clientCmdGlass_setPlayerlistStatus(%blid, %char) {
   if(strLen(%char) > 1)
     return;
-	
+
   for(%i = 0; %i < NPL_List.rowCount(); %i++) {
 	%row = NPL_List.getRowText(%i);
 	%id = NPL_List.getRowId(%i);
-	
+
 	if(getField(%row, 3) $= %blid)
 	  NPL_List.setRowById(%id, setField(%row, 0, %char));
   }
@@ -596,7 +611,7 @@ package GlassServers {
       parent::onWake(%this);
 
     NewChatHud.add(GlassLoadingGui);
-	GlassLoadingGui.forceCenter();
+    GlassLoadingGui.forceCenter();
     NewChatHud.pushToBack(GlassLoadingGui);
     NewChatHud.schedule(50, pushToBack, newChatText);
   }
