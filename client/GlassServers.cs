@@ -252,13 +252,7 @@ function GlassLoading::changeGui() {
     return;
   }
 
-  %loadingGui = LoadingGui.getId();
-
-  exec("./gui/LoadingGui.gui");
-
-  %loadingGui.deleteAll();
-  %loadingGui.delete();
-
+  exec("./gui/GlassLoadingGui.gui");
   LoadingGui.isGlass = true;
 }
 
@@ -295,15 +289,29 @@ function GlassLoadingGui::onWake(%this) {
     GlassServerPreview::getServerBuild("local", GlassLoadingGui_Image);
   }
 
+  GlassLoadingGui.add(LoadingProgress);
   LoadingProgress.position = "15 335";
   LoadingProgress.extent = "590 25";
 
+  GlassLoadingGui.add(LoadingSecondaryProgress);
   LoadingSecondaryProgress.position = "15 335";
   LoadingSecondaryProgress.extent = "590 25";
 }
 
 function GlassLoadingGui::close(%this) {
+  %pos = 20 SPC (getWord(LoadingGui.extent, 1)-84);
+  %ext = (getWord(LoadingGui.extent, 0)-40) SPC 64;
 
+  LoadingGui.add(LoadingProgress);
+  LoadingProgress.position = %pos;
+  LoadingProgress.extent = %ext;
+
+  LoadingGui.add(LoadingSecondaryProgress);
+  LoadingSecondaryProgress.position = %pos;
+  LoadingSecondaryProgress.extent = %ext;
+
+  GuiGroup.add(%this);
+  LoadingProgressTxt.forceCenter();
 }
 
 function GuiTextListCtrl::sortList(%this, %col) {
@@ -598,10 +606,6 @@ function Glass::replaceJSWindow() {
 Glass::replaceJSWindow();
 
 package GlassServers {
-  function joinServerGui::onWake(%this) {
-  	parent::onWake(%this);
-  }
-
   function interfaceFunction() {
     echo("\c4Prevented RTB JoinServerGui");
   }
