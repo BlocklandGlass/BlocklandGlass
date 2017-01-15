@@ -2920,7 +2920,7 @@ function GlassLive::openUserWindow(%blid) {
       case "menus":
         //%locationColor = "AFAFAF";
         %locationRGB = "235 235 235 255";
-        %locationDisplay = "<br>In Menus";
+        %locationDisplay = "<br>At the Main Menu";
 
       case "playing":
         //%locationColor = "2ECC71";

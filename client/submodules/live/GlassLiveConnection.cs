@@ -561,7 +561,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         if(%uo.getLastLocation() !$= "") {
           switch$(%data.location) {
             case "menus":
-              %message = "is now in the menus";
+              %message = "is now at the main menu";
 
             case "hosting":
               %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
