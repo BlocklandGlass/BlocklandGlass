@@ -67,6 +67,8 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
   %obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
 
+  %obj.set("autoJoinRooms", "string", GlassSettings.get("Live::AutoJoinRoom") == true);
+
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:2ecc71>Authenticating...");
@@ -245,6 +247,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoinAuto":
+      warn("Received depreciated roomJoinAuto");
       // TODO temporary work around, need to change this whole call
       //which requires server changes too
       if(!GlassSettings.get("Live::AutoJoinRoom")) {
@@ -314,9 +317,9 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
       %room = GlassLiveRooms::create(%data.id, %data.title);
-	  
+
       %room.icon = %data.icon;
-	  
+
       %clients = %data.clients;
       for(%i = 0; %i < %clients.length; %i++) {
         %cl = %clients.value[%i];
