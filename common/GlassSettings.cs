@@ -404,10 +404,10 @@ function GlassSettings::saveData(%this) {
 
   for(%i = 0; %i < %this.getCount(); %i++) {
     %setting = %this.getObject(%i);
-     %fo.writeLine(%setting.name TAB expandEscape(%setting.value));
-
     if(%setting.class $= "GlassCache") {
       %fo2.writeLine(%setting.name TAB %setting.created TAB %setting.ttl TAB expandEscape(%setting.value));
+    } else {
+      %fo.writeLine(%setting.name TAB expandEscape(%setting.value));
     }
   }
 
@@ -446,15 +446,22 @@ function GlassSettings::get(%this, %name) {
 }
 
 function GlassSettings::cacheCreate(%this, %name, %value, %ttl, %time) {
-  %obj = new ScriptObject() {
-    class = "GlassCache";
-    value = %value;
+  if(isObject(%this.cache[%name])) {
+    %obj = %this.cache[%name];
+    %obj.value = %value;
+    %obj.ttl = %ttl;
+    %obj.created = %time;
+  } else {
+    %obj = new ScriptObject() {
+      class = "GlassCache";
+      value = %value;
 
-    name = %name;
+      name = %name;
 
-    created = %time;
-    ttl = %ttl; // %ttl -- 0 = infinite
-  };
+      created = %time;
+      ttl = %ttl; // %ttl -- 0 = infinite
+    };
+  }
 
   %this.cache[%name] = %obj;
   %this.add(%obj);

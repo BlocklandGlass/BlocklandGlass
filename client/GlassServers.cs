@@ -336,13 +336,13 @@ function GlassServerPreviewGui::open(%this, %server) {
   if(%server $= "") {
     %server = ServerInfoGroup.getObject(JS_ServerList.getSelectedID());
   }
+
   %this.server = %server;
   if(joinServerGui.isAwake()) {
     canvas.popDialog(joinServerGui);
     %this.wakeServerGui = true;
   }
 
-  GlassServerPreview_PasswordWindow.setVisible(false);
   canvas.pushDialog(GlassServerPreviewGui);
 }
 
@@ -413,8 +413,8 @@ function GlassServerPreview::connectToServer(%password) {
     return;
 
   if(GlassServerPreviewWindowGui.passworded && %password $= "") {
-    GlassServerPreview_PasswordWindow.setVisible(true);
-    GlassServerPreview_Password.setValue("");
+    $ServerInfo::Address = %server;
+    canvas.pushDialog(JoinServerPassGui);
     return;
   }
 
@@ -586,15 +586,24 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char) {
   }
 }
 
+function Glass::replaceJSWindow() {
+  %this = JoinServerGui;
+  if(!%this.initializedGlass) {
+    %this.initializedGlass = 1;
+    joinServerGui.clear();
+    joinServerGui.add(GlassJS_window);
+    GlassJS_window.setName("JS_window");
+  }
+}
+Glass::replaceJSWindow();
+
 package GlassServers {
   function joinServerGui::onWake(%this) {
-  	if(!%this.initializedGlass) {
-  	  %this.initializedGlass = 1;
-  	  joinServerGui.clear();
-  	  joinServerGui.add(GlassJS_window);
-  	  GlassJS_window.setName("JS_window");
-  	}
   	parent::onWake(%this);
+  }
+
+  function interfaceFunction() {
+    echo("\c4Prevented RTB JoinServerGui");
   }
 
   function MainMenuButtonsGui::onWake(%this) {
