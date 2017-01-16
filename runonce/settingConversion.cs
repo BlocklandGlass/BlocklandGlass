@@ -12,9 +12,16 @@ if(isFile("config/BLG/client/mm.cs")) {
 }
 
 if(!$Server::Dedicated) {
-  if(GlassSettings.cacheFetch("SettingsReset") !$= "3.2.0") {
+  %reset = GlassSettings.cacheFetch("SettingsReset");
+  if(semanticVersionCompare(%reset, "3.2.0") == 2) {
     warn("Resetting settings!");
     GlassSettings.resetToDefaults("client");
     GlassSettings.cachePut("SettingsReset", "3.2.0");
+  }
+
+  if(semanticVersionCompare(%reset, "4.0.1") == 2) {
+    GlassSettings.resetToDefaults("client");
+    GlassSettings.cachePut("SettingsReset", "4.0.1");
+    GlassSettings.update("Live::ViewLocation", "Anyone");
   }
 }

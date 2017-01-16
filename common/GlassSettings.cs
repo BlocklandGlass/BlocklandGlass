@@ -54,7 +54,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   // Privacy
   GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "can view my avatar *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view your avatar.<br><br><font:verdana bold:13>Requires reconnect.");
-  GlassSettings.registerSetting("Live::ViewLocation", "Friends", "", "can view my server *", "Privacy", "dropdown", "Friends Myself", "Set who is able to view the server you are currently playing on.<br><br><font:verdana bold:13>Requires reconnect.");
+  GlassSettings.registerSetting("Live::ViewLocation", "Anyone", "", "can view my server *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view the server you are currently playing on.<br><br><font:verdana bold:13>Requires reconnect.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
