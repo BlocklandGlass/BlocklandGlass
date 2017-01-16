@@ -2966,11 +2966,12 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     if(!%uo.isFriend()) {
       %locationRGB = "235 235 235 255";
       %locationDisplay = "<br>Private";
+      %serverTitle = "";
     }
 
     if(%uo.blid == getNumKeyId()) {
       %locationDisplay = "<br>Chillin' like a Villain";
-
+      %serverTitle = "";
     }
 
   	%window.statusText.setText(%status);
