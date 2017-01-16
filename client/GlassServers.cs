@@ -660,5 +660,11 @@ package GlassServers {
 
     GlassLoadingGui_UserList.update();
   }
+
+  function disconnectedCleanup(%a) {
+    parent::disconnectedCleanup(%a);
+
+    GlassLoadingGui.onSleep();
+  }
 };
 activatePackage(GlassServers);
