@@ -13,6 +13,7 @@ if(isFile("config/BLG/client/mm.cs")) {
 
 if(!$Server::Dedicated) {
   %reset = GlassSettings.cacheFetch("SettingsReset");
+
   if(semanticVersionCompare(%reset, "3.2.0") == 2) {
     warn("Resetting settings!");
     GlassSettings.resetToDefaults("client");
@@ -20,7 +21,7 @@ if(!$Server::Dedicated) {
   }
 
   if(semanticVersionCompare(%reset, "4.0.1") == 2) {
-    GlassSettings.resetToDefaults("client");
+    warn("Setting Live::ViewLocation to Anyone");
     GlassSettings.cachePut("SettingsReset", "4.0.1");
     GlassSettings.update("Live::ViewLocation", "Anyone");
   }

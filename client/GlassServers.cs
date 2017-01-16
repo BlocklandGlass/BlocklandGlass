@@ -298,6 +298,13 @@ function GlassLoadingGui::onWake(%this) {
   LoadingSecondaryProgress.extent = "590 25";
 }
 
+function GlassLoadingGui::onSleep(%this) {
+  GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
+
+  %this.setText("Loading...");
+  GlassLoadingGui_UserList.clear();
+}
+
 function GlassLoadingGui::close(%this) {
   %pos = 20 SPC (getWord(LoadingGui.extent, 1)-84);
   %ext = (getWord(LoadingGui.extent, 0)-40) SPC 64;

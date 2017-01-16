@@ -6,12 +6,9 @@ if($Pref::PreLoadScriptLauncherVersion != 2) {
 exec("./core.cs");
 
 function Glass::execClient() {
-  echo(" ===                Loading Preferences                 ===");
+  echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
   exec("./common/GlassSettings.cs");
 
-  exec("./runonce/settingConversion.cs");
-
-  echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
   exec("./support/jettison.cs");
   exec("./support/Support_TCPClient.cs");
   exec("./support/Support_MetaTCP.cs");
@@ -40,6 +37,7 @@ function Glass::execClient() {
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
+  exec("./runonce/settingConversion.cs");
 
   echo(" ===              Executing Important Stuff             ===");
   exec("./common/GlassFileData.cs");
