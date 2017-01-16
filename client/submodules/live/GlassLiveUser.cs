@@ -196,7 +196,7 @@ function GlassLiveUser::setStatus(%this, %status) {
 function GlassLiveUser::getStatus(%this) {
   if(%this.status $= "")
     return "offline";
-    
+
   return %this.status;
 }
 
@@ -239,7 +239,7 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj, %private) {
   %this.avatarGui.lightDirection = "0 0.2 0.3";
 }
 
-function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress, %serverPassworded) {
+function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress, %serverPassworded, %isRequest) {
   %this.lastLocation = %this.location;
   %this.location = %location;
   %this.serverTitle = %serverTitle;
@@ -247,7 +247,7 @@ function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAd
   %this.serverPassworded = %serverPassworded;
 
   if(isObject(%this.window))
-    GlassLive::openUserWindow(%this.blid);
+    GlassLive::openUserWindow(%this.blid, %isRequest);
 }
 
 function GlassLiveUser::getLastLocation(%this) {
@@ -287,4 +287,13 @@ function GlassLiveUser::isServerPassworded(%this) {
   } else {
     return false;
   }
+}
+
+function GlassLiveUser::requestLocation(%this) {
+  %obj = JettisonObject();
+  %obj.set("type", "string", "getLocation");
+  %obj.set("blid", "string", %this.blid);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
 }

@@ -30,6 +30,55 @@ function GlassLiveRoom::getFromId(%id) {
     return false;
 }
 
+function GlassLive::onJoinRoom(%data) {
+  if(GlassSettings.get("Live::RoomNotification")) {
+    new ScriptObject(GlassNotification) {
+      title = "Entered Room";
+      text = "You've entered " @ %data.title;
+      image = "add";
+
+      sticky = false;
+      callback = "";
+    };
+  }
+
+  %room = GlassLiveRooms::create(%data.id, %data.title);
+
+  %room.icon = %data.icon;
+
+  %clients = %data.clients;
+  for(%i = 0; %i < %clients.length; %i++) {
+    %cl = %clients.value[%i];
+
+    %uo = GlassLiveUser::create(%cl.username, %cl.blid);
+    %uo.setStatus(%cl.status);
+    %uo.setIcon(%cl.icon);
+
+    %uo.setAdmin(%cl.admin);
+    %uo.setMod(%cl.mod);
+
+    if(%cl.blid < 0)
+      %uo.setBot(true);
+
+    %room.addUser(%uo.blid);
+  }
+
+  %room.createView();
+
+  %motd = %data.motd;
+  %motd = strreplace(%motd, "\n", "<br> * ");
+  %motd = strreplace(%motd, "[name]", $Pref::Player::NetName);
+  %motd = strreplace(%motd, "[vers]", Glass.version);
+  %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
+  %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
+
+  %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
+
+  %room.pushText(%motd);
+
+  %room.view.userSwatch.getGroup().scrollToTop();
+}
+
 function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
   %obj = JettisonObject();
   %obj.set("type", "string", "roomLeave");
@@ -220,7 +269,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %this.pushText(%text);
 
   %this.view.setFlashing(true);
-  
+
   GlassLive.curSound = !GlassLive.curSound;
 
   GlassAudio::play("chatroomMsg" @ GlassLive.curSound + 1, GlassSettings.get("Volume::RoomChat"));

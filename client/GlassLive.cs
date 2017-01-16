@@ -2790,7 +2790,7 @@ function GlassLive::createUserWindow(%uo) {
 
   %window.headerText = new GuiMLTextCtrl() {
   	position = "10 5";
-  	extent = "180 62";
+  	extent = "190 62";
   	text = "";
     autoResize = true;
   };
@@ -2892,7 +2892,7 @@ function GlassLive::createUserWindow(%uo) {
   return %window;
 }
 
-function GlassLive::openUserWindow(%blid) {
+function GlassLive::openUserWindow(%blid, %didUpdate) {
   if(%blid < 0) {
     glassMessageBoxOk("Beep Boop", "That's a bot!");
     return;
@@ -2900,6 +2900,10 @@ function GlassLive::openUserWindow(%blid) {
 
   %uo = GlassLiveUser::getFromBlid(%blid);
   if(%uo) {
+    if(!%didUpdate) {
+      %uo.requestLocation();
+    }
+
     %window = GlassLive::createUserWindow(%uo);
 
     %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_" @ %uo.status @ "><font:verdana bold:13> " @ strCap(%uo.status);
@@ -2976,7 +2980,22 @@ function GlassLive::openUserWindow(%blid) {
 
     %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %serverTitle;
 
-    %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ "<br><font:verdana:12>" @ %uo.blid @ %serverInfo);
+    if(%uo.country !$= "") {
+      if(%uo.country $= "United States") {
+        %country = "usa";
+      } else {
+        %country = strReplace(%uo.country, " ", "_");
+      }
+
+      %file = "Add-Ons/System_BlocklandGlass/image/icon/flag_" @ %country @ ".png";
+      if(isFile(%file)) {
+        %countryFlag = "<just:right><bitmap:" @ %file @ ">";
+      } else {
+        %countryFlag = "<just:right><font:verdana:12><sPush><color:444444>" @ %uo.country @ "<sPop>";
+      }
+    }
+
+    %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ %countryFlag @ "<br><just:left><font:verdana:12>" @ %uo.blid @ %serverInfo);
     %window.headerSwatch.color = %locationRGB;
 
     %uo.getAvatar(%window.blockhead);

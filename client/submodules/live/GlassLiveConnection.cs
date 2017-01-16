@@ -247,110 +247,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessageNotification(%data.message, %data.chat_blid);
 
     case "roomJoinAuto":
-      warn("Received depreciated roomJoinAuto");
-      // TODO temporary work around, need to change this whole call
-      //which requires server changes too
-      if(!GlassSettings.get("Live::AutoJoinRoom")) {
-        %room = GlassLiveRooms::create(%data.id, %data.title);
-        %room.createView();
-        %room.leaveRoom(true);
-        return;
-      }
-
-      if(GlassSettings.get("Live::RoomNotification")) {
-        new ScriptObject(GlassNotification) {
-          title = "Entered Room";
-          text = "You've entered " @ %data.title;
-          image = "add";
-
-          sticky = false;
-          callback = "";
-        };
-      }
-
-      %room = GlassLiveRooms::create(%data.id, %data.title);
-
-      %room.icon = %data.icon;
-
-      %clients = %data.clients;
-      for(%i = 0; %i < %clients.length; %i++) {
-        %cl = %clients.value[%i];
-
-        %uo = GlassLiveUser::create(%cl.username, %cl.blid);
-        %uo.setStatus(%cl.status);
-        %uo.setIcon(%cl.icon);
-
-        %uo.setAdmin(%cl.admin);
-        %uo.setMod(%cl.mod);
-
-        if(%cl.blid < 0)
-          %uo.setBot(true);
-
-        %room.addUser(%uo.blid);
-      }
-
-      %room.createView();
-
-      %motd = %data.motd;
-      %motd = strreplace(%motd, "\n", "<br> * ");
-      %motd = strreplace(%motd, "[name]", $Pref::Player::NetName);
-      %motd = strreplace(%motd, "[vers]", Glass.version);
-      %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
-      %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
-
-      %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
-
-      %room.pushText(%motd);
-
-      %room.view.userSwatch.getGroup().scrollToTop();
+      //The server takes in our auto join room setting and handles it now
+      // this is mostly just backwards compat
+      GlassLive::onJoinRoom(%data);
 
     case "roomJoin":
-      if(GlassSettings.get("Live::RoomNotification")) {
-        new ScriptObject(GlassNotification) {
-          title = "Entered Room";
-          text = "You've entered " @ %data.title;
-          image = "add";
-
-          sticky = false;
-          callback = "";
-        };
-      }
-
-      %room = GlassLiveRooms::create(%data.id, %data.title);
-
-      %room.icon = %data.icon;
-
-      %clients = %data.clients;
-      for(%i = 0; %i < %clients.length; %i++) {
-        %cl = %clients.value[%i];
-
-        %uo = GlassLiveUser::create(%cl.username, %cl.blid);
-        %uo.setStatus(%cl.status);
-        %uo.setIcon(%cl.icon);
-
-        %uo.setAdmin(%cl.admin);
-        %uo.setMod(%cl.mod);
-
-        if(%cl.blid < 0)
-          %uo.setBot(true);
-
-        %room.addUser(%uo.blid);
-      }
-
-      %room.createView();
-
-      %motd = %data.motd;
-      %motd = strreplace(%motd, "\n", "<br> * ");
-      %motd = strreplace(%motd, "[name]", $Pref::Player::NetName);
-      %motd = strreplace(%motd, "[vers]", Glass.version);
-      %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
-      %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
-
-      %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
-
-      %room.pushText(%motd);
-
-      %room.view.userSwatch.getGroup().scrollToTop();
+      GlassLive::onJoinRoom(%data);
 
     case "messageTyping":
       %user = GlassLiveUser::getFromBlid(%data.sender);
@@ -636,6 +538,16 @@ function GlassLiveConnection::onLine(%this, %line) {
       %avatarData = %data.avatar;
 
       %user.gotAvatar(%avatarData, %data.private);
+
+    case "userLocation":
+      //this is only in response to getLocation
+      %uo = GlassLiveUser::getFromBlid(%data.blid);
+      %uo.countryCode = %data.countryCode;
+      %uo.country = %data.country;
+
+      echo("User is from " @ %uo.country);
+
+      %uo.updateLocation(%data.location, %data.serverTitle, %data.address, %data.passworded, true);
 
     case "blockedList":
       %list = "";
