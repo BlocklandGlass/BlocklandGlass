@@ -7,7 +7,7 @@ function GMM_ActivityPage::init() {
 function GMM_ActivityPage::open(%this) {
   GMM_Navigation.clear();
   GMM_Navigation.addStep("Activity", "GlassModManagerGui.openPage(GMM_ActivityPage);");
-  
+
   if(isObject(%this.container)) {
     %this.container.deleteAll();
     %this.container.delete();
@@ -84,7 +84,7 @@ function GMM_ActivityPage::createMessageDialog(%this, %message) {
     horizSizing = "right";
     vertSizing = "bottom";
     profile = "GlassModManagerMLProfile";
-    text = "<font:verdana:13>" @ %message;
+    text = "<font:verdana:13>" @ getLongASCIIString(%message);
     position = "10 10";
     extent = "595 0";
     minextent = "0 0";
