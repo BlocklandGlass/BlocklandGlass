@@ -292,7 +292,7 @@ function GlassModManager::deleteAddOn(%this, %addon) {
   fileDelete(%dir @ %name @ ".zip");
 
   glassMessageBoxOk("Add-On Deleted", "<font:verdana bold:13>" @ %name @ "<font:verdana:13> has been deleted.");
-  
+
   GMM_MyAddonsPage.container.delete();
   GMM_MyAddonsPage.populateAddons();
   GlassModManagerGui.schedule(1, "openPage", GMM_MyAddonsPage);
@@ -539,7 +539,12 @@ package GlassModManager {
       //%url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
       %link = getsubstr(%url, 8, strlen(%url)-8);
 
-      %type = getSubStr(%link, 0, strPos(%link, "="));
+      %idx = strPos(%link, "=");
+      if(%idx < 0) {
+        %idx = strlen(%link);
+      }
+      %type = getSubStr(%link, 0, %idx);
+      
       switch$(%type) {
         case "board":
           if(strpos(%link, "&page=") != -1) {

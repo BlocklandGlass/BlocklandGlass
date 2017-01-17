@@ -628,16 +628,21 @@ function GlassScreenshotTCP::onDone(%this, %error) {
   } else {
     if(%this.thumb) {
       %swatch = %this.swatch;
-      fileCopy("config/client/cache/" @ %swatch.id @ "_thumb", "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext);
       %bitmap = new GuiBitmapCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        bitmap = "config/client/cache/" @ %swatch.id @ "_thumb." @ %this.ext;
+        bitmap = "";
         position = "0 0";
         extent = "96 96";
         minextent = "0 0";
         clipToParent = true;
+        lockAspectRatio = true;
+        overflowImage = true;
       };
+
+
+      fileCopy("config/client/cache/" @ %swatch.id @ "_thumb", "config/client/cache/screenshot." @ %swatch.id @ ".thumb.png");
+      %bitmap.schedule(0, setBitmap, "config/client/cache/screenshot." @ %swatch.id @ ".thumb.png");
 
       %swatch.highlight = new GuiSwatchCtrl() {
         horizSizing = "right";
@@ -674,6 +679,7 @@ function GlassScreenshotTCP::onDone(%this, %error) {
     } else {
       %swatch = %this.swatch;
       fileCopy("config/client/cache/" @ %swatch.id, "config/client/cache/" @ %swatch.id @ "." @ %this.ext);
+
       GlassModManagerImageCtrl.extent = %swatch.display_extent;
       GlassModManagerImageCtrl.setBitmap("config/client/cache/" @ %swatch.id @ "." @ %this.ext);
       GlassModManagerImageCtrl.setVisible(true);

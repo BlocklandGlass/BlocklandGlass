@@ -38,8 +38,9 @@ function GMM_BoardsPage::open(%this) {
 
 function GMM_BoardsPage::close(%this) {
   if(isObject(%this.container)) {
-    //preserve the gui object
-    %this.container.getGroup().remove(%this.container);
+    if(isObject(%this.container.getGroup())) {
+      %this.container.getGroup().remove(%this.container);
+    }
   }
 }
 
