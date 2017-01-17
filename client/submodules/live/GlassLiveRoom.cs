@@ -250,10 +250,14 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %user = %this.view.userSwatch.getObject(%o);
       %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
       %blid = %user.text.blid;
-      if(%word $= ("@" @ %name)) {
+      if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
-      } else if(%word $= ("@" @ %blid)) {
-        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+        %uo = GlassLiveUser::getFromBlid(%blid);
+        if(%uo.getStatus() $= "away") {
+          glassMessageBoxOk("Away", "The user you just mentioned is currently away.");
+        } else if(%uo.getStatus() $= "busy") {
+          glassMessageBoxOk("Busy", "The user you just mentioned is currently busy.");
+        }
       }
     }
 
