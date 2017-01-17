@@ -2986,6 +2986,8 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
         %country = "usa";
       } else if(%uo.country $= "United Kingdom") {
         %country = "great_britain";
+      } else if(%uo.country $= "Russian Federation") {
+        %country = "russia";
       } else {
         %country = strReplace(%uo.country, " ", "_");
       }
