@@ -545,8 +545,6 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.countryCode = %data.countryCode;
       %uo.country = %data.country;
 
-      echo("User is from " @ %uo.country);
-
       %uo.updateLocation(%data.location, %data.serverTitle, %data.address, %data.passworded, true);
 
     case "blockedList":
