@@ -29,7 +29,7 @@ function GlassOverlayGui::onWake(%this) {
       %window.scroll.scrollToBottom();
     } else if(%window.getName() $= "GlassUserGui") {
       if(isObject(%window.Blockhead)) {
-        %window.Blockhead.createBlockhead(%window.uo.avatar);
+		%window.Blockhead.schedule(1, "setCamera");
         %window.Blockhead.schedule(1, "setOrbitDist", 6);
         %window.Blockhead.schedule(1, "setCameraRot", 0, 0, $pi * 1.1);
       }
