@@ -3032,6 +3032,9 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
       %window.centered = true;
     }
   }
+  
+  if(!GlassOverlayGui.isAwake())
+	   GlassOverlay::open();
 }
 
 //================================================================
