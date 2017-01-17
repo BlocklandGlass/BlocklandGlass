@@ -544,7 +544,7 @@ package GlassModManager {
         %idx = strlen(%link);
       }
       %type = getSubStr(%link, 0, %idx);
-      
+
       switch$(%type) {
         case "board":
           if(strpos(%link, "&page=") != -1) {
@@ -592,7 +592,6 @@ package GlassModManager {
     GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 
     if(%id+0 $= %id || %id > 0) {
-      GlassModManagerGui.loadContext("boards");
       GlassModManagerGui.openPage(GMM_AddonPage, %id);
     }
 
