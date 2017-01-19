@@ -696,7 +696,7 @@ function GlassLive::updateLocation(%inServer) {
     }
   } else {
     %ip = ServerConnection.getRawIP();
-    if(strPos("192.168.", %ip) == 0 || strpos("10.", %ip) == 0) {
+    if(strPos("192.168.", %ip) == 0 || strpos("10.", %ip) == 0 || || strpos("127.0.0.", %ip) == 0) {
       %action = "playing_lan";
     } else {
       %action = "playing";
@@ -1967,6 +1967,8 @@ function GlassLive::joinFriendServer(%blid) {
     canvas.pushDialog(JoinServerPassGui);
 	} else {
     connectToServer(%server, "", "1", "1");
+    canvas.pushDialog(connectingGui);
+    Connecting_Text.setValue("Connecting to " @ %server @ "...<br>");
   }
 }
 
@@ -2963,12 +2965,6 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     }
     %locationColor = "333333";
 
-    if(!%uo.isFriend()) {
-      %locationRGB = "235 235 235 255";
-      %locationDisplay = "<br>Private";
-      %serverTitle = "";
-    }
-
     if(%uo.blid == getNumKeyId()) {
       %locationDisplay = "<br>Chillin' like a Villain";
       %serverTitle = "";
@@ -3032,7 +3028,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
       %window.centered = true;
     }
   }
-  
+
   if(!GlassOverlayGui.isAwake())
 	   GlassOverlay::open();
 }

@@ -253,7 +253,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
         %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
         %uo = GlassLiveUser::getFromBlid(%blid);
-        if(%senderblid == getNumKeyId())
+        if(%senderblid == getNumKeyId()) {
           if(%uo.getStatus() $= "away") {
             glassMessageBoxOk("Away", "The user you just mentioned is currently away.");
           } else if(%uo.getStatus() $= "busy") {
