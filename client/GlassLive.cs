@@ -696,7 +696,7 @@ function GlassLive::updateLocation(%inServer) {
     }
   } else {
     %ip = ServerConnection.getRawIP();
-    if(strPos("192.168.", %ip) == 0 || strpos("10.", %ip) == 0 || || strpos("127.0.0.", %ip) == 0) {
+    if(strPos("192.168.", %ip) == 0 || strpos("10.", %ip) == 0 || strpos("127.0.0.", %ip) == 0) {
       %action = "playing_lan";
     } else {
       %action = "playing";
