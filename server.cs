@@ -1,3 +1,8 @@
+if(!isUnlocked()) {
+  error("Demo mode is not supported, please buy the game.");
+  return;
+}
+
 if($Pref::PreLoadScriptLauncherVersion < 1) {
 	fileCopy("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
 }

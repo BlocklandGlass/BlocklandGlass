@@ -530,7 +530,11 @@ package GlassModManager {
   function GuiMLTextCtrl::onURL(%this, %url) {
   	// User links
   	if(getSubStr(%url, 0, 17) $= "gamelink_glass://") {
-      GlassLive::openUserWindow(getSubStr(%url, 22, strLen(%url) - 1));
+      %blid = getSubStr(%url, 22, strLen(%url) - 1);
+      if(isObject(%window = GlassLiveUser::getFromBlid(%blid).window))
+        %window.delete();
+      else
+        GlassLive::openUserWindow(%blid);
       return;
   	}
 
