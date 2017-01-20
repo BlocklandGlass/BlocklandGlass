@@ -7,7 +7,7 @@ function GMM_Navigation::clear(%this) {
 }
 
 function GMM_Navigation::addStep(%this, %text, %callback) {
-  %this.step[%this.steps+0] = %text;
+  %this.step[%this.steps+0] = getASCIIString(%text);
   %this.stepCall[%this.steps+0] = %callback;
 
   %this.steps++;
