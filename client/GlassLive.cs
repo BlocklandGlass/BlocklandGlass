@@ -2908,9 +2908,12 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 
     %window = GlassLive::createUserWindow(%uo);
 
-    %status = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_" @ %uo.status @ "><font:verdana bold:13> " @ strCap(%uo.status);
+    if(%status = %uo.status $= "")
+      %status = "offline";
 
-    switch$(%uo.status) {
+    %statusText = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_" @ %status @ "><font:verdana bold:13> " @ strCap(%status);
+
+    switch$(%status) {
       case "online":
         %window.statusText.position = "2 4";
       case "away":
@@ -2972,7 +2975,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
       %serverTitle = "";
     }
 
-  	%window.statusText.setText(%status);
+  	%window.statusText.setText(%statusText);
 
     if(strlen(%serverTitle = %uo.getServerTitle()) > 32)
       %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
