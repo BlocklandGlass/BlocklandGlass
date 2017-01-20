@@ -2097,7 +2097,7 @@ function GlassLive::addDlgSubmit() {
 
   if(GlassFriendsGui_AddFriendBLID.getValue() == getNumKeyId()) {
     GlassFriendsGui_AddFriendBLID.setValue("");
-    glassMessageBoxOk("Invalid BLID", "You can't friend yourself.");
+    glassMessageBoxOk("Invalid BLID", "Blockland Glass is a social platform and as such you are not able to friend yourself at this present time.<br><br>We apologize for the inconvenience, please find some real friends instead.");
     return;
   }
 
@@ -2966,7 +2966,9 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     %locationColor = "333333";
 
     if(%uo.blid == getNumKeyId()) {
-      %locationDisplay = "<br>Chillin' like a Villain";
+      // ea.st.er eg.gs shouldn't remove, hide or overwrite information
+      // add them elsewhere
+      // %locationDisplay = "<br>Chillin' like a Villain";
       %serverTitle = "";
     }
 

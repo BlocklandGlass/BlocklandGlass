@@ -601,14 +601,21 @@ function GlassLiveUserListSwatch::onMouseUp(%this) {
 }
 
 function GlassLiveUserListSwatch::onRightMouseUp(%this) {
-  if(isObject(%input = GlassChatroomWindow.activeTab.input) && %this.user.blid != getNumKeyId()) {
-    %len = strlen(%input.getValue());
-    %name = strreplace(%this.user.username, " ", "_");
-    if(%len > 0 && getsubstr(%input.getValue(), %len - 1, %len) $= " ") {
-      %input.setValue(%input.getValue() @ "@" @ %name @ " ");
-    } else {
-      %input.setValue(ltrim(%input.getValue() SPC "@" @ %name @ " "));
+  if(%this.user.blid != getNumKeyId()) {
+    if(isObject(%input = GlassChatroomWindow.activeTab.input)) {
+      %len = strlen(%input.getValue());
+      %name = strreplace(%this.user.username, " ", "_");
+      if(%len > 0 && getsubstr(%input.getValue(), %len - 1, %len) $= " ") {
+        %input.setValue(%input.getValue() @ "@" @ %name @ " ");
+      } else {
+        %input.setValue(ltrim(%input.getValue() SPC "@" @ %name @ " "));
+      }
     }
+  } else {
+    if(isObject(%window = GlassLiveUser::getFromBlid(getNumKeyId()).window))
+      %window.delete();
+    else
+      GlassLive::openUserWindow(getNumKeyId());
   }
 }
 
