@@ -178,6 +178,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     extent = "595 16";
     minextent = "0 0";
     autoResize = true;
+    maxBitmapHeight = "12";
   };
 
   %description.add(%description.text);
@@ -827,6 +828,7 @@ function GlassModManagerGui::renderAddonComments(%data) {
         extent = "355 16";
         minextent = "0 0";
         autoResize = true;
+        maxBitmapHeight = "12";
       };
       %swat.add(%auth);
       %swat.add(%text);
