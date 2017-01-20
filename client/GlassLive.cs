@@ -2908,7 +2908,9 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 
     %window = GlassLive::createUserWindow(%uo);
 
-    if(%status = %uo.status $= "")
+    %status = %uo.status;
+
+    if(%status $= "")
       %status = "offline";
 
     %statusText = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/status_" @ %status @ "><font:verdana bold:13> " @ strCap(%status);
