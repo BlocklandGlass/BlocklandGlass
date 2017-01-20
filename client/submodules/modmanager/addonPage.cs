@@ -587,6 +587,8 @@ function GlassScreenshot::loadThumb(%this) {
 }
 
 function GlassScreenshot::loadScreenshot(%this) {
+  if(isObject(GlassModManagerImage.loading))
+	GlassModManagerImage.loading.delete();
   %loading = GlassModManagerGui::createLoadingAnimation();
   GlassModManagerImage.add(%loading);
   GlassModManagerImage.loading = %loading;
@@ -684,7 +686,8 @@ function GlassScreenshotTCP::onDone(%this, %error) {
       GlassModManagerImageCtrl.setBitmap("config/client/cache/" @ %swatch.id @ "." @ %this.ext);
       GlassModManagerImageCtrl.setVisible(true);
       GlassModManagerImageCtrl.forceCenter();
-      GlassModManagerImage.loading.delete();
+	  if(isObject(GlassModManagerImage.loading))
+		GlassModManagerImage.loading.delete();
     }
   }
 }
