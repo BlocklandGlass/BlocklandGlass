@@ -2979,10 +2979,11 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 
   	%window.statusText.setText(%statusText);
 
-    if(strlen(%serverTitle = %uo.getServerTitle()) > 32)
-      %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
+    %serverTitle = %uo.getServerTitle();
+    // if(strlen(%serverTitle = %uo.getServerTitle()) > 32)
+      // %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
 
-    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ %serverTitle;
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ getASCIIString(%serverTitle);
 
     if(%uo.country !$= "") {
       if(%uo.country $= "United States") {

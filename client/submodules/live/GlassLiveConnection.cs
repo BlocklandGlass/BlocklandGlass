@@ -466,7 +466,7 @@ function GlassLiveConnection::onLine(%this, %line) {
               %message = "is now at the main menu";
 
             case "hosting":
-              %message = "is now hosting <font:verdana bold:13>" @ %data.serverTitle;
+              %message = "is now hosting <font:verdana bold:13>" @ getASCIIString(%data.serverTitle);
 
             case "hosting_lan":
               %message = "is now hosting a LAN server";
@@ -475,7 +475,7 @@ function GlassLiveConnection::onLine(%this, %line) {
               %message = "is now playing in singleplayer";
 
             case "playing":
-              %message = "is now playing in <font:verdana bold:13>" @ %data.serverTitle;
+              %message = "is now playing in <font:verdana bold:13>" @ getASCIIString(%data.serverTitle);
 
             case "playing_lan":
               %message = "is now playing in a LAN server";
