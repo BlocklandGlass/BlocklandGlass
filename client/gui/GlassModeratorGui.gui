@@ -30,8 +30,7 @@ new GuiControl(GlassModeratorGui) {
       canMaximize = "0";
       minSize = "50 50";
       closeCommand = "GlassOverlay::closeModeration();";
-         blid = "24523";
-         selection = "Bar";
+      selection = "Bar";
 
       new GuiSwatchCtrl() {
          profile = "GuiDefaultProfile";
