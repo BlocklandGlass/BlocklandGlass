@@ -3917,6 +3917,13 @@ package GlassLivePackage {
     }
     parent::onRender(%this);
   }
+  
+  function Crouch(%bool)
+  {
+	  if(GlassOverlayGui.isAwake())
+		  %bool = 0;
+	  return parent::Crouch(%bool);
+  }
 };
 activatePackage(GlassLivePackage);
 
