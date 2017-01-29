@@ -64,7 +64,7 @@ function GlassLive::init() {
   GlassIconSelectorWindow.updateIcons();
 
   GlassOverlay::setVignette();
-  GlassLive::createMessageReminder();
+//  GlassLive::createMessageReminder();
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
