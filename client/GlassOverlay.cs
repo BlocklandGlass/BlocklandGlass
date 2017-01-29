@@ -70,6 +70,7 @@ function GlassOverlayGui::onWake(%this) {
 
     GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));
   }
+  GlassMessageReminder.setVisible(false);
 }
 
 function GlassLive_keybind(%down) {

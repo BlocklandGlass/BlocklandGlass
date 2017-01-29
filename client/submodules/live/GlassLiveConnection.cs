@@ -227,6 +227,10 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification") && !GlassOverlayGui.isAwake()) {
+		
+		if(GlassSettings.get("Live::ReminderIcon"))
+		  GlassMessageReminder.setVisible(true);
+	  
         if(strlen(%data.message) > 100)
           %data.message = getsubstr(%data.message, 0, 100) @ "...";
 

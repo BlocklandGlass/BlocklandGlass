@@ -64,6 +64,7 @@ function GlassLive::init() {
   GlassIconSelectorWindow.updateIcons();
 
   GlassOverlay::setVignette();
+  GlassLive::createMessageReminder();
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
@@ -822,6 +823,28 @@ function GlassLive::messageTypeEnd(%blid) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassLive.typing[%blid] = 0;
+}
+
+function GlassLive::createMessageReminder() {
+  if(isObject(GlassMessageReminder))
+	GlassMessageReminder.delete();
+
+	if(!GlassSettings.get("Live::ReminderIcon"))
+	  return;
+
+  new GuiBitmapCtrl(GlassMessageReminder) {
+    extent = "16 16";
+	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
+  };
+  PlayGui.add(GlassMessageReminder);
+  GlassLive::positionMessageReminder();
+}
+
+function GlassLive::positionMessageReminder() {
+  if(!isObject(GlassMessageReminder))
+	GlassLive::createMessageReminder();
+
+	GlassMessageReminder.resize(getWord(getRes(), 0) - 16, getWord(getRes(), 1) - 16, 16, 16);
 }
 
 //====
@@ -3918,11 +3941,15 @@ package GlassLivePackage {
     parent::onRender(%this);
   }
   
-  function Crouch(%bool)
-  {
-	  if(GlassOverlayGui.isAwake())
-		  %bool = 0;
-	  return parent::Crouch(%bool);
+  function Crouch(%bool) {
+	if(GlassOverlayGui.isAwake())
+      %bool = 0;
+	return parent::Crouch(%bool);
+  }
+  
+  function resetCanvas() {
+	parent::resetCanvas();
+    GlassLive::positionMessageReminder();
   }
 };
 activatePackage(GlassLivePackage);
