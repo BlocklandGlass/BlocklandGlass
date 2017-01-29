@@ -491,7 +491,7 @@ function GlassLiveConnection::onLine(%this, %line) {
             image = %uo.icon;
 
             sticky = false;
-            callback = "GlassLive::openUserWindow(" @ %uo.blid @ ");";
+            callback = "GlassLive::openUserWindow(" @ %uo.blid @ ");GlassOverlay::open();";
           };
         }
       }
