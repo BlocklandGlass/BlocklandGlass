@@ -440,7 +440,6 @@ function GlassLiveConnection::onLine(%this, %line) {
         sticky = false;
         callback = "";
       };
-      GlassAudio::play("friendAdded");
 
     case "friendRemove":
       %uo = GlassLiveUser::getFromBlid(%data.blid);

@@ -529,7 +529,7 @@ function joinServerGui::preview(%this) {
   GlassServerPreviewGui.open();
 }
 
-function clientCmdGlass_setLoadingBackground(%url, %filetype, %crc) {
+function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerlist) { // finish showplayerlist 
   if(!GlassSettings.get("Servers::LoadingImages"))
 	  return;
 

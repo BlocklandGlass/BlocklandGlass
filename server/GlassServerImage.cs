@@ -1,7 +1,7 @@
 package GlassLoadingScreen {
   function gameConnection::startLoad(%this) {
     if($LoadingScreen::Enabled)
-      commandToClient(%this, 'Glass_setLoadingBackground', $LoadingScreen::Url, $LoadingScreen::FileType, $LoadingScreen::CRC);
+      commandToClient(%this, 'Glass_setLoadingBackground', $LoadingScreen::Url, $LoadingScreen::FileType, $LoadingScreen::CRC, $LoadingScreen::Playerlist);
 
     parent::startLoad(%this);
   }
@@ -16,9 +16,9 @@ package GlassLoadingScreen {
 };
 activatePackage(GlassLoadingScreen);
 
-function registerLoadingScreen(%url, %fileType, %crc) {
+function registerLoadingScreen(%url, %fileType, %crc, %showPlayerlist) {
 	if(trim(%url) $= "" || trim(%fileType) $= "") {
-		warn("Error usage: registerLoadingScreen(url, filetype[, crc])");
+		warn("Error usage: registerLoadingScreen(url, filetype[, crc, showplayerlist])");
 		return;
 	}
 	if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
@@ -29,4 +29,5 @@ function registerLoadingScreen(%url, %fileType, %crc) {
 	$LoadingScreen::Url = %url;
 	$LoadingScreen::FileType = %fileType;
 	$LoadingScreen::CRC = %crc;
+  $LoadingScreen::Playerlist = %showPlayerlist;
 }
