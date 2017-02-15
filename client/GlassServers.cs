@@ -301,7 +301,7 @@ function GlassLoadingGui::onWake(%this) {
 function GlassLoadingGui::onSleep(%this) {
   GlassLoadingGui_Image.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
 
-  %this.setText("Loading...");
+  %this.setText("Waiting");
   GlassLoadingGui_UserList.clear();
 }
 

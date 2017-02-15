@@ -596,6 +596,9 @@ function GlassLive::setIcon(%icon) {
 }
 
 function GlassLive::sendAvatarData() {
+  if(!GlassLiveConnection.connected)
+    return;
+  
   %obj = JettisonObject();
   %obj.set("type", "string", "avatar");
 
@@ -3906,8 +3909,11 @@ package GlassLivePackage {
 
   function Avatar_Done() {
     parent::Avatar_Done();
-    GlassFriendsGui_Blockhead.createBlockhead(0, true);
-    GlassLive::sendAvatarData();
+
+    if(GlassLiveConnection.connected) {
+      GlassFriendsGui_Blockhead.createBlockhead(0, true);
+      GlassLive::sendAvatarData();
+    }
   }
 
   function onExit() {
