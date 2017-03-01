@@ -12,6 +12,8 @@ function GlassServerGraphs::init() {
 
     keepOpen = true;
   };
+
+  GlassServerGraphs.default();
 }
 
 function GlassServerGraphs::newEvent(%this, %name, %time) {
