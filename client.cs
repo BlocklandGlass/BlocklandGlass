@@ -61,8 +61,11 @@ function Glass::execClient() {
   exec("./client/GlassOverlay.cs");
   exec("./client/GlassLive.cs");
   exec("./client/GlassModManager.cs");
+
   exec("./client/GlassPreferencesBridge.cs");
   exec("./client/GlassServerControl.cs");
+  exec("./client/GlassGraphs.cs");
+
   exec("./client/GlassNotificationManager.cs");
   exec("./client/GlassServers.cs");
   exec("./client/GlassManual.cs");
@@ -106,6 +109,8 @@ function Glass::execClient() {
   GlassModManager::init();
   GlassServers::init();
   GlassManual::init();
+
+  GlassGraphs::init();
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 

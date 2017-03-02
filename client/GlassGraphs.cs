@@ -1,3 +1,146 @@
+function GlassGraphs::init() {
+  new ScriptObject(GlassGraphs);
+  GlassGraphs.populateTabs();
+}
+
+function GlassGraphs::populateTabs(%this) {
+  GlassServerControlGui_GraphTabs.deleteAll();
+
+  %swatch = %this.createTab("Bricks", "bricks");
+  %swatch.position = "0 0";
+  GlassServerControlGui_GraphTabs.add(%swatch);
+
+  %swatch = %this.createTab("Players", "user");
+  %swatch.position = "0 29";
+  GlassServerControlGui_GraphTabs.add(%swatch);
+
+  %swatch = %this.createTab("Memory", "server");
+  %swatch.position = "0 58";
+  GlassServerControlGui_GraphTabs.add(%swatch);
+}
+
+function GlassGraphs::createTab(%this, %name, %icon) {
+  %swatch = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "10 39";
+    extent = "80 24";
+    minExtent = "1 1";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "255 255 255 100";
+  };
+
+  %swatch.bitmap = new GuiBitmapCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "4 4";
+    extent = "16 16";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    bitmap = "~/System_BlocklandGlass/image/icon/" @ %icon;
+    wrap = "0";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    keepCached = "0";
+    mColor = "255 255 255 255";
+    mMultiply = "0";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GlassTextEditProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "24 4";
+    extent = "49 16";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = %name;
+    maxLength = "255";
+  };
+
+  %swatch.mouse = new GuiMouseEventCtrl(GlassGraphTabMouse) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "135 24";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lockMouse = "0";
+    swatch = %swatch;
+  };
+
+  %swatch.add(%swatch.bitmap);
+  %swatch.add(%swatch.text);
+  %swatch.add(%swatch.mouse);
+
+  return %swatch;
+
+}
+
+function GlassGraphTabMouse::onMouseEnter(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.active)
+    return;
+
+  %swatch.extent = "85 24";
+  %swatch.down = false;
+}
+
+function GlassGraphTabMouse::onMouseLeave(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.active)
+    return;
+
+  %swatch.extent = "80 24";
+  %swatch.down = false;
+  %swatch.color = "255 255 255 100";
+}
+
+function GlassGraphTabMouse::onMouseDown(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.active)
+    return;
+
+  %swatch.down = true;
+  %swatch.color = "131 195 243 100";
+}
+
+function GlassGraphTabMouse::onMouseUp(%this) {
+  %swatch = %this.swatch;
+  if(%swatch.active)
+    return;
+
+  if(%swatch.down) {
+    %swatch.down = false;
+    %swatch.color = "255 255 255 200";
+    %swatch.active = true;
+
+    if(isObject(GlassGraphs.active)) {
+      %active = GlassGraphs.active;
+      %active.color = "255 255 255 100";
+      %active.extent = "80 24";
+      %active.active = false;
+    }
+
+    GlassGraphs::populateRandom();
+
+    GlassGraphs.active = %swatch;
+  }
+}
+
 function GlassGraphs::populateRandom(%aniMode) {
   GlassServerControlGui_Graph.deleteAll();
   %extent = GlassServerControlGui_Graph.getExtent();
@@ -9,7 +152,7 @@ function GlassGraphs::populateRandom(%aniMode) {
 
   for(%i = 0; %i < %width; %i++) {
 
-    %val = getRandom(5, %height/2);
+    %val = getRandom(5, %height-25);
     %bar = new GuiSwatchCtrl(GlassGraphBar) {
       extent = "1" SPC 0;
       position = %i SPC (%height-%val);
