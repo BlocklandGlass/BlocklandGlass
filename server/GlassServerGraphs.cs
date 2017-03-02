@@ -13,7 +13,7 @@ function GlassServerGraphs::init() {
     keepOpen = true;
   };
 
-  GlassServerGraphs.default();
+  GlassServerGraphs.loadDefault();
 }
 
 function GlassServerGraphs::newEvent(%this, %name, %time) {
@@ -38,6 +38,12 @@ function GlassServerGraphs::getCollection(%this, %name) {
       name = %name;
 
       icon = "graph"; //default
+
+      dataCt = 0;
+
+      indexCt = 2;
+      index0 = "time";
+      index1 = "value";
     };
     %this.schedule(1, add, %collection);
     %this.collection[%name] = %collection;
@@ -56,6 +62,12 @@ function GlassCollection::getFile(%this) {
 }
 
 function GlassCollection::onAdd(%this) {
+
+  if(%this.loaded)
+    return;
+  else
+    %this.loaded = true;
+
   %file = %this.getFile();
 
   if(isFile(%file)) {
@@ -80,10 +92,17 @@ function GlassCollection::onAdd(%this) {
           if(%key $= "") {
             warn("More data than keys!");
           }
-          %this.data[%dataCt][%key] = collapseEscape(getField(%line, %i));
+          %this.data[%dataCt, %key] = collapseEscape(getField(%line, %i));
           //data_12_time
           //data_12_value
         }
+
+        //throw out old data
+        %time = %this.data[%dataCt, "time"];
+        if(%time !$= "" && strTimeCompare(getDateTime(), %time) > GlassServerGraphs.history) {
+          continue; //by continuing without incrementing dataCt, will be overwritten
+        }
+
         %dataCt++;
       }
     }
@@ -92,23 +111,71 @@ function GlassCollection::onAdd(%this) {
 
     %this.dataCt = %dataCt;
     %this.indexCt = %indexCt;
-  } else {
-    //create
   }
+
+  %this.saveData();
+}
+
+function GlassCollection::saveData(%this) {
+  if(!%this.loaded)
+    return;
+    
+  if(isObject(%this.fo)) {
+    %this.fo.close();
+    %this.fo.delete();
+  }
+
+  %fo = new FileObject();
+  %fo.openForWrite(%this.getFile());
+
+  %line = "";
+  for(%j = 0; %j < %this.indexCt; %j++) {
+    if(%j > 0) {
+      %line = %line @ ",";
+    }
+
+    %line = %line @ %this.index[%j];
+  }
+  %fo.writeLine(%line);
+
+  for(%i = 0; %i < %this.dataCt; %i++) {
+    %time = %this.data[%i, "time"];
+
+    //throw out old data
+    if(%time !$= "") {
+      if(strTimeCompare(getDateTime(), %time) > GlassServerGraphs.history) {
+        continue;
+      }
+    }
+
+    %line = "";
+    for(%j = 0; %j < %this.indexCt; %j++) {
+      if(%j > 0) {
+        %line = %line @ ",";
+      }
+
+      %line = %line @ expandEscape(%this.data[%i, %this.index[%j]]);
+    }
+    %fo.writeLine(%line);
+  }
+
+  %fo.close();
+  %fo.delete();
+
+  echo("Saved collection " @ %this.name);
 }
 
 function GlassCollection::recordData(%this, %value, %time) {
   if(%time $= "") {
-    %time = getRealTime();
+    %time = getDateTime();
   }
 
-  if(%time < getRealTime()-GlassServerGraphs.history) {
-    //too old
-    return;
+  if(strTimeCompare(getDateTime(), %time) > GlassServerGraphs.history) {
+    return; //too old
   }
 
-  %this.data[%this.dataCt]["time"] = %time;
-  %this.data[%this.dataCt]["value"] = %value;
+  %this.data[%this.dataCt, "time"] = %time;
+  %this.data[%this.dataCt, "value"] = %value;
 
   if(GlassServerGraphs.keepOpen) {
     if(!isObject(%this.fo)) {
@@ -126,6 +193,8 @@ function GlassCollection::recordData(%this, %value, %time) {
       commandToClient(%cl, 'Glass_ServerGraphData', %this.name, %time, %value);
     }
   }
+
+  %this.dataCt++;
 }
 
 
@@ -133,7 +202,7 @@ function GlassCollection::recordData(%this, %value, %time) {
 //= Default Graphs                                               =
 //================================================================
 
-function GlassServerGraphs::default(%this) {
+function GlassServerGraphs::loadDefault(%this) {
   %bricks = %this.getCollection("Bricks");
   %bricks.icon = "brick";
   %bricks.color = "255 0 0";
@@ -142,21 +211,135 @@ function GlassServerGraphs::default(%this) {
   %players.icon = "user";
   %players.color = "0 255 0";
 
-  %nextTime = %this.increments*mCeil(getRealTime()/%this.increments);
-  %timeTo = %nextTime-getRealTime();
+  %timeTo = (%this.increments)-(timeSeconds());
 
-  %this.sch = %this.schedule(%timeTo, "defaultTick");
+  if(%timeTo == 0) {
+    %timeTo = (%this.increments);
+  }
+
+  %this.sch = %this.schedule(%timeTo*1000, "defaultTick");
 }
 
 function GlassServerGraphs::defaultTick(%this) {
   cancel(%this.sch);
 
+  if(!$Server::Dedicated) {
+    if(!isObject(ServerConnection)) {
+      for(%i = 0; GlassServerGraphs.getCount(); %i++) {
+        GlassServerGraphs.getObject(%i).saveData();
+      }
+      return;
+    }
+  }
 
   %this.getCollection("bricks").recordData(getBrickcount());
   %this.getCollection("players").recordData(ClientGroup.getCount());
 
+  %timeTo = (%this.increments)-(timeSeconds());
 
-  %nextTime = %this.increments*mCeil(getRealTime()/%this.increments);
-  %timeTo = %nextTime-getRealTime();
-  %this.sch = %this.schedule(%timeTo, "defaultTick");
+  if(%timeTo < 1) {
+    %timeTo = (%this.increments);
+  }
+
+  %this.sch = %this.schedule(%timeTo*1000, "defaultTick");
 }
+
+//================================================================
+//= Time                                                         =
+//================================================================
+
+function timeSeconds() {
+  return getSubStr(getDateTime(), 15, 2);
+}
+
+//incredibly rough, returns seconds. date1 - date2
+//only works in 1 year variance
+function strTimeCompare(%datetime1, %datetime2) {
+  %month[%a = 1] = 31; //jan
+  %month[%a++]   = 28; //feb
+  %month[%a++]   = 31; //march
+  %month[%a++]   = 30; //april
+  %month[%a++]   = 31; //may
+  %month[%a++]   = 30; //june
+  %month[%a++]   = 31; //july
+  %month[%a++]   = 30; //august
+  %month[%a++]   = 31; //sept
+  %month[%a++]   = 30; //nov
+  %month[%a++]   = 31; //dec
+
+  %date1 = getWord(%datetime1, 0);
+  %date2 = getWord(%datetime2, 0);
+
+  %time1 = getWord(%datetime1, 1);
+  %time2 = getWord(%datetime2, 1);
+
+  %diff = 0;
+
+  //seconds
+  %s1 = getSubStr(%time1, 6, 2);
+  %s2 = getSubStr(%time2, 6, 2);
+  %diff += (%s1-%s2);
+
+  //minutes
+  %m1 = getSubStr(%time1, 3, 2);
+  %m2 = getSubStr(%time2, 3, 2);
+  %diff += (%m1-%m2)*60;
+
+  //hours
+  %h1 = getSubStr(%time1, 0, 2);
+  %h2 = getSubStr(%time2, 0, 2);
+  %diff += (%h1-%h2)*3600;
+
+  //we'll adjust days to be from the beginning of the year
+  //days
+  %mo1 = getSubStr(%date1, 0, 2);
+  %mo2 = getSubStr(%date2, 0, 2);
+  %d1 = getSubStr(%date1, 3, 2);
+  %d2 = getSubStr(%date2, 3, 2);
+  %y1 = getSubStr(%date1, 6, 2);
+  %y2 = getSubStr(%date2, 6, 2);
+
+  if(mabs(%y1-%y2) > 1) {
+    error("strTimeCompare given difference of > 1 year!");
+    return "";
+  }
+
+  if(%y1 > %y2) {
+    %d2 -= (%y2 % 4 == 0) ? 366 : 365;
+  } else if(%y1 < %y2) {
+    %d1 -= (%y1 % 4 == 0) ? 366 : 365;
+  }
+
+  for(%i = 1; %i < %mo1; %i++) {
+    %d1 += %month[%i];
+
+    if(%i == 2 && (%y1 % 4) == 0) {
+      //leap year
+      %d1 += 1;
+    }
+  }
+
+  for(%i = 1; %i < %mo2; %i++) {
+    %d2 += %month[%i];
+
+    if(%i == 2 && %y2 % 4 == 0) {
+      //leap year
+      %d2 += 1;
+    }
+  }
+
+  %diff += (%d1-%d2)*(24*60*60);
+
+
+  return %diff;
+}
+
+package GlassServerGraphs {
+  function onExit() {
+    for(%i = 0; GlassServerGraphs.getCount(); %i++) {
+      GlassServerGraphs.getObject(%i).saveData();
+    }
+    parent::onExit();
+  }
+};
+activatePackage(GlassServerGraphs);

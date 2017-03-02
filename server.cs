@@ -30,6 +30,7 @@ function Glass::execServer() {
 	exec("./server/GlassServerControl.cs");
 	exec("./server/GlassClientSupport.cs");
 	exec("./server/GlassServerImage.cs");
+	exec("./server/GlassServerGraphs.cs");
 
 	echo(" ===                 Loading Resources                  ===");
 
