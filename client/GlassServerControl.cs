@@ -312,7 +312,7 @@ function GlassServerControlC::createHeader(%text) {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 1";
-     extent = "325 24";
+     extent = "430 24";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -324,7 +324,7 @@ function GlassServerControlC::createHeader(%text) {
         horizSizing = "center";
         vertSizing = "center";
         position = "0 4";
-        extent = "325 16";
+        extent = "430 16";
         minExtent = "325 2";
         enabled = "1";
         visible = "1";
@@ -411,7 +411,7 @@ function GlassServerControlC::createList() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "325 32";
+     extent = "430 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -437,7 +437,7 @@ function GlassServerControlC::createList() {
     profile = "GuiPopUpMenuProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "215 6";
+    position = "320 6";
     extent = "100 20";
     minExtent = "8 2";
     enabled = "1";
@@ -458,7 +458,7 @@ function GlassServerControlC::createCheckbox() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "325 32";
+     extent = "430 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -484,7 +484,7 @@ function GlassServerControlC::createCheckbox() {
     profile = "GuiCheckBoxProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "303 8";
+    position = "408 8";
     extent = "16 16";
     minExtent = "8 2";
     enabled = "1";
@@ -506,7 +506,7 @@ function GlassServerControlC::createInt() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "325 32";
+     extent = "430 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -532,7 +532,7 @@ function GlassServerControlC::createInt() {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "245 7";
+    position = "350 7";
     extent = "70 18";
     minExtent = "8 2";
     enabled = "1";
@@ -556,7 +556,7 @@ function GlassServerControlC::createSlider() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "325 32";
+     extent = "430 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -582,7 +582,7 @@ function GlassServerControlC::createSlider() {
     profile = "GuiSliderProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "175 6";
+    position = "280 6";
     extent = "140 20";
     minExtent = "8 2";
     enabled = "1";
@@ -605,7 +605,7 @@ function GlassServerControlC::createText() {
      horizSizing = "right";
      vertSizing = "bottom";
      position = "1 25";
-     extent = "325 32";
+     extent = "430 32";
      minExtent = "8 2";
      enabled = "1";
      visible = "1";
@@ -631,7 +631,7 @@ function GlassServerControlC::createText() {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "175 7";
+    position = "280 7";
     extent = "140 18";
     minExtent = "8 2";
     enabled = "1";
