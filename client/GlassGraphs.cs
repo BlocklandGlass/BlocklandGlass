@@ -1,5 +1,9 @@
 function GlassGraphs::init() {
-  new ScriptObject(GlassGraphs);
+  new ScriptObject(GlassGraphs) {
+    barWidth = 1;
+    barSpacing = 0;
+  };
+
   GlassGraphs.populateTabs();
   GlassGraphs.sets = new SimSet(GlassGraphSets);
 
@@ -145,8 +149,10 @@ function GlassGraphTabMouse::onMouseUp(%this) {
       %active.active = false;
     }
 
-    GlassGraphs.displayGraph(%swatch.graphId);
     GlassGraphs.active = %swatch;
+    GlassGraphs.activeId = %swatch.graphId;
+
+    GlassGraphs.displayGraph(%swatch.graphId);
   }
 }
 
@@ -158,45 +164,58 @@ function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
     %this.hoverBar.color = "84 217 140 255";
   }
 
-  %bar = GlassGraphs.bar[GlassGraphs.width-%x];
+  %bar = GlassGraphs.bar[%x - (%x % GlassGraphs.barWidth)];
   %bar.color = "46 204 113 255";
   %this.hoverBar = %bar;
 }
 
-function GlassGraphs::pushData(%this, %time, %val) {
+function GlassGraphs::pushData(%this, %time, %val, %fresh, %pos) {
   %swatch = GlassServerControlGui_Graph;
 
   %width = getWord(%swatch.extent, 0);
   %height = getWord(%swatch.extent, 1);
 
-  for(%i = 0; %i < %swatch.getCount(); %i++) {
-    %bar = %swatch.getObject(%i);
-    %bar.position = vectorSub(%bar.position, "1 0");
+  if(%fresh) {
+    for(%i = 0; %i < %swatch.getCount(); %i++) {
+      %bar = %swatch.getObject(%i);
+      %bar.position = vectorSub(%bar.position, %this.barWidth SPC "0");
 
-    if(getWord(%bar.position, 0) < 0) {
-      %bar.delete();
+      %idx = getWord(%bar.position, 0);
+      if((%idx+%this.barWidth) < 0) {
+        %bar.delete();
+      }
+
+      %this.bar[%idx] = %bar;
     }
+
+    %xPos = (%width-%this.barWidth);
+  } else {
+    %xPos = %width-(%this.barWidth*%pos);
   }
 
   echo("pushData" TAB %time TAB %val);
 
   %bar = new GuiSwatchCtrl(GlassGraphBar) {
-    extent = "1" SPC 0;
-    position = (%width-1) SPC %height;
+    extent = %this.barWidth SPC 0;
+    position = %xPos SPC %height;
     color = "84 217 140 255";
     minExtent = "1 5";
 
     val = %val*5;
     maxHeight = %height;
 
-    animateTime = 300;
+    animateTime = 1000;
     elapsed = 0;
+
+    pause = !%fresh;
   };
+  %this.bar[%xPos] = %bar;
+
   %swatch.add(%bar);
 }
 
 function GlassGraphs::displayGraph(%this, %id) {
-  commandToServer('GlassGraphRequest', %id, %this.width);
+  commandToServer('GlassGraphRequest', %id, mceil(%this.width/%this.barWidth)+1);
 }
 
 function GlassGraphBar::onAdd(%this) {
@@ -209,28 +228,30 @@ function GlassGraphBar::onAdd(%this) {
 function GlassGraphBar::tick(%this) {
   cancel(%this.sch);
 
-  %this.elapsed += 33;
+
+  if(!%this.pause) {
+    %this.elapsed += 33;
+  }
+
   if(%this.elapsed >= %this.animateTime) {
-    echo("anim done");
-    echo(%this);
-    echo(%this.position);
-    echo(%this.extent);
-    echo(%this.val);
     %this.elapsed = %this.animateTime;
   }
 
   if(%this.elapsed > 0) {
     if(%this.animateTime > %this.elapsed) {
-      %ratio = (1/(%this.animateTime-%this.elapsed));
+      //logistic growth woo!
+      //guess my math minor IS useful
+      %error = 0.01/%this.animateTime;
+      %k = mlog((1/%error) - 1) / (%this.animateTime/2);
+      %e = 2.71828;
+      %ratio = 1 / (1 + mpow(%e, -%k*(%this.elapsed-(%this.animateTime/2))));
     } else {
       %ratio = 1;
     }
 
-    echo(%ratio);
+    %height = mRound(%ratio*%this.val);
 
-    %height = mFloor(%ratio*%this.val);
-
-    %this.extent = 1 SPC %height;
+    %this.extent = GlassGraphs.barWidth SPC %height;
     %this.position = getWord(%this.position, 0) SPC %this.maxHeight-%height;
   }
 
@@ -346,6 +367,67 @@ function strTimeCompare(%datetime1, %datetime2) {
 }
 
 
+//cannot add more than one month
+function datetimeAdd(%time, %diff) {
+  %month[%a = 1] = 31; //jan
+  %month[%a++]   = 28; //feb
+  %month[%a++]   = 31; //march
+  %month[%a++]   = 30; //april
+  %month[%a++]   = 31; //may
+  %month[%a++]   = 30; //june
+  %month[%a++]   = 31; //july
+  %month[%a++]   = 30; //august
+  %month[%a++]   = 31; //sept
+  %month[%a++]   = 30; //nov
+  %month[%a++]   = 31; //dec
+
+  %yr = getSubStr(%time, 6, 2);
+  %mo = getSubStr(%time, 0, 2);
+  %da = getSubStr(%time, 3, 2);
+
+  %hr = getSubStr(%time, 9, 2);
+  %mn = getSubStr(%time, 12, 2);
+  %sc = getSubStr(%time, 16, 2);
+
+  %sc += %diff % 60;
+  %mn += mfloor(%diff/60);
+  %hr += mfloor(%diff/3600);
+  %da += mfloor(%diff/(3600*24));
+
+  if(%sc >= 60) {
+    %mn--;
+    %sc -= 60;
+  }
+
+  if(%mn >= 60) {
+    %hr++;
+    %mn -= 60;
+  }
+
+  if(%hr >= 24) {
+    %da++;
+    %hr -= 60;
+  }
+
+  %daysInMonth = %month[%mo+0];
+  if(%yr % 4 == 0 && %mo == 2) {
+    %daysInMonth++;
+  }
+
+  if(%da > %daysInMonth) {
+    %da = %da % %daysInMonth;
+    %mo++;
+  }
+
+  if(%mo > 12) {
+    %mo = %mo % 12;
+    %yr++;
+  }
+
+  return constructTime(%mo, %da, %yr, %hr, %mn, %sc);
+}
+
+
 //================================================================
 //= Communications                                               =
 //================================================================
@@ -370,10 +452,16 @@ function clientCmdGlassGraphClearData() {
   GlassServerControlGui_Graph.deleteAll();
 }
 
-function clientCmdGlassGraphData(%id, %time, %value, %fresh) {
-  echo("GraphData" TAB %time TAB %value);
+function clientCmdGlassGraphData(%id, %time, %value, %fresh, %offset) {
+  echo("GraphData" TAB %time TAB %value TAB %fresh TAB %offset);
   if(GlassGraphs.activeId != %id)
     return;
 
-  GlassGraphs.pushData(%time, %value);
+  GlassGraphs.pushData(%time, %value, %fresh, %offset);
+}
+
+function clientCmdGlassGraphDataDone() {
+  for(%i = 0; %i < GlassServerControlGui_Graph.getCount(); %i++) {
+    GlassServerControlGui_Graph.getObject(%i).pause = false;
+  }
 }

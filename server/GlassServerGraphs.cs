@@ -303,8 +303,9 @@ function serverCmdGlassGraphRequest(%client, %id, %ct) {
       %i = 0;
     }
 
-    commandToClient(%client, 'GlassGraphData', %col.data[%i-1, "time"], %col.data[%i-1, "value"]);
+    commandToClient(%client, 'GlassGraphData', %col.id, %col.data[%i-1, "time"], %col.data[%i-1, "value"], false, %col.dataCt-%i-1);
   }
+  commandToClient(%client, 'GlassGraphDataDone');
 }
 
 //================================================================
