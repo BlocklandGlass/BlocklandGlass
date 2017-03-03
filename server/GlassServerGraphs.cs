@@ -3,7 +3,7 @@
 //= GlassServerGraphs                                            =
 //================================================================
 
-function GlassServerGraphs::init() {
+function GlassServerGraphing::init() {
   //all units in seconds
   //all of these should be prefs eventually
   new ScriptGroup(GlassServerGraphs) {
@@ -33,6 +33,7 @@ function GlassServerGraphs::getCollection(%this, %name) {
       }
     }
 
+    %this.collections += 0;
     %collection = new ScriptObject() {
       class = "GlassCollection";
       name = %name;
@@ -44,10 +45,18 @@ function GlassServerGraphs::getCollection(%this, %name) {
       indexCt = 2;
       index0 = "time";
       index1 = "value";
+
+      id = %this.collections;
     };
+    %collection.listeners = new SimSet();
+    %this.collections++;
+
     %this.schedule(1, add, %collection);
+
     %this.collection[%name] = %collection;
-    return %this.collection;
+    %this.collection[%this.collections] = %collection;
+
+    return %collection;
   }
 }
 
@@ -71,6 +80,7 @@ function GlassCollection::onAdd(%this) {
   %file = %this.getFile();
 
   if(isFile(%file)) {
+    echo("loading " @ %file);
     %fo = new FileObject();
     %fo.openForRead(%file);
     %indexCt = -1;
@@ -119,7 +129,7 @@ function GlassCollection::onAdd(%this) {
 function GlassCollection::saveData(%this) {
   if(!%this.loaded)
     return;
-    
+
   if(isObject(%this.fo)) {
     %this.fo.close();
     %this.fo.delete();
@@ -187,14 +197,14 @@ function GlassCollection::recordData(%this, %value, %time) {
     %this.fo.writeLine(%time @ "," @ %value);
   }
 
-  for(%i = 0; %i < ClientGroup.getCount(); %i++) {
-    %cl = ClientGroup.getObject(%i);
-    if(%cl.isAdmin) {
-      commandToClient(%cl, 'Glass_ServerGraphData', %this.name, %time, %value);
-    }
-  }
-
   %this.dataCt++;
+
+  //transmit
+  echo("Transmitting new data");
+  for(%i = 0; %i < %this.listeners.getCount(); %i++) {
+    %cl = %this.listeners.getObject(%i);
+    commandToClient(%cl, 'GlassGraphData', %this.id, %time, %value, true);
+  }
 }
 
 
@@ -242,6 +252,59 @@ function GlassServerGraphs::defaultTick(%this) {
   }
 
   %this.sch = %this.schedule(%timeTo*1000, "defaultTick");
+}
+
+
+//================================================================
+//= Communications                                               =
+//================================================================
+
+function GameConnection::sendGlassGraphs(%client) {
+  //sends collection info
+  commandToClient(%client, 'GlassGraphsClear');
+
+  for(%i = 0; %i < GlassServerGraphs.getCount(); %i++) {
+    %col = GlassServerGraphs.getObject(%i);
+    commandToClient(%client, 'GlassGraphAdd', %i, %col.name, %col.icon);
+  }
+
+  commandToClient(%client, 'GlassGraphAddDone');
+}
+
+function serverCmdGlassGraphRequest(%client, %id, %ct) {
+  if(!%client.isAdmin)
+    return;
+
+  if(%ct > 1000)
+    %ct = 1000;
+
+  if(%ct < 0) {
+    %ct = 0;
+  }
+
+  %col = GlassServerGraphs.getObject(%id);
+
+  if(!isObject(%col))
+    return;
+
+  if(%client._glassGraphListening !$= "") {
+    GlassServerGraphs.getObject(%client._glassGraphListening).listeners.remove(%client);
+  }
+  %col.listeners.add(%client);
+
+  %client._glassGraphListening = %id;
+
+  commandToClient(%client, 'GlassGraphClearData');
+
+  echo("Sending data from " @ %col.name);
+
+  for(%i = %col.dataCt-%ct; %i < %col.dataCt; %i++) {
+    if(%i < 0) {
+      %i = 0;
+    }
+
+    commandToClient(%client, 'GlassGraphData', %col.data[%i-1, "time"], %col.data[%i-1, "value"]);
+  }
 }
 
 //================================================================

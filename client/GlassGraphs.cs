@@ -7,168 +7,28 @@ function GlassGraphs::init() {
   %width = getWord(%extent, 0);
 
   GlassGraphs.width = %width;
-
-  GlassGraphs.testSet = GlassGraphSet::create("Bricks", "bricks");
 }
 
-
-function GlassGraphSet::create(%name, %icon, %color) {
-  %obj = new ScriptObject() {
-    class = "GlassGraphSet";
-
-    name = %name;
-    icon = %icon;
-    color = %color;
-
-    interval = 15;
-
-    dataCt = 0;
-  };
-
-  GlassGraphSets.add(%obj);
-
-
-  %extent = GlassServerControlGui_Graph.getExtent();
-  %width = getWord(%extent, 0);
-
-  for(%i = 0; %i < %width; %i++) {
-    %min = mfloor(%i/4);
-    %hr = 15;
-    %hr += mfloor(%min/60);
-    %min = %min%60;
-
-    if(strlen(%min) == 1) {
-      %min = "0" @ %min;
-    }
-
-    %sec = ((%i%4)*15);
-    if(strlen(%sec) == 1) {
-      %sec = "0" @ %sec;
-    }
-
-    %time = "03/02/17 " @ %hr @ ":" @ %min @ ":" @ %sec;
-
-    %val = mPow(%i, 0.5);
-    %obj.addData(%time, %val);
-  }
-
-  return %obj;
-}
-
-function GlassGraphSet::addData(%this, %time, %val) {
-  %this.key[%this.dataCt] = %time;
-  %this.val[%this.dataCt] = %val;
-  %this.time[%time] = %val;
-
-  %this.dataCt++;
-}
-
-function GlassGraphSet::newData(%this, %time, %val) {
-
-}
-
-function GlassGraphSet::orderDisplayData(%this, %time) {
-  //%metricTime = getRealTime();
-  if(%time $= "")
-    %time = getDateTime();
-
-  %lastTime = %time;
-
-  if(%time $= "")
-    %time = getDateTime();
-
-  %idx = 0;
-  %yr = getSubStr(%time, 6, 2);
-  %mo = getSubStr(%time, 0, 2);
-  %da = getSubStr(%time, 3, 2);
-
-  %hr = getSubStr(%time, 9, 2);
-  %mn = getSubStr(%time, 12, 2);
-  %sc = %this.interval*mfloor(getSubStr(%time, 16, 2)/%this.interval);
-
-  while(%idx <= GlassGraphs.width) {
-    %sc -= %this.interval;
-    if(%sc < 0) {
-      %mn -= mabs(mfloor(%sc/60));
-      %sc += mabs(mfloor(%sc/60))*60;
-    }
-
-    if(%mn < 0) {
-      %hr -= mabs(mfloor(%mn/60));
-      %mn += mabs(mfloor(%mn/60))*60;
-    }
-
-    if(%hr < 0) {
-      warn("negative hour");
-      return -1;
-    }
-
-    %timeStr = constructTime(%mo, %da, %yr, %hr, %mn, %sc);
-    if(strlen(%this.time[%timeStr]) > 0) {
-      //echo("found data at " @ %timeStr);
-      %v = %this.time[%timeStr];
-      %this.dispVal[%idx]  = %v;
-      %this.dispTime[%idx] = %timeStr;
-
-      if(%v > %max) {
-        %max = %v;
-      }
-    } else {
-      //echo("no data at " @ %timeStr);
-      %this.dispVal[%idx]  = "";
-      %this.dispTime[%idx] = "";
-    }
-
-    %idx++;
-  }
-
-  %this.dispCt = %idx;
-  %this.dispScale = %max;
-  //echo(getRealTime()-%metricTime);
-}
-
-function constructTime(%mo, %da, %yr, %hr, %mn, %sc) {
-
-  if(strlen(%mo) == 1) {
-    %mo = "0" @ %mo;
-  }
-  if(strlen(%da) == 1) {
-    %da = "0" @ %da;
-  }
-  if(strlen(%yr) == 1) {
-    %yr = "0" @ %yr;
-  }
-
-  if(strlen(%hr) == 1) {
-    %hr = "0" @ %hr;
-  }
-  if(strlen(%mn) == 1) {
-    %mn = "0" @ %mn;
-  }
-  if(strlen(%sc) == 1) {
-    %sc = "0" @ %sc;
-  }
-
-  return %mo @ "/" @ %da @ "/" @ %yr SPC %hr @ ":" @ %mn @ ":" @ %sc;
+function GlassGraphs::newGraph(%this, %id, %name, %icon, %color) {
+  %this.graphName[%id] = %name;
+  %this.graphIcon[%id] = %icon;
+  %this.graphColor[%id] = %color;
+  %this.graphs++;
 }
 
 function GlassGraphs::populateTabs(%this) {
   GlassServerControlGui_GraphTabs.deleteAll();
 
-  %swatch = %this.createTab("Bricks", "bricks");
-  %swatch.position = "0 0";
-  GlassServerControlGui_GraphTabs.add(%swatch);
-
-  %swatch = %this.createTab("Players", "user");
-  %swatch.position = "0 29";
-  GlassServerControlGui_GraphTabs.add(%swatch);
-
-  %swatch = %this.createTab("Memory", "server");
-  %swatch.position = "0 58";
-  GlassServerControlGui_GraphTabs.add(%swatch);
+  %y = 0;
+  for(%i = 0; %i < %this.graphs; %i++) {
+    %swatch = %this.createTab(%i, %this.graphName[%i], %this.graphIcon[%i]);
+    %swatch.position = 0 SPC %y;
+    GlassServerControlGui_GraphTabs.add(%swatch);
+    %y += 29;
+  }
 }
 
-function GlassGraphs::createTab(%this, %name, %icon) {
+function GlassGraphs::createTab(%this, %id, %name, %icon) {
   %swatch = new GuiSwatchCtrl() {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
@@ -180,6 +40,7 @@ function GlassGraphs::createTab(%this, %name, %icon) {
     visible = "1";
     clipToParent = "1";
     color = "255 255 255 100";
+    graphId = %id;
   };
 
   %swatch.bitmap = new GuiBitmapCtrl() {
@@ -192,7 +53,7 @@ function GlassGraphs::createTab(%this, %name, %icon) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    bitmap = "~/System_BlocklandGlass/image/icon/" @ %icon;
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
     wrap = "0";
     lockAspectRatio = "0";
     alignLeft = "0";
@@ -284,9 +145,7 @@ function GlassGraphTabMouse::onMouseUp(%this) {
       %active.active = false;
     }
 
-    //GlassGraphs::populateRandom();
-    GlassGraphs.displayGraph(GlassGraphs.testSet);
-
+    GlassGraphs.displayGraph(%swatch.graphId);
     GlassGraphs.active = %swatch;
   }
 }
@@ -304,113 +163,44 @@ function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
   %this.hoverBar = %bar;
 }
 
-function GlassGraphs::displayGraph(%this, %set) {
-  GlassServerControlGui_Graph.deleteAll();
-  %extent = GlassServerControlGui_Graph.getExtent();
+function GlassGraphs::pushData(%this, %time, %val) {
+  %swatch = GlassServerControlGui_Graph;
 
-  %set.orderDisplayData();
+  %width = getWord(%swatch.extent, 0);
+  %height = getWord(%swatch.extent, 1);
 
+  for(%i = 0; %i < %swatch.getCount(); %i++) {
+    %bar = %swatch.getObject(%i);
+    %bar.position = vectorSub(%bar.position, "1 0");
 
-  %width = getWord(%extent, 0);
-  %height = getWord(%extent, 1);
-
-  if(%aniMode $= "")
-    %aniMode = getRandom(0, 4);
-
-  for(%i = 0; %i < %set.dispCt; %i++) {
-    %val = %set.dispVal[%i];
-    if(%val $= "")
-      continue;
-
-    %h = (%val/%set.dispScale)*%height;
-
-    %bar = new GuiSwatchCtrl(GlassGraphBar) {
-      extent = "1" SPC 0;
-      position = (%width-%i-1) SPC %height;
-      color = "84 217 140 255";
-      minExtent = "1 5";
-
-      val = %h;
-      maxHeight = %height;
-    };
-
-    switch(%aniMode) {
-      case 0:
-        %bar.animateTime = 5*(%i);
-        %bar.elapsed = -5*(%width-%i);
-
-      case 1:
-        %bar.animateTime = 100+(%i);
-        %bar.elapsed = 0;
-
-      case 2:
-        %bar.animateTime = 500;
-        %bar.elapsed = 0;
-
-      case 3:
-        %bar.animateTime = 5*(%width-%i);
-        %bar.elapsed = -5*(%i);
-
-      case 4:
-        %bar.animateTime = 500*mlog(%width/(%i+1));
-        %bar.elapsed = (%width-%i)*-5;
+    if(getWord(%bar.position, 0) < 0) {
+      %bar.delete();
     }
-
-    GlassServerControlGui_Graph.add(%bar);
-    %this.bar[%i] = %bar;
   }
+
+  echo("pushData" TAB %time TAB %val);
+
+  %bar = new GuiSwatchCtrl(GlassGraphBar) {
+    extent = "1" SPC 0;
+    position = (%width-1) SPC %height;
+    color = "84 217 140 255";
+    minExtent = "1 5";
+
+    val = %val*5;
+    maxHeight = %height;
+
+    animateTime = 300;
+    elapsed = 0;
+  };
+  %swatch.add(%bar);
 }
 
-function GlassGraphs::populateRandom(%aniMode) {
-  GlassServerControlGui_Graph.deleteAll();
-  %extent = GlassServerControlGui_Graph.getExtent();
-  %width = getWord(%extent, 0);
-  %height = getWord(%extent, 1);
-
-  if(%aniMode $= "")
-    %aniMode = getRandom(0, 4);
-
-  for(%i = 0; %i < %width; %i++) {
-
-    %val = getRandom(5, %height-25);
-    %bar = new GuiSwatchCtrl(GlassGraphBar) {
-      extent = "1" SPC 0;
-      position = %i SPC (%height-%val);
-      color = "84 217 140 255";
-      minExtent = "1 5";
-
-      val = %val;
-      maxHeight = %height;
-    };
-
-    switch(%aniMode) {
-      case 0:
-        %bar.animateTime = 5*(%i);
-        %bar.elapsed = -5*(%width-%i);
-
-      case 1:
-        %bar.animateTime = 100+(%i);
-        %bar.elapsed = 0;
-
-      case 2:
-        %bar.animateTime = 500;
-        %bar.elapsed = 0;
-
-      case 3:
-        %bar.animateTime = 5*(%width-%i);
-        %bar.elapsed = -5*(%i);
-
-      case 4:
-        %bar.animateTime = 500*mlog(%width/(%i+1));
-        %bar.elapsed = (%width-%i)*-5;
-    }
-
-    GlassServerControlGui_Graph.add(%bar);
-    %this.bar[%i] = %bar;
-  }
+function GlassGraphs::displayGraph(%this, %id) {
+  commandToServer('GlassGraphRequest', %id, %this.width);
 }
 
 function GlassGraphBar::onAdd(%this) {
+  echo("new bar");
   if(%this.sch $= "") {
     %this.sch = %this.schedule(33, tick);
   }
@@ -421,11 +211,25 @@ function GlassGraphBar::tick(%this) {
 
   %this.elapsed += 33;
   if(%this.elapsed >= %this.animateTime) {
+    echo("anim done");
+    echo(%this);
+    echo(%this.position);
+    echo(%this.extent);
+    echo(%this.val);
     %this.elapsed = %this.animateTime;
   }
 
   if(%this.elapsed > 0) {
-    %height = mFloor((%this.elapsed/%this.animateTime)*%this.val);
+    if(%this.animateTime > %this.elapsed) {
+      %ratio = (1/(%this.animateTime-%this.elapsed));
+    } else {
+      %ratio = 1;
+    }
+
+    echo(%ratio);
+
+    %height = mFloor(%ratio*%this.val);
+
     %this.extent = 1 SPC %height;
     %this.position = getWord(%this.position, 0) SPC %this.maxHeight-%height;
   }
@@ -433,6 +237,32 @@ function GlassGraphBar::tick(%this) {
   if(%this.elapsed < %this.animateTime) {
     %this.sch = %this.schedule(33, tick);
   }
+}
+
+
+function constructTime(%mo, %da, %yr, %hr, %mn, %sc) {
+
+  if(strlen(%mo) == 1) {
+    %mo = "0" @ %mo;
+  }
+  if(strlen(%da) == 1) {
+    %da = "0" @ %da;
+  }
+  if(strlen(%yr) == 1) {
+    %yr = "0" @ %yr;
+  }
+
+  if(strlen(%hr) == 1) {
+    %hr = "0" @ %hr;
+  }
+  if(strlen(%mn) == 1) {
+    %mn = "0" @ %mn;
+  }
+  if(strlen(%sc) == 1) {
+    %sc = "0" @ %sc;
+  }
+
+  return %mo @ "/" @ %da @ "/" @ %yr SPC %hr @ ":" @ %mn @ ":" @ %sc;
 }
 
 function strTimeCompare(%datetime1, %datetime2) {
@@ -513,4 +343,37 @@ function strTimeCompare(%datetime1, %datetime2) {
 
 
   return %diff;
+}
+
+
+//================================================================
+//= Communications                                               =
+//================================================================
+
+function clientCmdGlassGraphsClear() {
+  echo("GraphsClear");
+  GlassGraphs.graphs = 0;
+}
+
+function clientCmdGlassGraphAdd(%id, %name, %icon) {
+  echo("GraphAdd" TAB %name TAB %icon);
+  GlassGraphs.newGraph(%id, %name, %icon);
+}
+
+function clientCmdGlassGraphAddDone() {
+  echo("GraphAddDone");
+  GlassGraphs.populateTabs();
+}
+
+function clientCmdGlassGraphClearData() {
+  echo("GraphClearData");
+  GlassServerControlGui_Graph.deleteAll();
+}
+
+function clientCmdGlassGraphData(%id, %time, %value, %fresh) {
+  echo("GraphData" TAB %time TAB %value);
+  if(GlassGraphs.activeId != %id)
+    return;
+
+  GlassGraphs.pushData(%time, %value);
 }

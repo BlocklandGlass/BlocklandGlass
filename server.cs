@@ -38,6 +38,7 @@ function Glass::execServer() {
 	GlassResourceManager::execResource("Support_Updater", "server");
 
 	GlassAuthS::init();
+  GlassServerGraphing::init();
 
 	Glass.serverLoaded = true;
 }
