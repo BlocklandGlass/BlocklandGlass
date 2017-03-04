@@ -303,7 +303,7 @@ function serverCmdGlassGraphRequest(%client, %id, %ct) {
       %i = 0;
     }
 
-    commandToClient(%client, 'GlassGraphData', %col.id, %col.data[%i-1, "time"], %col.data[%i-1, "value"], false, %col.dataCt-%i-1);
+    commandToClient(%client, 'GlassGraphData', %col.id, %col.data[%i-1, "time"], %col.data[%i-1, "value"], false, (%col.dataCt-%i));
   }
   commandToClient(%client, 'GlassGraphDataDone');
 }
@@ -404,6 +404,16 @@ package GlassServerGraphs {
       GlassServerGraphs.getObject(%i).saveData();
     }
     parent::onExit();
+  }
+
+  function GameConnection::autoAdminCheck(%this) {
+    %ret = parent::autoAdminCheck(%this);
+
+    if(%this.isAdmin) {
+      %this.sendGlassGraphs();
+    }
+
+    return %ret;
   }
 };
 activatePackage(GlassServerGraphs);

@@ -9,8 +9,10 @@ function GlassGraphs::init() {
 
   %extent = GlassServerControlGui_Graph.getExtent();
   %width = getWord(%extent, 0);
+  %height = getWord(%extent, 1);
 
   GlassGraphs.width = %width;
+  GlassGraphs.height = %height;
 }
 
 function GlassGraphs::newGraph(%this, %id, %name, %icon, %color) {
@@ -156,6 +158,15 @@ function GlassGraphTabMouse::onMouseUp(%this) {
   }
 }
 
+function GlassGraphMouse::onMouseLeave(%this) {
+  if(isObject(%this.label))
+    %this.label.visible = false;
+
+  if(%this.hoverBar) {
+    %this.hoverBar.color = "84 217 140 255";
+  }
+}
+
 function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
   %pos = vectorSub(%pos, %this.getCanvasPosition());
   %x = getWord(%pos, 0);
@@ -167,6 +178,54 @@ function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
   %bar = GlassGraphs.bar[%x - (%x % GlassGraphs.barWidth)];
   %bar.color = "46 204 113 255";
   %this.hoverBar = %bar;
+
+  %labelPos = vectorAdd(%pos, %this.position);
+
+  if(!isObject(%this.label)) {
+    %this.label = GlassGraphs.createLabel();
+    GlassServerControlGui_Graph.getGroup().add(%this.label);
+  } else {
+    %this.label.visible = true;
+  }
+
+  %this.label.position = %labelPos;
+
+  %this.label.text.setValue("<font:verdana bold:12>" @ getWord(%bar.time, 1) @ "<br><font:verdana:12>" @ %bar.val);
+  %this.label.text.forceReflow();
+  %this.label.text.setMarginResizeParent(5, 5);
+
+  %this.label.position = vectorSub(%this.label.position, %this.label.extent);
+
+  %this.getGroup().pushToBack(%this);
+}
+
+function GlassGraphs::createLabel() {
+  %label = new GuiSwatchCtrl() {
+    extent = 110 SPC 25;
+    position = %xPos SPC %height;
+    color = "255 255 255 200";
+    minExtent = "1 1";
+  };
+
+  %label.text = new GuiMLTextCtrl() {
+    profile = "GuiMLTextProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "5 5";
+    extent = "50 20";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lineSpacing = "2";
+    allowColorChars = "0";
+    maxChars = "-1";
+    maxBitmapHeight = "12";
+    selectable = "1";
+    autoResize = "1";
+  };
+  %label.add(%label.text);
+  return %label;
 }
 
 function GlassGraphs::pushData(%this, %time, %val, %fresh, %pos) {
@@ -175,36 +234,60 @@ function GlassGraphs::pushData(%this, %time, %val, %fresh, %pos) {
   %width = getWord(%swatch.extent, 0);
   %height = getWord(%swatch.extent, 1);
 
+  if(%pos < 0)
+    return;
+
   if(%fresh) {
     for(%i = 0; %i < %swatch.getCount(); %i++) {
       %bar = %swatch.getObject(%i);
+
       %bar.position = vectorSub(%bar.position, %this.barWidth SPC "0");
 
       %idx = getWord(%bar.position, 0);
       if((%idx+%this.barWidth) < 0) {
         %bar.delete();
+        %i--;
       }
 
       %this.bar[%idx] = %bar;
+      if(%bar.val > %max) {
+        %max = %bar.val;
+      }
     }
 
-    %xPos = (%width-%this.barWidth);
+    %this.scale = %max;
+
+    %xPos = %width-(%this.barWidth);
   } else {
-    %xPos = %width-(%this.barWidth*%pos);
+    %xPos = %width-(%this.barWidth*(%pos));
   }
 
-  echo("pushData" TAB %time TAB %val);
+  if(%val > %this.scale) {
+    %this.scale = %val;
+  }
+  %scale = %this.scale;
+
+  for(%i = 0; %i < %swatch.getCount(); %i++) {
+    %bar = %swatch.getObject(%i);
+    %h = mFloor((%bar.val/%scale)*%height) + (%scale == 0 ? 5 : 0);
+    if(%h != %bar.height) {
+      %bar.height = %h;
+      %bar.startNewAnim(%bar.height, 1000);
+    }
+  }
 
   %bar = new GuiSwatchCtrl(GlassGraphBar) {
     extent = %this.barWidth SPC 0;
     position = %xPos SPC %height;
     color = "84 217 140 255";
-    minExtent = "1 5";
+    //color = "255 0 0 255";
+    minExtent = "1 1";
 
-    val = %val*5;
-    maxHeight = %height;
+    time = %time;
+    val = %val;
+    height = (%val/%scale)*%height;
 
-    animateTime = 1000;
+    animTime = 1000;
     elapsed = 0;
 
     pause = !%fresh;
@@ -212,50 +295,58 @@ function GlassGraphs::pushData(%this, %time, %val, %fresh, %pos) {
   %this.bar[%xPos] = %bar;
 
   %swatch.add(%bar);
+  %bar.startNewAnim(%bar.height, 1000);
 }
 
 function GlassGraphs::displayGraph(%this, %id) {
   commandToServer('GlassGraphRequest', %id, mceil(%this.width/%this.barWidth)+1);
 }
 
-function GlassGraphBar::onAdd(%this) {
-  echo("new bar");
-  if(%this.sch $= "") {
-    %this.sch = %this.schedule(33, tick);
-  }
+function GlassGraphBar::startNewAnim(%this, %height, %time) {
+  %this.animStartHeight = getWord(%this.extent, 1);
+  %this.animBottomPos   = getWord(%this.position, 1)+getWord(%this.extent, 1);
+
+  %this.animEndHeight   = %height;
+  %this.animTime        = %time;
+
+  %this.elapsed         = 0;
+
+  cancel(%this.sch);
+  %this.sch = %this.schedule(33, tick);
 }
 
 function GlassGraphBar::tick(%this) {
   cancel(%this.sch);
 
-
   if(!%this.pause) {
     %this.elapsed += 33;
   }
 
-  if(%this.elapsed >= %this.animateTime) {
-    %this.elapsed = %this.animateTime;
+  if(%this.elapsed >= %this.animTime) {
+    %this.elapsed = %this.animTime;
+    %this.color = "84 217 140 255";
+    echo("anim done");
   }
 
   if(%this.elapsed > 0) {
-    if(%this.animateTime > %this.elapsed) {
+    if(%this.animTime > %this.elapsed) {
       //logistic growth woo!
       //guess my math minor IS useful
-      %error = 0.01/%this.animateTime;
-      %k = mlog((1/%error) - 1) / (%this.animateTime/2);
+      %error = 0.01/%this.animTime;
+      %k = mlog((1/%error) - 1) / (%this.animTime/2);
       %e = 2.71828;
-      %ratio = 1 / (1 + mpow(%e, -%k*(%this.elapsed-(%this.animateTime/2))));
+      %ratio = 1 / (1 + mpow(%e, -%k*(%this.elapsed-(%this.animTime/2))));
     } else {
       %ratio = 1;
     }
 
-    %height = mRound(%ratio*%this.val);
+    %height = mRound(%ratio * (%this.animEndHeight - %this.animStartHeight)) + %this.animStartHeight;
 
     %this.extent = GlassGraphs.barWidth SPC %height;
-    %this.position = getWord(%this.position, 0) SPC %this.maxHeight-%height;
+    %this.position = getWord(%this.position, 0) SPC (GlassGraphs.height-%height);
   }
 
-  if(%this.elapsed < %this.animateTime) {
+  if(%this.elapsed < %this.animTime) {
     %this.sch = %this.schedule(33, tick);
   }
 }
@@ -433,27 +524,23 @@ function datetimeAdd(%time, %diff) {
 //================================================================
 
 function clientCmdGlassGraphsClear() {
-  echo("GraphsClear");
   GlassGraphs.graphs = 0;
 }
 
 function clientCmdGlassGraphAdd(%id, %name, %icon) {
-  echo("GraphAdd" TAB %name TAB %icon);
   GlassGraphs.newGraph(%id, %name, %icon);
 }
 
 function clientCmdGlassGraphAddDone() {
-  echo("GraphAddDone");
   GlassGraphs.populateTabs();
 }
 
 function clientCmdGlassGraphClearData() {
-  echo("GraphClearData");
   GlassServerControlGui_Graph.deleteAll();
+  GlassGraphs.scale = 0;
 }
 
 function clientCmdGlassGraphData(%id, %time, %value, %fresh, %offset) {
-  echo("GraphData" TAB %time TAB %value TAB %fresh TAB %offset);
   if(GlassGraphs.activeId != %id)
     return;
 
@@ -463,5 +550,6 @@ function clientCmdGlassGraphData(%id, %time, %value, %fresh, %offset) {
 function clientCmdGlassGraphDataDone() {
   for(%i = 0; %i < GlassServerControlGui_Graph.getCount(); %i++) {
     GlassServerControlGui_Graph.getObject(%i).pause = false;
+    GlassServerControlGui_Graph.getObject(%i).tick();
   }
 }
