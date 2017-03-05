@@ -1,6 +1,7 @@
 exec("./submodules/live/GlassLiveConnection.cs");
 exec("./submodules/live/GlassLiveUser.cs");
 exec("./submodules/live/GlassLiveRoom.cs");
+exec("./submodules/live/GlassLiveGroup.cs");
 
 if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/GlassFriendsGui.gui");
 
@@ -598,7 +599,7 @@ function GlassLive::setIcon(%icon) {
 function GlassLive::sendAvatarData() {
   if(!GlassLiveConnection.connected)
     return;
-  
+
   %obj = JettisonObject();
   %obj.set("type", "string", "avatar");
 
@@ -3943,13 +3944,13 @@ package GlassLivePackage {
     }
     parent::onRender(%this);
   }
-  
+
   function Crouch(%bool) {
 	if(GlassOverlayGui.isAwake())
       %bool = 0;
 	return parent::Crouch(%bool);
   }
-  
+
   function resetCanvas() {
 	parent::resetCanvas();
     GlassLive::positionMessageReminder();
