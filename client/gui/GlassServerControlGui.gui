@@ -6775,11 +6775,11 @@ new GuiControl(GlassServerControlGui) {
                      animateTime = "2250";
                };
             };
-            new GuiTextCtrl() {
+            new GuiTextCtrl(GlassGraphTitle) {
                profile = "GlassBlockButtonProfile";
                horizSizing = "center";
                vertSizing = "bottom";
-               position = "187 10";
+               position = "187 5";
                extent = "100 18";
                minExtent = "8 2";
                enabled = "1";

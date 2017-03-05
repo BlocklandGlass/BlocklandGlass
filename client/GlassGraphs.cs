@@ -154,6 +154,8 @@ function GlassGraphTabMouse::onMouseUp(%this) {
     GlassGraphs.active = %swatch;
     GlassGraphs.activeId = %swatch.graphId;
 
+    GlassGraphTitle.setText(GlassGraphs.graphName[%swatch.graphId]);
+
     GlassGraphs.displayGraph(%swatch.graphId);
   }
 }
@@ -195,6 +197,15 @@ function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
   %this.label.text.setMarginResizeParent(5, 5);
 
   %this.label.position = vectorSub(%this.label.position, %this.label.extent);
+
+  if(getWord(%this.label.position, 0) < 0) {
+    %this.label.position = setWord(%this.label.position, 0, 0);
+  }
+
+
+  if(getWord(%this.label.position, 1) < 0) {
+    %this.label.position = setWord(%this.label.position, 1, 0);
+  }
 
   %this.getGroup().pushToBack(%this);
 }
