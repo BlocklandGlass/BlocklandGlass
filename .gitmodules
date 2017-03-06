@@ -1,6 +1,6 @@
 [submodule "resources/Support_Preferences"]
 	path = resources/Support_Preferences
-	url = https://github.com/TheBlackParrot/blockland-preferences
+	url = https://github.com/BlocklandGlass/blockland-preferences
   ignore = dirty
 [submodule "resources/Support_Updater"]
 	path = resources/Support_Updater
