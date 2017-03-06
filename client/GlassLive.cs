@@ -65,7 +65,7 @@ function GlassLive::init() {
   GlassIconSelectorWindow.updateIcons();
 
   GlassOverlay::setVignette();
-//  GlassLive::createMessageReminder();
+  GlassLive::createMessageReminder();
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
@@ -840,7 +840,7 @@ function GlassLive::createMessageReminder() {
     extent = "16 16";
 	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
   };
-  PlayGui.add(GlassMessageReminder);
+  NewChatHUD.add(GlassMessageReminder);
   GlassLive::positionMessageReminder();
 }
 

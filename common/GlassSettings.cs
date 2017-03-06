@@ -35,7 +35,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::ShowFriendLocation", true, "", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
   GlassSettings.registerSetting("Live::ShowFriendStatus", true, "", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
   GlassSettings.registerSetting("Live::PendingReminder", true, "", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
-//  GlassSettings.registerSetting("Live::ReminderIcon", true, "GlassLive::createMessageReminder", "Reminder Icon", "Live", "checkbox", "", "Display a Glass icon in the corner of your screen while playing if you have an unread message or mention.");
+  GlassSettings.registerSetting("Live::ReminderIcon", true, "GlassLive::createMessageReminder", "Reminder Icon", "Live", "checkbox", "", "Display a Glass icon in the corner of your screen while playing if you have an unread message or mention.");
   GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
   GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
   // Chatroom
