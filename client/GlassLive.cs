@@ -219,6 +219,7 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.verticalMatchChildren(0, 5);
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
+  GlassModeratorWindow.setVisible(false);
   if(isObject(GlassFriendsGui_Blockhead))
 	GlassFriendsGui_Blockhead.setVisible(false);
 
@@ -3174,14 +3175,15 @@ function GlassModeratorGui::SwapTabs(%this) {
 function GlassModeratorGui::submit(%this) {
   %blid = GlassModeratorWindow.blid;
   %type = GlassModeratorWindow_Selection.getValue();
-
+  %duration = GlassModeratorWindow_Duration.getValue();
+  
   if(%type !$= "Mute" && %type !$= "Kick") {
     %reason = GlassModeratorWindow_Reason.getValue();
     if(%reason $= "") {
       glassMessageBoxOk("Error", "You must enter a reason.");
       return;
     }
-    %duration = GlassModeratorWindow_Duration.getValue();
+    
     if((%duration == 0 || %duration $= "") && %duration != -1) {
       glassMessageBoxOk("Error", "You must enter a valid duration.");
       return;
