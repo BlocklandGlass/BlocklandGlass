@@ -33,6 +33,7 @@ function GlassPrefGroup::cleanup() {
 	GlassPrefGroup.delete();
 	new ScriptGroup(GlassPrefGroup);
 	GlassServerControlC::setTab(2);
+	$ServerInfo::PrefVersion = "";
 }
 
 function GlassPrefGroup::doneLoading() {
@@ -47,7 +48,7 @@ function GlassPrefGroup::sendChangedPrefs(%this) {
 			%pref = %cate.getObject(%j);
 			if(%pref.localValue !$= %pref.value) {
 				%up = true;
-				commandToServer('UpdatePref', %pref.variable, %pref.localValue);
+				commandToServer('UpdatePref', %pref.id, %pref.localValue);
 				%pref.value = %pref.localValue;
 			}
 		}
@@ -93,8 +94,27 @@ function GlassPrefGroup::findByVariable(%var) { // there's gotta be a better way
 	return false;
 }
 
-function clientCmdupdateBLPref(%varname, %value) {
+function GlassPrefGroup::findById(%id) {
+	%pso = GlassPrefGroup.pref[%id];
+
+	if(isObject(%pso))
+		return %pso;
+
+	return false;
+}
+
+//it doesn't make sense that every other method is id based
+// while this one uses the variable name
+// this is now legacy support
+function clientCmdUpdateBLPref(%varname, %value) {
 	if(%pso = GlassPrefGroup::findByVariable(%varname)) {
+		clientCmdUpdatePref(%pso.id, %value);
+	}
+}
+
+// support_prefs 2.0
+function clientCmdUpdatePref(%id, %value) {
+	if(%pso = GlassPrefGroup::findById(%id)) {
 		%pso.value = %value;
 		%pso.localValue = %value;
 
@@ -112,7 +132,9 @@ function clientCmdupdateBLPref(%varname, %value) {
 function clientCmdhasPrefSystem(%version, %permission) {
 	if(Glass.dev)
 		echo("Server has pref system! (" @ %version @")");
-  
+
+	$ServerInfo::PrefVersion = %version;
+
 	if(%permission) {
 		GlassServerControlC.setEnabled(true);
 	} else {
@@ -126,7 +148,7 @@ function clientCmdBLPAllowedUse(%permission) { // why.
 
 function clientCmdReceiveCategory(%id, %category, %icon, %last) {
 	GlassServerControlC.receivedPrefs = true;
-	Glass::debug(%id TAB %category TAB %icon);
+
 	%obj = new ScriptGroup() {
 		class = "GlassPrefCategory";
 
@@ -155,8 +177,11 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 		subcategory = %subcategory;
 
 		legacy = %legacy;
+		id = %id;
 	};
 	GlassPrefGroup.cat[%catId].add(%obj);
+	GlassPrefGroup.pref[%id] = %obj;
+	GlassPref
 
 	if(%last) {
 		GlassPrefGroup.cat[%catId].downloadedPrefs = true;
