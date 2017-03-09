@@ -31,10 +31,13 @@ function openGlassSettings(%down) {
 function GlassServerControlC::setTab(%tab) {
   for(%i = 0; %i < 3; %i++) {
     %ctrl = "GlassServerControlGui_Pane" @ %i+1;
+    %button = "GlassServerControlGui_Tab" @ %i+1;
     if(%i+1 == %tab) {
       %ctrl.setVisible(true);
+      %button.mColor = "84 217 140 120";
     } else {
       %ctrl.setVisible(false);
+      %button.mColor = "255 255 255 150";
     }
   }
 
@@ -53,7 +56,7 @@ function GlassServerControlC::openCategory(%category) {
   %obj.setVisible(true);
 
   %category.sw.selected = true;
-  %category.sw.color = "200 200 255 255";
+  %category.sw.color = "131 195 243 150";
 
   GlassServerControlGui.openCategory = %obj;
 
@@ -317,7 +320,7 @@ function GlassServerControlC::createHeader(%text) {
      enabled = "1";
      visible = "1";
      clipToParent = "1";
-     color = "170 170 170 255";
+     color = "84 217 140 255";
 
      new GuiMLTextCtrl() {
         profile = "GuiMLTextProfile";
@@ -852,7 +855,8 @@ function GlassServerControlGui_CatMouseCtrl::onMouseDown(%this) {
 
 function GlassServerControlGui_CatMouseCtrl::onMouseEnter(%this) {
   %swatch = %this.getGroup();
-  %swatch.color = "240 240 240 255";
+  if(!%swatch.selected)
+    %swatch.color = "240 240 240 255";
 }
 
 function GlassServerControlGui_CatMouseCtrl::onMouseLeave(%this) {
@@ -860,7 +864,7 @@ function GlassServerControlGui_CatMouseCtrl::onMouseLeave(%this) {
   if(!%swatch.selected)
     %swatch.color = %swatch.ocolor;
   else
-    %swatch.color = "200 200 255 255";
+    %swatch.color = "131 195 243 150";
 }
 
 function clientCmdGlassAdminListing(%data, %append) {

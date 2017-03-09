@@ -181,7 +181,6 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 	};
 	GlassPrefGroup.cat[%catId].add(%obj);
 	GlassPrefGroup.pref[%id] = %obj;
-	GlassPref
 
 	if(%last) {
 		GlassPrefGroup.cat[%catId].downloadedPrefs = true;

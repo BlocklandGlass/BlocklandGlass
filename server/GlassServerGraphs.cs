@@ -77,56 +77,13 @@ function GlassCollection::onAdd(%this) {
   else
     %this.loaded = true;
 
-  %file = %this.getFile();
-
-  if(isFile(%file)) {
-    echo("loading " @ %file);
-    %fo = new FileObject();
-    %fo.openForRead(%file);
-    %indexCt = -1;
-    %dataCt = 0;
-    while(!%fo.isEOF()) {
-      %line = %fo.readLine();
-      %line = strreplace(%line, "\t", "\\t");
-      %line = strreplace(%line, ",", "\t");
-      //CSV
-      if(%indexCt == -1) {
-        for(%i = 0; %i = getFieldCount(%line); %i++) {
-          %index[%i] = collapseEscape(getField(%line, %i));
-          %this.index[%i] = %index[%i];
-        }
-        %indexCt = getFieldCount(%line);
-      } else {
-        for(%i = 0; %i = getFieldCount(%line); %i++) {
-          %key = %index[%i];
-          if(%key $= "") {
-            warn("More data than keys!");
-          }
-          %this.data[%dataCt, %key] = collapseEscape(getField(%line, %i));
-          //data_12_time
-          //data_12_value
-        }
-
-        //throw out old data
-        %time = %this.data[%dataCt, "time"];
-        if(%time !$= "" && strTimeCompare(getDateTime(), %time) > GlassServerGraphs.history) {
-          continue; //by continuing without incrementing dataCt, will be overwritten
-        }
-
-        %dataCt++;
-      }
-    }
-    %fo.close();
-    %fo.delete();
-
-    %this.dataCt = %dataCt;
-    %this.indexCt = %indexCt;
-  }
+  return; //no load
 
   %this.saveData();
 }
 
 function GlassCollection::saveData(%this) {
+  return;
   if(!%this.loaded)
     return;
 

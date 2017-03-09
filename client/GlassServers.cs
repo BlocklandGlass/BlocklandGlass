@@ -529,7 +529,7 @@ function joinServerGui::preview(%this) {
   GlassServerPreviewGui.open();
 }
 
-function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerlist) { // finish showplayerlist 
+function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerlist) { // finish showplayerlist
   if(!GlassSettings.get("Servers::LoadingImages"))
 	  return;
 
@@ -645,6 +645,11 @@ package GlassServers {
 
   function NewPlayerListGui::UpdateWindowTitle(%this) {
     parent::UpdateWindowTitle(%this);
+
+    //this method doesn't seem to do anything?
+    %text = NPL_list.rowCount() @ "/" @ $ServerInfo::MaxPlayers @ " Players - " @ $ServerInfo::Name;
+    NPL_Window.setText(%text);
+    echo(%text);
 
     GlassLoadingGui.UpdateWindowTitle();
   }
