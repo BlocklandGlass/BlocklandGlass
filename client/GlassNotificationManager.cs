@@ -446,5 +446,13 @@ package GlassNotifications {
 
     GlassNotificationManager.refocus();
   }
+
+  function doScreenshot(%bool) {
+    for(%i = 0; %i < GlassNotificationManager.getCount(); %i++) {
+      GlassNotificationManager.getObject(%i).setVisible(!%bool);
+    }
+
+    parent::doScreenshot(%bool);
+  }
 };
 activatePackage(GlassNotifications);

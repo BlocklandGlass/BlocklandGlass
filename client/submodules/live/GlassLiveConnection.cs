@@ -227,10 +227,10 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::onMessage(%data.message, %sender, %data.sender_id);
 
       if(GlassSettings.get("Live::MessageNotification") && !GlassOverlayGui.isAwake()) {
-		
+
 		if(GlassSettings.get("Live::ReminderIcon"))
 		  GlassMessageReminder.setVisible(true);
-	  
+
         if(strlen(%data.message) > 100)
           %data.message = getsubstr(%data.message, 0, 100) @ "...";
 
@@ -337,6 +337,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomKicked": //we got removed from a room
       glassMessageBoxOk("Kicked", "You've been kicked:<br><br>" @ %data.reason);
       GlassLive.noReconnect = true;
+      %this.disconnect();
 
     case "roomBanned": //we got banned from a room
       GlassLive.noReconnect = true;
