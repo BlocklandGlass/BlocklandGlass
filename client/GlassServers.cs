@@ -529,7 +529,7 @@ function joinServerGui::preview(%this) {
   GlassServerPreviewGui.open();
 }
 
-function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerlist) { // finish showplayerlist
+function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerlist) {
   if(!GlassSettings.get("Servers::LoadingImages"))
 	  return;
 
@@ -538,6 +538,9 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
 
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
+
+  if(!%showPlayerlist)
+    GlassLoadingGui.close();
 
   LoadingGUI.lastDownload = $Sim::Time;
 

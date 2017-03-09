@@ -11,14 +11,15 @@ package GlassLoadingScreen {
     $LoadingScreen::Url = "";
     $LoadingScreen::FileType = "";
   	$LoadingScreen::CRC = "";
+    $LoadingScreen::Playerlist = true;
     parent::destroyServer();
   }
 };
 activatePackage(GlassLoadingScreen);
 
-function registerLoadingScreen(%url, %fileType, %crc, %showPlayerlist) {
+function registerLoadingScreen(%url, %fileType, %crc, %hidePlayerList) {
 	if(trim(%url) $= "" || trim(%fileType) $= "") {
-		warn("Error usage: registerLoadingScreen(url, filetype[, crc, showplayerlist])");
+		warn("Error usage: registerLoadingScreen( url, filetype[, crc[, hidePlayerList]] )");
 		return;
 	}
 	if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
@@ -29,5 +30,5 @@ function registerLoadingScreen(%url, %fileType, %crc, %showPlayerlist) {
 	$LoadingScreen::Url = %url;
 	$LoadingScreen::FileType = %fileType;
 	$LoadingScreen::CRC = %crc;
-  $LoadingScreen::Playerlist = %showPlayerlist;
+  $LoadingScreen::Playerlist = !%hidePlayerList;
 }
