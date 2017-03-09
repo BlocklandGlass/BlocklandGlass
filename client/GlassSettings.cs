@@ -3,6 +3,11 @@ if(!isObject(GlassSettings)) {
 }
 
 function GlassSettings::init() {
+  if($Server::Dedicated)
+    return;
+
+  Glass.settingsLoaded = true;
+
   echo("Loading client prefs");
   // registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc)
   // Hidden Settings
@@ -398,6 +403,9 @@ function GlassSettings::loadData(%this) {
 }
 
 function GlassSettings::saveData(%this) {
+  if(!Glass.settingsLoaded)
+    return;
+    
   %fo = new FileObject();
   %fo.openForWrite("config/client/glass.conf");
   %fo2 = new FileObject();

@@ -10,13 +10,6 @@ if($Pref::PreLoadScriptLauncherVersion < 1) {
 exec("./core.cs");
 
 function Glass::execServer() {
-	echo(" ===                Loading Preferences                 ===");
-	exec("./common/GlassSettings.cs");
-
-  if(isFile("config/BLG/client/mm.cs")) {
-    exec("./runonce/settingConversion.cs");
-  }
-
 	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
 	exec("./support/Support_TCPClient.cs");
 	exec("./support/Support_Markdown.cs");

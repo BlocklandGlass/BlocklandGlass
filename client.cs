@@ -12,7 +12,7 @@ exec("./core.cs");
 
 function Glass::execClient() {
   echo(" ===  Blockland Glass v" @ Glass.version @ " starting.  ===");
-  exec("./common/GlassSettings.cs");
+  exec("./client/GlassSettings.cs");
 
   exec("./support/jettison.cs");
   exec("./support/Support_TCPClient.cs");
