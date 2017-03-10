@@ -70,6 +70,7 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("autoJoinRooms", "string", GlassSettings.get("Live::AutoJoinRoom") == true);
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
 
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:2ecc71>Authenticating...");
 

@@ -22,6 +22,23 @@ function GlassLiveGroups::create(%id, %name) {
   return %group;
 }
 
+function GlassLiveGroups::startNew(%inviteList) {
+  //%inviteList space delimited
+  %invites = JettisonArray();
+  for(%i = 0; %i < getWordCount(%inviteList); %i++) {
+    %invites.push("string", getWord(%inviteList, %i)+0);
+  }
+
+  %obj = JettisonObject();
+  %obj.set("type", "string", "groupCreate");
+  %obj.set("invites", "object", %invites);
+
+  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %invites.delete();
+  %obj.delete();
+}
+
 function GlassLiveGroup::openWindow(%this) {
   %window = GlassLive::createGroupchat(%this);
   if(isObject(%this.window))
@@ -34,6 +51,26 @@ function GlassLiveGroup::openWindow(%this) {
 function GlassLiveGroup::closeWindow(%this) {
   if(isObject(%this.window))
     %this.window.delete();
+}
+
+function GlassLiveGroup::onInvite(%this) {
+  if(%this.inviter !$= "") {
+    %inviter = %this.inviter.username;
+  } else {
+    %inviter = "You've been";
+  }
+
+  %userStr = "";
+  %clients = %data.clients;
+
+  %this.inviteNotification = new ScriptObject(GlassNotification) {
+    title = "Groupchat Invitiation";
+    text = %inviter @ "invited to a Groupchat with " @
+    image = "bell";
+
+    sticky = true;
+    callback = "GlassOverlay::open();";
+  };
 }
 
 function GlassLive::createGroupchat(%obj) {
