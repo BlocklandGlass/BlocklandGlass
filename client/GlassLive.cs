@@ -842,6 +842,7 @@ function GlassLive::createMessageReminder() {
 	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
   };
   NewChatHUD.add(GlassMessageReminder);
+  GlassMessageReminder.setVisible(false);
   GlassLive::positionMessageReminder();
 }
 
