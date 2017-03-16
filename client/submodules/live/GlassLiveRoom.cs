@@ -251,7 +251,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
       %blid = %user.text.blid;
       if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
-        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ GlassLive.color_self @ ">" @ %word @ "<spop>");
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
         %uo = GlassLiveUser::getFromBlid(%blid);
         if(%senderblid == getNumKeyId()) {
           if(%uo.getStatus() $= "away") {
