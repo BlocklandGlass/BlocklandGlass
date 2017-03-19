@@ -4,7 +4,7 @@ new GuiControl(GlassServerControlGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "640 480";
+   extent = "1900 1000";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
@@ -15,7 +15,7 @@ new GuiControl(GlassServerControlGui) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";
-      position = "20 25";
+      position = "0 0";
       extent = "600 430";
       minExtent = "8 2";
       enabled = "1";
@@ -72,7 +72,7 @@ new GuiControl(GlassServerControlGui) {
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "84 217 140 120";
+         mColor = "255 255 255 150";
       };
       new GuiBitmapButtonCtrl(GlassServerControlGui_Tab2) {
          profile = "GlassBlockButtonProfile";
@@ -94,7 +94,7 @@ new GuiControl(GlassServerControlGui) {
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "255 255 255 150";
+         mColor = "84 217 140 120";
       };
       new GuiBitmapButtonCtrl(GlassServerControlGui_Tab3) {
          profile = "GlassBlockButtonProfile";
@@ -126,7 +126,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "580 365";
          minExtent = "8 2";
          enabled = "1";
-         visible = "0";
+         visible = "1";
          clipToParent = "1";
          color = "230 230 230 255";
 
@@ -184,13 +184,13 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "131 195 243 150";
-                        ocolor = "230 230 230 255";
-                        rcolor = "230 230 230 255";
                         mouse = "18073";
-                        selected = "1";
-                        bitmap = "18071";
-                        text = "18072";
                         cat = "16236";
+                        bitmap = "18071";
+                        rcolor = "230 230 230 255";
+                        selected = "1";
+                        text = "18072";
+                        ocolor = "230 230 230 255";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -250,13 +250,13 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "235 235 235 255";
-                        ocolor = "235 235 235 255";
-                        rcolor = "235 235 235 255";
                         mouse = "18126";
-                        selected = "0";
-                        bitmap = "18124";
-                        text = "18125";
                         cat = "16237";
+                        bitmap = "18124";
+                        rcolor = "235 235 235 255";
+                        selected = "0";
+                        text = "18125";
+                        ocolor = "235 235 235 255";
 
                      new GuiBitmapCtrl() {
                         profile = "GuiDefaultProfile";
@@ -416,16 +416,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16238";
                         ctrl = "18079";
                         text = "18078";
-                        pref = "16238";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "65 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -462,16 +462,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16239";
                         ctrl = "18082";
                         text = "18081";
-                        pref = "16239";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "93 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -508,16 +508,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16240";
                         ctrl = "18085";
                         text = "18084";
-                        pref = "16240";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "89 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -581,16 +581,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16241";
                         ctrl = "18090";
                         text = "18089";
-                        pref = "16241";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "84 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -627,16 +627,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16242";
                         ctrl = "18093";
                         text = "18092";
-                        pref = "16242";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "83 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -673,16 +673,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16243";
                         ctrl = "18096";
                         text = "18095";
-                        pref = "16243";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "115 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -719,16 +719,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16244";
                         ctrl = "18099";
                         text = "18098";
-                        pref = "16244";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "101 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -762,16 +762,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16245";
                         ctrl = "18102";
                         text = "18101";
-                        pref = "16245";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "57 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -808,16 +808,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16246";
                         ctrl = "18105";
                         text = "18104";
-                        pref = "16246";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "149 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -881,16 +881,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16249";
                         ctrl = "18110";
                         text = "18109";
-                        pref = "16249";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "114 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -924,16 +924,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16250";
                         ctrl = "18113";
                         text = "18112";
-                        pref = "16250";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "123 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -970,16 +970,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16251";
                         ctrl = "18116";
                         text = "18115";
-                        pref = "16251";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "117 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1013,16 +1013,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16252";
                         ctrl = "18119";
                         text = "18118";
-                        pref = "16252";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "86 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1059,16 +1059,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16253";
                         ctrl = "18122";
                         text = "18121";
-                        pref = "16253";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "156 16";
+                        extent = "8 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1147,16 +1147,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16254";
                         ctrl = "18132";
                         text = "18131";
-                        pref = "16254";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "64 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1193,16 +1193,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "220 220 220 255";
+                        pref = "16255";
                         ctrl = "18135";
                         text = "18134";
-                        pref = "16255";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "64 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1239,16 +1239,16 @@ new GuiControl(GlassServerControlGui) {
                      visible = "1";
                      clipToParent = "1";
                      color = "230 230 230 255";
+                        pref = "16256";
                         ctrl = "18138";
                         text = "18137";
-                        pref = "16256";
 
                      new GuiTextCtrl() {
                         profile = "GuiTextVerdanaProfile";
                         horizSizing = "right";
                         vertSizing = "center";
                         position = "10 8";
-                        extent = "64 16";
+                        extent = "79 16";
                         minExtent = "8 2";
                         enabled = "1";
                         visible = "1";
@@ -1304,7 +1304,7 @@ new GuiControl(GlassServerControlGui) {
          extent = "580 365";
          minExtent = "8 2";
          enabled = "1";
-         visible = "1";
+         visible = "0";
          clipToParent = "1";
          color = "215 215 215 255";
 
@@ -1331,7 +1331,7 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "170 16";
+               extent = "170 2";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1516,7 +1516,7 @@ new GuiControl(GlassServerControlGui) {
                profile = "GuiTextProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "10 30";
+               position = "10 55";
                extent = "34 18";
                minExtent = "8 2";
                enabled = "1";
@@ -1529,7 +1529,7 @@ new GuiControl(GlassServerControlGui) {
                profile = "GuiTextProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "14 55";
+               position = "14 30";
                extent = "30 18";
                minExtent = "8 2";
                enabled = "1";
@@ -1542,8 +1542,8 @@ new GuiControl(GlassServerControlGui) {
                profile = "GlassTextEditProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "46 31";
-               extent = "94 16";
+               position = "46 56";
+               extent = "74 16";
                minExtent = "8 2";
                enabled = "1";
                visible = "1";
@@ -1560,7 +1560,7 @@ new GuiControl(GlassServerControlGui) {
                profile = "GuiPopUpMenuProfile";
                horizSizing = "right";
                vertSizing = "bottom";
-               position = "45 56";
+               position = "45 31";
                extent = "94 16";
                minExtent = "8 2";
                enabled = "1";
@@ -1568,6 +1568,41 @@ new GuiControl(GlassServerControlGui) {
                clipToParent = "1";
                maxLength = "255";
                maxPopupHeight = "200";
+            };
+            new GuiBitmapCtrl() {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "125 57";
+               extent = "16 16";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               bitmap = "~/System_BlocklandGlass/image/icon/accept_button";
+               wrap = "0";
+               lockAspectRatio = "0";
+               alignLeft = "0";
+               alignTop = "0";
+               overflowImage = "0";
+               keepCached = "0";
+               mColor = "255 255 255 255";
+               mMultiply = "0";
+
+               new GuiButtonBaseCtrl() {
+                  profile = "GuiDefaultProfile";
+                  horizSizing = "right";
+                  vertSizing = "bottom";
+                  position = "0 0";
+                  extent = "16 16";
+                  minExtent = "8 2";
+                  enabled = "1";
+                  visible = "1";
+                  clipToParent = "1";
+                  command = "GlassServerControlC::addUser();";
+                  groupNum = "-1";
+                  buttonType = "PushButton";
+               };
             };
          };
       };
@@ -1595,137 +1630,6 @@ new GuiControl(GlassServerControlGui) {
             clipToParent = "1";
             color = "0 132 176 3";
                NTNameCount = "0";
-
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "0 0";
-               extent = "85 24";
-               minExtent = "1 1";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "255 255 255 200";
-                  down = "0";
-                  mouse = "16093";
-                  active = "1";
-                  bitmap = "16091";
-                  text = "16092";
-                  graphId = "0";
-
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "4 4";
-                  extent = "16 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/icon/brick";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 255";
-                  mMultiply = "0";
-               };
-               new GuiTextCtrl() {
-                  profile = "GlassTextEditProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "24 4";
-                  extent = "49 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "Bricks";
-                  maxLength = "255";
-               };
-               new GuiMouseEventCtrl(GlassGraphTabMouse) {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "135 24";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  lockMouse = "0";
-                     swatch = "16090";
-               };
-            };
-            new GuiSwatchCtrl() {
-               profile = "GuiDefaultProfile";
-               horizSizing = "right";
-               vertSizing = "bottom";
-               position = "0 29";
-               extent = "80 24";
-               minExtent = "1 1";
-               enabled = "1";
-               visible = "1";
-               clipToParent = "1";
-               color = "255 255 255 100";
-                  down = "0";
-                  mouse = "16097";
-                  active = "0";
-                  bitmap = "16095";
-                  text = "16096";
-                  graphId = "1";
-
-               new GuiBitmapCtrl() {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "4 4";
-                  extent = "16 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  bitmap = "~/System_BlocklandGlass/image/icon/user";
-                  wrap = "0";
-                  lockAspectRatio = "0";
-                  alignLeft = "0";
-                  alignTop = "0";
-                  overflowImage = "0";
-                  keepCached = "0";
-                  mColor = "255 255 255 255";
-                  mMultiply = "0";
-               };
-               new GuiTextCtrl() {
-                  profile = "GlassTextEditProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "24 4";
-                  extent = "49 16";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  text = "Players";
-                  maxLength = "255";
-               };
-               new GuiMouseEventCtrl(GlassGraphTabMouse) {
-                  profile = "GuiDefaultProfile";
-                  horizSizing = "right";
-                  vertSizing = "bottom";
-                  position = "0 0";
-                  extent = "135 24";
-                  minExtent = "8 2";
-                  enabled = "1";
-                  visible = "1";
-                  clipToParent = "1";
-                  lockMouse = "0";
-                     swatch = "16094";
-               };
-            };
          };
          new GuiSwatchCtrl() {
             profile = "GuiDefaultProfile";
@@ -1791,9 +1695,9 @@ new GuiControl(GlassServerControlGui) {
                      animStartHeight = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10486";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10486";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1812,10 +1716,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10487";
                      time = "03/08/17 18:48:39";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10487";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1834,10 +1738,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10488";
                      time = "03/08/17 18:48:53";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10488";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1856,10 +1760,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10489";
                      time = "03/08/17 18:49:08";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10489";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1878,10 +1782,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10490";
                      time = "03/08/17 18:49:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10490";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1900,10 +1804,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10491";
                      time = "03/08/17 18:49:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10491";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1922,10 +1826,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10492";
                      time = "03/08/17 18:49:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10492";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1944,10 +1848,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10493";
                      time = "03/08/17 18:50:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10493";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1966,10 +1870,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10494";
                      time = "03/08/17 18:50:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10494";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -1988,10 +1892,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10495";
                      time = "03/08/17 18:50:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10495";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2010,10 +1914,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10496";
                      time = "03/08/17 18:50:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10496";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2032,10 +1936,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10497";
                      time = "03/08/17 18:51:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10497";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2054,10 +1958,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10498";
                      time = "03/08/17 18:51:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10498";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2076,10 +1980,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10499";
                      time = "03/08/17 18:51:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10499";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2098,10 +2002,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10500";
                      time = "03/08/17 18:51:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10500";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2120,10 +2024,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10501";
                      time = "03/08/17 18:52:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10501";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2142,10 +2046,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10502";
                      time = "03/08/17 18:52:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10502";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2164,10 +2068,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10503";
                      time = "03/08/17 18:52:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10503";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2186,10 +2090,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10504";
                      time = "03/08/17 18:52:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10504";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2208,10 +2112,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10505";
                      time = "03/08/17 18:53:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10505";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2230,10 +2134,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10506";
                      time = "03/08/17 18:53:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10506";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2252,10 +2156,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10507";
                      time = "03/08/17 18:53:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10507";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2274,10 +2178,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10508";
                      time = "03/08/17 18:53:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10508";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2296,10 +2200,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10509";
                      time = "03/08/17 18:54:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10509";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2318,10 +2222,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10510";
                      time = "03/08/17 18:54:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10510";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2340,10 +2244,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10511";
                      time = "03/08/17 18:54:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10511";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2362,10 +2266,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10512";
                      time = "03/08/17 18:54:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10512";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2384,10 +2288,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10513";
                      time = "03/08/17 18:55:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10513";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2406,10 +2310,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10514";
                      time = "03/08/17 18:55:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10514";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2428,10 +2332,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10515";
                      time = "03/08/17 18:55:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10515";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2450,10 +2354,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10516";
                      time = "03/08/17 18:55:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10516";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2472,10 +2376,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10517";
                      time = "03/08/17 18:56:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10517";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2494,10 +2398,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10518";
                      time = "03/08/17 18:56:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10518";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2516,10 +2420,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10603";
                      time = "03/08/17 18:56:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10603";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2538,10 +2442,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10713";
                      time = "03/08/17 18:57:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10713";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2560,10 +2464,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10807";
                      time = "03/08/17 18:57:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10807";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2582,10 +2486,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "10901";
                      time = "03/08/17 18:57:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "10901";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2604,10 +2508,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "11018";
                      time = "03/08/17 18:57:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "11018";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2626,10 +2530,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "11141";
                      time = "03/08/17 18:58:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "11141";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2648,10 +2552,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "11358";
                      time = "03/08/17 18:58:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "11358";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2670,10 +2574,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "307";
-                     sch = "11532";
                      time = "03/08/17 18:58:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "11532";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2692,10 +2596,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "307";
-                     sch = "12033";
                      time = "03/08/17 18:58:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "12033";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2714,10 +2618,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "307";
-                     sch = "12519";
                      time = "03/08/17 18:59:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "12519";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2736,10 +2640,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "12614";
                      time = "03/08/17 18:59:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "12614";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2758,10 +2662,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "13165";
                      time = "03/08/17 18:59:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "13165";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2780,10 +2684,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "13542";
                      time = "03/08/17 18:59:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "13542";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2802,10 +2706,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "13627";
                      time = "03/08/17 19:00:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "13627";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2824,10 +2728,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "13714";
                      time = "03/08/17 19:00:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "13714";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2846,10 +2750,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "13782";
                      time = "03/08/17 19:00:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "13782";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2868,10 +2772,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "307";
-                     sch = "14471";
                      time = "03/08/17 19:00:46";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14471";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2890,10 +2794,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "14558";
                      time = "03/08/17 19:01:01";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14558";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2912,10 +2816,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "14671";
                      time = "03/08/17 19:01:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14671";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2934,10 +2838,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "14739";
                      time = "03/08/17 19:01:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14739";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2956,10 +2860,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "14845";
                      time = "03/08/17 19:01:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14845";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -2978,10 +2882,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "14932";
                      time = "03/08/17 19:02:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "14932";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3000,10 +2904,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15055";
                      time = "03/08/17 19:02:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "15055";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3022,10 +2926,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15147";
                      time = "03/08/17 19:02:30";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "15147";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3044,10 +2948,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15244";
                      time = "03/08/17 19:02:45";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "15244";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3066,10 +2970,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15327";
                      time = "03/08/17 19:03:00";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "15327";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3088,10 +2992,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15666";
                      time = "03/08/17 19:03:15";
                      elapsed = "1000";
                      animEndHeight = "4";
+                     sch = "15666";
                      pause = "0";
                };
                new GuiSwatchCtrl(GlassGraphBar) {
@@ -3099,7 +3003,7 @@ new GuiControl(GlassServerControlGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "449 306";
-                  extent = "1 -1";
+                  extent = "1 1";
                   minExtent = "1 1";
                   enabled = "1";
                   visible = "1";
@@ -3110,10 +3014,10 @@ new GuiControl(GlassServerControlGui) {
                      val = "0";
                      animTime = "1000";
                      animBottomPos = "305";
-                     sch = "15667";
                      time = "03/08/17 19:03:30";
                      elapsed = "1000";
                      animEndHeight = "-1.#IND";
+                     sch = "15667";
                      pause = "0";
                };
             };
@@ -3148,7 +3052,7 @@ new GuiControl(GlassServerControlGui) {
                   horizSizing = "right";
                   vertSizing = "bottom";
                   position = "5 5";
-                  extent = "50 24";
+                  extent = "50 14";
                   minExtent = "8 2";
                   enabled = "1";
                   visible = "1";
