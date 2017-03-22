@@ -38,20 +38,44 @@ function GlassResourceManager::createFakeFile(%resource) {
   %fo.delete();
 }
 
+function GlassResourceManager::loadPreferences(%context) {
+  //delete zip
+  fileDelete("Add-Ons/Support_Preferences.zip");
+  //delete local installation
+  folderDeleteAll("Add-Ons/Support_Preferences/");
+
+  %resource = "Support_Preferences";
+  echo("\n\c4Loading local resource " @ %resource @ "...");
+  if(isFile("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs"))
+    exec("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs");
+
+  echo("\n");
+}
+
+function folderDeleteAll(%folder) {
+  if(getSubStr(%folder, strlen(%folder)-2, 1) !$= "/") {
+    %folder = %folder @ "/";
+  }
+
+  for(%file = findFirstFile(%folder @ "*"); %file !$= ""; %file = findNextFile(%folder @ "*")) {
+    fileDelete(%file);
+  }
+}
+
 package GlassResourceManager {
   function Updater::onAdd(%this) {
     parent::onAdd(%this);
 
     %version["Support_Updater"] = "0.12.1+release-20160619";
-    %version["Support_Preferences"] = "1.2.1";
+    //%version["Support_Preferences"] = "1.2.1";
     %channel["Support_Updater"] = "release";
-    %channel["Support_Preferences"] = "stable";
+    //%channel["Support_Preferences"] = "stable";
     %repourl["Support_Updater"] = "mods.greek2me.us";
-    %repourl["Support_Preferences"] = "http://api.blocklandglass.com/api/3/repository.php";
+    //%repourl["Support_Preferences"] = "http://api.blocklandglass.com/api/3/repository.php";
     %format["Support_Updater"] = "TML";
-    %format["Support_Preferences"] = "JSON";
+    //%format["Support_Preferences"] = "JSON";
     %id["Support_Updater"] = "";
-    %id["Support_Preferences"] = "193";
+    //%id["Support_Preferences"] = "193";
 
     for(%i = 0; %i < GlassResourceManager.fakes; %i++) {
       %resource = GlassResourceManager.fake[%i];

@@ -82,8 +82,9 @@ function Glass::execClient() {
 
   echo(" ===                   Starting it up                   ===");
 
-  GlassResourceManager::execResource("Support_Preferences", "client");
+  //GlassResourceManager::execResource("Support_Preferences", "client");
   GlassResourceManager::execResource("Support_Updater", "client");
+  GlassResourceManager::loadPreferences("client");
 
   GlassDownloadInterface::init();
   GlassAuth::init();

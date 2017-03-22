@@ -27,8 +27,9 @@ function Glass::execServer() {
 
 	echo(" ===                 Loading Resources                  ===");
 
-	GlassResourceManager::execResource("Support_Preferences", "server");
+	//GlassResourceManager::execResource("Support_Preferences", "server");
 	GlassResourceManager::execResource("Support_Updater", "server");
+  GlassResourceManager::loadPreferences("server");
 
 	GlassAuthS::init();
   GlassServerGraphing::init();
