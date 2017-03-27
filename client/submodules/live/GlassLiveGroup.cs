@@ -22,6 +22,14 @@ function GlassLiveGroups::create(%id, %name) {
   return %group;
 }
 
+function GlassLiveGroup::setUserList(%this, %jettisonArray) {
+  for(%i = 0; %i < %jettisonArray.length; %i++) {
+    %this.users = %this.users TAB %jettisonArray.value[%i].blid;
+  }
+
+  %this.users = trim(%this.users);
+}
+
 function GlassLiveGroups::startNew(%inviteList) {
   //%inviteList space delimited
   %invites = JettisonArray();
@@ -53,7 +61,11 @@ function GlassLiveGroup::closeWindow(%this) {
     %this.window.delete();
 }
 
-function GlassLiveGroup::onInvite(%this) {
+function GlassLiveGroup::onInvite(%this, %inviter) {
+  if(%inviter !$= "") {
+    %this.inviter = %inviter;
+  }
+
   if(%this.inviter !$= "") {
     %inviter = %this.inviter.username;
   } else {
@@ -61,11 +73,42 @@ function GlassLiveGroup::onInvite(%this) {
   }
 
   %userStr = "";
-  %clients = %data.clients;
+  %users = %this.users;
+  %ct = getFieldCount(%users);
+
+  %bold = "<font:verdana bold:13>";
+  %norm = "<font:verdana:13>";
+
+  if(%ct == 0) {
+    %userStr = "nobody";
+  } else if(%ct == 1) {
+    %blid = getField(%users, 0);
+    %uo = GlassLiveUser::getFromBlid(%blid);
+    %userStr = %bold @ %uo.username @ %norm;
+  } else {
+    for(%i = 0; %i < %ct; %i++) {
+      %blid = getField(%users, %i);
+      %uo = GlassLiveUser::getFromBlid(%blid);
+
+      %un = %bold @ %uo.username @ %norm;
+
+      if(%i == 0) {
+        %userStr = %un;
+      } if(%i == %ct-1) {
+        if(%i == 1) {
+          %userStr = %userStr @ " and " @ %un;
+        } else {
+          %userStr = %userStr @ ", and " @ %un;
+        }
+      } else {
+        %userStr = %userStr @ ", " @ %un;
+      }
+    }
+  }
 
   %this.inviteNotification = new ScriptObject(GlassNotification) {
     title = "Groupchat Invitiation";
-    text = %inviter @ "invited to a Groupchat with " @ %userStr;
+    text = %inviter @ " invited to a Groupchat with " @ %userStr @ ".";
     image = "bell";
 
     sticky = true;

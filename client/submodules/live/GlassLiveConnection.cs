@@ -660,6 +660,32 @@ function GlassLiveConnection::onLine(%this, %line) {
       } else {
         warn("Glass Live Error: " @ %data.message);
       }
+
+    case "groupInvite":
+      for(%i = 0; %i < %data.clients.length; %i++) {
+        %udata = %data.clients.value[%i];
+
+        %uo = GlassLiveUser::create(%udata.username, %udata.blid);
+        %uo.setAdmin(%udata.admin);
+        %uo.setMod(%udata.mod);
+        if(%uo.blid < 0) {
+          %uo.setBot(true);
+        }
+        %uo.setStatus(%udata.status);
+        %uo.setIcon(%udata.icon);
+      }
+
+      //%inviter = GlassLive::getFromBlid(%data.blid);
+      %inviter = GlassLiveUser::getFromBlid(%data.owner);
+      %group = GlassLiveGroups::create(%data.id, %data.name);
+      %group.setUserList(%data.clients);
+
+      %group.onInvite(%inviter);
+
+    default:
+      if(Glass.verbose) {
+        echo("Unhandled Live Call: " @ %data.value["type"]);
+      }
   }
   //%data.delete();
 }
