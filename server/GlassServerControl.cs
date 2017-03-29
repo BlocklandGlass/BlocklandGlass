@@ -279,7 +279,7 @@ package GlassServerControlS {
     if(GlassClientSupport.required || !%this._glassBypass)
       %res = GlassClientSupport::checkClient(%this, %this._glassModsRaw);
 
-    if(%res != true) {
+    if(%res !$= true) {
       return %res;
     }
     return %parent;
