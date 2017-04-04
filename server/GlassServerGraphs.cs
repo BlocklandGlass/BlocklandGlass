@@ -191,12 +191,12 @@ function GlassServerGraphs::defaultTick(%this) {
   cancel(%this.sch);
 
   if(!$Server::Dedicated) {
-    if(!isObject(ServerConnection)) {
-      for(%i = 0; GlassServerGraphs.getCount(); %i++) {
-        GlassServerGraphs.getObject(%i).saveData();
-      }
-      return;
-    }
+   // if(!isObject(ServerConnection)) {
+   //   for(%i = 0; GlassServerGraphs.getCount(); %i++) {
+   //     GlassServerGraphs.getObject(%i).saveData();
+   //   }
+   //   return;
+   // }
   }
 
   %this.getCollection("bricks").recordData(getBrickcount());
