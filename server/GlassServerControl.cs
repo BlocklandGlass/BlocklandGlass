@@ -89,7 +89,7 @@ function GlassServerControlS::setAdmin(%blid, %rank, %auto) {
   if(isObject(%client = findClientByBL_ID(%blid))) {
     %name = %client.name;
   } else {
-    %name = "BLID_" @ %blid;
+    %name = "\c1BL_ID: " @ %blid @ "\c2";
   }
 
   if(%client.isSuperAdmin && %rank == 2) {
@@ -152,7 +152,7 @@ function GlassServerControlS::sendAdminData(%cl) {
     if(isObject(%client = findClientByBL_ID(%id))) {
       %name = %client.name;
     } else {
-      %name = "BLID_" @ %id;
+      %name = "BL_ID: " @ %id;
     }
 
     %buffer = %buffer @ %name TAB %id TAB "S\n";
@@ -170,7 +170,7 @@ function GlassServerControlS::sendAdminData(%cl) {
     if(isObject(%client = findClientByBL_ID(%id))) {
       %name = %client.name;
     } else {
-      %name = "BLID_" @ %id;
+      %name = "BL_ID: " @ %id;
     }
 
     %buffer = %buffer @ %name TAB %id TAB "A\n";
@@ -190,7 +190,7 @@ function GlassServerControlS::removeAdmin(%blid, %auto) {
   if(isObject(%client = findClientByBL_ID(%blid))) {
     %name = %client.name;
   } else {
-    %name = "BLID_" @ %blid;
+    %name = "\c1BL_ID: " @ %blid @ "\c2";
   }
 
   %type = %auto ? "Auto" : "Manual";

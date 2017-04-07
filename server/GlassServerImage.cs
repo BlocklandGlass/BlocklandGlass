@@ -1,7 +1,7 @@
 package GlassLoadingScreen {
   function gameConnection::startLoad(%this) {
     if($LoadingScreen::Enabled)
-      commandToClient(%this, 'Glass_setLoadingBackground', $LoadingScreen::Url, $LoadingScreen::FileType, $LoadingScreen::CRC, $LoadingScreen::Playerlist);
+      commandToClient(%this, 'Glass_setLoadingBackground', $LoadingScreen::Url, $LoadingScreen::FileType, $LoadingScreen::CRC, $LoadingScreen::PlayerList);
 
     parent::startLoad(%this);
   }
@@ -11,7 +11,8 @@ package GlassLoadingScreen {
     $LoadingScreen::Url = "";
     $LoadingScreen::FileType = "";
   	$LoadingScreen::CRC = "";
-    $LoadingScreen::Playerlist = true;
+    $LoadingScreen::PlayerList = true;
+
     parent::destroyServer();
   }
 };
@@ -30,5 +31,5 @@ function registerLoadingScreen(%url, %fileType, %crc, %hidePlayerList) {
 	$LoadingScreen::Url = %url;
 	$LoadingScreen::FileType = %fileType;
 	$LoadingScreen::CRC = %crc;
-  $LoadingScreen::Playerlist = !%hidePlayerList;
+  $LoadingScreen::PlayerList = !%hidePlayerList;
 }
