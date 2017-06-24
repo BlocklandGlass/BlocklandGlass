@@ -334,6 +334,11 @@ function GlassNotification::onAdd(%this, %a, %b) {
   }
 }
 
+function GlassNotification::updateText(%this) {
+  %this.swatch.text.setText((%this.darkMode ? "<color:eeeeee>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text);
+  %this.ticksRemaining = mCeil(%this.time/GlassNotificationManager.tickRate);
+}
+
 function GlassNotificationMouse::onMouseEnter(%this) {
   %swatch = %this.swatch;
   %swatch.notification.isHovering = true;

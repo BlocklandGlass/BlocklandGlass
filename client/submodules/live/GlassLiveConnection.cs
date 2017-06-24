@@ -229,21 +229,29 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       if(GlassSettings.get("Live::MessageNotification") && !GlassOverlayGui.isAwake()) {
 
-		if(GlassSettings.get("Live::ReminderIcon"))
-		  GlassMessageReminder.setVisible(true);
+  		if(GlassSettings.get("Live::ReminderIcon"))
+  		  GlassMessageReminder.setVisible(true);
 
-        if(strlen(%data.message) > 100)
-          %data.message = getsubstr(%data.message, 0, 100) @ "...";
+          if(strlen(%data.message) > 100)
+            %data.message = getsubstr(%data.message, 0, 100) @ "...";
 
-        new ScriptObject(GlassNotification) {
-          title = %sender;
-          text = %data.message;
-          image = %user.icon;
+          if(isObject(%user.dmNotification) && %user.dmNotification.action !$= "dismiss") {
+            %user.dmCount++;
+            %no = %user.dmNotification;
+            %no.text = "<font:verdana bold:13>" @ %user.dmCount @ "<font:verdana:13> new messages.";
+            %no.updateText();
+          } else {
+            %user.dmCount = 1;
+            %user.dmNotification = new ScriptObject(GlassNotification) {
+              title = %sender;
+              text = "\"" @ %data.message @ "\"";
+              image = %user.icon;
 
-          sticky = false;
-          callback = "GlassOverlay::open();";
-        };
-      }
+              sticky = false;
+              callback = "GlassOverlay::open();";
+            };
+          }
+        }
 
       GlassAudio::play("userMsgReceived", GlassSettings.get("Volume::DirectMessage"));
 
