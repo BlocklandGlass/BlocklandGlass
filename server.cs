@@ -10,30 +10,31 @@ if($Pref::PreLoadScriptLauncherVersion < 1) {
 exec("./core.cs");
 
 function Glass::execServer() {
-	echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
-	exec("./support/Support_TCPClient.cs");
-	exec("./support/Support_Markdown.cs");
-	exec("./support/Support_SemVer.cs");
-	exec("./support/jettison.cs");
+  echo(" ===  Blockland Glass v" @ Glass.version @ " preparing for startup.  ===");
+  exec("./support/Support_TCPClient.cs");
+  exec("./support/Support_Markdown.cs");
+  exec("./support/Support_SemVer.cs");
+  exec("./support/jettison.cs");
+  
+  echo(" ===              Executing Important Stuff             ===");
+  exec("./common/GlassResourceManager.cs");
+  
+  exec("./server/GlassAuth.cs");
+  exec("./server/GlassServerControl.cs");
+  exec("./server/GlassClientSupport.cs");
+  exec("./server/GlassServerImage.cs");
+  exec("./server/GlassServerGraphs.cs");
+  
+  echo(" ===                 Loading Resources                  ===");
+  
+  //GlassResourceManager::execResource("Support_Preferences", "server");
+  GlassResourceManager::execResource("Support_Updater", "server");
+  GlassResourceManager::loadPreferences("server");
 
-	echo(" ===              Executing Important Stuff             ===");
-	exec("./common/GlassResourceManager.cs");
-
-	exec("./server/GlassAuth.cs");
-	exec("./server/GlassServerControl.cs");
-	exec("./server/GlassClientSupport.cs");
-	exec("./server/GlassServerImage.cs");
-	exec("./server/GlassServerGraphs.cs");
-
-	echo(" ===                 Loading Resources                  ===");
-
-	GlassResourceManager::execResource("Support_Preferences", "server");
-	GlassResourceManager::execResource("Support_Updater", "server");
-
-	GlassAuthS::init();
+  GlassAuthS::init();
   GlassServerGraphing::init();
 
-	Glass.serverLoaded = true;
+  Glass.serverLoaded = true;
 }
 
 function Glass::serverCleanup() {

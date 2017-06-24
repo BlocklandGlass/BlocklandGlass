@@ -252,7 +252,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %download.dlButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = mfloor((595/2)-125) SPC 10;
+    position = "118 10";
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
@@ -265,7 +265,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %download.commentButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = mfloor((595/2)+5) SPC 10;
+    position = "248 10";
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
@@ -275,6 +275,17 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
     mColor = "131 195 243 255";
   };
+   
+  %download.shareButton = new GuiBitmapButtonCtrl() {
+    profile = "GlassBlockButtonWhiteProfile";
+    position = "378 10";
+    extent = "120 35";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+
+    text = "Share";
+    mColor = "231 76 60 255";
+  };
+  %download.shareButton.command = "GMM_AddonPage.shareClick(" @ nameToID(%download.shareButton) @ ", " @ %obj.aid @ ");";
 
   %download.progress = new GuiProgressCtrl() {
     profile = "GlassProgressProfile";
@@ -306,6 +317,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   %download.progress.text.centerY();
 
   //%download.add(%download.text);
+  %download.add(%download.shareButton);
   %download.add(%download.dlButton);
   %download.add(%download.commentButton);
   //%download.dlButton.placeBelow(%download.text);
@@ -1201,3 +1213,10 @@ function GMM_AddonPage::commentSubmitted(%this, %res) {
     glassMessageBoxOk("Comment Failed", "Your comment could not be posted.");
   }
 }
+
+function GMM_AddonPage::shareClick(%this, %btn, %aid) {
+  %btn.setText("Link Copied");
+  setClipboard("glass://aid-" @ %aid);
+  %btn.schedule(1000, "setText", "Share");
+}
+  

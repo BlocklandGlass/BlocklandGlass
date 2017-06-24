@@ -142,6 +142,8 @@ function GlassLive::inviteClick(%addr, %blid, %isPassworded) {
       $ServerInfo::Address = %addr;
       canvas.pushDialog(JoinServerPassGui);
     } else {
+	  if(isObject(serverConnection))
+		disconnectedCleanup();
       connectToServer(%addr, "", 1, 1);
       canvas.pushDialog(connectingGui);
     }
@@ -842,6 +844,7 @@ function GlassLive::createMessageReminder() {
 	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
   };
   NewChatHUD.add(GlassMessageReminder);
+  GlassMessageReminder.setVisible(false);
   GlassLive::positionMessageReminder();
 }
 
@@ -1994,6 +1997,8 @@ function GlassLive::joinFriendServer(%blid) {
     $ServerInfo::Address = %server;
     canvas.pushDialog(JoinServerPassGui);
 	} else {
+	if(isObject(serverConnection))
+	  disconnectedCleanup();
     connectToServer(%server, "", "1", "1");
     canvas.pushDialog(connectingGui);
     Connecting_Text.setValue("Connecting to " @ %server @ "...<br>");
@@ -3934,6 +3939,8 @@ package GlassLivePackage {
       if(!GlassLive.invitePass) {
         canvas.pushDialog(connectingGui);
         Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
+		if(isObject(serverConnection))
+		  disconnectedCleanup();
         connectToServer(%addr, "", 1, 1);
       } else {
         $ServerInfo::Address = %addr;
