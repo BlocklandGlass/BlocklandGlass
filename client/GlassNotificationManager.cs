@@ -135,6 +135,11 @@ function GlassNotificationManager::tick(%this) {
             }
             %newDisp++;
           }
+
+          if(GameModeGui.isAwake() || CustomGameGui.isAwake() || ServerSettingsGui.isAwake()) {
+            continue;
+          }
+
           %note.action = "enter";
           %note.swatch.position = getWord(getRes(), 0) SPC getWord(getRes(), 1)-%offset;
         }
