@@ -75,6 +75,8 @@ function GlassUpdaterSupport::interact(%obj, %right) {
       %text = "<just:center>No change-log available!";
     }
 
+    %text = strReplace(%text, "<color:ffffff>", "<color:000000>");
+
     GlassDownloadGui_Text.setText("<just:center><font:verdana bold:20>" @ %obj.queueObj.name @ "<just:left><font:verdana:12><br><br>" @ %text);
     GlassDownloadGui_Text.setVisible(true);
     GlassDownloadGui_Text.getGroup().scrollToTop();
@@ -182,6 +184,15 @@ package GlassUpdaterSupportPackage {
     }
 
     parent::setProgressBar(%this, %value);
+  }
+
+  function UpdaterDownloadTCP::onDone(%this, %error) {
+    if(!GlassSettings.get("MM::UseDefault")) {
+      %queueObj = updater.fileDownloader.currentDownload;
+      GlassUpdaterSupport::updateProgressBar(%queueObj, 1);
+    }
+
+    parent::onDone(%this, %error);
   }
 
   function doSupportUpdaterInstallNotify() {
