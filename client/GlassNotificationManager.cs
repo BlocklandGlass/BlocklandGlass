@@ -71,6 +71,7 @@ function GlassNotificationManager::tick(%this) {
     %action[%note.action]++;
     switch$(%note.action) {
       case "waiting":
+        //nothing
 
       case "enter":
         %swatch.position = vectorSub(%swatch.position, "10 0");
@@ -128,6 +129,12 @@ function GlassNotificationManager::tick(%this) {
             %note.action = "dismiss";
           }
         } else if(%note.action $= "waiting") {
+          if(GlassSettings.get("Notifications::Limit") > 0) {
+            if(GlassSettings.get("Notifications::Limit") <= (%action["displaying"]+%newDisp)) {
+              continue; //too many notifications!
+            }
+            %newDisp++;
+          }
           %note.action = "enter";
           %note.swatch.position = getWord(getRes(), 0) SPC getWord(getRes(), 1)-%offset;
         }

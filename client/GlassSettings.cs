@@ -65,6 +65,7 @@ function GlassSettings::init() {
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
+  GlassSettings.registerSetting("Notifications::Limit", "0", "", "Notification Limit (0 = none)", "Notifications", "shorttext", "", "Maximum number of visible notifications.");
   // Experimental
   GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Default Windows", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
 
@@ -87,6 +88,8 @@ function GlassSettings::init() {
           %box.setText(GlassSettings.get(%prefix @ "::" @ %setting));
         case "GuiSliderProfile":
           %box.setValue(GlassSettings.get(%prefix @ "::" @ %setting));
+        case "GlassTextEditProfile":
+          %box.setText(GlassSettings.get(%prefix @ "::" @ %setting));
       }
     }
   }
@@ -233,6 +236,28 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
       // to-do
     case "keybind":
       // to-do
+
+    case "shorttext":
+      %ctrl = new GuiTextEditCtrl("GlassSettingsGui_Prefs_" @ %suffix) {
+        profile = "GlassTextEditProfile";
+        horizSizing = "right";
+        vertSizing = "center";
+        position = "28 3";
+        extent = "30 20";
+        minExtent = "8 2";
+        enabled = "1";
+        visible = "1";
+        clipToParent = "1";
+        command = %command;
+        groupNum = "-1";
+      };
+
+      %label = new GuiTextCtrl() {
+        vertSizing = "center";
+        text = %displayName;
+        position = "70 3";
+      };
+
     default:
       error("Non-existent setting type.");
       return;
