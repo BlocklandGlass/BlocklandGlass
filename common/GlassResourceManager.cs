@@ -104,7 +104,7 @@ package GlassResourceManager {
 
     // Version check
     %version = updater.addons.getObjectByName("Support_Preferences").version;
-    if(semanticVersionCompare(%version, "1.2.0") == 2) {
+    if(%version !$= "" && semanticVersionCompare(%version, "2.0.0") == 2) {
       //outdated
       schedule(50, 0, glassMessageBoxOk, "Bad Preferences", "It appears that you have a (very) old version of Support_Preferences installed. Please accept any updaters given by the updater or manually re-download it!<br><br><font:verdana bold:13>Failure to update Support_Preferences will lead to Glass Server Preferences problems.", "updater.checkForUpdates();");
     }
