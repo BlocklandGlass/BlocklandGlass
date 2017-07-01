@@ -21,6 +21,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
   GlassSettings.registerSetting("Live::FriendsWindow_Ext", "230 380");
   GlassSettings.registerSetting("Servers::Favorites", "");
+  GlassSettings.registerSetting("Server::UseBLG", true);
 
   // Volume
   GlassSettings.registerSetting("Volume::RoomChat", 0.8, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
@@ -405,7 +406,7 @@ function GlassSettings::loadData(%this) {
 function GlassSettings::saveData(%this) {
   if(!Glass.settingsLoaded)
     return;
-    
+
   %fo = new FileObject();
   %fo.openForWrite("config/client/glass.conf");
   %fo2 = new FileObject();

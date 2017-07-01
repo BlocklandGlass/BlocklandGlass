@@ -77,6 +77,7 @@ package GlassCompatibilityPackage {
         text = "Use BLG";
         groupNum = "-1";
         buttonType = "ToggleButton";
+        command = "Glass::useBLG();";
       };
 
       %this.add(%label);
