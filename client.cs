@@ -125,6 +125,14 @@ function Glass::execClient() {
 
   %bind = GlassSettings.get("Live::Keybind");
   GlobalActionMap.bind(getField(%bind, 0), getField(%bind, 1), "GlassLive_keybind");
+
+  $ServerSettingsGui::UseBLG = GlassSettings.get("Server::UseBLG");
+  Glass::useBLG();
+}
+
+function Glass::useBLG() {
+  GlassSettings.update("Server::UseBLG", $ServerSettingsGui::UseBLG);
+  $AddOn__System_BlocklandGlass = ($ServerSettingsGui::UseBLG ? 1 : -1);
 }
 
 function clientCmdGlassHandshake(%ver) {

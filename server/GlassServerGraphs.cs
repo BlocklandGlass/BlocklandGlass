@@ -70,68 +70,6 @@ function GlassCollection::getFile(%this) {
   return "config/server/glass/collections/" @ strlwr(%this.name) @ ".dat";
 }
 
-function GlassCollection::onAdd(%this) {
-
-  if(%this.loaded)
-    return;
-  else
-    %this.loaded = true;
-
-  return; //no load
-
-  %this.saveData();
-}
-
-function GlassCollection::saveData(%this) {
-  return;
-  if(!%this.loaded)
-    return;
-
-  if(isObject(%this.fo)) {
-    %this.fo.close();
-    %this.fo.delete();
-  }
-
-  %fo = new FileObject();
-  %fo.openForWrite(%this.getFile());
-
-  %line = "";
-  for(%j = 0; %j < %this.indexCt; %j++) {
-    if(%j > 0) {
-      %line = %line @ ",";
-    }
-
-    %line = %line @ %this.index[%j];
-  }
-  %fo.writeLine(%line);
-
-  for(%i = 0; %i < %this.dataCt; %i++) {
-    %time = %this.data[%i, "time"];
-
-    //throw out old data
-    if(%time !$= "") {
-      if(strTimeCompare(getDateTime(), %time) > GlassServerGraphs.history) {
-        continue;
-      }
-    }
-
-    %line = "";
-    for(%j = 0; %j < %this.indexCt; %j++) {
-      if(%j > 0) {
-        %line = %line @ ",";
-      }
-
-      %line = %line @ expandEscape(%this.data[%i, %this.index[%j]]);
-    }
-    %fo.writeLine(%line);
-  }
-
-  %fo.close();
-  %fo.delete();
-
-  echo("Saved collection " @ %this.name);
-}
-
 function GlassCollection::recordData(%this, %value, %time) {
   if(%time $= "") {
     %time = getDateTime();
@@ -144,20 +82,8 @@ function GlassCollection::recordData(%this, %value, %time) {
   %this.data[%this.dataCt, "time"] = %time;
   %this.data[%this.dataCt, "value"] = %value;
 
-  if(GlassServerGraphs.keepOpen) {
-    if(!isObject(%this.fo)) {
-      %fo = new FileObject();
-      %fo.openForAppend(%this.getFile());
-      %this.fo = %fo;
-    }
-
-    %this.fo.writeLine(%time @ "," @ %value);
-  }
-
   %this.dataCt++;
 
-  //transmit
-  echo("Transmitting new data");
   for(%i = 0; %i < %this.listeners.getCount(); %i++) {
     %cl = %this.listeners.getObject(%i);
     commandToClient(%cl, 'GlassGraphData', %this.id, %time, %value, true);
@@ -189,15 +115,6 @@ function GlassServerGraphs::loadDefault(%this) {
 
 function GlassServerGraphs::defaultTick(%this) {
   cancel(%this.sch);
-
-  if(!$Server::Dedicated) {
-   // if(!isObject(ServerConnection)) {
-   //   for(%i = 0; GlassServerGraphs.getCount(); %i++) {
-   //     GlassServerGraphs.getObject(%i).saveData();
-   //   }
-   //   return;
-   // }
-  }
 
   %this.getCollection("bricks").recordData(getBrickcount());
   %this.getCollection("players").recordData(ClientGroup.getCount());
@@ -356,13 +273,6 @@ function strTimeCompare(%datetime1, %datetime2) {
 }
 
 package GlassServerGraphs {
-  function onExit() {
-    for(%i = 0; GlassServerGraphs.getCount(); %i++) {
-      GlassServerGraphs.getObject(%i).saveData();
-    }
-    parent::onExit();
-  }
-
   function GameConnection::autoAdminCheck(%this) {
     %ret = parent::autoAdminCheck(%this);
 

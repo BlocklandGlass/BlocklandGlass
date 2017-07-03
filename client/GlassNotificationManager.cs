@@ -71,6 +71,7 @@ function GlassNotificationManager::tick(%this) {
     %action[%note.action]++;
     switch$(%note.action) {
       case "waiting":
+        //nothing
 
       case "enter":
         %swatch.position = vectorSub(%swatch.position, "10 0");
@@ -128,6 +129,17 @@ function GlassNotificationManager::tick(%this) {
             %note.action = "dismiss";
           }
         } else if(%note.action $= "waiting") {
+          if(GlassSettings.get("Notifications::Limit") > 0) {
+            if(GlassSettings.get("Notifications::Limit") <= (%action["displaying"]+%newDisp)) {
+              continue; //too many notifications!
+            }
+            %newDisp++;
+          }
+
+          if(GameModeGui.isAwake() || CustomGameGui.isAwake() || ServerSettingsGui.isAwake()) {
+            continue;
+          }
+
           %note.action = "enter";
           %note.swatch.position = getWord(getRes(), 0) SPC getWord(getRes(), 1)-%offset;
         }
@@ -332,6 +344,11 @@ function GlassNotification::onAdd(%this, %a, %b) {
   if(!isEventPending(GlassNotificationManager.sch)) {
     GlassNotificationManager.schedule(1, tick);
   }
+}
+
+function GlassNotification::updateText(%this) {
+  %this.swatch.text.setText((%this.darkMode ? "<color:eeeeee>" : "") @ "<font:verdana bold:15><just:left>" @ %this.title @ "<br><font:verdana:13>" @ %this.text);
+  %this.ticksRemaining = mCeil(%this.time/GlassNotificationManager.tickRate);
 }
 
 function GlassNotificationMouse::onMouseEnter(%this) {

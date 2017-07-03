@@ -8,9 +8,9 @@
 // called "Support_TCPClient.cs". Do not modify this code.
 //----------------------------------------------------------------------
 
-if($TCPClient::version >= 14 && !$Debug)
+if($TCPClient::version >= 14.1 && !$Debug)
 	return;
-$TCPClient::version = 14;
+$TCPClient::version = 14.1;
 
 if(!isObject($TCPClient::DefaultOptions))
 {
@@ -207,8 +207,16 @@ function TCPClient::onConnectFailed(%this)
 function TCPClient::onDisconnect(%this)
 {
 	%this.isConnected = false;
+	// [change by jincux]: start redirect schedule after disconnect
 	if(!%this.redirect)
 		%this.onDone($TCPClient::Error::none);
+	else
+		if(%this.redirected)
+			%this.retrySchedule = %this.scheduleNoQuota(
+				%this.options.redirectWait, "connect",
+				%this.server @ ":" @ %this.port);
+		else
+			%this.onDone($TCPClient::Error::invalidRedirect);
 }
 
 //Called when the connection has completed. To use with your mod, replace "TCPClient" with your class name.
@@ -305,7 +313,9 @@ function TCPClient::onLine(%this, %line)
 					case "Location":
 						if(%this.redirect)
 						{
-							%this.disconnect();
+							// [change by jincux]: disconnecting now will leave a buffer which
+							// will precede the HTTP/1.x line of the next connection
+							//%this.disconnect();
 
 							if(strPos(%value, "/") == 0)
 							{
@@ -321,9 +331,6 @@ function TCPClient::onLine(%this, %line)
 							}
 
 							%this.redirected = true;
-							%this.retrySchedule = %this.scheduleNoQuota(
-								%this.options.redirectWait, "connect",
-								%this.server @ ":" @ %this.port);
 
 							return;
 						}

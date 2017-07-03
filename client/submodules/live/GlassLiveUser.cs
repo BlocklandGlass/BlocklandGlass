@@ -1,4 +1,7 @@
 function GlassLiveUser::create(%username, %blid) {
+  %username = strreplace(%username, "<", "");
+  %username = strreplace(%username, ">", "");
+  
   if(isObject(GlassLiveUsers.user[%blid])) {
     GlassLiveUsers.user[%blid].username = getASCIIString(%username);
     return GlassLiveUsers.user[%blid];

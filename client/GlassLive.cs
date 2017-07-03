@@ -841,7 +841,9 @@ function GlassLive::createMessageReminder() {
 
   new GuiBitmapCtrl(GlassMessageReminder) {
     extent = "16 16";
-	bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/icon/glassLogo";
+    mColor = "255 255 255 220";
+    mMultiply = "0";
   };
   NewChatHUD.add(GlassMessageReminder);
   GlassMessageReminder.setVisible(false);
@@ -852,7 +854,7 @@ function GlassLive::positionMessageReminder() {
   if(!isObject(GlassMessageReminder))
 	GlassLive::createMessageReminder();
 
-	GlassMessageReminder.resize(getWord(getRes(), 0) - 16, getWord(getRes(), 1) - 16, 16, 16);
+	GlassMessageReminder.resize(getWord(getRes(), 0) - 26, getWord(getRes(), 1) - 26, 16, 16);
 }
 
 //====
@@ -3181,14 +3183,14 @@ function GlassModeratorGui::submit(%this) {
   %blid = GlassModeratorWindow.blid;
   %type = GlassModeratorWindow_Selection.getValue();
   %duration = GlassModeratorWindow_Duration.getValue();
-  
+
   if(%type !$= "Mute" && %type !$= "Kick") {
     %reason = GlassModeratorWindow_Reason.getValue();
     if(%reason $= "") {
       glassMessageBoxOk("Error", "You must enter a reason.");
       return;
     }
-    
+
     if((%duration == 0 || %duration $= "") && %duration != -1) {
       glassMessageBoxOk("Error", "You must enter a valid duration.");
       return;

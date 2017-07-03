@@ -246,7 +246,7 @@ package GlassServerControlS {
 
     // Version check
     %version = updater.addons.getObjectByName("Support_Preferences").version;
-    if(semanticVersionCompare(%version, "1.2.0") == 2) {
+    if(%version !$= "" && semanticVersionCompare(%version, "2.0.0") == 2) {
       //outdated
       schedule(50, 0, messageClient, %client, '', "\c2This server is running an outdated version of Support_Preferences");
       schedule(51, 0, messageClient, %client, '', "\c2Please update to version 1.2.0 or higher, or expect server preferences to not work.");
