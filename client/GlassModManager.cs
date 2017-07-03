@@ -612,5 +612,15 @@ package GlassModManager {
       GlassModManagerGui.loadContext("search");
     }
   }
+
+  function newChatHud_AddLine(%line) {
+      for(%i = 0; %i < getWordCount(%line); %i++) {
+      %word = getWord(%line, %i);
+      if(strpos(%word, "glass://") != -1) {
+        %line = setWord(%line, %i, "<sPush><a:" @ %word @ ">" @ %word @ "</a><sPop>");
+      }
+    }
+   return parent::newChatHud_AddLine(%line);
+  }
 };
 activatePackage(GlassModManager);
