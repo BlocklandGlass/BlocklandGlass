@@ -618,6 +618,8 @@ package GlassModManager {
       %word = getWord(%line, %i);
       if(strpos(%word, "glass://") != -1) {
         %line = setWord(%line, %i, "<sPush><a:" @ %word @ ">" @ %word @ "</a><sPop>");
+      } else if(getsubStr(%word, 0, 14) $= "<bitmap:glass-") {
+      	%line = setWord(%line, %i, "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/" @ getSubStr(%word, 14, strLen(%word)));
       }
     }
    return parent::newChatHud_AddLine(%line);
