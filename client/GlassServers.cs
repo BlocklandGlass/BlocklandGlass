@@ -602,7 +602,7 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
 
   if(%color $= "")
 	%color = 1;
-  
+
   switch(%color)
   {
 	case 0:
@@ -626,7 +626,7 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
 	case 9:
 	  %color = "\c9";
   }
-	
+
   for(%i = 0; %i < NPL_List.rowCount(); %i++) {
 	%row = NPL_List.getRowText(%i);
 	%id = NPL_List.getRowId(%i);
@@ -646,6 +646,78 @@ function Glass::replaceJSWindow() {
   }
 }
 Glass::replaceJSWindow();
+
+//====================================
+// Promoted Events
+//====================================
+
+function GlassServers::setEvent(%addr, %title, %desc) {
+  $GlassServers::Event::Addr = %addr;
+  $GlassServers::Event::Title = %title;
+  $GlassServers::Event::Desc = %desc;
+
+  //loop current ServerSO's to put current info
+
+  //should package Master Server Query/ServerSO results to update gui
+}
+
+function GlassServers::toggleEvent(%tog) {
+  if(%tog !$= "" && JS_window._showingEvent+0 == %tog+0) return;
+
+  %scale = 0 SPC (JS_window._showingEvent ? -1 : 1)*60;
+
+  %sort = "gamemode bricks ping players pass servername ded";
+  for(%i = 0; %i < getWordCount(%sort); %i++) {
+    %label = getWord(%sort, %i);
+    %obj = "JS_sort_" @ %label;
+    %obj.position = vectorAdd(%obj.position, %scale);
+  }
+
+  JS_scroll.extent = vectorSub(JS_scroll.extent, %scale);
+  JS_scroll.position = vectorAdd(JS_scroll.position, %scale);
+
+  if(!JS_window._showingEvent) {
+    %swatch = new GuiSwatchCtrl(GlassEventSwatch) {
+      profile = "GuiDefaultProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 34";
+      extent = getWord(JS_window.extent, 0)-20 SPC getWord(%scale, 1)-10;
+      clipToParent = "1";
+      color = "255 255 255 255";
+    };
+
+    %swatch.text = new GuiMLTextCtrl(GlassEventText) {
+      profile = "GuiMLTextProfile";
+      horizSizing = "right";
+      vertSizing = "bottom";
+      position = "10 10";
+      extent = vectorSub(%swatch.extent, "20 20");
+      text = "";
+    };
+
+    JS_window.add(%swatch);
+    %swatch.add(%swatch.text);
+  } else {
+    GlassEventSwatch.deleteAll();
+    GlassEventSwatch.delete();
+  }
+
+  JS_window._showingEvent = !JS_window._showingEvent;
+}
+
+function GlassServers::updateEventDisplay(%title, %playercount, %maxPlayers, %gamemode) {
+  %text = "<font:verdana bold:15><color:333333>";
+
+  %text = %text @ %title;
+  %text = %text @ "<just:right><font:verdana:15><color:888888>" @ %playercount @ "<color:333333>/" @ %maxPlayers @ " Players";
+
+  %text = %text @ "<br><just:left>";
+
+  %text = %text @ "<color:edb869>[Public Event]";
+  %text = %text @ "<just:right><color:888888>" @ %gamemode;
+  GlassEventText.setText(%text);
+}
 
 package GlassServers {
   function interfaceFunction() {

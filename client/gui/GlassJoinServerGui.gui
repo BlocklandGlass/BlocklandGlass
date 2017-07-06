@@ -20,7 +20,7 @@ new GuiWindowCtrl(GlassJS_window) {
    minSize = "50 50";
    closeCommand = "JoinServerGui.ClickBack();";
 
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_gamemode) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -43,7 +43,7 @@ new GuiWindowCtrl(GlassJS_window) {
       mColor = "255 255 255 255";
          wrap = "0";
    };
-   new GuiScrollCtrl() {
+   new GuiScrollCtrl(JS_scroll) {
       profile = "GuiScrollProfile";
       horizSizing = "width";
       vertSizing = "height";
@@ -68,7 +68,7 @@ new GuiWindowCtrl(GlassJS_window) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "1 1";
-         extent = "606 8";
+         extent = "606 1536";
          minExtent = "8 8";
          enabled = "1";
          visible = "1";
@@ -78,11 +78,11 @@ new GuiWindowCtrl(GlassJS_window) {
          columns = "0 34 65 340 385 404 415 445 510 9000 9000";
          fitParentWidth = "1";
          clipColumnText = "1";
-            noDuplicates = "false";
             sortedNumerical = "1";
+            noDuplicates = "false";
+            sortedAsc = "1";
             helpTag = "0";
-            sortedAsc = "0";
-            sortedBy = "4";
+            sortedBy = "3";
       };
       new GuiBitmapCtrl(JSG_demoBanner) {
          profile = "GuiDefaultProfile";
@@ -147,7 +147,7 @@ new GuiWindowCtrl(GlassJS_window) {
       mColor = "255 255 255 255";
          wrap = "0";
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_bricks) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -255,7 +255,7 @@ new GuiWindowCtrl(GlassJS_window) {
             helpTag = "0";
       };
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_ping) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -306,7 +306,7 @@ new GuiWindowCtrl(GlassJS_window) {
       profile = "GuiDefaultProfile";
       horizSizing = "center";
       vertSizing = "top";
-      position = "94 436";
+      position = "105 436";
       extent = "430 41";
       minExtent = "8 2";
       enabled = "1";
@@ -406,7 +406,7 @@ new GuiWindowCtrl(GlassJS_window) {
             wrap = "0";
       };
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_players) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -429,7 +429,7 @@ new GuiWindowCtrl(GlassJS_window) {
       mColor = "255 255 255 255";
          wrap = "0";
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_pass) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -452,7 +452,7 @@ new GuiWindowCtrl(GlassJS_window) {
       mColor = "255 255 255 255";
          wrap = "0";
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_servername) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
@@ -475,7 +475,7 @@ new GuiWindowCtrl(GlassJS_window) {
       mColor = "255 255 255 255";
          wrap = "0";
    };
-   new GuiBitmapButtonCtrl() {
+   new GuiBitmapButtonCtrl(JS_sort_ded) {
       profile = "BlockButtonProfile";
       horizSizing = "right";
       vertSizing = "bottom";
