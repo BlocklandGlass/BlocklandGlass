@@ -351,7 +351,7 @@ function GlassGraphBar::tick(%this) {
       %ratio = 1;
     }
 
-    %height = mRound(%ratio * (%this.animEndHeight - %this.animStartHeight)) + %this.animStartHeight;
+    %height = round(%ratio * (%this.animEndHeight - %this.animStartHeight)) + %this.animStartHeight;
 
     %this.extent = GlassGraphs.barWidth SPC %height;
     %this.position = getWord(%this.position, 0) SPC (GlassGraphs.height-%height);
