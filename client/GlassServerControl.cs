@@ -837,18 +837,6 @@ function GlassServerControlGui_AddUserBLID::onWake(%this) {
   GlassServerControlGui_InputRank.add("Admin", 2);
 }
 
-function GlassPrefGroup::cleanup() {
-  GlassServerControlC.enabled = false;
-  GlassServerControlC.requested = false;
-  GlassServerControlC::setTab(2);
-  GlassPrefGroup.downloaded = 0;
-  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
-    %cat = GlassPrefGroup.getObject(%i);
-    %cat.deleteAll();
-  }
-  GlassPrefGroup.deleteAll();
-}
-
 function GlassServerControlGui_CatMouseCtrl::onMouseDown(%this) {
   GlassServerControlC::openCategory(%this.category);
 }

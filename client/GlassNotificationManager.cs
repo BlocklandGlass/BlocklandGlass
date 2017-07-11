@@ -466,7 +466,7 @@ package GlassNotifications {
 
   function doScreenshot(%bool) {
     for(%i = 0; %i < GlassNotificationManager.getCount(); %i++) {
-      GlassNotificationManager.getObject(%i).setVisible(!%bool);
+      GlassNotificationManager.getObject(%i).swatch.setVisible(!%bool);
     }
 
     parent::doScreenshot(%bool);

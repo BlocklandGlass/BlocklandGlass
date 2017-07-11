@@ -25,15 +25,20 @@ if(!isObject(GlassPrefGroup)) {
 }
 
 function GlassPrefGroup::cleanup() {
-	for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
-		%cat = GlassPrefGroup.getObject(%i);
-		%cat.deleteAll();
-		%cat.delete();
-	}
+  GlassServerControlC.enabled = false;
+  GlassServerControlC.requested = false;
+  GlassServerControlC::setTab(2);
+  GlassPrefGroup.downloaded = 0;
+  for(%i = 0; %i < GlassPrefGroup.getCount(); %i++) {
+    %cat = GlassPrefGroup.getObject(%i);
+    %cat.deleteAll();
+  }
+  GlassPrefGroup.deleteAll();
 	GlassPrefGroup.delete();
+
 	new ScriptGroup(GlassPrefGroup);
-	GlassServerControlC::setTab(2);
 	$ServerInfo::PrefVersion = "";
+	GlassServerControlC::renderAll();
 }
 
 function GlassPrefGroup::doneLoading() {
