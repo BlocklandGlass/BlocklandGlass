@@ -336,7 +336,6 @@ function GlassGraphBar::tick(%this) {
   if(%this.elapsed >= %this.animTime) {
     %this.elapsed = %this.animTime;
     %this.color = "84 217 140 255";
-    echo("anim done");
   }
 
   if(%this.elapsed > 0) {
