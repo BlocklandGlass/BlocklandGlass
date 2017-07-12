@@ -39,6 +39,9 @@ function GlassPrefGroup::cleanup() {
 	new ScriptGroup(GlassPrefGroup);
 	$ServerInfo::PrefVersion = "";
 	GlassServerControlC::renderAll();
+
+	GlassServerControlGui_PrefText.setText("<just:center><font:verdana:15><color:666666>No Preferences!");
+	GlassServerControlGui_PrefText.setVisible(true);
 }
 
 function GlassPrefGroup::doneLoading() {
@@ -186,6 +189,10 @@ function clientCmdReceivePref(%catId, %id, %title, %subcategory, %type, %params,
 	};
 	GlassPrefGroup.cat[%catId].add(%obj);
 	GlassPrefGroup.pref[%id] = %obj;
+
+	if(GlassServerControlGui_PrefText.visible) {
+		GlassServerControlGui_PrefText.setVisible(false);
+	}
 
 	if(%last) {
 		GlassPrefGroup.cat[%catId].downloadedPrefs = true;

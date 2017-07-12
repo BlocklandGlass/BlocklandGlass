@@ -53,6 +53,8 @@ function GlassServerControlC::openCategory(%category) {
   }
 
   %obj = "GlassServerControlGui_Pref" @ %category.id;
+  if(!isObject(%obj)) return;
+
   %obj.setVisible(true);
 
   %category.sw.selected = true;
