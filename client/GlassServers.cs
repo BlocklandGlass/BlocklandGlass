@@ -756,7 +756,6 @@ package GlassServers {
     //this method doesn't seem to do anything?
     %text = NPL_list.rowCount() @ "/" @ $ServerInfo::MaxPlayers @ " Players - " @ $ServerInfo::Name;
     NPL_Window.setText(%text);
-    echo(%text);
 
     GlassLoadingGui.UpdateWindowTitle();
   }
