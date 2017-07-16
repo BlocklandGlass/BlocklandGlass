@@ -1115,7 +1115,7 @@ new GuiControl(GlassServerControlGui) {
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "241 196 15 255";
+            mColor = "84 217 140 255";
          };
          new GuiScrollCtrl() {
             profile = "GlassScrollProfile";
@@ -1140,8 +1140,8 @@ new GuiControl(GlassServerControlGui) {
                horizSizing = "right";
                vertSizing = "bottom";
                position = "1 1";
-               extent = "160 16";
-               minExtent = "8 2";
+               extent = "170 16";
+               minExtent = "170 16";
                enabled = "1";
                visible = "1";
                clipToParent = "1";
@@ -1173,8 +1173,7 @@ new GuiControl(GlassServerControlGui) {
             alignTop = "0";
             overflowImage = "0";
             mKeepCached = "0";
-            mColor = "231 76 88 200";
-               color = "255 200 200 255";
+            mColor = "231 76 60 255";
          };
          new GuiBitmapButtonCtrl(GlassServerControlGui_SuperAdminBtn) {
             profile = "GlassBlockButtonProfile";
@@ -1241,6 +1240,31 @@ new GuiControl(GlassServerControlGui) {
             overflowImage = "0";
             mKeepCached = "0";
             mColor = "231 76 60 255";
+         };
+         new GuiSwatchCtrl() {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "289 10";
+            extent = "2 345";
+            minExtent = "2 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            color = "255 255 255 128";
+         };
+         new GuiTextCtrl() {
+            profile = "GlassBlockButtonProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "190 47";
+            extent = "95 18";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            text = "Manual";
+            maxLength = "255";
          };
          new GuiWindowCtrl(GlassServerControlGui_AddUserBLID) {
             profile = "GlassWindowProfile";
@@ -1356,31 +1380,6 @@ new GuiControl(GlassServerControlGui) {
                   buttonType = "PushButton";
                };
             };
-         };
-         new GuiSwatchCtrl() {
-            profile = "GuiDefaultProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "289 10";
-            extent = "2 345";
-            minExtent = "2 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            color = "255 255 255 128";
-         };
-         new GuiTextCtrl() {
-            profile = "GlassBlockButtonProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "190 47";
-            extent = "95 18";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            text = "Manual";
-            maxLength = "255";
          };
       };
       new GuiSwatchCtrl(GlassServerControlGui_Pane3) {
