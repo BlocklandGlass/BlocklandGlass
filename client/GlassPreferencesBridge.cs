@@ -131,7 +131,6 @@ function clientCmdUpdatePref(%id, %value) {
 
 		// TODO something about updating the gui
 		if(isobject(%pso.swatch.ctrl)) {
-			echo(%pso.type);
 			if(%pso.type !$= "list" && %pso.type !$= "dropdown") {
 				%pso.swatch.ctrl.setValue(expandEscape(%pso.value));
 			} else {
