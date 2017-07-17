@@ -183,12 +183,18 @@ function GlassGraphMouse::onMouseMove(%this, %a, %pos) {
 
   %labelPos = vectorAdd(%pos, %this.position);
 
+  if(isObject(%this.label) && %this.label.getCount() == 0)
+    %this.label.delete();
+
   if(!isObject(%this.label)) {
     %this.label = GlassGraphs.createLabel();
     GlassServerControlGui_Graph.getGroup().add(%this.label);
   } else {
     %this.label.visible = true;
   }
+
+  if(!isObject(%bar))
+    %this.label.visible = false;
 
   %this.label.position = %labelPos;
 

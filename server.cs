@@ -15,18 +15,18 @@ function Glass::execServer() {
   exec("./support/Support_Markdown.cs");
   exec("./support/Support_SemVer.cs");
   exec("./support/jettison.cs");
-  
+
   echo(" ===              Executing Important Stuff             ===");
   exec("./common/GlassResourceManager.cs");
-  
+
   exec("./server/GlassAuth.cs");
   exec("./server/GlassServerControl.cs");
   exec("./server/GlassClientSupport.cs");
   exec("./server/GlassServerImage.cs");
   exec("./server/GlassServerGraphs.cs");
-  
+
   echo(" ===                 Loading Resources                  ===");
-  
+
   //GlassResourceManager::execResource("Support_Preferences", "server");
   GlassResourceManager::execResource("Support_Updater", "server");
   GlassResourceManager::loadPreferences("server");
@@ -39,7 +39,8 @@ function Glass::execServer() {
 
 function Glass::serverCleanup() {
 	GlassAuthS.delete();
-	GlassClientSupport.delete();
+  if(isObject(GlassClientSupport))
+	 GlassClientSupport.delete();
 
 	$Glass::Hook::RequiredClient = false;
 	$Glass::Modules::Prefs = false;
