@@ -50,16 +50,19 @@ function GlassPrefGroup::cleanup() {
 function GlassPrefGroup::doneLoading() {
 	GlassServerControlC.loaded = true;
 	GlassServerControlC::renderAll();
+	GlassServerControlGui_NotifyPlayers.setValue(true);
 }
 
 function GlassPrefGroup::sendChangedPrefs(%this) {
+	%show = GlassServerControlGui_NotifyPlayers.getValue();
+
 	for(%i = 0; %i < %this.getCount(); %i++) {
 		%cate = %this.getObject(%i);
 		for(%j = 0; %j < %cate.getCount(); %j++) {
 			%pref = %cate.getObject(%j);
 			if(%pref.localValue !$= %pref.value) {
 				%up = true;
-				commandToServer('UpdatePref', %pref.id, %pref.localValue);
+				commandToServer('UpdatePref', %pref.id, %pref.localValue, %show);
 				%pref.value = %pref.localValue;
 			}
 		}
