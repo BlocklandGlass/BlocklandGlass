@@ -828,6 +828,7 @@ function GlassServerControlGui::onWake(%this) {
 
     GlassServerControlGui_PlayerList.addRow(%i, %name TAB %blid TAB %admin);
   }
+  commandToServer('openPrefs');
 }
 
 function GlassServerControlGui_AddUserBLID::onWake(%this) {
