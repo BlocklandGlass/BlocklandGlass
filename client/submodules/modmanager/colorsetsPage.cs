@@ -427,18 +427,3 @@ function GMM_ColorsetsPage::defaultColorset(%this) {
   %this.renderColorsetList();
   %this.renderPreview(GlassSettings.get("MM::Colorset"));
 }
-
-//filecopy doesnt like zips
-function filecopy_hack(%source, %destination) {
-  %fo_source = new FileObject();
-  %fo_dest = new FileObject();
-  %fo_source.openForRead(%source);
-  %fo_dest.openForWrite(%destination);
-  while(!%fo_source.isEOF()) {
-    %fo_dest.writeLine(%fo_source.readLine());
-  }
-  %fo_source.close();
-  %fo_dest.close();
-  %fo_source.delete();
-  %fo_dest.delete();
-}
