@@ -593,7 +593,7 @@ function GlassServerBackgroundTCP::onDone(%this, %error) {
 
 PlayerListProfile.fontColors[6] = "244 67 54 255"; // Red
 PlayerListProfile.fontColors[7] = "0 90 0 255"; // Green
-PlayerListProfile.fontColors[8] = "245 127 23 255"; // Orange
+PlayerListProfile.fontColors[8] = "230 81 0 255"; // Orange
 PlayerListProfile.fontColors[9] = "0 121 107 255"; // Teal
 
 function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
