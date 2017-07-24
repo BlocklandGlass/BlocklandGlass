@@ -245,6 +245,7 @@ package GlassServerControlS {
     }
 
     // Version check
+    // This shouldn't happen post 4.1.0
     %version = updater.addons.getObjectByName("Support_Preferences").version;
     if(%version !$= "" && semanticVersionCompare(%version, "2.0.0") == 2) {
       //outdated

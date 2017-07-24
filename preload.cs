@@ -28,10 +28,6 @@ package GlassPreload {
       return;
     }
 
-    //glass executes specially, disable default execution
-    $AddOn__System_BlocklandGlass = -1;
-    export("$AddOn__*", "config/server/ADD_ON_LIST.cs");
-
     if(!$Server::Dedicated) {
       //obey settings
       if($ServerSettingsGui::UseBLG) {

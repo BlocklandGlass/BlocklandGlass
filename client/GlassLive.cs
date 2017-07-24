@@ -2214,7 +2214,7 @@ function GlassLive::afkMouseLoop(%this) {
 //================================================================
 
 function GlassLive::openDirectMessage(%blid, %username) {
-  if(%blid < 0 || %blid $= "" || %blid == getNumKeyId()) {
+  if(%blid $= "" || %blid == getNumKeyId()) {
     return false;
   }
 
@@ -2287,6 +2287,9 @@ function GlassLive::onMessage(%message, %username, %blid) {
   }
 
   %gui = GlassLive::openDirectMessage(%blid, %username);
+
+  if(!%gui)
+    return;
 
   GlassOverlayGui.pushToBack(%gui);
 

@@ -1,5 +1,8 @@
 ///BEGIN PRE-LOAD SCRIPT LAUNCHER///
 if(!$PreLoadScriptsRun) {
+	$Pref::PreLoadScriptLauncherInstalled = true;
+	$Pref::PreLoadScriptLauncherVersion = 2;
+
   %mask = "Add-Ons/*/preload.cs";
   for(%file = findFirstFile(%mask); %file !$= ""; %file = findNextFile(%mask))
     %fileList = setField(%fileList, getFieldCount(%fileList), %file);
@@ -15,8 +18,7 @@ if(!$PreLoadScriptsRun) {
       $AddonPreloaded__[%dirName] = true;
     }
   }
-  $PreLoadScriptsRun = true;
-  $Pref::PreLoadScriptLauncherInstalled = true;
-  $Pref::PreLoadScriptLauncherVersion = 2;
+
+	$PreLoadScriptsRun = true;
 }
 ///END PRE-LOAD SCRIPT LAUNCHER///
