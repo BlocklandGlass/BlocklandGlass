@@ -1,7 +1,7 @@
 exec("./submodules/live/GlassLiveConnection.cs");
 exec("./submodules/live/GlassLiveUser.cs");
 exec("./submodules/live/GlassLiveRoom.cs");
-exec("./submodules/live/GlassLiveGroup.cs");
+//exec("./submodules/live/GlassLiveGroup.cs");
 
 if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/GlassFriendsGui.gui");
 

@@ -246,20 +246,42 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getASCIIString(getWord(%msg, %i));
-    for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
-      %user = %this.view.userSwatch.getObject(%o);
-      %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
-      %blid = %user.text.blid;
-      if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
-        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
-        %uo = GlassLiveUser::getFromBlid(%blid);
-        if(%senderblid == getNumKeyId()) {
-          if(%uo.getStatus() $= "away") {
-            glassMessageBoxOk("Away", "The user you just mentioned is currently away.");
-          } else if(%uo.getStatus() $= "busy") {
-            glassMessageBoxOk("Busy", "The user you just mentioned is currently busy.");
+    
+    if(strPos(%word, "@") == 0) {
+      if(%word $= "@here" || %word $= "@room") {
+
+        if(%sender.isAdmin()) {
+          %hlColor = GlassLive.color_admin;
+        } else if(%sender.isMod()) {
+          %hlColor = GlassLive.color_mod;
+        } else if(%sender.isBot()) {
+          %hlColor = GlassLive.color_bot;
+        } else {
+          continue;
+        }
+
+        %mentioned = true;
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ %hlColor @ ">" @ %word @ "<spop>");
+
+      } else {
+
+        for(%o = 0; %o < %this.view.userSwatch.getCount(); %o++) {
+          %user = %this.view.userSwatch.getObject(%o);
+          %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
+          %blid = %user.text.blid;
+          if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
+            %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
+            %uo = GlassLiveUser::getFromBlid(%blid);
+            if(%senderblid == getNumKeyId()) {
+              if(%uo.getStatus() $= "away") {
+                glassMessageBoxOk("Away", "The user you just mentioned is currently away.");
+              } else if(%uo.getStatus() $= "busy") {
+                glassMessageBoxOk("Busy", "The user you just mentioned is currently busy.");
+              }
+            }
           }
         }
+
       }
     }
 

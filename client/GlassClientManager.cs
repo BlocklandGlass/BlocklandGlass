@@ -269,18 +269,20 @@ package GlassClientManager {
   }
 
   function GameConnection::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o, %p) {
-    parent::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
+    %ret = parent::onConnectionAccepted(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p);
     if(!GlassClientManager.tryLegacyNext) {
       warn("Connected Successfully using LEGACY Required Clients protocol");
     }
     GlassClientManager.connectAttempts = 0;
     GlassClientManager.tryLegacyNext = false;
+    return %ret;
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-    parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+    %ret = parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
     GlassClientManager.bypass = false;
     GlassClientManager.requestedMods = "";
+    return %ret;
   }
 
   function GlassClientGuiProgress::setValue(%this, %val) {
