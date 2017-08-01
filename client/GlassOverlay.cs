@@ -4,9 +4,17 @@
 //================================================================
 
 function GlassOverlayGui::onWake(%this) {
+  Glass::setCrashable(true);
+
   %x = getWord(getRes(), 0);
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
+  echo(getRes());
+
+  GlassBugReportIcon.position = (%x-24) SPC 8;
+  GlassBugReportButton.position = (%x-32) SPC 0;
+  GlassOverlayGui.pushToBack(GlassBugReportIcon);
+  GlassOverlayGui.pushToBack(GlassBugReportButton);
 
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
@@ -71,6 +79,10 @@ function GlassOverlayGui::onWake(%this) {
     GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));
   }
   GlassMessageReminder.setVisible(false);
+}
+
+function GlassOverlayGui::onSleep(%this) {
+  Glass::setCrashable(false);
 }
 
 function GlassLive_keybind(%down) {
@@ -253,7 +265,7 @@ function GlassOverlay::openModeration() {
   }
 
   GlassOverlayGui.pushToBack(GlassModeratorWindow);
-  
+
   GlassModeratorWindow_Selection.onSelect();
 
   GlassModeratorGui::searchPlayers();
@@ -264,6 +276,6 @@ function GlassOverlay::closeModeration() {
   GlassModeratorWindow_DurationBlocker.setVisible(false);
   GlassModeratorWindow_Reason.enabled = false;
   GlassModeratorWindow_Duration.enabled = false;
-  
+
   GlassModeratorWindow.setVisible(false);
 }

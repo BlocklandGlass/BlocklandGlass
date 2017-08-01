@@ -55,6 +55,7 @@ function Glass::execClient() {
   exec("./client/gui/GlassIconSelectorGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
+  exec("./client/gui/GlassBugReportGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
@@ -87,6 +88,7 @@ function Glass::execClient() {
   exec("./client/GlassManual.cs");
 
   exec("./client/GlassCompatibility.cs");
+  exec("./client/GlassBugReport.cs");
 
   %date = getDateTime();
   %month = getSubStr(%date, 0, 2);
@@ -210,10 +212,43 @@ function strcap(%str) {
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
 
+function Glass::writeCrashLock() {
+  Glass::setCrashable(false);
+}
+
+function Glass::detectCrash() {
+  if(isFile("config/client/blg/game.lock")) {
+    %fo = new FileObject();
+    %fo.openForRead("config/client/blg/game.lock");
+    %bool = %fo.readLine();
+    %fo.close();
+    %fo.delete();
+
+    if(%bool $= "1")
+      Glass.wasCrash = true;
+    else
+      Glass.wasCrash = false;
+  } else {
+    Glass.wasCrash = false;
+  }
+}
+
+function Glass::setCrashable(%bool) {
+    %fo = new FileObject();
+    %fo.openForWrite("config/client/blg/game.lock");
+    %fo.writeLine(%bool ? "1" : "0");
+    %fo.close();
+    %fo.delete();
+}
+
+
 if(!isObject(Glass))
 	Glass::init("client");
 
-package GlassMainMenu {
+Glass::detectCrash();
+Glass::writeCrashLock();
+
+package GlassClientPackage {
   function Canvas::setContent(%this, %content) {
     parent::setContent(%this, %content);
 
@@ -235,5 +270,18 @@ package GlassMainMenu {
       MainMenuButtonsGui.add(%mm);
     }
   }
+
+  function onExit() {
+    fileDelete("config/client/blg/game.lock");
+    parent::onExit();
+  }
+
+  function MM_AuthBar::blinkSuccess(%this) {
+    parent::blinkSuccess(%this);
+    if(Glass.wasCrash) {
+      schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
+      Glass.wasCrash = false;
+    }
+  }
 };
-activatePackage(GlassMainMenu);
+activatePackage(GlassClientPackage);

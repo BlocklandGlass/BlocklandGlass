@@ -27,6 +27,8 @@ function GlassStatistics::scanFiles() {
 	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-19);
+    if(strPos(%name, "/") > -1) continue;
+    
 		%fo = new FileObject();
 		%fo.openForRead(%file);
 

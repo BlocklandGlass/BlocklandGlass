@@ -171,6 +171,33 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
+    new GuiBitmapCtrl(GlassBugReportIcon) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "616 8";
+       extent = "16 16";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bug";
+       wrap = "0";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       keepCached = "0";
+       mColor = "255 255 255 150";
+       mMultiply = "0";
+    };
+    new GuiMouseEventCtrl(GlassBugReportButton) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "608 0";
+       extent = "32 32";
+    };
   };
 };
 //--- OBJECT WRITE END ---

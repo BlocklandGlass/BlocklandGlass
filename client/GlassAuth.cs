@@ -161,6 +161,18 @@ package GlassAuthPackage {
     parent::blinkSuccess(%this);
     GlassAuth.heartbeat();
     GlassLive.ready = true;
+
+    if(GlassAuth.blid !$= "") {
+      if(GlassAuth.blid !$= getNumKeyId()) {
+        GlassLiveConnection.doDisconnect();
+        
+        GlassAuth.ident = "";
+        GlassAuth.firstAuth = false;
+        GlassAuth.heartbeat();
+      }
+    }
+
+    GlassAuth.blid = getNumKeyId();
 	}
 
   // function MM_AuthBar::blinkFail(%this) {

@@ -275,7 +275,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
     mColor = "131 195 243 255";
   };
-   
+
   %download.shareButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
     position = "378 10";
@@ -1063,22 +1063,26 @@ function GMM_AddonPage::hideDownload(%this) {
 }
 
 function GMM_AddonPage_downloadDone(%dl, %err, %tcp) {
-  %this = GMM_AddonPage;
-  %this.schedule(500, hideDownload);
-
+  %dl.progressBar.setValue(1);
 
   setModPaths(getModPaths());
 
+  %this = GMM_AddonPage;
+  %this.schedule(750, hideDownload);
+
+  %dl.progressText.setText("Download Complete");
 
   %file = getsubstr(%tcp.savePath, 8, strlen(%tcp.savePath) - 12);
 
   if(isFile("Add-Ons/" @ %file @ "/client.cs"))
     exec("Add-Ons/" @ %file @ "/client.cs");
 
-  GMM_ColorsetsPage.container.delete();
+  if(isObject(GMM_ColorsetsPage.container))
+    GMM_ColorsetsPage.container.delete();
   GMM_ColorsetsPage.populateColorsets();
 
-  GMM_MyAddonsPage.container.delete();
+  if(isObject(GMM_MyAddonsPage.container))
+    GMM_MyAddonsPage.container.delete();
   GMM_MyAddonsPage.populateAddons();
 }
 
@@ -1219,4 +1223,3 @@ function GMM_AddonPage::shareClick(%this, %btn, %aid) {
   setClipboard("glass://aid-" @ %aid);
   %btn.schedule(1000, "setText", "Share");
 }
-  
