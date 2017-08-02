@@ -690,8 +690,16 @@ function GlassLiveConnection::onLine(%this, %line) {
 
       %group.onInvite(%inviter);
 
+    case "ping":
+      %obj = JettisonObject();
+      %obj.set("type", "string", "pong");
+      %obj.set("key", "string", %data.key);
+      %this.send(jettisonStringify("object", %obj) @ "\r\n");
+      %obj.delete();
+
+
     default:
-      if(Glass.verbose) {
+      if(Glass.debug) {
         echo("Unhandled Live Call: " @ %data.value["type"]);
       }
   }
