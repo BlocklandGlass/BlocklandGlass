@@ -9,7 +9,6 @@ function GlassOverlayGui::onWake(%this) {
   %x = getWord(getRes(), 0);
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
-  echo(getRes());
 
   GlassBugReportIcon.position = (%x-24) SPC 8;
   GlassBugReportButton.position = (%x-32) SPC 0;
