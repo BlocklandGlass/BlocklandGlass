@@ -185,7 +185,15 @@ function GlassServerControlC::renderCategory(%category) {
         %swatch = "unfinished";
 
       case "rgb":
-        %swatch = "unfinished";
+        %swatch = GlassServerControlC::createRGB();
+        %swatch.text.setText(%pref.title);
+
+        %alpha = %pref.params;
+        if(%alpha) {
+          %swatch.preview.color = %pref.value;
+        } else {
+          %swatch.preview.color = getWords(%pref.value, 0, 3) SPC 255;
+        }
 
       case "colorset":
         %swatch = "unfinished";
@@ -654,6 +662,62 @@ function GlassServerControlC::createText() {
   return %swatch;
 }
 
+function GlassServerControlC::createRGB() {
+  %swatch = new GuiSwatchCtrl() {
+     profile = "GuiDefaultProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = "1 25";
+     extent = "430 32";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     color = "100 100 100 50";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GuiTextVerdanaProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "10 7";
+    extent = "77 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "";
+    maxLength = "255";
+  };
+
+  %swatch.preview = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "408 8";
+    extent = "16 16";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "255 0 255 255";
+  };
+
+  %swatch.btn = new GuiBorderButtonCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "408 8";
+    extent = "16 16";
+    command = "GlassServerControlGui::openColorSelector(" @ %swatch.getId() @ ");";
+  };
+
+  %swatch.add(%swatch.text);
+  %swatch.add(%swatch.preview);
+  %swatch.add(%swatch.btn);
+  return %swatch;
+}
+
 function GlassServerControlC::setEnabled(%this, %enabled) {
   %this.enabled = %enabled;
 
@@ -856,6 +920,115 @@ function GlassServerControlGui_CatMouseCtrl::onMouseLeave(%this) {
     %swatch.color = %swatch.ocolor;
   else
     %swatch.color = "131 195 243 150";
+}
+
+function GlassServerControlGui::openColorSelector(%swatch) {
+  %pref = %swatch.pref;
+
+  %alpha = %pref.params $= "1";
+  GlassServerControlGui_ColorSelectA.enabled = %alpha;
+  GlassServerControlGui_ColorTextA.enabled = %alpha;
+  GlassServerControlGui_ColorTextA.getGroup().setVisible(%alpha);
+
+  GlassServerControlGui_ColorTextR.setValue(getWord(%pref.localvalue, 0));
+  GlassServerControlGui_ColorTextG.setValue(getWord(%pref.localvalue, 1));
+  GlassServerControlGui_ColorTextB.setValue(getWord(%pref.localvalue, 2));
+
+  if(%alpha)
+    GlassServerControlGui_ColorTextA.setValue(getWord(%pref.localvalue, 3));
+  else
+    GlassServerControlGui_ColorTextA.setValue(255);
+
+  GlassServerControlGui_ColorSelector.pref = %pref;
+  GlassServerControlGui_ColorSelector.alphaLocked = !%alpha;
+  GlassServerControlGui_ColorSelector.updateColor(true);
+  GlassServerControlGui_ColorSelector.setVisible(true);
+  GlassServerControlGui.pushToBack(GlassServerControlGui_ColorSelector);
+  GlassServerControlGui_ColorSelector.forceCenter();
+}
+
+function GlassServerControlGui_ColorSelector::updateColor(%this, %isText) {
+  if(%isText) {
+    %color1 = GlassServerControlGui_ColorTextR.getValue();
+    %color2 = GlassServerControlGui_ColorTextG.getValue();
+    %color3 = GlassServerControlGui_ColorTextB.getValue();
+    %color4 = GlassServerControlGui_ColorTextA.getValue();
+  } else {
+    %color1 = GlassServerControlGui_ColorSelectR.getValue();
+    %color2 = GlassServerControlGui_ColorSelectG.getValue();
+    %color3 = GlassServerControlGui_ColorSelectB.getValue();
+    %color4 = GlassServerControlGui_ColorSelectA.getValue();
+  }
+
+  for(%i = 0; %i < 4; %i++) {
+    %c = %color[%i+1];
+
+    %pos = strpos(%c, ".");
+    if(%pos != -1) {
+      %c = getSubStr(%c, 0, %pos);
+    }
+
+    if(%c+0 !$= %c || %c < 0) {
+      %c = 0;
+    } else if(%c > 255) {
+      %c = 255;
+    }
+
+    %color[%i+1] = %c;
+  }
+
+  if(%this.alphaLocked) {
+    %color4 = 255;
+  }
+
+  %color = %color1 SPC %color2 SPC %color3 SPC %color4;
+
+  GlassServerControlGui_ColorSelectR.setValue(%color1);
+  GlassServerControlGui_ColorSelectG.setValue(%color2);
+  GlassServerControlGui_ColorSelectB.setValue(%color3);
+  GlassServerControlGui_ColorSelectA.setValue(%color4);
+
+  GlassServerControlGui_ColorTextR.setValue(%color1);
+  GlassServerControlGui_ColorTextG.setValue(%color2);
+  GlassServerControlGui_ColorTextB.setValue(%color3);
+  GlassServerControlGui_ColorTextA.setValue(%color4);
+
+  GlassServerControlGui_ColorPreview.color = %color;
+}
+
+function GlassServerControlGui_ColorSelector::submitColor(%this) {
+  GlassServerControlGui_ColorSelector.setVisible(false);
+
+  %color1 = GlassServerControlGui_ColorSelectR.getValue();
+  %color2 = GlassServerControlGui_ColorSelectG.getValue();
+  %color3 = GlassServerControlGui_ColorSelectB.getValue();
+  %color4 = GlassServerControlGui_ColorSelectA.getValue();
+
+  for(%i = 0; %i < 4; %i++) {
+    %c = %color[%i+1];
+
+    %pos = strpos(%c, ".");
+    if(%pos != -1) {
+      %c = getSubStr(%c, 0, %pos);
+    }
+
+    if(%c+0 !$= %c || %c < 0) {
+      %c = 0;
+    } else if(%c > 255) {
+      %c = 255;
+    }
+
+    %color[%i+1] = %c;
+  }
+
+  if(%this.alphaLocked) {
+    %color4 = 255;
+  }
+
+  %color = %color1 SPC %color2 SPC %color3 SPC %color4;
+
+  %this.pref.localvalue = %color;
+  %this.pref.swatch.preview.color = getWords(%color, 0, 3) SPC 255;
 }
 
 function clientCmdGlassAdminListing(%data, %append) {

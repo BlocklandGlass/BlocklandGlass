@@ -422,7 +422,6 @@ function GlassLiveRoom::writeLog(%this, %msg) {
   %fo.openForAppend(%file);
 
   for(%i = 0; %i < getLineCount(%msg); %i++) {
-    echo("Line " @ %i);
     %fo.writeLine(stripMlControlChars(getLine(%msg, %i)));
   }
 
