@@ -78,7 +78,7 @@ function GlassLive::init() {
 //================================================================
 
 function GlassLive::chatColorCheck(%this) {
-  %room = GlassLiveRoom::getFromId(0);
+  %room = GlassLiveRooms::getFromId(0);
 
   %room.pushText("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
   %room.pushText("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
@@ -782,7 +782,7 @@ function GlassLive::updateLocation(%inServer) {
 //====
 
 function GlassLive::joinRoom(%id) {
-  %room = GlassLiveRoom::getFromId(%id);
+  %room = GlassLiveRooms::getFromId(%id);
 
   if(isObject(GlassLive.room[%id]))
     return;
@@ -3166,7 +3166,7 @@ function GlassModeratorGui::searchPlayers(%search) {
 function GlassModeratorGui::refreshPlayerlist() {
   GlassModeratorWindow_Playerlist.clear();
 
-  %room = GlassLiveRoom::getFromID(0);
+  %room = GlassLiveRooms::getFromId(0);
   for(%i = 0; %i < %room.getCount(); %i++) {
     %user = %room.getUser(%i);
     if(%user.blid < 0)
@@ -3453,7 +3453,7 @@ function GlassLive::createChatroomView(%id) {
 }
 
 function GlassLive::chatroomInputSend(%id) {
-  %room = GlassLiveRoom::getFromId(%id);
+  %room = GlassLiveRooms::getFromId(%id);
   if(%room == false) {
     error("Trying to send input in inactive room");
     return;

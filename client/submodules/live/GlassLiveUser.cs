@@ -165,7 +165,7 @@ function GlassLiveUser::setIcon(%this, %icon, %roomid) {
     }
 
     if(%roomid !$= "") {
-      %room = GlassLiveRoom::getFromId(%roomid);
+      %room = GlassLiveRooms::getFromId(%roomid);
       if(isObject(%room))
         %room.renderUserList();
     } else {

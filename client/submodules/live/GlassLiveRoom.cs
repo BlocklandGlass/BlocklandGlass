@@ -36,7 +36,7 @@ function GlassLiveRooms::updatePersistence() {
   GlassSettings.update("Live::Rooms", trim(%roomStr));
 }
 
-function GlassLiveRoom::getFromId(%id) {
+function GlassLiveRooms::getFromId(%id) {
   if(isObject(GlassLive.room[%id]))
     return GlassLive.room[%id];
   else
@@ -56,8 +56,11 @@ function GlassLive::onJoinRoom(%data) {
   }
 
   %room = GlassLiveRooms::create(%data.id, %data.title);
-
   %room.icon = %data.icon;
+
+  if(GlassSettings.get("Live::MessageLogging")) {
+    %room.writeLog("\n\nJoined \"" @ %data.title @ "\" at " @ getDateTime());
+  }
 
   %clients = %data.clients;
   for(%i = 0; %i < %clients.length; %i++) {
@@ -116,6 +119,8 @@ function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
 
   %this.schedule(0, delete);
   %this.deleted = true;
+
+  %this.writeLog("Left room at " @ getDateTime());
 
   GlassLiveRooms::updatePersistence();
 }
@@ -375,8 +380,9 @@ function GlassLiveRoom::pushText(%this, %msg) {
     }
   }
 
+  %timestampedMsg = %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
   if(GlassSettings.get("Live::ShowTimestamps")) {
-    %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
+    %msg = %timestampedMsg;
   }
 
   %chatroom = %this.view;
@@ -401,6 +407,27 @@ function GlassLiveRoom::pushText(%this, %msg) {
   if(%lp >= -50) {
     %chatroom.scroll.scrollToBottom();
   }
+
+  if(GlassSettings.get("Live::MessageLogging")) {
+    %this.writeLog(%timestampedMsg);
+  }
+}
+
+function GlassLiveRoom::writeLog(%this, %msg) {
+  %msg = strReplace(%msg, "<br>", "\n");
+
+  %file = "config/client/blg/chat_log/rooms/" @ %this.id @ "/" @ strReplace(getWord(getDateTime(), 0), "/", ".") @ ".txt";
+
+  %fo = new FileObject();
+  %fo.openForAppend(%file);
+
+  for(%i = 0; %i < getLineCount(%msg); %i++) {
+    echo("Line " @ %i);
+    %fo.writeLine(stripMlControlChars(getLine(%msg, %i)));
+  }
+
+  %fo.close();
+  %fo.delete();
 }
 
 function GlassLiveRoom::getOrderedUserList(%this) {

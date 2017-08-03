@@ -45,6 +45,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::ReminderIcon", true, "GlassLive::createMessageReminder", "Reminder Icon", "Live", "checkbox", "", "Display a Glass icon in the corner of your screen while playing if you have an unread message or mention.");
   GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
   GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
+  GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Live", "checkbox", "", "Log messages to config/client/BLG/chat_log/");
   // Chatroom
   GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
@@ -53,7 +54,6 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom
   // Direct Messaging
   GlassSettings.registerSetting("Live::MessageNotification", true, "", "Message Notifications", "Direct Messaging", "checkbox");
-  GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Direct Messaging", "checkbox", "", "Log DMs to config/client/BLG/chat_log/DMs");
   GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
   // Servers
   GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");

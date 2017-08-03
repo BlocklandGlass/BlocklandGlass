@@ -280,7 +280,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       GlassLive::setMessageTyping(%data.sender, %data.typing);
 
     case "roomMessage":
-      %room = GlassLiveRoom::getFromId(%data.room);
+      %room = GlassLiveRooms::getFromId(%data.room);
       if(isObject(%room)) {
         %msg = %data.msg;
         %sender = %data.sender;
@@ -295,7 +295,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       }
 
     case "roomText":
-      %room = GlassLiveRoom::getFromId(%data.id);
+      %room = GlassLiveRooms::getFromId(%data.id);
 
       if(isObject(%room)) {
         %data.text = strreplace(%data.text, "[name]", $Pref::Player::NetName);
@@ -321,7 +321,7 @@ function GlassLiveConnection::onLine(%this, %line) {
       %uo.setStatus(%data.status);
       %uo.setIcon(%data.icon);
 
-      %room = GlassLiveRoom::getFromId(%data.id);
+      %room = GlassLiveRooms::getFromId(%data.id);
       if(isObject(%room))
         %room.onUserJoin(%uo.blid);
 
@@ -329,7 +329,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         GlassChatroomWindow.openRoomBrowser();
 
     case "roomUserLeave": //other user got removed
-      %room = GlassLiveRoom::getFromId(%data.id);
+      %room = GlassLiveRooms::getFromId(%data.id);
       if(isObject(%room))
         %room.onUserLeave(%data.blid);
 
@@ -339,7 +339,7 @@ function GlassLiveConnection::onLine(%this, %line) {
     case "roomUserStatus":
       %uo = GlassLiveUser::getFromBlid(%data.blid);
       %uo.setStatus(%data.status);
-      %room = GlassLiveRoom::getFromId(%data.id);
+      %room = GlassLiveRooms::getFromId(%data.id);
       if(isObject(%room))
         %room.renderUserList();
 
@@ -358,13 +358,13 @@ function GlassLiveConnection::onLine(%this, %line) {
         //we got banned from all rooms
         glassMessageBoxOk("Banned", "You've been banned from all chatrooms for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ "<font:verdana:13>:<br><br><font:verdana bold:13>" @ %data.reason);
       } else {
-        %room = GlassLiveRoom::getFromId(%data.id);
+        %room = GlassLiveRooms::getFromId(%data.id);
         glassMessageBoxOk("Banned", "You've been banned from <font:verdana bold:13>" @ %room.name @ "<font:verdana:13> for <font:verdana bold:13>" @ secondsToTimeString(%data.duration) @ "<font:verdana:13>:<br><br><font:verdana bold:13>" @ %data.reason);
       }
 
 
     // case "roomAwake":
-      // %room = GlassLiveRoom::getFromId(%data.id);
+      // %room = GlassLiveRooms::getFromId(%data.id);
       // if(isObject(%room))
         // %room.setUserAwake(%data.user, %data.awake);
 
