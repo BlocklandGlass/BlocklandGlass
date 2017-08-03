@@ -179,6 +179,22 @@ function GlassLive::onAuthSuccess() {
   GlassLive::sendAvatarData();
   GlassLive::updateLocation();
   schedule(1000, 0, "GlassCheckModeratorButton");
+
+  %roomStr = GlassSettings.get("Live::Rooms");
+  for(%i = 0; %i < getWordCount(%roomStr); %i++) {
+    GlassLive::joinRoom(getWord(%roomStr, %i));
+  }
+
+  if(!GlassSettings.get("Live::AutoJoinRoom") && trim(GlassSettings.get("Live::Rooms")) $= "") {
+    if(!isObject($Glass::defaultRoomWindow))
+      $Glass::defaultRoomWindow = GlassLive::createChatroomWindow();
+
+    %window = $Glass::defaultRoomWindow;
+    %window.setText("Join Chatroom");
+    %window.renderTabs();
+    %window.openRoomBrowser();
+  }
+
 }
 
 function GlassLive::disconnect() {
@@ -313,6 +329,14 @@ function secondsToTimeString(%total) { // Crown
 
 function GlassChatroomWindow::addTab(%this, %tabObj) {
   if(%this.tabId[%tabObj] !$= "" && %tabObj.window.getId() == %this.getId()) {
+    //move to last position
+    for(%i = %this.tabId[%tabObj]; %i < %this.tabs; %i++) {
+      %this.tab[%i] = %this.tab[%i+1];
+      %this.tabId[%this.tab[%i]] = %i;
+    }
+    %this.tab[%this.tabs-1] = %tabObj;
+    %this.tabId[%tabObj] = %this.tabs-1;
+
     %this.renderTabs();
     %this.openTab(%this.tabId[%tabObj]);
     return;
@@ -370,7 +394,21 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
   %this.tabs--;
 
   if(!%this.tabs) {
-    %this.schedule(0, delete);
+
+    %ct = 0;
+    for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+      if(GlassOverlayGui.getObject(%i).getName() $= "GlassChatroomWindow")
+        %ct++;
+    }
+
+    if(%ct > 1) {
+      %this.schedule(0, delete);
+    } else {
+      %this.openRoomBrowser();
+      %this.renderTabs();
+      %this.setText("Chatroom List");
+    }
+
   } else {
 	if(%this.activeTabId == -1)
 		%browserOpen = 1;
@@ -3494,6 +3532,9 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
       }
     }
   }
+
+  if(!isObject(%activeTab))
+    return;
 
   if(%this.isAwake()) {
     %chatText.forceReflow();

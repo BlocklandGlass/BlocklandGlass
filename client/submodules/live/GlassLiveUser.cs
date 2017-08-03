@@ -1,7 +1,7 @@
 function GlassLiveUser::create(%username, %blid) {
   %username = strreplace(%username, "<", "");
   %username = strreplace(%username, ">", "");
-  
+
   if(isObject(GlassLiveUsers.user[%blid])) {
     GlassLiveUsers.user[%blid].username = getASCIIString(%username);
     return GlassLiveUsers.user[%blid];
@@ -172,7 +172,9 @@ function GlassLiveUser::setIcon(%this, %icon, %roomid) {
       for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
         %window = GlassOverlayGui.getObject(%i);
         if(%window.getName() $= "GlassChatroomWindow") {
-          %window.activeTab.room.renderUserList();
+          if(isObject(%window.activeTab)) {
+            %window.activeTab.room.renderUserList();
+          }
         }
       }
     }

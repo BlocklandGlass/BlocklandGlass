@@ -67,7 +67,12 @@ function GlassLiveConnection::onConnected(%this) {
   %obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
   %obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
 
-  %obj.set("autoJoinRooms", "string", GlassSettings.get("Live::AutoJoinRoom") == true);
+  if(GlassSettings.get("Live::AutoJoinRoom")) {
+    %obj.set("autoJoinRooms", "string", true);
+    GlassSettings.update("Live::AutoJoinRoom", false);
+  } else {
+    %obj.set("autoJoinRooms", "string", false);
+  }
 
   %this.send(jettisonStringify("object", %obj) @ "\r\n");
   %obj.delete();
@@ -135,7 +140,6 @@ function GlassLiveConnection::onConnectFailed(%this) {
 }
 
 function GlassLiveConnection::disconnect(%this) {
-  parent::disconnect(%this);
   %this.onDisconnect();
 }
 

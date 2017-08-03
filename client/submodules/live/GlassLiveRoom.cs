@@ -12,15 +12,28 @@ function GlassLiveRooms::create(%id, %name) {
     view = "";
   };
 
+
   if(!isObject(GlassLiveRoomGroup)) {
     new ScriptGroup(GlassLiveRoomGroup);
   }
-
   GlassLiveRoomGroup.add(%room);
+  GlassLiveRooms::updatePersistence();
 
   GlassLive.room[%id] = %room;
 
   return %room;
+}
+
+function GlassLiveRooms::updatePersistence() {
+  %roomStr = "";
+  for(%i = 0; %i < GlassLiveRoomGroup.getCount(); %i++) {
+    %obj = GlassLiveRoomGroup.getObject(%i);
+    if(%obj.deleted) continue;
+
+    %roomStr = %roomStr SPC %obj.id;
+  }
+
+  GlassSettings.update("Live::Rooms", trim(%roomStr));
 }
 
 function GlassLiveRoom::getFromId(%id) {
@@ -102,6 +115,9 @@ function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
   %this.view.delete();
 
   %this.schedule(0, delete);
+  %this.deleted = true;
+
+  GlassLiveRooms::updatePersistence();
 }
 
 function GlassLiveRoom::addUser(%this, %blid) {
@@ -246,7 +262,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %msg = stripMlControlChars(%msg);
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getASCIIString(getWord(%msg, %i));
-    
+
     if(strPos(%word, "@") == 0) {
       if(%word $= "@here" || %word $= "@room") {
 

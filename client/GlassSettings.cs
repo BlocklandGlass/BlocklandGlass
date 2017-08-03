@@ -20,6 +20,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::Keybind", "keyboard\tctrl space");
   GlassSettings.registerSetting("Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
   GlassSettings.registerSetting("Live::FriendsWindow_Ext", "230 380");
+  GlassSettings.registerSetting("Live::Rooms", "0");
   GlassSettings.registerSetting("Servers::Favorites", "");
   GlassSettings.registerSetting("Server::UseBLG", true);
 
