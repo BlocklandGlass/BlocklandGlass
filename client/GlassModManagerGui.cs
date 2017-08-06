@@ -71,11 +71,18 @@ function GlassModManagerGui::loadContext(%this, %context) {
 
     case "myaddons":
       GlassModManagerGui.openPage(GMM_MyAddonsPage);
+
+    default:
+      //none
   }
 
-  %obj.oColor = %obj.mColor;
-  %obj.mColor = "131 195 243 180";
-  %this.contextTab = %obj;
+  if(isObject(%obj)) {
+    %obj.oColor = %obj.mColor;
+    %obj.mColor = "131 195 243 180";
+    %this.contextTab = %obj;
+  } else {
+    %this.contextTab = "";
+  }
 }
 
 function GlassModManagerGui::setLoading(%this, %bool) {

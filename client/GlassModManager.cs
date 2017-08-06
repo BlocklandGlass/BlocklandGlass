@@ -14,6 +14,7 @@ function GlassModManager::init() {
   GMM_RTBAddonPage::init();
   GMM_RTBBoardsPage::init();
   GMM_RTBBoardPage::init();
+  GMM_ImportPage::init();
 
   GMM_Navigation::init();
 
