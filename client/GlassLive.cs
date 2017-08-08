@@ -238,6 +238,7 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
   GlassModeratorWindow.setVisible(false);
+  GlassLiveModeratorButton.setVisible(false);
   if(isObject(GlassFriendsGui_Blockhead))
 	GlassFriendsGui_Blockhead.setVisible(false);
 

@@ -1,7 +1,7 @@
 function GlassAudio::init() {
-  for(%volume = 0.2; %volume < 1.1; (%volume = %volume + 0.2)) {
+  for(%volume = 0.2; %volume < 1.1; %volume += 0.2) {
     %name = "GlassAudioVolume" @ strreplace(%volume, ".", "_") @ "Gui";
-    
+
     %obj = "if(!isObject(" @ %name @ ")) new AudioDescription(" @ %name @ ") {";
     %obj = %obj NL "volume = " @ %volume @ ";";
     %obj = %obj NL "isLooping = false;";
@@ -43,7 +43,7 @@ function GlassAudio::add(%name, %volumeControlled) {
         error("Unable to find AudioDescription " @ %description @ ", aborting...");
         return;
       }
-      
+
       %objname = %name @ %unique @ "Audio";
 
       %obj = "if(!isObject(" @ %objname @ ")) new AudioProfile(" @ %objname @ ") {";
@@ -64,7 +64,7 @@ function GlassAudio::add(%name, %volumeControlled) {
     %obj = %obj NL "description = \"GlassAudioVolume1Gui\";";
     %obj = %obj NL "preload = true;";
     %obj = %obj NL "};";
-    
+
     eval(%obj);
   }
 }
