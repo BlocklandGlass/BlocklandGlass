@@ -56,6 +56,7 @@ function Glass::execClient() {
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/GlassBugReportGui.gui");
+  exec("./client/gui/GlassPasswordGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();

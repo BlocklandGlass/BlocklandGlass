@@ -143,7 +143,7 @@ function GlassLive::inviteClick(%addr, %blid, %isPassworded) {
       canvas.pushDialog(JoinServerPassGui);
     } else {
 	  if(isObject(serverConnection))
-		disconnectedCleanup();
+		  disconnectedCleanup();
       connectToServer(%addr, "", 1, 1);
       canvas.pushDialog(connectingGui);
     }
