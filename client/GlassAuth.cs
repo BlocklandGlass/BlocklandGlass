@@ -77,7 +77,7 @@ function GlassAuth::checkinDefault(%this) {
   %url = "http://" @ Glass.address @ "/api/3/auth.php?";
   %url = %url @ "&action=checkin";
 
-  %url = %url @ "username=" @ urlenc($Pref::Player::NetName);
+  %url = %url @ "&username=" @ urlenc($Pref::Player::NetName);
   %url = %url @ "&blid=" @ getNumKeyId();
 
   %url = %url @ "&authType=" @ (%this.usingDAA ? "daa" : "default");
@@ -224,6 +224,10 @@ function GlassAuthTCP::onDone(%this) {
           }
 
           //GlassAuth.onAuthFailed();
+
+        default:
+          echo("Glass Server Auth: UNKNOWN RESPONSE (" @ %object.status @ ")");
+          echo(%this.buffer);
       }
 
 		} else {
