@@ -35,6 +35,7 @@ function Glass::execClient() {
   exec("./support/Support_MetaTCP.cs");
   exec("./support/Support_Markdown.cs");
   exec("./support/Support_SemVer.cs");
+  exec("./support/Support_DigestAccessAuthentication.cs");
   exec("./support/DynamicGui.cs");
 
   echo(" ===                 Loading Interface                  ===");

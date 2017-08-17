@@ -188,15 +188,9 @@ function GlassLiveConnection::onLine(%this, %line) {
           %this.doDisconnect();
           echo("Glass Live Authentication: FAILED");
           if(%data.action $= "reident") {
-            GlassAuth.ident = "";
-            GlassAuth.heartbeat();
+            GlassAuth.reauth();
           }
-
-          if(%data.timeout < 5000)
-            %data.timeout = 5000;
-
-          GlassLive.reconnect = GlassLive.schedule(%data.timeout+getRandom(0, 1000), connectToServer);
-
+          
         case "success":
           echo("Glass Live Authentication: SUCCESS");
           GlassLive.onAuthSuccess();

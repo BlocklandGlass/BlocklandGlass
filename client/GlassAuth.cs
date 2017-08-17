@@ -24,49 +24,69 @@ function GlassAuth::init() {
 function GlassAuth::heartbeat(%this) {
 	cancel(%this.heartbeat);
 
-	%this.check();
+	%this.authCheck();
 
 	return %this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
 }
 
-function GlassAuth::check(%this) {
-  %this.validateIdentity();
-
-  %this.lastName = $Pref::Player::NetName;
-  %this.lastBlid = getNumKeyId();
-
+function GlassAuth::authCheck(%this) {
+  // do we have a blockland account?
   if(getNumKeyId() $= "") {
     return;
   }
 
-  if(%this.usingDAA) {
-    %stored = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
-    if(%stored $= "") {
+  // ensure that the current auth is for the current user
+  %this.validateIdentity();
+  %this.lastName = $Pref::Player::NetName;
+  %this.lastBlid = getNumKeyId();
 
-      if(%this.daa_password !$= "") {
-        // we have a password, need info from the server
-        // prompt was already filled out
-      } else {
-        canvas.pushDialog(GlassPasswordGui);
-      }
-
+  if(%this.isAuthed) {
+    // the session is authenticated, send a request to keep alive
+    if(%this.usingDAA) {
+      %this.checkinDAA();
     } else {
-
-      // set some value
-
+      %this.checkinDefault();
     }
+
+  } else {
+
+    // we are not authenticated. send initial "ident" request
+    %this.startNewAuth();
+
   }
+}
 
-	%url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=checkin";
-	if(%this.ident !$= "") {
-		%url = %url @ "&ident=" @ urlenc(%this.ident);
-	}
+function GlassAuth::reident(%this) {
+  // end the old session, start a new
+  %this.clearIdentity();
+  %this.authCheck();
+}
 
-	%method = "GET";
-	%downloadPath = "";
-	%className = "GlassAuthTCP";
+function GlassAuth::startNewAuth(%this) {
+  %url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=ident&authType=" @ (%this.usingDAA ? "daa" : "default");
 
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %method = "GET";
+  %downloadPath = "";
+  %className = "GlassAuthTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+}
+
+function GlassAuth::checkinDefault(%this) {
+  %url = "http://" @ Glass.address @ "/api/3/auth.php?";
+  %url = %url @ "&action=checkin";
+
+  %url = %url @ "username=" @ urlenc($Pref::Player::NetName);
+  %url = %url @ "&blid=" @ getNumKeyId();
+
+  %url = %url @ "&authType=" @ (%this.usingDAA ? "daa" : "default");
+  %url = %url @ "&ident=" @ %this.ident;
+
+  %method = "GET";
+  %downloadPath = "";
+  %className = "GlassAuthTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
 }
 
 function GlassAuth::validateIdentity(%this) {
@@ -89,11 +109,16 @@ function GlassAuth::clearIdentity(%this) {
   %this.lastBlid = "";
 
   if(%this.usingDAA) {
+    if(isObject(%this.daa))
+      %this.daa.delete();
     //clear DAA values
     %this.daa_nonce        = "";
     %this.daa_opaque       = "";
     %this.daa_nonceCounter = 0 ;
-    %this.daa_password     = "";
+    %this.daa_hash         = "";
+    %this.daa              = "";
+
+    %this.isAuthed         = false;
   } else {
     %this.ident = "";
   }
@@ -104,6 +129,7 @@ function GlassAuth::clearIdentity(%this) {
 }
 
 function GlassAuth::onAuthSuccess(%this) {
+  %this.isAuthed = true;
 	if(!%this.firstAuth) {
     if(GlassSettings.get("Live::StartupConnect"))
       GlassLive::connectToServer();
@@ -111,24 +137,32 @@ function GlassAuth::onAuthSuccess(%this) {
     //GlassModManager::placeCall("rtb");
   	%this.firstAuth = true;
 	}
+
+  if(GlassAuth.usingDAA) {
+    if(GlassPasswordGui.isAwake()) {
+      canvas.popDialog(GlassPasswordGui);
+      glassMessageBoxOk("Success", "DAA authentication sucessful!");
+    }
+  }
 }
 
 function GlassAuth::onAuthEnd(%this) {
-  GlassLive::disconnect();
-  %this.clearIdentity();
+  //GlassLive::disconnect();
+  //%this.clearIdentity();
 }
 
 function GlassAuth::onAuthFailed(%this) {
-  GlassLive::disconnect();
-  %this.clearIdentity();
+  //GlassLive::disconnect();
+  //%this.clearIdentity();
 }
 
 function GlassAuthTCP::onDone(%this) {
 	Glass::debug(%this.buffer);
+  echo(%this.buffer);
 
 	if(!%error) {
 		%jsonError = jettisonParse(collapseEscape(%this.buffer));
-		if(%jsonError || $JSON::Type $= "object") {
+		if(!%jsonError && $JSON::Type $= "object") {
 		   %object = $JSON::Value;
 
       switch$(%object.status) {
@@ -138,14 +172,11 @@ function GlassAuthTCP::onDone(%this) {
     			GlassAuth.ident      = %object.ident;
           GlassAuth.hasAccount = %object.hasGlassAccount;
 
-          if(GlassAuth.usingDAA) {
-            if(GlassPasswordGui.isAwake()) {
-              canvas.popDialog(GlassPasswordGui);
-              glassMessageBoxOk("Success", "DAA authentication sucessful!");
-            }
-          }
-
 					GlassAuth.onAuthSuccess();
+
+          if(GlassAuth.usingDAA) {
+            GlassAuth.ident = GlassAuth.daa_opaque;
+          }
 
           //there is an unverified web account associated with this blid
           if(%object.action $= "verify") {
@@ -154,17 +185,20 @@ function GlassAuthTCP::onDone(%this) {
 
         case "daa-keys":
           //we requested the need DAA info, prepare response
+          if(!GlassAuth.usingDAA) {
+            echo("Glass Auth: Got DAA ident, but not using DAA!");
+            return;
+          }
 
-          //something something hash the password
+          GlassAuth.startDAA(%object.daa);
 
-          %store = "";
-          GlassSettings.cachePut("Auth::DAA_" @ getNumKeyId(), %store);
 
         case "daa-required":
           //we tried to authenticate normally, but DAA is forced
           echo("Glass Auth: DAA-Required");
+
           GlassAuth.usingDAA = true;
-          GlassAuth::requireDAAPrompt(%object.role);
+          GlassAuth.startDAA(%object.daa, true, %object.role);
 
         case "daa-hash-missing":
           glassMessageBoxOk("Hash Missing", "Because DAA is a new system, there is no hash generated for your password yet. As your password is not kept in plain text, you need to simply log out and log back in to the Blockland Glass website and we'll do all the hard work.<br><br>When you're done, press OK and we'll try again.", "GlassAuth::retryDAA();");
@@ -183,11 +217,17 @@ function GlassAuthTCP::onDone(%this) {
           if(%object.message !$= "")
             echo(%object.message);
 
-          GlassAuth.onAuthFailed();
+          if(GlassAuth.usingDAA) {
+            // we're using DAA and got a failure. clear the password
+            GlassSettings.cachePut("Auth::DAA_" @ getNumKeyId(), "");
+            glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
+          }
+
+          //GlassAuth.onAuthFailed();
       }
 
 		} else {
-			warn("Glass Auth: INVALID RESPONSE");
+			echo("Glass Auth: INVALID RESPONSE");
 		}
 
 
@@ -204,6 +244,77 @@ function GlassAuthTCP::handleText(%this, %line) {
 // Digest Access Authentication
 //================================================================
 
+function GlassAuth::startDAA(%this, %data, %required, %role) {
+  // we're starting a new exchange
+  if(isObject(%this.daa))
+    %this.daa.delete();
+
+  %this.daa = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha1");
+  %this.daa.method = "POST";
+
+  // take in info from server, make appropriate hashes
+  %res = GlassAuth.daa.retrieveIdent(%data);
+  if(%res) {
+    // we need these to reauthenticate future requests
+    GlassAuth.daa_nonce  = %data.nonce;
+    GlassAuth.daa_opaque = %data.opaque;
+
+    // get the username/realm/password hash for this user
+    %hash = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
+    if(%hash $= "") {
+      // there is no stored hash!
+
+      if(%required) {
+        // the server has required the client to use DAA, we'll give them a prompt
+        GlassAuth::requireDAAPrompt(%role);
+      } else {
+        // open the password prompt gui
+        canvas.pushDialog(GlassPasswordGui);
+      }
+
+    } else {
+
+      // load in the password
+      GlassAuth.daa.restorePassword(%hash);
+      GlassAuth.sendDigestIdent();
+    }
+
+  } else {
+    echo("Glass Auth: Invalid DAA-KEYS response!");
+  }
+}
+
+function GlassAuth::sendDigestIdent(%this) {
+  // create the object we want the server to receive
+  %authData = JettisonObject();
+  %authData.set("blid", "string", getNumKeyId());
+  %authData.set("name", "string", $Pref::Player::NetName);
+
+  // encapsulate and stringify
+  %obj = %this.daa.digest(%authData);
+  %json = jettisonStringify("object", %obj);
+
+  %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?action=daa-ident&ident=" @ %this.daa_opaque, %json, "", "GlassAuthTCP");
+
+  %authData.delete();
+  %obj.delete();
+}
+
+function GlassAuth::checkinDAA(%this) {
+  %authData = JettisonObject();
+  %authData.set("blid", "string", getNumKeyId());
+  %authData.set("name", "string", $Pref::Player::NetName);
+
+  // encapsulate and stringify
+  %obj = %this.daa.digest(%authData);
+  %json = jettisonStringify("object", %obj);
+
+  %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?action=daa-checkin&ident=" @ %this.daa_opaque, %json, "", "GlassAuthTCP");
+
+  %authData.delete();
+  %obj.delete();
+}
+
 function GlassAuth::updateDAASetting() {
   %force = GlassSettings.get("Auth::uesDAA");
 
@@ -219,9 +330,9 @@ function GlassAuth::updateDAASetting() {
 
 function GlassAuth::requireDAAPrompt(%role) {
   if(strlen(%role) > 0) {
-    messageBoxOk("DAA Required", "For the role of <font:verdana bold:12>" @ %role @ "<font:verdana:12>, using Digest Access Authentication is required to ensure Blockland Glass security.", "canvas.pushDialog(GlassPasswordGui);");
+    glassMessageBoxOk("DAA Required", "For the role of <font:verdana bold:12>" @ %role @ "<font:verdana:12>, using Digest Access Authentication is required to ensure Blockland Glass security.", "canvas.pushDialog(GlassPasswordGui);");
   } else {
-    messageBoxOk("DAA Required", "You have opted to require Digest Access Authentication to use Blockland Glass. Press OK to insert your password.", "canvas.pushDialog(GlassPasswordGui);");
+    glassMessageBoxOk("DAA Required", "You have opted to require Digest Access Authentication to use Blockland Glass. Press OK to insert your password.", "canvas.pushDialog(GlassPasswordGui);");
   }
 }
 
@@ -233,7 +344,12 @@ function GlassAuth::submitPassword() {
   }
 
   //DAA
-  GlassAuth.daa_password = %password;
+  GlassAuth.usingDAA     = true;
+
+  %hash = GlassAuth.daa.setPassword(%password);
+  GlassSettings.cachePut("Auth::DAA_" @ getNumKeyId(), %hash);
+  GlassAuth.daa_hash = %hash;
+  GlassAuth.sendDigestIdent();
 }
 
 function GlassPasswordGui::onWake(%this) {
