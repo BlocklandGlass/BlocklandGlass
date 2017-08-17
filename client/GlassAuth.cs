@@ -227,6 +227,7 @@ function GlassAuthTCP::onDone(%this) {
 
 		} else {
 			echo("Glass Auth: INVALID RESPONSE");
+      echo(%this.buffer);
 		}
 
 

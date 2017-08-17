@@ -69,6 +69,7 @@ function Glass::execClient() {
   exec("./common/GlassResourceManager.cs");
   exec("./common/GlassStatistics.cs");
 
+  exec("./client/GlassApi.cs");
   exec("./client/GlassAudio.cs");
 
   exec("./client/GlassDownloadInterface.cs");
@@ -106,6 +107,7 @@ function Glass::execClient() {
   GlassResourceManager::execResource("Support_Updater", "client");
   GlassResourceManager::loadPreferences("client");
 
+  GlassApi::init();
   GlassDownloadInterface::init();
   GlassAuth::init();
   GlassAudio::init();

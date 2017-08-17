@@ -133,17 +133,13 @@ function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
         %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
       }
 
-    %paramText = %paramText @ "&ident=" @ GlassAuth.ident;
-
-    %url = "http://" @ Glass.address @ "/api/3/mm.php?call=" @ %call @ "&ident=" @ GlassAuth.ident @ %paramText;
+    %parameters = "call=" @ %call @ %paramText;
 
     Glass::debug("Calling url: " @ %url);
 
-    %method = "GET";
-    %downloadPath = "";
     %className = "GlassModManagerTCP";
 
-    %tcp = connectToURL(%url, %method, %downloadPath, %className);
+    %tcp = GlassApi.request("mm", %parameters, %className, true);
     %tcp.glass_call = %call;
     %tcp.glass_params = %params;
     %tcp.glass_uniqueReturn = %uniqueReturn;
