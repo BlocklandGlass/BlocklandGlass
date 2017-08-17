@@ -10,12 +10,9 @@ function GlassStatistics::reportMods() {
 
   %str = getsubstr(%str, 1, strlen(%str)-1);
 
-  %url = "http://" @ Glass.address @ "/api/3/stats.php?ident=" @ urlenc(GlassAuth.ident) @ "&sha=" @ sha1(getComputerName()) @ "&data=" @ urlEnc(%str);
-	%method = "POST";
-	%downloadPath = "";
-	%className = "GlassStatTCP";
+  %url = "sha=" @ sha1(getComputerName()) @ "&data=" @ urlEnc(%str);
 
-	%tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp = GlassApi.request("stats", %url, "GlassStatTCP", true);
 }
 
 function GlassStatistics::scanFiles() {
@@ -28,7 +25,7 @@ function GlassStatistics::scanFiles() {
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-19);
     if(strPos(%name, "/") > -1) continue;
-    
+
 		%fo = new FileObject();
 		%fo.openForRead(%file);
 

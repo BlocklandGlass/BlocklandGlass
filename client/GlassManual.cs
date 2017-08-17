@@ -12,12 +12,7 @@ function GlassManualWindow::onWake(%this) {
 }
 
 function GlassManualWindow::downloadDocListing(%this) {
-  %url = "http://" @ Glass.address @ "/api/3/docs.php";
-  %method = "GET";
-  %downloadPath = "";
-  %className = "GlassManualTCP";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp = GlassApi.request("docs", "", "GlassManualTCP");
   %tcp.requestType = "list";
 }
 
@@ -48,14 +43,7 @@ function GlassManualWindow::scan(%this) {
 }
 
 function GlassManualWindow::downloadDoc(%this, %doc) {
-  //echo("Downloading " @ %doc);
-
-  %url = "http://" @ Glass.address @ "/api/3/docs.php?doc=" @ urlEnc(%doc);
-  %method = "GET";
-  %downloadPath = "";
-  %className = "GlassManualTCP";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp = GlassApi.request("docs", "doc=" @ urlenc(%doc), "GlassManualTCP");
   %tcp.requestType = "doc";
   %tcp.doc  = %doc;
 

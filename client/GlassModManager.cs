@@ -154,17 +154,14 @@ function GlassModManagerTCP::handleText(%this, %line) {
   %this.buffer = %this.buffer NL %line;
 }
 
-function GlassModManagerTCP::onDone(%this, %error) {
+function GlassModManagerTCP::onDone(%this, %error, %object) {
   if(!%error) {
-    %error = jettisonParse(%this.buffer);
-    if(%error) {
+    if(!%object) {
       Glass::debug(%this.buffer);
       GlassModManagerGui.openPage(GMM_ErrorPage, "jettisonError", $JSON::Error @ " : " @ $JSON::Index);
       return;
     }
-    %ret = $JSON::Value;
-
-    Glass::debug("glass server res");
+    %ret = %object;
 
     if(%ret.action $= "auth") {
       GlassAuth.ident = "";

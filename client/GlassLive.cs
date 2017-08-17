@@ -2443,38 +2443,6 @@ function GlassLive::onMessageNotification(%message, %blid, %create) {
   }
 }
 
-function GlassLive::messageImagePreview(%blid, %url, %type) {
-  %user = GlassLiveUser::getFromBlid(%blid);
-  %gui = %user.getMessageGui();
-  if(%gui == false)
-    return;
-
-  %val = %gui.chattext.getValue();
-  %msg = "<br><br><br>";
-  if(%val !$= "")
-    %val = %val @ "<br>" @ %msg;
-  else
-    %val = %msg;
-
-  %offset = getWord(%gui.chattext.extent, 1);
-
-  %gui.chattext.setValue(%val);
-  %gui.chattext.forceReflow();
-  %gui.scrollSwatch.verticalMatchChildren(0, 3);
-
-  %swat = new GuiSwatchCtrl() {
-    color = "200 220 255 255";
-    extent = "100 42";
-    position = 5 SPC (%offset+2);
-  };
-  GlassLive::loadImagePreview(%swat, %url, %type);
-
-  %gui.scrollSwatch.add(%swat);
-
-  %gui.scrollSwatch.setVisible(true);
-  // %gui.scroll.scrollToBottom();
-}
-
 function GlassLive::setMessageTyping(%blid, %typing) {
   %user = GlassLiveUser::getFromBlid(%blid);
   if(isObject(%user)) {
@@ -2490,49 +2458,6 @@ function GlassLive::setMessageTyping(%blid, %typing) {
     }
   }
 }
-
-function GlassLive::loadImagePreview(%swat, %url, %ext) {
-  %method = "GET";
-  %downloadPath = "config/client/cache/chat/" @ sha1(%url) @ "." @ %ext;
-  %className = "GlassImagePreviewTCP";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
-  %tcp.swatch = %swat;
-  %tcp.thumb = 1;
-  %tcp.dlpath = %downloadPath;
-
-  %swat.tcp = %tcp;
-}
-
-function GlassImagePreviewTCP::onDone(%this, %error) {
-  %swatch = %this.swatch;
-  %swatch.deleteAll();
-  if(%error) {
-
-  } else {
-    %bit = %gui.flare = new GuiBitmapCtrl() {
-      extent = vectorSub(%swatch.extent, "10 10");
-      position = "5 5";
-      bitmap = %this.dlpath;
-    };
-    %swatch.add(%bit);
-  }
-}
-
-function GlassLive::urlMetadata(%tcp, %error) {
-  if(!%error) {
-    %ctx = %tcp.context;
-    if(%ctx $= "dm") {
-      %blid = %tcp.blid;
-      if(%tcp.header["Content-Type"] $= "image/png" || %tcp.header["Content-Type"] $= "image/jpg" || %tcp.header["Content-Type"] $= "image/jpeg") {
-        %ext = getsubstr(%tcp.header["Content-Type"], strpos(%tcp.header["Content-Type"], "/")+1, strlen(%tcp.header["Content-Type"]));
-        GlassLive::onMessageNotification(%tcp.raw, %blid);
-        GlassLive::messageImagePreview(%blid, %tcp.raw, %ext);
-      }
-    }
-  }
-}
-
 
 //================================================================
 //= Direct Messages GUI                                          =

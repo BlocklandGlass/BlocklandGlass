@@ -475,12 +475,9 @@ function GlassServerPreview::getServerInfo(%addr) {
   %ip = getSubStr(%addr, 0, %idx);
   %port = getSubStr(%addr, %idx+1, strlen(%addr));
 
-  %url = "http://api.blocklandglass.com/api/3/serverStats.php?ip=" @ urlEnc(%ip) @ "&port=" @ urlEnc(%port);
-  %method = "GET";
-  %downloadPath = "";
-  %className = "GlassServerPreviewPlayerTCP";
+  %url = "ip=" @ urlEnc(%ip) @ "&port=" @ urlEnc(%port);
+  %tcp = GlassApi.request("serverStats", %url, "GlassServerPreviewPlayerTCP");
 
-  %tcp = connectToUrl(%url, %method, %downloadPath, %className);
 }
 
 function GlassServerPreviewPlayerTCP::handleText(%this, %text) {

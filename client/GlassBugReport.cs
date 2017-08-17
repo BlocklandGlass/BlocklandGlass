@@ -41,17 +41,12 @@ function GlassBugReportGui::submit(%this) {
   %title = urlEnc(%title);
   %body  = urlEnc(%body);
 
-  %url = "http://" @ Glass.address @ "/api/3/bugReport.php";
-  %url = %url @ "?ident=" @ urlenc(GlassAuth.ident);
-  %url = %url @ "&title=" @ %title;
+  %url =        "title="  @ %title;
   %url = %url @ "&body="  @ %body;
   %url = %url @ "&aid="   @ %aid;
 
-	%method = "GET";
-	%downloadPath = "";
 	%className = "GlassBugReportTCP";
-
-  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp = GlassApi.request("bugReport", %url, %className, true);
 
   canvas.popDialog(GlassBugReportGui); //submit before this
 }
