@@ -201,7 +201,7 @@ function GlassAuthTCP::onDone(%this) {
           GlassAuth.startDAA(%object.daa, true, %object.role);
 
         case "daa-hash-missing":
-          glassMessageBoxOk("Hash Missing", "Because DAA is a new system, there is no hash generated for your password yet. As your password is not kept in plain text, you need to simply log out and log back in to the Blockland Glass website and we'll do all the hard work.<br><br>When you're done, press OK and we'll try again.", "GlassAuth::retryDAA();");
+          glassMessageBoxOk("Hash Missing", "Because DAA is a new system, there is no hash generated for your password yet. As your password is not kept in plain text, you need to simply log out and log back in to the Blockland Glass website and we'll do all the hard work.<br><br>When you're done, press OK and we'll try again.", "GlassAuth.reident();");
 
         case "barred":
           echo("Glass Auth: BARRED");
