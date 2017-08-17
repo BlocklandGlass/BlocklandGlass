@@ -158,7 +158,6 @@ function GlassAuth::onAuthFailed(%this) {
 
 function GlassAuthTCP::onDone(%this) {
 	Glass::debug(%this.buffer);
-  echo(%this.buffer);
 
 	if(!%error) {
 		%jsonError = jettisonParse(collapseEscape(%this.buffer));
