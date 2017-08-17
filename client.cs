@@ -68,8 +68,8 @@ function Glass::execClient() {
   exec("./common/GlassDownloadManager.cs");
   exec("./common/GlassResourceManager.cs");
   exec("./common/GlassStatistics.cs");
+  exec("./common/GlassApi.cs");
 
-  exec("./client/GlassApi.cs");
   exec("./client/GlassAudio.cs");
 
   exec("./client/GlassDownloadInterface.cs");

@@ -35,6 +35,7 @@ function Glass::execServer() {
 
   echo(" ===              Executing Important Stuff             ===");
   exec("./common/GlassResourceManager.cs");
+  exec("./common/GlassApi.cs");
 
   exec("./server/GlassAuth.cs");
   exec("./server/GlassServerControl.cs");

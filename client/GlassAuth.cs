@@ -1,4 +1,5 @@
 function GlassAuth::init() {
+  // THIS NEEDS TO BE MOVED
   GlassFriendsGui_HeaderText.position = "10 19";
   GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
   GlassLive::setPowerButton(0);
@@ -194,7 +195,7 @@ function GlassAuthTCP::onDone(%this) {
 
         case "daa-required":
           //we tried to authenticate normally, but DAA is forced
-          echo("Glass Auth: DAA-Required");
+          echo("Glass Auth: daa-required");
 
           GlassAuth.usingDAA = true;
           GlassAuth.startDAA(%object.daa, true, %object.role);
