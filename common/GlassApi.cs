@@ -154,6 +154,9 @@ function GlassApiTCP::onDone(%this, %error) {
     } else {
 
       echo("Glass API: Invalid response!");
+      //for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
+      //  echo(getLine(%this.buffer, %i));
+      //}
       // TODO log?
 
     }

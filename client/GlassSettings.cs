@@ -25,7 +25,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Server::UseBLG", true);
 
   // Auth
-  GlassSettings.registerSetting("Auth::useDAA", false, "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "checkbox", "", "Forces Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
+  GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
 
   // Volume
   GlassSettings.registerSetting("Volume::RoomChat", 0.8, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
