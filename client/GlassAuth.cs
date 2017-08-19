@@ -15,17 +15,6 @@ function GlassAuth::init() {
     usingDAA = false;
 	};
 
-  switch$(GlassSettings.get("Auth::useDAA")) {
-    case "Always":
-      GlassAuth.forceDAA = 1;
-
-    case "Never":
-      GlassAuth.forceDAA = -1;
-
-    case "Default":
-      GlassAuth.forceDAA = 0;
-  }
-
   GlassAuth.clearIdentity(); //preps blank identity
 }
 
@@ -47,6 +36,9 @@ function GlassAuth::authCheck(%this) {
     return;
   }
 
+
+  %this.setUseDAA(); // loads .forceDAA from the GlassSetting
+
   // should we be using DAA?
   if(%this.forceDAA == -1) {
     %useDAA = false;
@@ -61,9 +53,9 @@ function GlassAuth::authCheck(%this) {
     if(%this.isAuthed) {
       %this.clearIdentity();
     }
-
-    %this.usingDAA = %useDAA;
   }
+
+  %this.usingDAA = %useDAA;
 
   // ensure that the current auth is for the current user
   %this.validateIdentity();
@@ -387,19 +379,8 @@ function GlassAuth::checkinDAA(%this) {
 
 function GlassAuth::updateDAASetting() {
   %this = GlassAuth;
-  %setting = GlassSettings.get("Auth::useDAA");
 
-  switch$(GlassSettings.get("Auth::useDAA")) {
-    case "Always":
-      GlassAuth.forceDAA = 1;
-
-    case "Never":
-      GlassAuth.forceDAA = -1;
-
-    case "Default":
-      GlassAuth.forceDAA = 0;
-  }
-
+  %this.setUseDAA();
 
   if(%this.forceDAA == -1) {
     %useDAA = false;
@@ -417,6 +398,21 @@ function GlassAuth::updateDAASetting() {
 
     %this.usingDAA = %useDAA;
     %this.authCheck();
+  }
+}
+
+function GlassAuth::setUseDAA(%this) {
+  %setting = GlassSettings.get("Auth::useDAA");
+
+  switch$(GlassSettings.get("Auth::useDAA")) {
+    case "Always":
+      GlassAuth.forceDAA = 1;
+
+    case "Never":
+      GlassAuth.forceDAA = -1;
+
+    case "Default":
+      GlassAuth.forceDAA = 0;
   }
 }
 

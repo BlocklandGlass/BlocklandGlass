@@ -206,6 +206,7 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
       };
 
       %label = new GuiTextCtrl() {
+        profile = "GuiTextVerdanaProfile";
         vertSizing = "center";
         text = %displayName;
         position = "95 3";
@@ -232,6 +233,7 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
       };
 
       %label = new GuiTextCtrl() {
+        profile = "GuiTextVerdanaProfile";
         vertSizing = "center";
         text = %displayName;
         position = "150 3";
@@ -257,6 +259,7 @@ function GlassSettings::registerSetting(%this, %name, %value, %callback, %displa
       };
 
       %label = new GuiTextCtrl() {
+        profile = "GuiTextVerdanaProfile";
         vertSizing = "center";
         text = %displayName;
         position = "70 3";
