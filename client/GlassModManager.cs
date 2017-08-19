@@ -519,6 +519,23 @@ function stringifyFileSize(%size, %dec) {
   return mFloatLength(%size, %dec) @ " " @ %letter @ "b";
 }
 
+//====================================
+// RTB Import
+//====================================
+
+
+function GlassModManager::checkImports(%this) {
+  // this is poorly structured
+  // and will probably be replaced in glass 5
+  GMM_ImportPage._unopened = true;
+  GlassModManager::placeCall("rtb", "", "GMM_ImportPage.handleResults");
+}
+
+
+//====================================
+// Package
+//====================================
+
 package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
@@ -617,6 +634,11 @@ package GlassModManager {
       }
     }
    return parent::newChatHud_AddLine(%line);
+  }
+
+  function GlassAuth::onAuthSuccess(%this) {
+    GlassModManager.checkImports();
+    parent::onAuthSuccess(%this);
   }
 };
 activatePackage(GlassModManager);

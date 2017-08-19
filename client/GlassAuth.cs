@@ -7,12 +7,15 @@ function GlassAuth::init() {
   GlassFriendsGui_StatusSelect.setVisible(false);
 
 	if(isObject(GlassAuth)) {
+    echo("\c2!! Delete GlassAuth !!");
 		GlassAuth.delete();
 	}
 
 	new ScriptObject(GlassAuth) {
-		heartbeatRate = 10; //minutes
-    usingDAA = false;
+    debug         = false;
+
+		heartbeatRate = 5; //minutes
+    usingDAA      = false;
 	};
 
   GlassAuth.clearIdentity(); //preps blank identity
@@ -23,11 +26,14 @@ function GlassAuth::init() {
 //================================================================
 
 function GlassAuth::heartbeat(%this) {
-	cancel(%this.heartbeat);
-
 	%this.authCheck();
 
-	return %this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
+	return %this.scheduleHeartbeat();
+}
+
+function GlassAuth::scheduleHeartbeat(%this) {
+	cancel(%this.heartbeat);
+  return %this.heartbeat = %this.schedule(%this.heartbeatRate * 60 * 1000, "heartbeat");
 }
 
 function GlassAuth::authCheck(%this) {
@@ -35,6 +41,17 @@ function GlassAuth::authCheck(%this) {
   if(getNumKeyId() $= "") {
     return;
   }
+
+  if(%this.debug)
+    echo("Glass Auth: \c2authCheck");
+
+  if(%this.authing) {
+    //make sure there's only one auth request going
+    if(%this.debug)
+      error("\c2  Auth in progress!");
+    return;
+  }
+  %this.authing = true;
 
 
   %this.setUseDAA(); // loads .forceDAA from the GlassSetting
@@ -56,6 +73,13 @@ function GlassAuth::authCheck(%this) {
   }
 
   %this.usingDAA = %useDAA;
+
+  if(%this.debug) {
+    %hash = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
+    echo("\c1  Hash    : " @ (%hash $= "" ? "" : (getSubStr(%hash, 0, 5) @ "....." @ getSubStr(%hash, strLen(%hash)-5, 5)) ));
+    echo("\c1  ForceDAA: " @ %this.forceDAA);
+    echo("\c1  usingDAA: " @ %this.usingDAA);
+  }
 
   // ensure that the current auth is for the current user
   %this.validateIdentity();
@@ -80,6 +104,8 @@ function GlassAuth::authCheck(%this) {
 
 function GlassAuth::reident(%this) {
   // end the old session, start a new
+  if(%this.authing) return;
+
   %this.clearIdentity();
   %this.authCheck();
 }
@@ -157,6 +183,7 @@ function GlassAuth::clearIdentity(%this) {
 }
 
 function GlassAuth::onAuthSuccess(%this) {
+  %this.authing  = false;
   %this.isAuthed = true;
 	if(!%this.firstAuth) {
     if(GlassSettings.get("Live::StartupConnect"))
@@ -172,16 +199,20 @@ function GlassAuth::onAuthSuccess(%this) {
       glassMessageBoxOk("Success", "DAA authentication sucessful!");
     }
   }
+
+  %this.scheduleHeartbeat();
 }
 
 function GlassAuth::onAuthEnd(%this) {
-  //GlassLive::disconnect();
-  //%this.clearIdentity();
+  GlassLive::disconnect();
+  %this.clearIdentity();
+  %this.authing = false;
 }
 
 function GlassAuth::onAuthFailed(%this) {
-  //GlassLive::disconnect();
-  //%this.clearIdentity();
+  GlassLive::disconnect();
+  %this.clearIdentity();
+  %this.authing = false;
 }
 
 function GlassAuthTCP::onDone(%this) {
@@ -195,7 +226,7 @@ function GlassAuthTCP::onDone(%this) {
       switch$(%object.status) {
         case "success":
           //successful authentication
-          echo("Glass Auth: \c1Success");
+          echo("Glass Auth: \c4SUCCESS");
     			GlassAuth.ident      = %object.ident;
           GlassAuth.hasAccount = %object.hasGlassAccount;
 
@@ -220,13 +251,14 @@ function GlassAuthTCP::onDone(%this) {
             echo("Glass Auth: \c1Got DAA ident, but not using DAA!");
             return;
           }
+          echo("Glass Auth: \c5daa-keys");
 
           GlassAuth.startDAA(%object.daa);
 
 
         case "daa-required":
           //we tried to authenticate normally, but DAA is forced
-          echo("Glass Auth: \c1daa-required");
+          echo("Glass Auth: \c5daa-required");
 
           if(GlassAuth.forceDAA == -1) {
             // DAA is set to never!
@@ -257,16 +289,16 @@ function GlassAuthTCP::onDone(%this) {
 
 
         case "barred":
-          echo("Glass Auth: \c1BARRED");
+          echo("Glass Auth: \c2BARRED");
           glassMessageBoxOk("Barred", "Sorry,<br><br>You have been barred from using online Blockland Glass services");
 
         case "error":
-          echo("Glass Auth: \c1ERROR");
+          echo("Glass Auth: \c2ERROR");
           if(%object.error !$= "")
             echo(%object.error);
 
         case "failed":
-          echo("Glass Auth: \c1FAILED");
+          echo("Glass Auth: \c2FAILED");
           if(%object.message !$= "")
             echo(%object.message);
 
@@ -279,22 +311,28 @@ function GlassAuthTCP::onDone(%this) {
           //GlassAuth.onAuthFailed();
 
         case "unauthorized":
+          echo("Glass Auth: \c5unauthorized");
           // something has gone wrong or the key expired
+          GlassAuth.authing = false;
           GlassAuth.reident();
 
         default:
-          echo("Glass Server Auth: UNKNOWN RESPONSE (" @ %object.status @ ")");
+          echo("Glass Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
           echo(%this.buffer);
       }
 
 		} else {
-			echo("Glass Auth: \c1INVALID RESPONSE");
+			echo("Glass Auth: \c2INVALID RESPONSE");
       echo(%this.buffer);
 		}
 
 
 	} else {
-		echo("Glass Auth: \c1CONNECTION ERROR " @ %error);
+		echo("Glass Auth: \c2CONNECTION ERROR " @ %error);
+    // we have to assume that this is the end of authing, as there was an error
+    // this allows us to retry
+    GlassAuth.authing = false;
+    GlassAuth.schedule(10*1000, reident);
 	}
 }
 
@@ -342,7 +380,7 @@ function GlassAuth::startDAA(%this, %data, %required, %role) {
     }
 
   } else {
-    echo("Glass Auth: \c1Invalid DAA-KEYS response!");
+    echo("Glass Auth: \c2Invalid DAA-KEYS response!");
   }
 }
 
@@ -580,19 +618,7 @@ function GlassVerifyAccountGui::updateInput() {
 package GlassAuthPackage {
 	function MM_AuthBar::blinkSuccess(%this) {
     parent::blinkSuccess(%this);
-    GlassAuth.heartbeat();
-    GlassLive.ready = true;
-
-    if(GlassAuth.blid !$= "") {
-      if(GlassAuth.blid !$= getNumKeyId()) {
-        GlassLiveConnection.doDisconnect();
-
-        GlassAuth.clearIdentity();
-        GlassAuth.heartbeat();
-      }
-    }
-
-    GlassAuth.blid = getNumKeyId();
+    GlassAuth.schedule(0, authCheck); //getNumKeyId doesn't update immediately
 	}
 
   // function MM_AuthBar::blinkFail(%this) {

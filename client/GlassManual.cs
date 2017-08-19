@@ -43,7 +43,7 @@ function GlassManualWindow::scan(%this) {
 }
 
 function GlassManualWindow::downloadDoc(%this, %doc) {
-  %tcp = GlassApi.request("docs", "doc=" @ urlenc(%doc), "GlassManualTCP");
+  %tcp = GlassApi.request("docs", "doc=" @ urlenc(%doc), "GlassManualTCP", false, true);
   %tcp.requestType = "doc";
   %tcp.doc  = %doc;
 

@@ -9,7 +9,7 @@ function GlassLive::connectToServer() {
     GlassFriendsGui_HeaderText.forceCenter();
   }
 
-  if(!GlassLive.ready) {
+  if(!GlassAuth.isAuthed) {
     glassMessageBoxOk("Wait", "You haven't fully authed yet!");
     return;
   }
@@ -190,7 +190,7 @@ function GlassLiveConnection::onLine(%this, %line) {
           if(%data.action $= "reident") {
             GlassAuth.reauth();
           }
-          
+
         case "success":
           echo("Glass Live Authentication: SUCCESS");
           GlassLive.onAuthSuccess();
@@ -726,9 +726,6 @@ package GlassLiveConnectionPackage {
     if(GlassLiveConnection.connected) {
       GlassLive::disconnect();
     }
-
-    GlassAuth.schedule(0, init);
-    GlassAuth.schedule(100, heartbeat);
   }
 };
 activatePackage(GlassLiveConnectionPackage);

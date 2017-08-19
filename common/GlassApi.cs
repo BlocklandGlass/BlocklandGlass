@@ -5,7 +5,7 @@ function GlassApi::init() {
   };
 }
 
-function GlassApi::request(%this, %api, %parameters, %className, %authorized) {
+function GlassApi::request(%this, %api, %parameters, %className, %authorized, %plaintext) {
   // we need to mimic to functionality of TCPClient
   %obj = new ScriptObject(GlassApiHandler) {
     className = %className;
@@ -17,6 +17,7 @@ function GlassApi::request(%this, %api, %parameters, %className, %authorized) {
     _api        = %api;
     _paramaters = %parameters;
     _authorized = %authorized;
+    _isJSON     = !%plaintext;
   };
 
   if(!%authorized) {
@@ -124,7 +125,9 @@ function GlassApiTCP::onDone(%this, %error) {
   if(!%error) {
 
     //handle json parsing here as almost every Glass call is JSON
-    if(!jettisonParse(%this.buffer)) {
+    // even if the call is set to not be JSON, we could still have an
+    // "unauthorized" response
+    if(strpos(%this.buffer, "{") == 0 && !jettisonParse(%this.buffer)) {
 
       %object = $JSON::Value;
 
@@ -152,16 +155,17 @@ function GlassApiTCP::onDone(%this, %error) {
       }
 
     } else {
+      if(%this._isJSON) {
+        echo("Glass API: Invalid response for \c1" @ %obj._api @ "\c0!");
 
-      echo("Glass API: Invalid response!");
-      //for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
-      //  echo(getLine(%this.buffer, %i));
-      //}
-      // TODO log?
-
+        for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
+          echo(getLine(%this.buffer, %i));
+        }
+        // TODO log?
+      }
     }
-
   }
+
 
   if(!isObject(%object))
   	if(isFunction(%obj.className, "onDone"))
@@ -199,7 +203,10 @@ function GlassApiTCP::onLine(%this, %line) {
 function GlassApiTCP::handleText(%this, %text) {
   %obj = %this.glassApiObj;
 
-  %this.buffer = %this.buffer NL %text;
+  if(%this.buffer $= "")
+    %this.buffer = %text;
+  else
+    %this.buffer = %this.buffer NL %text;
 
 	if(isFunction(%obj.className, "handleText"))
 		eval(%obj.className @ "::handleText(%obj, %text);");

@@ -27,7 +27,10 @@ function GuiControl::setMargin(%this, %a, %b, %c, %d) {
     %bottom = %b;
   }
 
-  %this.position = %top SPC %left;
+  %width  = getWord(%this.extent, 0);
+  %height = getWord(%this.extent, 1);
+  %this.resize(%top, %left, %width, %height);
+  //%this.position = %top SPC %left;
 }
 
 //resizes the object to be maximum size within the margin
@@ -58,8 +61,9 @@ function GuiControl::setMarginResize(%this, %a, %b, %c, %d) {
     %y = getWord(%this.extent, 1);
   }
 
-  %this.position = %top SPC %left;
-  %this.extent = %x SPC %y;
+  //%this.position = %top SPC %left;
+  //%this.extent = %x SPC %y;
+  %this.resize(%top, %left, %x, %y);
 }
 
 //resizes the parent to be the size of the object+margins
@@ -88,9 +92,15 @@ function GuiControl::setMarginResizeParent(%this, %a, %b, %c, %d) {
     %y = getWord(%this.getGroup().extent, 1);
   }
 
-  %this.position = %top SPC %left;
-  %this.getGroup().extent = %x SPC %y;
+  //%this.position = %top SPC %left;
+  %width  = getWord(%this.extent, 0);
+  %height = getWord(%this.extent, 1);
+  %this.resize(%top, %left, %width, %height);
 
+  %groupLeft = getWord(%this.getGroup().position, 0);
+  %groupTop  = getWord(%this.getGroup().position, 1);
+  //%this.getGroup().extent = %x SPC %y;
+  %this.group.resize(%groupLeft, %groupTop, %x, %y);
 }
 
 function GuiControl::forceCenter(%this) {
@@ -130,7 +140,7 @@ function GuiControl::verticalMatchChildren(%this, %min, %pad) {
   for(%i = 0; %i < %this.getCount(); %i++) {
     if(!%this.getObject(%i).visible)
       continue;
-      
+
     %low = getWord(vectorAdd(%this.getObject(%i).position, %this.getObject(%i).extent), 1);
     if(%low > %lowest) {
       %lowest = %low;

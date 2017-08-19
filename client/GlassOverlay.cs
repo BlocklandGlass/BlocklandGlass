@@ -124,14 +124,14 @@ function GlassOverlay::setLogo() {
 //= Mod Manager                                                  =
 //================================================================
 
-function GlassOverlay::openModManager() {
+function GlassOverlay::openModManager(%force) {
   GlassOverlay::open();
   if(GlassModManagerGui.getCount() > 0) {
     GlassOverlayGui.add(GlassModManagerGui_Window);
     GlassModManagerGui_Window.forceCenter();
     GlassModManagerGui_Window.visible = false;
   }
-  GlassModManagerGui_Window.setVisible(!GlassModManagerGui_Window.visible);
+  GlassModManagerGui_Window.setVisible(%force $= "" ? !GlassModManagerGui_Window.visible : %force);
 
   if(GlassModManagerGui.page $= "") {
     GlassModManagerGui.openPage(GMM_ActivityPage);

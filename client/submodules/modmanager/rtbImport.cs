@@ -23,6 +23,8 @@ function GMM_ImportPage::open(%this) {
   %this.body = %body;
   %container.add(%body);
 
+  %this._unopened = false;
+
   GlassModManager::placeCall("rtb", "", "GMM_ImportPage.handleResults");
   GlassModManagerGui.loadContext(false);
 
@@ -34,7 +36,7 @@ function GMM_ImportPage::close(%this) {
 }
 
 function GMM_ImportPage::handleResults(%this, %obj) {
-  if(%obj.status !$= "success") {
+  if(%obj.status !$= "success" && !%this._unopened) {
     %this.handleNonSuccess(%obj);
     return;
   }
@@ -43,8 +45,6 @@ function GMM_ImportPage::handleResults(%this, %obj) {
   %body      = %this.body;
 
   %addons    = %obj.addons;
-
-  GlassModManagerGui.pageDidLoad(%this);
 
   %this.imports = 0;
 
@@ -58,6 +58,7 @@ function GMM_ImportPage::handleResults(%this, %obj) {
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-20);
     if(strPos(%name, "/") > -1) continue;
+    if(strPos(%name, "_") == -1) continue;
     if(!isFile("Add-Ons/" @ %name @ ".zip")) continue;
 
     %fo.openForRead(%file);
@@ -73,7 +74,7 @@ function GMM_ImportPage::handleResults(%this, %obj) {
     %fo.close();
 
     if(!%id) {
-      echo("Found rtbInfo.txt but no id for " @ %name);
+      echo("\c3Found rtbInfo.txt but no id for " @ %name);
       continue;
     }
 
@@ -86,6 +87,32 @@ function GMM_ImportPage::handleResults(%this, %obj) {
     }
   }
   %fo.delete();
+
+  // super hacky but not worth it to redesign mod manager at the moment
+  if(%this._unopened) {
+    if(%this.imports > 0)
+      glassMessageBoxYesNo("RTB Imports Available", "You have " @ %this.imports @ " RTB add-ons that can be updated to a new version. Would you like to do so now?", "GlassOverlay::openModManager(true); GlassModManagerGui.openPage(GMM_ImportPage);");
+    return;
+  }
+  GlassModManagerGui.pageDidLoad(%this);
+
+  if(%this.imports > 0) {
+    %button = new GuiBitmapButtonCtrl() {
+      profile = "GlassBlockButtonWhiteProfile";
+      position = "10 10";
+      extent = "120 35";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+
+      text = "Download";
+
+      command = "GMM_ImportPage.downloadClick();";
+
+      mColor = "84 217 140 255";
+    };
+    %this.button = %button;
+    %body.add(%button);
+    %last = %button;
+  }
 
   for(%i = 0; %i < %this.imports; %i++) {
     %import = %this.import[%i];
@@ -197,6 +224,12 @@ function GMM_ImportPage::handleResults(%this, %obj) {
   %this.data = %obj;
 }
 
+function GMM_ImportPage::downloadClick(%this) {
+  %this.button.enabled = false;
+  %this.button.mColor = "150 150 150 128";
+  %this.doDownload();
+}
+
 function GMM_ImportPage::doDownload(%this) {
   %this.downloadIndex = 0;
   %this.nextDownload(true);
@@ -211,12 +244,15 @@ function GMM_ImportPage::nextDownload(%this, %first) {
   }
 
   %data = %this.import[%this.downloadIndex];
+
   %dl = GlassDownloadManager::newDownload(%data.glass_id, 1);
 
   %dl.addHandle("done",       "GMM_ImportPage_downloadDone"      );
   %dl.addHandle("progress",   "GMM_ImportPage_downloadProgress"  );
   %dl.addHandle("failed",     "GMM_ImportPage_downloadFailed"    );
   %dl.addHandle("unwritable", "GMM_ImportPage_downloadUnwritable");
+
+  %dl.startDownload();
 }
 
 function GMM_ImportPage::downloadsDone(%this) {
@@ -232,13 +268,15 @@ function GMM_ImportPage::downloadsDone(%this) {
 
 }
 
-function GMM_ImportPage_downloadProgress(%this, %float, %tcp) {
+function GMM_ImportPage_downloadProgress(%dl, %float, %tcp) {
+  %this = GMM_ImportPage;
   %swatch = %this.importSwatch[%this.downloadIndex];
   %swatch.progress.setValue(%float);
   %swatch.progresstext.setValue(mFloor(%float*100) @ " %");
 }
 
-function GMM_ImportPage_downloadDone(%this, %err, %tcp) {
+function GMM_ImportPage_downloadDone(%dl, %err, %tcp) {
+  %this = GMM_ImportPage;
   %originalPath = "Add-Ons/" @ %this.importName[%this.downloadIndex] @ ".zip";
   if(%tcp.savePath !$= %originalPath) {
     fileDelete(%originalPath);
@@ -262,12 +300,18 @@ function GMM_ImportPage_downloadDone(%this, %err, %tcp) {
 }
 
 function GMM_ImportPage_downloadFailed(%dl, %error) {
+  echo("ERROR");
+  %this = GMM_ImportPage;
+  %swatch = %this.importSwatch[%this.downloadIndex];
   %swatch.progresstext.setValue("<shadow:1:1><just:center><font:verdana:12><color:ed7669>FAILED");
 
-    GMM_ImportPage.nextDownload();
+  GMM_ImportPage.nextDownload();
 }
 
 function GMM_ImportPage_downloadUnwritable(%dl) {
+  echo("UNWRITABLE");
+  %this = GMM_ImportPage;
+  %swatch = %this.importSwatch[%this.downloadIndex];
   %swatch.progresstext.setValue("<shadow:1:1><just:center><font:verdana:12><ed7669:54d98c>PATH UNWRITABLE");
 
   GMM_ImportPage.nextDownload();
