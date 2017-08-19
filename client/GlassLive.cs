@@ -2195,11 +2195,11 @@ function GlassLive::addDlgClose() {
 function GlassLive::afkCheck(%this, %on) {
   if(%on) {
     %this.afkMouseLoop();
-    activatePackage(GlassAFKPackage);
+    %this.afkPackage = true;
     %this.afkAction();
   } else {
     cancel(%this.afkMouseLoop);
-    deactivatePackage(GlassAFKPackage);
+    %this.afkPackage = false;
     cancel(%this.afkTriggerSchedule);
   }
 }
@@ -3939,52 +3939,61 @@ package GlassLivePackage {
 };
 activatePackage(GlassLivePackage);
 
-package GlassAFKPackage {
+package GlassAFKCheckPackage {
   function NMH_Type::Send(%this) {
     parent::Send(%this);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function GlassLive::chatroomInputSend(%id) {
     parent::chatroomInputSend(%id);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function GlassLive::messageInputSend(%id) {
     parent::messageInputSend(%id);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function Canvas::popDialog(%gui, %dlg) {
     parent::popDialog(%gui, %dlg);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function Canvas::pushDialog(%gui, %dlg) {
     parent::pushDialog(%gui, %dlg);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function mouseFire(%on) {
     parent::mouseFire(%on);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function Jump(%on) {
     parent::Jump(%on);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 
   function Jet(%on) {
     parent::Jet(%on);
 
-    GlassLive.afkAction();
+    if(GlassLive.afkPackage)
+      GlassLive.afkAction();
   }
 };
+activatePackage(GlassAFKCheckPackage);
