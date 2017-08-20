@@ -1,11 +1,13 @@
 
 function GlassAuthS::init() {
 	if(isObject(GlassAuthS)) {
+    echo("\c2Glass Server Auth Re-initializing");
 		GlassAuthS.delete();
 	}
 
 	new ScriptObject(GlassAuthS) {
-    usingDAA = false; //there is no way for the server to persist this!
+    debug    = false;
+    usingDAA = false; //GlassSettings only loads client sided!
 	};
 
   GlassAuthS.clearIdentity(); //preps blank identity
@@ -20,6 +22,17 @@ function GlassAuthS::authCheck(%this) {
   if(getNumKeyId() $= "") {
     return;
   }
+
+	if(%this.debug)
+    echo("Glass Server Auth: \c2authCheck");
+
+  if(%this.authing) {
+    //make sure there's only one auth request going
+    if(%this.debug)
+      error("\c2  Auth in progress!");
+    return;
+  }
+	%this.authing = true;
 
   // ensure that the current auth is for the current user
   %this.validateIdentity();
@@ -43,6 +56,8 @@ function GlassAuthS::authCheck(%this) {
 }
 
 function GlassAuthS::reident(%this) {
+	if(%this.authing) return;
+
   // end the old session, start a new
   %this.clearIdentity();
   %this.authCheck();
@@ -131,6 +146,7 @@ function GlassAuthS::clearIdentity(%this) {
 }
 
 function GlassAuthS::onAuthSuccess(%this) {
+	%this.authing  = false;
   %this.isAuthed = true;
 	if(!%this.firstAuth) {
   	%this.firstAuth = true;
@@ -138,11 +154,13 @@ function GlassAuthS::onAuthSuccess(%this) {
 }
 
 function GlassAuthS::onAuthEnd(%this) {
-  //%this.clearIdentity();
+	%this.authing = false;
+  %this.clearIdentity();
 }
 
 function GlassAuthS::onAuthFailed(%this) {
-  //%this.clearIdentity();
+	%this.authing = false;
+  %this.clearIdentity();
 }
 
 function GlassAuthServerTCP::onDone(%this) {
@@ -156,7 +174,11 @@ function GlassAuthServerTCP::onDone(%this) {
       switch$(%object.status) {
         case "success":
           //successful authentication
-          echo("Glass Server Auth: Success");
+          if(!GlassAuthS.isAuthed)
+            echo("Glass Auth: \c4SUCCESS");
+          else
+            echo("Glass Auth: \c4RENEWED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
+
     			GlassAuthS.ident      = %object.ident;
           GlassAuthS.hasAccount = %object.hasGlassAccount;
 
@@ -169,43 +191,57 @@ function GlassAuthServerTCP::onDone(%this) {
         case "daa-keys":
           //we requested the need DAA info, prepare response
           if(!GlassAuthS.usingDAA) {
-            echo("Glass Server Auth: Got DAA ident, but not using DAA!");
+            echo("Glass Server Auth: \c2Got DAA ident, but not using DAA!");
             return;
           }
 
           GlassAuthS.startDAA(%object.daa);
 
         case "daa-hash-missing":
-          echo("Glass Server Auth: daa-hash-missing, using default auth");
+          echo("Glass Server Auth: \c2daa-hash-missing, using default auth");
           GlassAuthS.usingDAA = false;
 
         case "barred":
-          echo("Glass Server Auth: BARRED");
+          echo("Glass Server Auth: \c2BARRED");
 
         case "error":
-          echo("Glass Server Auth: ERROR");
+          echo("Glass Server Auth: \c2ERROR");
           if(%object.error !$= "")
             echo(%object.error);
 
         case "failed":
-          echo("Glass Server Auth: FAILED");
+          echo("Glass Server Auth: \c2FAILED");
           if(%object.message !$= "")
             echo(%object.message);
 
-          //GlassAuthS.onAuthFailed();
+					GlassAuthS.failedCt++;
+          GlassAuthS.onAuthFailed();
+
+				case "unauthorized":
+          if(%object.expired)
+            echo("Glass Server Auth: \c5expired");
+          else
+            echo("Glass Server Auth: \c5unauthorized");
+
+          // something has gone wrong or the key expired
+          GlassAuthS.authing = false;
+          GlassAuthS.reident();
         default:
-          echo("Glass Server Auth: UNKNOWN RESPONSE (" @ %object.status @ ")");
+          echo("Glass Server Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
           echo(%this.buffer);
       }
 
 		} else {
-			echo("Glass Server Auth: INVALID RESPONSE");
+			echo("Glass Server Auth: \c2INVALID RESPONSE");
       echo(%this.buffer);
 		}
 
 
 	} else {
-		echo("Glass Server Auth: CONNECTION ERROR " @ %error);
+		echo("Glass Server Auth: \c2CONNECTION ERROR " @ %error);
+
+    GlassAuthS.authing = false;
+    GlassAuthS.schedule(10*1000, reident);
 	}
 }
 

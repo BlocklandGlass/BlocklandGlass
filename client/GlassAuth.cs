@@ -7,7 +7,7 @@ function GlassAuth::init() {
   GlassFriendsGui_StatusSelect.setVisible(false);
 
 	if(isObject(GlassAuth)) {
-    echo("\c2!! Delete GlassAuth !!");
+    echo("\c2Glass Auth Re-initializing");
 		GlassAuth.delete();
 	}
 
@@ -76,7 +76,8 @@ function GlassAuth::authCheck(%this) {
 
   if(%this.debug) {
     %hash = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
-    echo("\c1  Hash    : " @ (%hash $= "" ? "" : (getSubStr(%hash, 0, 5) @ "....." @ getSubStr(%hash, strLen(%hash)-5, 5)) ));
+    if(%hash !$= "")
+      echo("\c1  Hash    : " @ (%hash $= "" ? "" : (getSubStr(%hash, 0, 5) @ "....." @ getSubStr(%hash, strLen(%hash)-5, 5)) ));
     echo("\c1  ForceDAA: " @ %this.forceDAA);
     echo("\c1  usingDAA: " @ %this.usingDAA);
   }
@@ -317,7 +318,7 @@ function GlassAuthTCP::onDone(%this) {
               glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
             }
           } else {
-
+            GlassAuth.reident();
           }
 
 
