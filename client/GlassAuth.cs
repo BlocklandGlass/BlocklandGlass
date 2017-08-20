@@ -226,12 +226,17 @@ function GlassAuthTCP::onDone(%this) {
       switch$(%object.status) {
         case "success":
           //successful authentication
-          echo("Glass Auth: \c4SUCCESS");
-    			GlassAuth.ident      = %object.ident;
+          if(!GlassAuth.isAuthed)
+            echo("Glass Auth: \c4SUCCESS");
+          else
+            echo("Glass Auth: \c4RENEWED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
+
           GlassAuth.hasAccount = %object.hasGlassAccount;
 
           if(GlassAuth.usingDAA) {
             GlassAuth.ident = GlassAuth.daa_opaque;
+          } else {
+            GlassAuth.ident = %object.ident;
           }
 
           //there is an unverified web account associated with this blid
@@ -302,16 +307,26 @@ function GlassAuthTCP::onDone(%this) {
           if(%object.message !$= "")
             echo(%object.message);
 
-          if(GlassAuth.usingDAA) {
-            // we're using DAA and got a failure. clear the password
-            GlassSettings.cachePut("Auth::DAA_" @ getNumKeyId(), "");
-            glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
+          GlassAuth.failedCt++;
+          GlassAuth.onAuthFailed();
+
+          if(GlassAuth.failedCt >= 3) {
+            if(GlassAuth.usingDAA) {
+              // we're using DAA and got a failure. clear the password
+              GlassSettings.cachePut("Auth::DAA_" @ getNumKeyId(), "");
+              glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
+            }
+          } else {
+
           }
 
-          //GlassAuth.onAuthFailed();
 
         case "unauthorized":
-          echo("Glass Auth: \c5unauthorized");
+          if(%object.expired)
+            echo("Glass Auth: \c5expired");
+          else
+            echo("Glass Auth: \c5unauthorized");
+
           // something has gone wrong or the key expired
           GlassAuth.authing = false;
           GlassAuth.reident();

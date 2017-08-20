@@ -49,6 +49,11 @@ function GlassLive::connectToServer() {
 }
 
 function GlassLiveConnection::onConnected(%this) {
+  if(!GlassAuth.isAuthed) {
+    %this.disconnect();
+    return;
+  }
+
   GlassLive::setPowerButton(1);
 
   GlassLive.noReconnect = false;
@@ -58,14 +63,35 @@ function GlassLiveConnection::onConnected(%this) {
   GlassLive.hideBlocked = GlassSettings.get("Live::HideBlocked");
 
   %this.connected = true;
+
   %obj = JettisonObject();
   %obj.set("type", "string", "auth");
-  %obj.set("ident", "string", GlassAuth.ident);
-  %obj.set("blid", "string", getNumKeyId());
-  %obj.set("version", "string", Glass.version);
 
-  %obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
-  %obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
+  if(GlassAuth.usingDAA && 1 == 0) {
+    %data = JettisonObject();
+
+    %data.set("ident", "string", GlassAuth.ident);
+    %data.set("blid", "string", getNumKeyId());
+    %data.set("version", "string", Glass.version);
+
+    %data.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
+    %data.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
+
+    %digest = GlassAuth.daa.digest(%data);
+
+    %obj.set("authType", "string", "daa");
+    %obj.set("digest", "object", %digest);
+  } else {
+
+    %obj.set("authType", "string", "default");
+
+    %obj.set("ident", "string", GlassAuth.ident);
+    %obj.set("blid", "string", getNumKeyId());
+    %obj.set("version", "string", Glass.version);
+
+    %obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
+    %obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
+  }
 
   if(GlassSettings.get("Live::AutoJoinRoom")) {
     %obj.set("autoJoinRooms", "string", true);
