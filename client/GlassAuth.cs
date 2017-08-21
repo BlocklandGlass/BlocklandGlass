@@ -167,7 +167,6 @@ function GlassAuth::clearIdentity(%this) {
     %this.daa_hash         = "";
     %this.daa              = "";
 
-    %this.isAuthed         = false;
   } else {
     %this.ident = "";
   }
@@ -179,6 +178,7 @@ function GlassAuth::clearIdentity(%this) {
   %this.verify_digest = "";
 
   %this.firstAuth = false;
+  %this.isAuthed  = false;
 
   cancel(GlassAuth.heartbeat);
 }
@@ -318,6 +318,8 @@ function GlassAuthTCP::onDone(%this) {
               glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
             }
           } else {
+            if(GlassAuth.debug)
+              echo("\c3Retrying...");
             GlassAuth.reident();
           }
 
