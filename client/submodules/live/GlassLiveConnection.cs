@@ -34,6 +34,9 @@ function GlassLive::connectToServer() {
   } else {
     new TCPObject(GlassLiveConnection) {
       debug = true;
+
+      timeoutThreshold = 5; //5 seconds
+      timeoutFrequency = 60; //once a minute
     };
   }
 
@@ -189,6 +192,32 @@ function GlassLiveConnection::doDisconnect(%this) {
   }
 }
 
+function GlassLiveConnection::sendKeepalivePing(%this) {
+  cancel(%this.keepaliveSchedule);
+
+    %obj = JettisonObject();
+    %obj.set("type", "string", "ping");
+    %obj.set("key", "string", "keepalive");
+    %this.send(jettisonStringify("object", %obj) @ "\r\n");
+    %obj.delete();
+
+    %this.keepaliveTimeout = %this.schedule(%this.timeoutThreshold * 1000, keepaliveFailed);
+}
+
+function GlassLiveConnection::gotKeepalivePong(%this) {
+  if(isEventPending(%this.keepaliveTimeout)) {
+    cancel(%this.keepaliveTimeout);
+  }
+
+  %this.keepaliveSchedule = %this.schedule(%this.timeoutFrequency*1000, sendKeepalivePing);
+}
+
+function GlassLiveConnection::keepaliveFailed(%this) {
+  %this.doDisconnect();
+  echo("Glass Live timed out!");
+  GlassLive::connectToServer();
+}
+
 function GlassLiveConnection::placeCall(%this, %call) {
   %obj = JettisonObject();
   %obj.set("type", "string", %call);
@@ -220,6 +249,7 @@ function GlassLiveConnection::onLine(%this, %line) {
         case "success":
           echo("Glass Live Authentication: SUCCESS");
           GlassLive.onAuthSuccess();
+          GlassLiveConnection.sendKeepalivePing();
 
         default:
           echo("\c2Glass Live received an unknown auth response: " @ %data.status);
@@ -720,6 +750,12 @@ function GlassLiveConnection::onLine(%this, %line) {
       %obj.set("key", "string", %data.key);
       %this.send(jettisonStringify("object", %obj) @ "\r\n");
       %obj.delete();
+
+    case "pong":
+      if(%data.key $= "keepalive")
+        %this.gotKeepalivePong();
+
+      %data.delete();
 
 
     default:
