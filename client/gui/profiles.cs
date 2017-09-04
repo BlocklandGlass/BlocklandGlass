@@ -215,6 +215,12 @@ if(!isObject(GlassFriendTextProfile)) new GuiControlProfile(GlassFriendTextProfi
   borderThickness = 5;
 };
 
+if(!isObject(GlassFriendTextHeaderProfile)) new GuiControlProfile(GlassFriendTextHeaderProfile : GlassFriendTextProfile) {
+  fontType = "Verdana Bold";
+  fontSize = "12";
+};
+
+
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
   fontType = "Verdana";
   fontSize = 12;

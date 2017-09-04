@@ -488,6 +488,25 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   return trim(%idList);
 }
 
+function GlassLiveRoom::userListHeader(%this, %colorCode, %headerText, %before) {
+  %userSwatch = %this.view.userswatch;
+
+  %text = new GuiTextCtrl() {
+	 profile = "GlassFriendTextHeaderProfile";
+	 text = collapseEscape("\\c" @ %colorCode) @ %headerText;
+	 extent = "45 14";
+	 position = "5 0";
+
+	 used = true;
+  };
+  
+  %userSwatch.add(%text);
+  if(%before)
+  	%text.placeBelow(%before, 5);
+
+  return %text;
+}
+
 function GlassLiveRoom::renderUserList(%this, %do) {
   cancel(%this.renderUserSch);
   if(!%do) {
@@ -504,10 +523,28 @@ function GlassLiveRoom::renderUserList(%this, %do) {
 
     if(%user.isBot()) {
       %colorCode = 5;
+
+		if(!%header["bots"]) {
+		  %last = %this.userListHeader(5, "Bots", %last);
+		  %header["bots"] = true;
+		}
+
     } else if(%user.isAdmin()) {
       %colorCode = 4;
+
+		if(!%header["admins"]) {
+		  %last = %this.userListHeader(4, "Admins", %last);
+		  %header["admins"] = true;
+		}
+
     } else if(%user.isMod()) {
       %colorCode = 3;
+
+		if(!%header["moderators"]) {
+		  %last = %this.userListHeader(3, "Moderators", %last);
+		  %header["moderators"] = true;
+		}
+
     } else if(%user.blid == getNumKeyId()) {
       %colorCode = 1;
     // } else if(%user.isBlocked()) {
@@ -517,6 +554,13 @@ function GlassLiveRoom::renderUserList(%this, %do) {
     } else {
       %colorCode = 0;
     }
+
+	 if(%colorCode == 0 || %colorCode == 2 || %colorCode == 1) {
+	   if(!%header["users"]) {
+		  %last = %this.userListHeader(0, "Users", %last);
+		  %header["users"] = true;
+	   }
+	 }
 
     %icon = %user.icon;
     if(%icon $= "")
