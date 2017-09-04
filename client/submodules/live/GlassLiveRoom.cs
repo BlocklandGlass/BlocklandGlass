@@ -494,12 +494,12 @@ function GlassLiveRoom::userListHeader(%this, %colorCode, %headerText, %before) 
   %text = new GuiTextCtrl() {
 	 profile = "GlassFriendTextHeaderProfile";
 	 text = collapseEscape("\\c" @ %colorCode) @ %headerText;
-	 extent = "45 14";
+	 extent = "110 16";
 	 position = "5 0";
 
 	 used = true;
   };
-  
+
   %userSwatch.add(%text);
   if(%before)
   	%text.placeBelow(%before, 5);
