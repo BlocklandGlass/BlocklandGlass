@@ -1,7 +1,11 @@
+exec("./common/GlassLog.cs");
+GlassLog::init();
+GlassLog::startSessionLog();
+
 exec("./common/GlassResourceManager.cs");
 GlassResourceManager::execResource("Support_Updater", "preload");
-//GlassResourceManager::execResource("Support_Preferences", "preload");
 GlassResourceManager::loadPreferences("preload");
+
 
 if(!$Server::Dedicated && !$ClientLoaded) {
   if($AddOn__System_BlocklandGlass == 1) {
