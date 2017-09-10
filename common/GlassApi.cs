@@ -134,7 +134,7 @@ function GlassApiTCP::onDone(%this, %error) {
       // the call is authorized, so we need to make sure there was no
       // unauthorization issues
       if(%obj._authorized && %object.status $= "unauthorized") {
-        echo("Glass API: Unauthorized!");
+        GlassLog::error("Glass API: Unauthorized!");
 
         GlassApi.unauthorizedCt++; // keep track of how many times we have retried this
 
@@ -156,10 +156,10 @@ function GlassApiTCP::onDone(%this, %error) {
 
     } else {
       if(%this._isJSON) {
-        echo("Glass API: Invalid response for \c1" @ %obj._api @ "\c0!");
+        GlassLog::error("Glass API: Invalid response for \c1" @ %obj._api @ "\c0!");
 
         for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
-          echo(getLine(%this.buffer, %i));
+          GlassLog::debug(getLine(%this.buffer, %i));
         }
         // TODO log?
       }

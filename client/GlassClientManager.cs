@@ -10,7 +10,6 @@ function GlassClientManager::init() {
 function GlassClientManager::scan(%this) {
   discoverFile("Add-Ons/*/glass.json");
   %pattern = "Add-ons/*/glass.json";
-	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %path = filePath(%file);
     %name = getsubstr(%path, 8, strlen(%path)-8);
@@ -20,7 +19,7 @@ function GlassClientManager::scan(%this) {
 
     %error = jettisonReadFile(%file);
     if(%error) {
-      echo("Jettison read error");
+      GlassLog::error("Jettison read error for " @ %file);
       continue;
     }
 
@@ -180,7 +179,7 @@ function GlassClientManager_DlProgress(%dl, %progress) {
 
 function GlassClientManager_DlDone(%dl, %error) {
   if(%error) {
-    echo("Error downloading client add-on");
+    GlassLog::error("Error downloading client add-on " @ %dl.filename);
   } else {
     %folder = getSubStr(%dl.filename, 0, strPos(%dl.filename, "."));
 
@@ -206,7 +205,6 @@ package GlassClientManager {
   function GameConnection::onConnectRequestRejected(%this, %reason) {
     GlassClientManager.mods = 0;
     if(getField(%reason, 0) $= "MISSING" || getField(%reason, 0) $= "MISSING_OPT") {
-      //echo(%reason);
       if(getField(%reason, 0) $= "MISSING")
         %required = true;
 
@@ -222,12 +220,12 @@ package GlassClientManager {
         %required[%id] = true;
 
         if(GlassClientManager.hasClient(%id)) {
-          echo("Has required mod " @ %id @ " (" @ %name @ ")");
+          GlassLog::debug("Has required mod " @ %id @ " (" @ %name @ ")");
         } else {
           GlassClientManager.name[%i] = %name;
           GlassClientManager.id[%i] = %id;
           %missing = %missing TAB getField(%mods, %i);
-          echo("Missing required mod " @ %id @ " (" @ %name @ ")");
+          GlassLog::log("Missing required mod " @ %id @ " (" @ %name @ ")");
         }
       }
 

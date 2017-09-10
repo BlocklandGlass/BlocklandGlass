@@ -144,8 +144,7 @@ function clientCmdUpdatePref(%id, %value) {
 }
 
 function clientCmdhasPrefSystem(%version, %permission) {
-	if(Glass.dev)
-		echo("Server has pref system! (" @ %version @")");
+	GlassLog::debug("Server has pref system! (" @ %version @")");
 
 	$ServerInfo::PrefVersion = %version;
 

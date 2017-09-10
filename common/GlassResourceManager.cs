@@ -8,16 +8,13 @@ function GlassResourceManager::execResource(%resource, %context) {
   //if there's a zip, check for a version.json
   //if it's just a folder, we're going to assume they know what they're doing
   if(getFileLength("Add-Ons/" @ %resource @ ".zip") > 0 && isFile("Add-Ons/" @ %resource @ ".zip") && (isFile("Add-Ons/" @ %resource @ "/version.json") || isFile("Add-Ons/" @ %resource @ "/version.txt"))) {
-    echo("Local version of " @ %resource @ " found, proceeding as normal");
+    GlassLog::log("Local version of " @ %resource @ " found, proceeding as normal");
   } else if(getFileCount("Add-Ons/" @ %resource @ "/*.cs") > 0) {
-    echo("Local zip of " @ %resource @ " is missing, but a folder is present");
+    GlassLog::log("Local zip of " @ %resource @ " is missing, but a folder is present");
   } else {
-    echo("\n\c4Loading local resource " @ %resource @ "...");
+    GlassLog::log("\n\c4Loading local resource " @ %resource @ "...");
     if(isFile("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs"))
       exec("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs");
-    else
-      echo("Missing context");
-    echo("\n");
 
     GlassResourceManager::createFakeFile(%resource);
 
@@ -45,11 +42,9 @@ function GlassResourceManager::loadPreferences(%context) {
   folderDeleteAll("Add-Ons/Support_Preferences/");
 
   %resource = "Support_Preferences";
-  echo("\n\c4Loading local resource " @ %resource @ "...");
+  GlassLog::log("\n\c4Loading local resource " @ %resource @ "...");
   if(isFile("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs"))
     exec("Add-Ons/System_BlocklandGlass/resources/" @ %resource @ "/" @ %context @ ".cs");
-
-  echo("\n");
 }
 
 function folderDeleteAll(%folder) {
@@ -79,7 +74,7 @@ package GlassResourceManager {
 
     for(%i = 0; %i < GlassResourceManager.fakes; %i++) {
       %resource = GlassResourceManager.fake[%i];
-      echo("\c5> GLASS FAKE: " @ %resource);
+      GlassLog::debug("\c5> GLASS FAKE: " @ %resource);
 
       //for debug purposes
       Glass.fakedResource[%resource] = true;

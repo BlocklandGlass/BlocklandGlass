@@ -115,11 +115,9 @@ function GlassManualTCP::onDone(%this, %error) {
     GlassManualGui_List.sortNumerical(0, true);
   } else {
     if(GlassManualWindow.loadingDoc !$= %this.doc) {
-      //echo("Got late doc");
       return;
     }
 
-    //echo(%this.buffer);
 
     GlassManualGui_Text.setText("<font:verdana:12><color:333333>");
 

@@ -74,7 +74,7 @@ function GMM_ImportPage::handleResults(%this, %obj) {
     %fo.close();
 
     if(!%id) {
-      echo("\c3Found rtbInfo.txt but no id for " @ %name);
+      GlassLog::error("\c3Found rtbInfo.txt but no id for " @ %name);
       continue;
     }
 
@@ -280,9 +280,9 @@ function GMM_ImportPage_downloadDone(%dl, %err, %tcp) {
   %originalPath = "Add-Ons/" @ %this.importName[%this.downloadIndex] @ ".zip";
   if(%tcp.savePath !$= %originalPath) {
     fileDelete(%originalPath);
-    echo("\c1Deleting original file \c0" @ %originalPath);
+    GlassLog::log("\c1Deleting original file \c0" @ %originalPath);
   } else {
-    echo("\c1Replaced \c0" @ %originalPath);
+    GlassLog::log("\c1Replaced \c0" @ %originalPath);
   }
 
   discoverFile(%tcp.savePath);
@@ -300,7 +300,7 @@ function GMM_ImportPage_downloadDone(%dl, %err, %tcp) {
 }
 
 function GMM_ImportPage_downloadFailed(%dl, %error) {
-  echo("ERROR");
+  GlassLog::error("Import download failed for " @ %this.importName[%this.downloadIndex]);
   %this = GMM_ImportPage;
   %swatch = %this.importSwatch[%this.downloadIndex];
   %swatch.progresstext.setValue("<shadow:1:1><just:center><font:verdana:12><color:ed7669>FAILED");
@@ -309,7 +309,7 @@ function GMM_ImportPage_downloadFailed(%dl, %error) {
 }
 
 function GMM_ImportPage_downloadUnwritable(%dl) {
-  echo("UNWRITABLE");
+  GlassLog::error("Path unwritable for " @ %this.importName[%this.downloadIndex]);
   %this = GMM_ImportPage;
   %swatch = %this.importSwatch[%this.downloadIndex];
   %swatch.progresstext.setValue("<shadow:1:1><just:center><font:verdana:12><ed7669:54d98c>PATH UNWRITABLE");

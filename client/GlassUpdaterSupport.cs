@@ -139,14 +139,7 @@ function GlassUpdaterSupport::updateProgressBar(%queueObj, %float) {
   // GlassSettingsGui_Prefs_Updater.setValue(GlassSettings.get("MM::UseDefault"));
 
 function GlassUpdaterSupport::updateSetting() {
-  // %i = GlassSettingsGui_Prefs_UseDefault.getValue();
-  // GlassSettings.update("MM::UseDefault", %i);
   %i = GlassSettings.get("MM::UseDefault");
-  // if(%i) {
-    // echo("Using default Support_Updater dialogs");
-  // } else {
-    // echo("Using Glass updater interface");
-  // }
 }
 
 package GlassUpdaterSupportPackage {

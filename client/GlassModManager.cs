@@ -192,7 +192,6 @@ function GlassModManagerTCP::onDone(%this, %error, %object) {
 
 function GlassModManager::scanForRTB() {
   %pattern = "Add-ons/*/rtbInfo.txt";
-	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %path = filePath(%file);
     %name = getsubstr(%path, 8, strlen(%path)-8);
@@ -206,7 +205,6 @@ function GlassModManager::scanForRTB() {
       continue;
     }
 
-    //echo("Found " @ %name);
     %fo = new FileObject();
     %fo.openForRead(%file);
     while(!%fo.isEOF()) {
@@ -476,7 +474,7 @@ function GlassModManagerQueue::next(%this) {
 }
 
 function GlassModManagerQueue_Done(%this) {
-  echo("Downloaded " @ %this.filename);
+  GlassLog::log("Downloaded " @ %this.filename);
 
   GlassModManagerQueue.remove(%this);
   GlassModManagerQueue.next();

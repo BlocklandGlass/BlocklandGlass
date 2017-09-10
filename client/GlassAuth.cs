@@ -7,7 +7,7 @@ function GlassAuth::init() {
   GlassFriendsGui_StatusSelect.setVisible(false);
 
 	if(isObject(GlassAuth)) {
-    echo("\c2Glass Auth Re-initializing");
+    GlassLog::log("\c2Glass Auth Re-initializing");
 		GlassAuth.delete();
 	}
 
@@ -42,8 +42,7 @@ function GlassAuth::authCheck(%this) {
     return;
   }
 
-  if(%this.debug)
-    echo("Glass Auth: \c2authCheck");
+  GlassLog::debug("Glass Auth: \c2authCheck");
 
   if(%this.authing) {
     //make sure there's only one auth request going
@@ -74,13 +73,11 @@ function GlassAuth::authCheck(%this) {
 
   %this.usingDAA = %useDAA;
 
-  if(%this.debug) {
-    %hash = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
-    if(%hash !$= "")
-      echo("\c1  Hash    : " @ (%hash $= "" ? "" : (getSubStr(%hash, 0, 5) @ "....." @ getSubStr(%hash, strLen(%hash)-5, 5)) ));
-    echo("\c1  ForceDAA: " @ %this.forceDAA);
-    echo("\c1  usingDAA: " @ %this.usingDAA);
-  }
+  %hash = GlassSettings.cacheFetch("Auth::DAA_" @ getNumKeyId());
+  if(%hash !$= "")
+    GlassLog::debug("\c1  Hash    : " @ (%hash $= "" ? "" : (getSubStr(%hash, 0, 5) @ "....." @ getSubStr(%hash, strLen(%hash)-5, 5)) ));
+    GlassLog::debug("\c1  ForceDAA: " @ %this.forceDAA);
+    GlassLog::debug("\c1  usingDAA: " @ %this.usingDAA);
 
   // ensure that the current auth is for the current user
   %this.validateIdentity();
@@ -148,7 +145,7 @@ function GlassAuth::validateIdentity(%this) {
   }
 
   if(%changed) {
-    echo("Glass Auth: \c1Identity changed, re-authenicating");
+    GlassLog::log("Glass Auth: \c1Identity changed, re-authenicating");
     %this.clearIdentity();
   }
 }
@@ -228,9 +225,9 @@ function GlassAuthTCP::onDone(%this) {
         case "success":
           //successful authentication
           if(!GlassAuth.isAuthed)
-            echo("Glass Auth: \c4SUCCESS");
+            GlassLog::log("Glass Auth: \c4SUCCESS");
           else
-            echo("Glass Auth: \c4RENEWED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
+            GlassLog::log("Glass Auth: \c4RENEWED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
 
           GlassAuth.hasAccount = %object.hasGlassAccount;
 
@@ -254,17 +251,17 @@ function GlassAuthTCP::onDone(%this) {
         case "daa-keys":
           //we requested the need DAA info, prepare response
           if(!GlassAuth.usingDAA) {
-            echo("Glass Auth: \c1Got DAA ident, but not using DAA!");
+            GlassLog::error("Glass Auth: \c1Got DAA ident, but not using DAA!");
             return;
           }
-          echo("Glass Auth: \c5daa-keys");
+          GlassLog::debug("Glass Auth: \c5daa-keys");
 
           GlassAuth.startDAA(%object.daa);
 
 
         case "daa-required":
           //we tried to authenticate normally, but DAA is forced
-          echo("Glass Auth: \c5daa-required");
+          GlassLog::log("Glass Auth: \c5daa-required");
 
           if(GlassAuth.forceDAA == -1) {
             // DAA is set to never!
@@ -295,18 +292,23 @@ function GlassAuthTCP::onDone(%this) {
 
 
         case "barred":
-          echo("Glass Auth: \c2BARRED");
+          GlassLog::log("Glass Auth: \c2BARRED");
           glassMessageBoxOk("Barred", "Sorry,<br><br>You have been barred from using online Blockland Glass services");
 
         case "error":
-          echo("Glass Auth: \c2ERROR");
+          GlassLog::error("Glass Auth: \c2ERROR");
           if(%object.error !$= "")
-            echo(%object.error);
+            GlassLog::error(%object.error);
+
+        case "bl-failed":
+          GlassLog::error("Glass Auth: \c2BL-FAILED");
+			 glassMessageBoxYesNo("Blockland Auth Failed", "We were unable to authenticate you with Blockland Glass because you are not successfully authenticated with Blockland. Would you like to reauthenticate?", "auth_init_client();", "");
+			 GlassAuth.authing = false;
 
         case "failed":
-          echo("Glass Auth: \c2FAILED");
+          GlassLog::log("Glass Auth: \c2FAILED");
           if(%object.message !$= "")
-            echo(%object.message);
+            Glasslog::log("            \c2" @ %object.message);
 
           GlassAuth.failedCt++;
           GlassAuth.onAuthFailed();
@@ -318,39 +320,38 @@ function GlassAuthTCP::onDone(%this) {
               glassMessageBoxYesNo("Authentication Failed", "We were unable to successfully authenticate your Glass account. Would you like to try again?", "GlassAuth.reident();");
             }
           } else {
-            if(GlassAuth.debug)
-              echo("\c3Retrying...");
+            GlassLog::debug("\c3Retrying connection...");
             GlassAuth.reident();
           }
 
 
         case "unauthorized":
           if(%object.expired)
-            echo("Glass Auth: \c5expired");
+            GlassLog::log("Glass Auth: \c5expired");
           else
-            echo("Glass Auth: \c5unauthorized");
+            GlassLog::log("Glass Auth: \c5unauthorized");
 
           // something has gone wrong or the key expired
           GlassAuth.authing = false;
           GlassAuth.reident();
 
         default:
-          echo("Glass Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
-          echo(%this.buffer);
+          GlassLog::error("Glass Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
+          GlassLog::debug(%this.buffer);
       }
 
 		} else {
-			echo("Glass Auth: \c2INVALID RESPONSE");
-      echo(%this.buffer);
+		  GlassLog::error("Glass Auth: \c2INVALID RESPONSE");
+        GlassLog::debug(%this.buffer);
 		}
 
 
 	} else {
-		echo("Glass Auth: \c2CONNECTION ERROR " @ %error);
-    // we have to assume that this is the end of authing, as there was an error
-    // this allows us to retry
-    GlassAuth.authing = false;
-    GlassAuth.schedule(10*1000, reident);
+	  GlassLog::error("Glass Auth: \c2CONNECTION ERROR " @ %error);
+     // we have to assume that this is the end of authing, as there was an error
+     // this allows us to retry
+     GlassAuth.authing = false;
+     GlassAuth.schedule(5*1000, reident);
 	}
 }
 
@@ -398,7 +399,7 @@ function GlassAuth::startDAA(%this, %data, %required, %role) {
     }
 
   } else {
-    echo("Glass Auth: \c2Invalid DAA-KEYS response!");
+    GlassLog::error("Glass Auth: \c2Invalid DAA-KEYS response!");
   }
 }
 

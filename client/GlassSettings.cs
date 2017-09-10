@@ -8,7 +8,7 @@ function GlassSettings::init() {
 
   Glass.settingsLoaded = true;
 
-  echo("Loading client prefs");
+  GlassLog::log("Loading Glass settings...");
   // registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc)
   // Hidden Settings
   GlassSettings.registerSetting("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
@@ -462,9 +462,7 @@ function GlassSettings::saveData(%this) {
 function GlassSettings::loadSetting(%this, %name, %value) {
   %obj = GlassSettings.obj[%name];
   if(isObject(%obj)) {
-    if(Glass.dev) {
-      echo(" + Loaded setting " @ getField(%line, 0));
-    }
+    GlassLog::debug(" + Loaded setting " @ %name @ " with value " @ %value);
     %obj.value = %value; //only do that if loading!
   } else {
     warn("Data found for non-existant setting \"" @ %name @ "\"");

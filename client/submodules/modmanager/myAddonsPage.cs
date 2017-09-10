@@ -372,7 +372,7 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
 }
 
 function GMM_MyAddonsPage::defaults() {
-  // echo("Loading defaults");
+  GlassLog::debug("Setting add-ons to default");
   for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
     %guiObj = GMM_MyAddonsPage_List.getObject(%i);
 

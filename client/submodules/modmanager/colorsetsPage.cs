@@ -390,7 +390,7 @@ function GMM_ColorsetsPage::populateColorsets(%this) {
         %so.aid = ($JSON::Value).id;
         $JSON::Value.delete();
       } else {
-        echo("error reading glass.json: " @ $JSON::Error);
+        GlassLog::error("Error reading glass.json for " @ %name @ ": " @ $JSON::Error);
       }
     }
 

@@ -1,8 +1,6 @@
 function GlassCompatibility::oRBs_warning() {
   glassMessageBoxYesNo("oRBs Warning", "<font:verdana bold:13>Please read carefully.<br><br><font:verdana:13>Blockland Glass no longer supports oRBs.<br><br>oRBs has been operating as life support for a system (RTB) that has been left abandoned by its original creator since 2014 -- oRBs is not the way forward for the community, it is a step backwards.<br><br>oRBs, and any other third party RTB \"variation\" that seeks to continue its original service or development will never be able to bring back the old RTB service in its entirety with new updates: it is dead.<br><br><font:verdana bold:13><color:FF0000>You can choose to delete oRBs now; otherwise, this warning will not be shown again.", "GlassCompatibility::oRBs_delete();");
 
-  // echo("oRBs warning dialog window displayed, this should only happen once (unless forced).");
-
   GlassSettings.update("Live::oRBsNotified", true);
 }
 

@@ -61,7 +61,6 @@ function GlassDownloadTCP::onConnected(%this) {
 }
 
 function GlassDownloadTCP::onLine(%this, %line) {
-	//echo(%line);
 	%head = getWord(%line, 0);
 	if(%head $= "Content-Disposition:") {
 		%filename = getSubStr(%line, strPos(%line, "filename="), strlen(%line));

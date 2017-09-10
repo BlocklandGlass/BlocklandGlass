@@ -170,8 +170,6 @@ function serverCmdGlassGraphRequest(%client, %id, %ct) {
 
   commandToClient(%client, 'GlassGraphClearData');
 
-  echo("Sending data from " @ %col.name);
-
   for(%i = %col.dataCt-%ct; %i < %col.dataCt; %i++) {
     if(%i < 0) {
       %i = 0;

@@ -1,7 +1,10 @@
 function GlassLog::init() {
   if(!isObject(GlassLog))
     new ScriptObject(GlassLog) {
-      folder = "config/log/";
+      folder         = "config/log/";
+
+		echoLevel      = 1;
+		echoFormatting = true;
     };
 
   %time = strreplace(getDateTime(), ":", "_");
@@ -52,23 +55,16 @@ function GlassLog::log(%str, %level, %baseLevel) {
   if(%baseLevel $= "")
     %baseLevel = %level;
 
-  switch(%level+0) {
-    case 0:
-      //extremely verbose output containing everything
-      %levelText = "debug";
+  %levelText[0] = "debug";
+  %levelText[1] = "log";
+  %levelText[2] = "error";
 
-    case 1:
-      //standard output with errors
-      %levelText = "log";
+  %levelText     = %levelText[%level+0];
+  %baseLevelText = %levelText[%baseLevel+0];
 
-    case 2:
-      //errors only
-      %levelText = "error";
-
-    default:
-      error("[Glass Log] Invalid logging level!");
-      return;
-
+  if(%levelText $= "" || %baseLevelText $= "") {
+	  echo("[Glass Log] Invalid logging level \"" @ %level @ "\"");
+	  return; //??
   }
 
   %path = GlassLog.folder @ "glass/";
@@ -82,10 +78,29 @@ function GlassLog::log(%str, %level, %baseLevel) {
   GlassLogFO.openForAppend(%path);
   for(%i = 0; %i < getLineCount(%str); %i++) {
     %line = getLine(%str, %i);
-    GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %levelText @ "]\t" @ expandEscape(%line));
+    GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %baseLevelText @ "]\t" @ expandEscape(%line));
   }
   GlassLogFO.close();
 
   if(%level > 0)
     GlassLog::log(%str, %level-1, %baseLevel);
+
+  if(%level == %baseLevel) {
+	 if(GlassLog.echoLevel <= %level) {
+	   if(GlassLog.echoFormatting) {
+		  echo("\c4[Glass " @ strCap(%levelText) @ "] \c0" @ %str);
+		} else {
+		  echo(%str);
+		}
+	 }
+  }
+}
+
+function GlassLog::error(%str) {
+  GlassLog::log(%str, 2);
+}
+
+
+function GlassLog::debug(%str) {
+  GlassLog::log(%str, 0);
 }

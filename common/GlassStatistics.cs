@@ -21,7 +21,6 @@ function GlassStatistics::scanFiles() {
   }
   new ScriptGroup(GlassAddons);
 	%pattern = "Add-ons/*/glass.json";
-	//echo("\c1Looking for Glass Add-Ons");
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-19);
     if(strPos(%name, "/") > -1) continue;
@@ -74,8 +73,7 @@ function GlassStatistics::scanFiles() {
     }
 
     GlassAddons.add(%go);
-
-		//echo(" \c1+ Found \c4\"" @ %name @ "\" \c1(" @ %go.id @ ")");
+	 
 	}
 }
 

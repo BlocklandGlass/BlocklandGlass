@@ -486,7 +486,7 @@ function GlassServerPreviewPlayerTCP::handleText(%this, %text) {
 
 function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
   if(%error) {
-    echo("ERROR:" SPC %error);
+    GlassLog::error("Server Preview error: " @ %error);
   } else {
     %err = jettisonParse(%this.buffer);
     if(%err) {
@@ -542,7 +542,7 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
   LoadingGUI.lastDownload = $Sim::Time;
 
   if(%fileType !$= "jpg" && %fileType !$= "png" && %fileType !$= "jpeg") {
-  	echo("\c2Server sent illegal LoadingGui image format");
+  	GlassLog::error("\c2Server sent illegal LoadingGui image format");
   	return;
   }
 
@@ -550,11 +550,11 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
   %downloadPath = "config/client/BLG/loadingImages/" @ sha1(%url) @ "." @ %fileType;
   %className = "GlassServerBackgroundTCP";
 
-  echo("Downloading loading image from " @ %url @ " to " @ %downloadPath);
+  GlassLog::debug("Downloading loading image from " @ %url @ " to " @ %downloadPath);
 
   if(isFile(%downloadPath)) {
     if(%crc $= "" || getFileCRC(%downloadPath) $= %crc) {
-      echo("Map picture was found locally!");
+      GlassLog::debug("Map picture was found locally!");
       LOAD_MapPicture.setBitmap(%downloadPath);
       return;
     }
@@ -574,7 +574,7 @@ function GlassServerBackgroundTCP::onBinChunk(%this, %chunk) {
 
 function GlassServerBackgroundTCP::onDone(%this, %error) {
   if(%error) {
-    echo("GlassServerBackgroundTCP error:" SPC %error);
+    GlassLog::error("GlassServerBackgroundTCP error:" SPC %error);
     return;
   }
 
@@ -718,7 +718,7 @@ function GlassServers::updateEventDisplay(%title, %playercount, %maxPlayers, %ga
 
 package GlassServers {
   function interfaceFunction() {
-    echo("\c4Prevented RTB JoinServerGui");
+    GlassLog::debug("\c4Prevented RTB JoinServerGui");
   }
 
   function MainMenuButtonsGui::onWake(%this) {

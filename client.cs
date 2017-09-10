@@ -162,21 +162,21 @@ function clientCmdGlassHandshake(%ver) {
     return;
 
   if(ServerConnection.hasGlass $= "") {
-    echo("\c4Glass Handshake Received...");
+    GlassLog::log("\c4Glass Handshake Received...");
 
     %ver = expandEscape(stripMlControlChars(%ver));
 
-    echo("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
+    GlassLog::log("\c4Glass Server: " @ %ver @ " | " @ "Glass Client: " @ Glass.version);
 
     %semver = semanticVersionCompare(%ver, Glass.version);
 
     switch(%semver) {
-      // case 0:
+      case 0:
         // echo("\c4Glass version matched.");
       case 1:
-        echo("\c2Glass Client is out of date.");
+        GlassLog::log("\c2Glass Client is out of date.");
       case 2:
-        echo("\c2Glass Server is out of date.");
+        GlassLog::log("\c2Glass Server is out of date.");
     }
 
     ServerConnection.hasGlass = true;

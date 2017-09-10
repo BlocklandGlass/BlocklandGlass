@@ -7,9 +7,6 @@ function GlassLiveUser::create(%username, %blid) {
     return GlassLiveUsers.user[%blid];
   }
 
-  //echo("[" @ GlassLiveUsers.user[%blid] @ "] exists: " @ isObject(GlassLiveUsers.user[%blid]));
-  //echo("creating glu: [" @ %username @ "] [" @ %blid @ "]");
-
   %user = new ScriptObject() {
     class = "GlassLiveUser";
     username = getASCIIString(%username);
