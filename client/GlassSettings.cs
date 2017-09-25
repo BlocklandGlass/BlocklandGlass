@@ -52,6 +52,7 @@ function GlassSettings::init() {
   // Chatroom
   GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
   GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
+  GlassSettings.registerSetting("Live::EmotePredict", true, "", "Emote Predictions", "Chatroom", "checkbox", "", "Display emote predictions while typing in the chat."); // joined room / left room notifications
   GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");
   GlassSettings.registerSetting("Live::RoomShowBlocked", false, "", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
   GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom

@@ -352,7 +352,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
 
         new ScriptObject(GlassNotification) {
           title = %this.name;
-          text = %msg;
+          text = GlassLive::getEmotedMessage(%msg);
           image = %this.icon;
 
           sticky = false;
@@ -793,6 +793,12 @@ function GlassChatroomGui_Input::findPartialName(%this, %partialName)
 }
 
 function GlassChatroomGui_Input::onTabComplete(%this) {
+  if(isObject(GlassEmoteSelMouse)) {
+    if(getWordCount(%this.possEmoteList) == 0)
+      GlassEmoteSelMouse.onMouseDown();
+
+    return;
+  }
   %text = %this.getValue();
 
   %last = getWord(%text, getWordCount(%text) - 1);

@@ -30,7 +30,8 @@ if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/Gl
 //= 13.  Chatroom Gui
 //= 14.  Tab Buttons
 //= 15.  Icon Selector
-//= 16.  Packages
+//= 16.  Emote Selection   
+//= 17.  Packages
 //================================================================
 
 function GlassLive::init() {
@@ -66,6 +67,7 @@ function GlassLive::init() {
 
   GlassOverlay::setVignette();
   GlassLive::createMessageReminder();
+  GlassEmoteSelector::CacheEmotes();
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
@@ -776,6 +778,21 @@ function GlassLive::updateLocation(%inServer) {
   }
 
   %obj.delete();
+}
+
+function GlassLive::getEmotedMessage(%message) {
+  for(%i = 0; %i < getWordCount(%message); %i++) {
+    %word = getWord(%message, %i);
+    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+      %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
+      %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
+      if(isFile(%bitmap)) {
+        %word = "<bitmap:" @ %bitmap @ ">";
+        %message = setWord(%message, %i, strlwr(%word));
+      }
+    }
+  }
+  return %message;
 }
 
 //====
@@ -3868,6 +3885,144 @@ function GlassIconSelectorWindow::onWake(%this) {
     %icon = "ask_and_answer";
 
   GlassIconSelectorWindow_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
+}
+
+//================================================================
+//= Emote Selection                                     =
+//================================================================
+
+function GlassEmoteSelector::CacheEmotes() {
+  $GlassEmoteCount = -1;
+  %file = findFirstFile("Add-Ons/System_BlocklandGlass/image/icon/*");
+
+  while(%file !$= "") {
+    $GlassEmote[$GlassEmoteCount++] = fileBase(%file);
+    %file = findNextFile("Add-Ons/System_BlocklandGlass/image/icon/*");
+ }
+}
+
+function GlassEmoteSelector::ListEmotes(%msgBox) {
+  %parent = %msgBox.getGroup().getGroup();
+
+  if(isObject(%parent.emoteSelector))
+    %parent.emoteSelector.delete();
+
+  if(!GlassSettings.get("Live::EmotePredict"))
+    return;
+
+  %text = %msgBox.getValue();
+  %currWord = getWord(%text, getWordCount(%text) - 1);
+  %checkEmote = strReplace(%currWord, ":" , "");
+
+  if(getSubStr(%currWord, 0, 1) !$= ":" || strLen(%currWord) < 3 || strReplace(%currWord, " ", "") !$= %currWord)
+    return;
+
+  for(%i=0; %i < $GlassEmoteCount; %i++) {
+    %currEmote = $GlassEmote[%i];
+    
+    if(%possEmoteCount >= 75)
+      return;
+
+    if(striPos(%currEmote, %checkEmote) >= 0)
+    {
+      %possEmoteCount++;
+      %possEmoteList = %possEmoteList SPC %currEmote;
+    }
+  }
+  %possEmoteList = trim(%possEmoteList);
+  %msgBox.emoteList = %possEmoteList;
+  %possEmoteCount = getWordCount(%possEmoteList);
+  if(%possEmoteCount == 0)
+    return;
+ 
+  %pos = vectorAdd(%parent.position, 2 SPC getWord(%parent.extent, 1));
+
+  if(%possEmoteCount >= 10)
+  {
+    %vScroll = "alwaysOn";
+    %scrollExtent = "150 400";
+  }
+  else
+  {
+    %vScroll = "alwaysOff";
+    %scrollExtent = %possEmoteCount * 20;
+  }
+
+  %scroll = new GuiScrollCtrl() {
+    profile = "GlassScrollProfile";
+    
+    willFirstRespond = "0";
+    hScrollBar = "alwaysOff";
+    vScrollBar = %vScroll;
+    extent = "150" SPC %scrollExtent;
+    position = vectorAdd(%pos, "0 0");
+  };
+
+  %sel = new GuiSwatchCtrl() {
+    position = %scroll.extent;
+    extent = "150" SPC %possEmoteCount * 20;
+    color = "0 0 0 0";
+    position = "0 -2";
+  };
+  %scroll.add(%sel);
+
+
+  for(%i=0; %i < %possEmoteCount; %i++) {
+    %currEmote = getWord(%possEmoteList, %i);
+
+    %swatch = new GuiSwatchCtrl() {
+      extent = "150 20";
+      position = "2" SPC %i * 20 + 2;
+      color = "0 0 0 0";
+    };
+
+    %swatch.add(new GuiBitmapCtrl() {
+      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %currEmote @ ".png";
+      extent = "16 16";
+      position = "1 1";
+    });
+
+     %swatch.add(new GuiMLTextCtrl() {
+      text = "<color:424242>" @ %currEmote;
+      extent = "500 20";
+      position = "22 2";
+    });
+
+    %swatch.add(new GuiMouseEventCtrl(GlassEmoteSelMouse) {
+      extent = %swatch.extent;
+      swatch = %swatch;
+      emote = %currEmote;
+      textBox = %msgBox;
+      master = %scroll;
+    });
+
+    %sel.add(%swatch);
+  }
+
+  GlassOverlayGui.add(%scroll);
+  %parent.emoteSelector = %scroll;
+}
+
+
+function GlassEmoteSelMouse::onMouseEnter(%this) {
+  %this.swatch.color = "200 200 200 255";
+}
+
+function GlassEmoteSelMouse::onMouseLeave(%this) {
+  %this.swatch.color = "0 0 0 0";
+}
+
+function GlassEmoteSelMouse::onMouseDown(%this, %a, %b, %c) {
+  echo("mdown" SPC %this.emote);
+
+  %currText = %this.textBox.getValue();
+
+  %this.textBox.setValue(setWord(%currText, getWordCount(%currText) - 1, ":" @ %this.emote @ ": "));
+  %this.master.delete();
+}
+
+function GlassChatroomGui_Input::onAdd(%this) {
+  %this.command = "GlassEmoteSelector::ListEmotes(" @ %this.getID() @ ");";
 }
 
 //================================================================

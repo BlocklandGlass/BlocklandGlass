@@ -277,8 +277,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 			if(GlassSettings.get("Live::MessageNotification") && !GlassOverlayGui.isAwake()) {
 
-			if(GlassSettings.get("Live::ReminderIcon"))
-				GlassMessageReminder.setVisible(true);
+				if(GlassSettings.get("Live::ReminderIcon"))
+					GlassMessageReminder.setVisible(true);
 
 					if(strlen(%data.message) > 100)
 						%data.message = getsubstr(%data.message, 0, 100) @ "...";
@@ -292,7 +292,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 						%user.dmCount = 1;
 						%user.dmNotification = new ScriptObject(GlassNotification) {
 							title = %sender;
-							text = "\"" @ %data.message @ "\"";
+							text = "\"" @ GlassLive::getEmotedMessage(%data.message) @ "\"";
 							image = %user.icon;
 
 							sticky = false;
