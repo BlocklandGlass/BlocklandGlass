@@ -42,9 +42,10 @@ function Glass::execClient() {
   exec("./client/gui/profiles.cs");
   exec("./client/gui/messageboxes.cs");
   exec("./client/gui/GlassDownloadGui.gui");
-  exec("./client/gui/GlassVerifyAccountGui.gui"); //need to rename/move
+  exec("./client/gui/GlassVerifyAccountGui.gui");
   exec("./client/gui/GlassModManagerGui.gui");
   exec("./client/gui/GlassModManagerImage.gui");
+  exec("./client/gui/GlassModManagerGroupGui.gui");
   exec("./client/gui/GlassServerControlGui.gui");
   exec("./client/gui/GlassChatroomGui.gui");
   exec("./client/gui/GlassClientGui.gui");

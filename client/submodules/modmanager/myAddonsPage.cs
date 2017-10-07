@@ -232,6 +232,7 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
   // list All Add-Ons add-ons
 
   %gui = %this.createHeader("All Add-Ons");
+  %gui.defaultGroup = true;
   %swatch.add(%gui);
 
   %last = %gui;
@@ -255,10 +256,15 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
   while(%file !$= "") {
 	  %trim = strLen("config/client/BLG/addon_groups/");
 	  %group = getSubStr(%file, %trim, strlen(%file)-%trim-4);
+	  %group = strReplace(%group, "_", " ");
 
 	  %gui = %this.createHeader(%group);
+	  %swatch.add(%gui);
+
 	  %gui.placeBelow(%last, 10);
 	  %last = %gui;
+
+	  %this.groupExists[%group] = true;
 
 	  %fo.openForRead(%file);
 	  while(!%fo.isEOF()) {
@@ -361,6 +367,8 @@ function GMM_MyAddonsPage::createHeader(%this, %group) {
   };
   %gui.add(%gui.icon);
 
+  	if(%this.toggled[%group] $= "")
+  		%this.toggled[%group] = true;
 
 	%this.groupCt[%group] = 0;
 	%this.group[%this.groupCt+0] = %group;
@@ -368,7 +376,7 @@ function GMM_MyAddonsPage::createHeader(%this, %group) {
 	%this.groupSwatch[%group] = %gui;
 	%this.groupCt++;
 
-	GlassHighlightSwatch::addToSwatch(%gui, "20 20 20", "GMM_MyAddonsPage.toggleGroupDisplay");
+	GlassHighlightSwatch::addToSwatch(%gui, "20 20 20", "GMM_MyAddonsPage.toggleGroupDisplay", "GMM_MyAddonsPage.deleteGroupPrompt");
 
 	return %gui;
 }
@@ -389,7 +397,7 @@ function GMM_MyAddonsPage::toggleGroupDisplay(%this, %swatch, %pos) {
 			}
 		}
 
-		%this.reorderList();
+		%this.toggled[%swatch.group] = !%this.toggled[%swatch.group];
 
 	} else {
 		%swatch.open = !%swatch.open;
@@ -401,6 +409,16 @@ function GMM_MyAddonsPage::toggleGroupDisplay(%this, %swatch, %pos) {
 
 		for(%i = 0; %i < %this.groupCt[%group]; %i++) {
 			%this.addonSwatch[%group, %i].setVisible(%swatch.open);
+		}
+
+		for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+			%obj = GMM_MyAddonsPage_List.getObject(%i);
+			if(!%obj.visible) continue;
+
+			if(%last)
+				%obj.placeBelow(%last, (%obj.group $= "" ? 2 : 10));
+
+			%last = %obj;
 		}
 
 		%swatch.icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png");
@@ -420,7 +438,63 @@ function GMM_MyAddonsPage::createGroup(%this, %conf) {
 	  }
    }
 
-	canvas.pushDialog(GlassModManagerGroupGui);
+	if(!%conf) {
+		canvas.pushDialog(GlassModManagerGroupGui);
+		GlassModManagerGroupGui_Text.setValue("<font:verdana:12>Please select a name for your group containing <font:verdana bold:12>" @ (%addons+0) @ "<font:verdana:12> add-ons");
+		GlassModManagerGroupGui_Input.setValue("");
+	} else {
+		%name = GlassModManagerGroupGui_Input.getValue();
+
+		if(%this.groupExists[%name]) {
+			glassMessageBoxOk("Already Exists!", "A group by that name already exists!");
+			return;
+		}
+
+		%name = strReplace(%name, " ", "_");
+		%allowed = "abcdefghijklmnopqrstuvwxyz0123456789-()[]_";
+		for(%i = 0; %i < strlen(%name); %i++) {
+			%char = getSubStr(%name, %i, 1);
+			if(stripos(%allowed, %char) < 0) {
+				echo("Bad char " @ %char);
+				glassMessageBoxOk("Invalid Name", "Group names must be alphanumeric!");
+				return;
+			}
+		}
+
+		if(strlen(%name) == 0) {
+			glassMessageBoxOk("Invalid Name", "Please insert a name!");
+			return;
+		}
+
+	 	%file = "config/client/BLG/addon_groups/" @ %name @ ".txt";
+		%fo = new FileObject();
+		%fo.openForWrite(%file);
+		for(%i = 0; %i < %addons; %i++) {
+			%fo.writeLine(%addon[%i].name);
+		}
+		%fo.close();
+		%fo.delete();
+
+		canvas.popDialog(GlassModManagerGroupGui);
+		GMM_MyAddonsPage.populateAddonList(GMM_MyAddonsPage_List);
+	}
+}
+
+function GMM_MyAddonsPage::deleteGroupPrompt(%this, %swatch) {
+	%group = %swatch.group;
+	if(%swatch.defaultGroup) return;
+
+	glassMessageBoxYesNo("Confirm", "Are you sure you want to delete <font:verdana bold:13>" @ %group @ "<font:verdana:13>?", "GMM_MyAddonsPage.deleteGroup(\"" @ expandEscape(%group) @ "\");");
+}
+
+function GMM_MyAddonsPage::deleteGroup(%this, %name) {
+	%name = strReplace(%name, " ", "_");
+	%file = "config/client/BLG/addon_groups/" @ %name @ ".txt";
+
+	if(isFile(%file))
+		fileDelete(%file);
+
+	GMM_MyAddonsPage.populateAddonList(GMM_MyAddonsPage_List);
 }
 
 function GMM_MyAddonsPage::createAddonToggle(%this, %group, %addon) {

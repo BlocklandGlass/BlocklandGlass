@@ -30,7 +30,7 @@ if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/Gl
 //= 13.  Chatroom Gui
 //= 14.  Tab Buttons
 //= 15.  Icon Selector
-//= 16.  Emote Selection   
+//= 16.  Emote Selection
 //= 17.  Packages
 //================================================================
 
@@ -3919,7 +3919,7 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
 
   for(%i=0; %i < $GlassEmoteCount; %i++) {
     %currEmote = $GlassEmote[%i];
-    
+
     if(%possEmoteCount >= 75)
       return;
 
@@ -3934,7 +3934,7 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
   %possEmoteCount = getWordCount(%possEmoteList);
   if(%possEmoteCount == 0)
     return;
- 
+
   %pos = vectorAdd(%parent.position, 2 SPC getWord(%parent.extent, 1));
 
   if(%possEmoteCount >= 10)
@@ -3950,7 +3950,7 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
 
   %scroll = new GuiScrollCtrl() {
     profile = "GlassScrollProfile";
-    
+
     willFirstRespond = "0";
     hScrollBar = "alwaysOff";
     vScrollBar = %vScroll;
@@ -4013,8 +4013,6 @@ function GlassEmoteSelMouse::onMouseLeave(%this) {
 }
 
 function GlassEmoteSelMouse::onMouseDown(%this, %a, %b, %c) {
-  echo("mdown" SPC %this.emote);
-
   %currText = %this.textBox.getValue();
 
   %this.textBox.setValue(setWord(%currText, getWordCount(%currText) - 1, ":" @ %this.emote @ ": "));

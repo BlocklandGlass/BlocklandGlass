@@ -1,4 +1,4 @@
-function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command) {
+function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command, %rcommand) {
   %swatch.hcolor = vectorAdd(%swatch.color, %highlight) SPC "255";
 
   %swatch.glassHighlightSwatch = new GuiSwatchCtrl(GlassHighlightSwatch) {
@@ -28,6 +28,7 @@ function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command) {
 	 highlightSwatch = %swatch.glassHighlightSwatch;
 
     command = %command;
+	 rcommand = %rcommand;
   };
   %swatch.add(%swatch.glassHighlightSwatch);
   %swatch.add(%swatch.glassHighlight);
@@ -105,4 +106,22 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
     eval(%this.command @ "(%this.getGroup().getId(), %pos);");
   }
   %this.down = false;
+}
+
+
+function GlassHighlightMouse::onRightMouseDown(%this) {
+  %this.rdown = true;
+
+  echo("right down");
+
+  alxPlay(GlassClick1Audio);
+}
+
+function GlassHighlightMouse::onRightMouseUp(%this, %a, %pos) {
+  %pos = vectorSub(%pos, %this.getCanvasPosition());
+
+  if(%this.rcommand !$= "" && %this.rdown) {
+    eval(%this.rcommand @ "(%this.getGroup().getId(), %pos);");
+  }
+  %this.rdown = false;
 }
