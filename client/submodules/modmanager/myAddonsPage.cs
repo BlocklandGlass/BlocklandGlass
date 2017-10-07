@@ -135,7 +135,7 @@ function GMM_MyAddonsPage::open(%this) {
       alignTop = "0";
       overflowImage = "0";
       mKeepCached = "0";
-      mColor = "255 255 255 128";
+      mColor = "220 220 220 128";
     };
     new GuiBitmapButtonCtrl() {
       profile = "GlassBlockButtonProfile";
@@ -157,7 +157,29 @@ function GMM_MyAddonsPage::open(%this) {
       alignTop = "0";
       overflowImage = "0";
       mKeepCached = "0";
-      mColor = "255 255 255 128";
+      mColor = "220 220 220 128";
+    };
+    new GuiBitmapButtonCtrl() {
+      profile = "GlassBlockButtonProfile";
+      horizSizing = "center";
+      vertSizing = "bottom";
+      position = "22 120";
+      extent = "100 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      command = "GMM_MyAddonsPage.createGroup();";
+      text = "New Group";
+      groupNum = "-1";
+      buttonType = "PushButton";
+      bitmap = "~/System_BlocklandGlass/image/gui/btn";
+      lockAspectRatio = "0";
+      alignLeft = "0";
+      alignTop = "0";
+      overflowImage = "0";
+      mKeepCached = "0";
+      mColor = "84 217 140 128";
     };
     new GuiBitmapButtonCtrl() {
       profile = "GlassBlockButtonProfile";
@@ -207,161 +229,17 @@ function GMM_MyAddonsPage::close(%this) {
 function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
   %swatch.deleteAll();
 
+  // list All Add-Ons add-ons
+
+  %gui = %this.createHeader("All Add-Ons");
+  %swatch.add(%gui);
+
+  %last = %gui;
+
   for(%i = 0; %i < GMM_MyAddonsPage_AddonGroup.getCount(); %i++) {
     %addon = GMM_MyAddonsPage_AddonGroup.getObject(GMM_MyAddonsPage_AddonGroup.getCount()-%i-1);
 
-  	%enabled = ($AddOn["__" @ %addon.name] == 1);
-
-    if(%enabled) {
-      %color = "46 204 113 200";
-    } else {
-      %color = "237 118 105 200";
-    }
-
-    %text = "<font:Verdana Bold:15>" @ %addon.name;
-
-    %gui = new GuiSwatchCtrl() {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "10 10";
-      extent = "340 30";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      color = %color;
-    };
-
-    %gui.text = new GuiMLTextCtrl() {
-      profile = "GuiMLTextProfile";
-      horizSizing = "right";
-      vertSizing = "center";
-      position = "30 7";
-      extent = "281 16";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      lineSpacing = "2";
-      allowColorChars = "0";
-      maxChars = "-1";
-      text = %text;
-      maxBitmapHeight = "-1";
-      selectable = "1";
-      autoResize = "1";
-    };
-    %gui.add(%gui.text);
-
-    %gui.checkbox = new GuiCheckBoxCtrl(GlassTempCheck) {
-      addon = %addon.name;
-      profile = "GuiCheckBoxProfile";
-      horizSizing = "right";
-      vertSizing = "bottom";
-      position = "7 0";
-      extent = "297 30";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      groupNum = "-1";
-      buttonType = "ToggleButton";
-      text = "";
-    };
-    %gui.add(%gui.checkbox);
-
-    //blLogo
-    //bricks
-    //glassLogo
-
-    %icon = "";
-    if(isDefaultAddon(%addon.name)) {
-      %icon = "blLogo";
-    } else if(%addon.isBLG) {
-      %icon = "glassLogo";
-    } else if(%addon.isRTB) {
-      %icon = "bricks";
-    }
-
-    if(%icon !$= "") {
-      %gui.icon = new GuiBitmapCtrl() {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "center";
-        position = "291 7";
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = true;
-        clipToParent = "1";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
-        wrap = "0";
-        lockAspectRatio = "0";
-        alignLeft = "0";
-        alignTop = "0";
-        overflowImage = "0";
-        keepCached = "0";
-        mColor = "255 255 255 255";
-        mMultiply = "0";
-      };
-      %gui.add(%gui.icon);
-    }
-
-    if(%icon $= "glassLogo") {
-      %gui.icon.redirect = new GuiMouseEventCtrl("GlassModManagerGui_AddonRedirect") {
-        addon = %addon;
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = "1";
-        clipToParent = "1";
-        lockMouse = "0";
-      };
-      %gui.icon.add(%gui.icon.redirect);
-    }
-
-    %gui.delete = new GuiBitmapCtrl() {
-      profile = "GuiDefaultProfile";
-      horizSizing = "right";
-      vertSizing = "center";
-      position = "312 7";
-      extent = "16 16";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/icon/cross.png";
-      wrap = "0";
-      lockAspectRatio = "0";
-      alignLeft = "0";
-      alignTop = "0";
-      overflowImage = "0";
-      keepCached = "0";
-      mColor = "255 255 255 255";
-      mMultiply = "0";
-
-      new GuiMouseEventCtrl("GlassModManagerGui_AddonDelete") {
-        addon = %addon;
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "16 16";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = "1";
-        clipToParent = "1";
-        lockMouse = "0";
-      };
-    };
-    %gui.add(%gui.delete);
-
-    GlassTempCheck.setValue(%enabled);
-
+	 %gui = %this.createAddonToggle("All Add-Ons", %addon);
     %swatch.add(%gui);
 
     if(%last)
@@ -369,6 +247,352 @@ function GMM_MyAddonsPage::populateAddonList(%this, %swatch) {
 
     %last = %gui;
   }
+
+	%fo = new FileObject();
+
+  %path = "config/client/BLG/addon_groups/*.txt";
+  %file = findFirstFile(%path);
+  while(%file !$= "") {
+	  %trim = strLen("config/client/BLG/addon_groups/");
+	  %group = getSubStr(%file, %trim, strlen(%file)-%trim-4);
+
+	  %gui = %this.createHeader(%group);
+	  %gui.placeBelow(%last, 10);
+	  %last = %gui;
+
+	  %fo.openForRead(%file);
+	  while(!%fo.isEOF()) {
+		  %line = %fo.readLine();
+		  if(isObject(GMM_MyAddonsPage_AddonGroup.addon[%line])) {
+			  %addon = GMM_MyAddonsPage_AddonGroup.addon[%line];
+			  %gui = %this.createAddonToggle(%group, %addon);
+		     %swatch.add(%gui);
+
+		     if(%last)
+		       %gui.placeBelow(%last, 2);
+
+		     %last = %gui;
+		  }
+	  }
+	  %fo.close();
+
+	  %file = findNextFile(%path);
+  }
+  %fo.delete();
+}
+
+function GMM_MyAddonsPage::createHeader(%this, %group) {
+   %color = "46 204 113 200";
+
+	%text = "<font:Verdana Bold:15>" @ %group;
+
+	%gui = new GuiSwatchCtrl() {
+	  profile = "GuiDefaultProfile";
+	  horizSizing = "right";
+	  vertSizing = "bottom";
+	  position = "10 10";
+	  extent = "340 30";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  color = %color;
+	  group = %group;
+	  open = true;
+	};
+
+	%gui.text = new GuiMLTextCtrl() {
+	  profile = "GuiMLTextProfile";
+	  horizSizing = "right";
+	  vertSizing = "center";
+	  position = "30 7";
+	  extent = "281 16";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  lineSpacing = "2";
+	  allowColorChars = "0";
+	  maxChars = "-1";
+	  text = %text;
+	  maxBitmapHeight = "-1";
+	  selectable = "1";
+	  autoResize = "1";
+	};
+	%gui.add(%gui.text);
+
+	%gui.checkbox = new GuiCheckBoxCtrl() {
+	  addon = %addon.name;
+	  profile = "GuiCheckBoxProfile";
+	  horizSizing = "right";
+	  vertSizing = "bottom";
+	  position = "7 0";
+	  extent = "297 30";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  groupNum = "-1";
+	  buttonType = "ToggleButton";
+	  text = "";
+	};
+	%gui.add(%gui.checkbox);
+	%gui.checkbox.setValue(true);
+
+  %gui.icon = new GuiBitmapCtrl() {
+	 profile = "GuiDefaultProfile";
+	 horizSizing = "right";
+	 vertSizing = "center";
+	 position = "320 7";
+	 extent = "16 16";
+	 minExtent = "8 2";
+	 enabled = "1";
+	 visible = true;
+	 clipToParent = "1";
+	 bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bullet_arrow_down.png";
+	 wrap = "0";
+	 lockAspectRatio = "0";
+	 alignLeft = "0";
+	 alignTop = "0";
+	 overflowImage = "0";
+	 keepCached = "0";
+	 mColor = "255 255 255 255";
+	 mMultiply = "0";
+  };
+  %gui.add(%gui.icon);
+
+
+	%this.groupCt[%group] = 0;
+	%this.group[%this.groupCt+0] = %group;
+	%this.groupSwatch[%this.groupCt+0] = %gui;
+	%this.groupSwatch[%group] = %gui;
+	%this.groupCt++;
+
+	GlassHighlightSwatch::addToSwatch(%gui, "20 20 20", "GMM_MyAddonsPage.toggleGroupDisplay");
+
+	return %gui;
+}
+
+function GMM_MyAddonsPage::toggleGroupDisplay(%this, %swatch, %pos) {
+	%x = getWord(%pos, 0);
+	%group = %swatch.group;
+
+	if(%x < 32) {
+		%swatch.checkbox.setValue(!%swatch.checkbox.getValue());
+		%tog = %swatch.checkbox.getValue();
+		for(%i = 0; %i < %this.groupCt[%group]; %i++) {
+			%addon = %this.addonSwatch[%group, %i].addon;
+
+			for(%j = 0; %j < %addon.swatchSet.getCount(); %j++) {
+				%s = %addon.swatchSet.getObject(%j);
+				%s.checkbox.setValue(%tog);
+			}
+		}
+
+		%this.reorderList();
+
+	} else {
+		%swatch.open = !%swatch.open;
+		if(%swatch.open) {
+			%icon = "bullet_arrow_down";
+		} else {
+			%icon = "bullet_arrow_right";
+		}
+
+		for(%i = 0; %i < %this.groupCt[%group]; %i++) {
+			%this.addonSwatch[%group, %i].setVisible(%swatch.open);
+		}
+
+		%swatch.icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png");
+
+	}
+}
+
+function GMM_MyAddonsPage::createGroup(%this, %conf) {
+	%addons = 0;
+	for(%i = 0; %i < GMM_MyAddonsPage_List.getCount(); %i++) {
+     %guiObj = GMM_MyAddonsPage_List.getObject(%i);
+
+     %check = %guiObj.checkbox;
+	  if(%check) {
+		  %addon[%addons] = %guiObj.addon;
+		  %addons++;
+	  }
+   }
+
+	canvas.pushDialog(GlassModManagerGroupGui);
+}
+
+function GMM_MyAddonsPage::createAddonToggle(%this, %group, %addon) {
+
+	%enabled = ($AddOn["__" @ %addon.name] == 1);
+
+	if(%enabled) {
+	  %color = "46 204 113 200";
+	} else {
+	  %color = "237 118 105 200";
+	}
+
+	%text = "<font:Verdana Bold:15>" @ %addon.name;
+
+	%gui = new GuiSwatchCtrl() {
+	  profile = "GuiDefaultProfile";
+	  horizSizing = "right";
+	  vertSizing = "bottom";
+	  position = "20 10";
+	  extent = "320 30";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  color = %color;
+
+	  addon = %addon;
+	};
+
+	%gui.text = new GuiMLTextCtrl() {
+	  profile = "GuiMLTextProfile";
+	  horizSizing = "right";
+	  vertSizing = "center";
+	  position = "30 7";
+	  extent = "281 16";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  lineSpacing = "2";
+	  allowColorChars = "0";
+	  maxChars = "-1";
+	  text = %text;
+	  maxBitmapHeight = "-1";
+	  selectable = "1";
+	  autoResize = "1";
+	};
+	%gui.add(%gui.text);
+
+	%gui.checkbox = new GuiCheckBoxCtrl() {
+	  addon = %addon.name;
+	  profile = "GuiCheckBoxProfile";
+	  horizSizing = "right";
+	  vertSizing = "bottom";
+	  position = "7 0";
+	  extent = "297 30";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  groupNum = "-1";
+	  buttonType = "ToggleButton";
+	  text = "";
+	};
+	%gui.add(%gui.checkbox);
+	%gui.checkbox.setValue(%enabled);
+
+	//blLogo
+	//bricks
+	//glassLogo
+
+	%icon = "";
+	if(isDefaultAddon(%addon.name)) {
+	  %icon = "blLogo";
+	} else if(%addon.isBLG) {
+	  %icon = "glassLogo";
+	} else if(%addon.isRTB) {
+	  %icon = "bricks";
+	}
+
+	if(%icon !$= "") {
+	  %gui.icon = new GuiBitmapCtrl() {
+		 profile = "GuiDefaultProfile";
+		 horizSizing = "right";
+		 vertSizing = "center";
+		 position = "273 7";
+		 extent = "16 16";
+		 minExtent = "8 2";
+		 enabled = "1";
+		 visible = true;
+		 clipToParent = "1";
+		 bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
+		 wrap = "0";
+		 lockAspectRatio = "0";
+		 alignLeft = "0";
+		 alignTop = "0";
+		 overflowImage = "0";
+		 keepCached = "0";
+		 mColor = "255 255 255 255";
+		 mMultiply = "0";
+	  };
+	  %gui.add(%gui.icon);
+	}
+
+	if(%icon $= "glassLogo") {
+	  %gui.icon.redirect = new GuiMouseEventCtrl("GlassModManagerGui_AddonRedirect") {
+		 addon = %addon;
+		 profile = "GuiDefaultProfile";
+		 horizSizing = "right";
+		 vertSizing = "bottom";
+		 position = "0 0";
+		 extent = "16 16";
+		 minExtent = "8 2";
+		 enabled = "1";
+		 visible = "1";
+		 clipToParent = "1";
+		 lockMouse = "0";
+	  };
+	  %gui.icon.add(%gui.icon.redirect);
+	}
+
+	%gui.delete = new GuiBitmapCtrl() {
+	  profile = "GuiDefaultProfile";
+	  horizSizing = "right";
+	  vertSizing = "center";
+	  position = "294 7";
+	  extent = "16 16";
+	  minExtent = "8 2";
+	  enabled = "1";
+	  visible = "1";
+	  clipToParent = "1";
+	  bitmap = "Add-Ons/System_BlocklandGlass/image/icon/cross.png";
+	  wrap = "0";
+	  lockAspectRatio = "0";
+	  alignLeft = "0";
+	  alignTop = "0";
+	  overflowImage = "0";
+	  keepCached = "0";
+	  mColor = "255 255 255 255";
+	  mMultiply = "0";
+
+	  new GuiMouseEventCtrl("GlassModManagerGui_AddonDelete") {
+		 addon = %addon;
+		 profile = "GuiDefaultProfile";
+		 horizSizing = "right";
+		 vertSizing = "bottom";
+		 position = "0 0";
+		 extent = "16 16";
+		 minExtent = "8 2";
+		 enabled = "1";
+		 visible = "1";
+		 clipToParent = "1";
+		 lockMouse = "0";
+	  };
+	};
+   %gui.add(%gui.delete);
+
+
+	%this.addonSwatch[%group, %this.groupCt[%group]+0] = %gui;
+	%this.groupCt[%group]++;
+
+	if(!%enabled) {
+		%this.groupSwatch[%group].color = "237 118 105 200";
+		%this.groupSwatch[%group].checkbox.setValue(false);
+	}
+
+	if(!isObject(%addon.swatchSet))
+		%addon.swatchSet = new SimSet();
+
+	%addon.swatchSet.add(%gui);
+
+	return %gui;
 }
 
 function GMM_MyAddonsPage::defaults() {
@@ -541,5 +765,6 @@ function GMM_MyAddonsPage::populateAddons(%this) {
       %so.glassdata = $JSON::Value;
     }
     GMM_MyAddonsPage_AddonGroup.add(%so);
+	 GMM_MyAddonsPage_AddonGroup.addon[%name] = %so;
 	}
 }

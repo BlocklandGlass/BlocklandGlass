@@ -1,20 +1,35 @@
 function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command) {
   %swatch.hcolor = vectorAdd(%swatch.color, %highlight) SPC "255";
 
+  %swatch.glassHighlightSwatch = new GuiSwatchCtrl(GlassHighlightSwatch) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = %swatch.extent;
+    position = "0 0";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    lockMouse = "0";
+	 color = "0 0 0 0";
+ };
+
   %swatch.glassHighlight = new GuiMouseEventCtrl(GlassHighlightMouse) {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     extent = %swatch.extent;
     position = "0 0";
-    //callback = "GlassLive::friendTabExtend(" @ %blid @ ");";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
     lockMouse = "0";
 
+	 highlightSwatch = %swatch.glassHighlightSwatch;
+
     command = %command;
   };
+  %swatch.add(%swatch.glassHighlightSwatch);
   %swatch.add(%swatch.glassHighlight);
   return %swatch.glassHighlight;
 }
@@ -54,7 +69,8 @@ function GlassHighlightMouse::onMouseLeave(%this) {
   if(isObject(%this.getGroup().flare))
     %this.getGroup().flare.setVisible(false);
 
-  %this.getGroup().color = %this.getGroup().ocolor;
+  //%this.getGroup().color = %this.getGroup().ocolor;
+  %this.highlightSwatch.color = "0 0 0 0";
 
   if(%this.exitCommand !$= "") {
     eval(%this.exitCommand @ "(%this.getGroup().getId());");
@@ -66,8 +82,9 @@ function GlassHighlightMouse::onMouseEnter(%this) {
   if(!%this.enabled)
     return;
 
-  %this.getGroup().ocolor = %this.getGroup().color;
-  %this.getGroup().color = %this.getGroup().hcolor;
+  //%this.getGroup().ocolor = %this.getGroup().color;
+  //%this.getGroup().color = %this.getGroup().hcolor;
+  %this.highlightSwatch.color = "255 255 255 32";
 
   if(%this.hoverCommand !$= "") {
     eval(%this.hoverCommand @ "(%this.getGroup().getId());");
@@ -77,7 +94,7 @@ function GlassHighlightMouse::onMouseEnter(%this) {
 
 function GlassHighlightMouse::onMouseDown(%this) {
   %this.down = true;
-  
+
   alxPlay(GlassClick1Audio);
 }
 
