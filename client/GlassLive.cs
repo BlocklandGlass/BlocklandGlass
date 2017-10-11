@@ -3002,7 +3002,11 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     // if(strlen(%serverTitle = %uo.getServerTitle()) > 32)
       // %serverTitle = getsubstr(%serverTitle, 0, 28) @ "...";
 
-    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ "<br><font:verdana bold:12>" @ getASCIIString(%serverTitle);
+    %br = "<br>";
+    if(strLen(%serverTitle) > 32)
+      %br = " - ";
+
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:12>" @ getASCIIString(%serverTitle);
 
     if(%uo.country !$= "") {
       if(%uo.country $= "United States") {
