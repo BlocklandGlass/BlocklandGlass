@@ -228,6 +228,7 @@ new GuiControl(GlassFriendsGui) {
                password = "0";
                tabComplete = "0";
                sinkAllKeyEvents = "0";
+               escapeCommand = "GlassLive::addDlgClose();";
             };
             new GuiBitmapCtrl() {
                profile = "GuiDefaultProfile";
@@ -316,6 +317,7 @@ new GuiControl(GlassFriendsGui) {
                password = "0";
                tabComplete = "0";
                sinkAllKeyEvents = "0";
+               escapeCommand = "GlassLive::addDlgClose();";
             };
             new GuiBitmapCtrl() {
                profile = "GuiDefaultProfile";

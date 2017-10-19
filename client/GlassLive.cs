@@ -2133,6 +2133,7 @@ function GlassLive::openAddDlg() {
   if(!%gui.visible) {
     %gui.setVisible(true);
     GlassFriendsGui_ScrollOverlay.setVisible(true);
+    GlassFriendsGui_AddFriendBLID.schedule(50, makeFirstResponder, true);
   } else {
     GlassLive::addDlgClose();
   }
@@ -2152,12 +2153,16 @@ function GlassLive::openBlockDlg() {
   if(!%gui.visible) {
     %gui.setVisible(true);
     GlassFriendsGui_ScrollOverlay.setVisible(true);
+    GlassFriendsGui_BlockUserBLID.schedule(50, makeFirstResponder, true);
   } else {
     GlassLive::blockDlgClose();
   }
 }
 
 function GlassLive::blockDlgSubmit() {
+  if(!GlassFriendsGui_ScrollOverlay.isVisible())
+    return;
+
   if(GlassFriendsGui_BlockUserBLID.getValue()+0 !$= GlassFriendsGui_BlockUserBLID.getValue() || GlassFriendsGui_BlockUserBLID.getValue() < 0) {
     GlassFriendsGui_BlockUserBLID.setValue("");
     glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
@@ -2183,6 +2188,9 @@ function GlassLive::blockDlgClose() {
 }
 
 function GlassLive::addDlgSubmit() {
+  if(!GlassFriendsGui_ScrollOverlay.isVisible())
+    return;
+
   if(GlassFriendsGui_AddFriendBLID.getValue()+0 !$= GlassFriendsGui_AddFriendBLID.getValue() || GlassFriendsGui_AddFriendBLID.getValue() < 0) {
     GlassFriendsGui_AddFriendBLID.setValue("");
     glassMessageBoxOk("Invalid BLID", "That is not a valid Blockland ID!");
@@ -2202,9 +2210,15 @@ function GlassLive::addDlgSubmit() {
 }
 
 function GlassLive::addDlgClose() {
-  GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
-  GlassFriendsGui_ScrollOverlay.setVisible(false);
-  GlassFriendsGui_AddFriendBLID.setValue("");
+
+  if(!GlassFriendsGui_ScrollOverlay.isVisible())
+    GlassOverlay::close();
+  else
+  {
+    GlassFriendsGui_AddFriendBLID.getGroup().setVisible(false);
+    GlassFriendsGui_ScrollOverlay.setVisible(false);
+    GlassFriendsGui_AddFriendBLID.setValue("");
+  }
 }
 
 
