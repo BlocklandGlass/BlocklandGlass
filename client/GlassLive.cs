@@ -1254,7 +1254,10 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
     %accentColor = $Pref::Avatar::accentColor;
 
     %hat = $Pref::Avatar::hat;
-    %hatColor = $Pref::Avatar::hatColor;
+     %hatColor = $Pref::Avatar::hatColor;
+
+    if(%hat == 0 || %hat == 2 || %hat == 3 || %hat == 5)
+      %accent = 0;
 
     %chest = $Pref::Avatar::chest;
     %chestColor = $Pref::Avatar::chestColor;
