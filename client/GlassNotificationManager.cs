@@ -218,7 +218,7 @@ function GlassNotification::onAdd(%this, %a, %b) {
   }
 
   if(%this.time $= "")
-    %this.time = 5000;
+    %this.time = GlassSettings.get("Notifications::DisplayTime") * 1000;
 
   if(%this.darkMode $= "")
     %this.darkMode = GlassSettings.get("Notifications::DarkMode");

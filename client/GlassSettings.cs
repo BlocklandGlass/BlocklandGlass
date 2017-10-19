@@ -69,6 +69,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::ViewLocation", "Anyone", "", "can view my server *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view the server you are currently playing on.<br><br><font:verdana bold:13>Requires reconnect.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
+  GlassSettings.registerSetting("Notifications::DisplayTime", "5", "", "Default Display Time", "Notifications", "shorttext", "", "Unless specifically set by the notification, it will stay on screen for this many seconds.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
   GlassSettings.registerSetting("Notifications::Limit", "0", "", "Notification Limit (0 = none)", "Notifications", "shorttext", "", "Maximum number of visible notifications.");
   // Experimental
