@@ -1256,9 +1256,6 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
     %hat = $Pref::Avatar::hat;
      %hatColor = $Pref::Avatar::hatColor;
 
-    if(%hat == 0 || %hat == 2 || %hat == 3 || %hat == 5)
-      %accent = 0;
-
     %chest = $Pref::Avatar::chest;
     %chestColor = $Pref::Avatar::chestColor;
     %TorsoColor = $Pref::Avatar::TorsoColor;
@@ -1378,6 +1375,13 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
     %rlegColor = %json.rlegColor;
   }
 
+  if(%hat == 0 || %hat == 2 || %hat == 3 || %hat == 5)
+    %accent = 0;
+
+  if(%pack > 0 || %secondPack > 0)
+    %this.setSequence("", 1, headup, 1);
+  else
+    %this.setSequence("", 1, headup, 0);
 
   for(%i = 0; %i < $numFace; %i++)
 	if(strStr($Face[%i], %FaceName) >= 0)
@@ -1385,7 +1389,7 @@ function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
 
   for(%i = 0; %i < $numDecal; %i++)
     if(strStr($Decal[%i], %DecalName) >= 0)
-	  %shirtDecal = %i;
+	   %shirtDecal = %i;
 
   %this.setIFLFrame("", "face", %faceDecal);
   %this.setIFLFrame("", "decal",%shirtDecal);
