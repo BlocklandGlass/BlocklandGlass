@@ -213,10 +213,6 @@ function Glass::useWindowTheme(%this, %bool) {
 	}
 }
 
-function strcap(%str) {
-	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
-}
-
 function Glass::writeCrashLock() {
   Glass::setCrashable(false);
 }
