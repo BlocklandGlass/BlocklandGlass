@@ -72,8 +72,10 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Notifications::DisplayTime", "5", "", "Default Display Time", "Notifications", "shorttext", "", "Unless specifically set by the notification, it will stay on screen for this many seconds.");
   GlassSettings.registerSetting("Notifications::ForceSticky", false, "", "Sticky Notifications", "Notifications", "checkbox", "", "Notifications stay on-screen until interacted with.");
   GlassSettings.registerSetting("Notifications::Limit", "0", "", "Notification Limit (0 = none)", "Notifications", "shorttext", "", "Maximum number of visible notifications.");
+  // Logging
+  GlassSettings.registerSetting("Log::LogCount", "10", "", "Logs Stored", "Logs", "shorttext", "", "The number of logs stored.");
   // Experimental
-  GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Default Windows", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
+  GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Use Blockland Theme", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
 
 
   %settings = trim(GlassSettings.settingsList);

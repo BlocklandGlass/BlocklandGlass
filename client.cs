@@ -283,6 +283,8 @@ package GlassClientPackage {
       schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
       Glass.wasCrash = false;
     }
+
+    GlassLog::cleanOld("blockland");
   }
 };
 activatePackage(GlassClientPackage);
