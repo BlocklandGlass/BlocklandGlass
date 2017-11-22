@@ -258,7 +258,7 @@ function GlassAuthS::startDAA(%this, %data, %required, %role) {
   if(isObject(%this.daa))
     %this.daa.delete();
 
-  %this.daa = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha1");
+  %this.daa = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha256");
   %this.daa.method = "POST";
 
   // take in info from server, make appropriate hashes

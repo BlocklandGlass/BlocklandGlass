@@ -368,7 +368,7 @@ function GlassAuth::startDAA(%this, %data, %required, %role) {
   if(isObject(%this.daa))
     %this.daa.delete();
 
-  %this.daa = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha1");
+  %this.daa = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha256");
   %this.daa.method = "POST";
 
   // take in info from server, make appropriate hashes
@@ -521,7 +521,7 @@ function GlassAuth::attemptAccountVerification(%this, %email, %pass) {
   %daa = %this.verify_daa;
 
   if(!isObject(%this.verify_digest)) {
-    %digest = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha1");
+    %digest = DigestAccessAuthentication(getNumKeyId(), "/api/3/auth.php", "sha256");
     %digest.method = "POST";
     %digest.retrieveIdent(%daa);
   } else {

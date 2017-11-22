@@ -1,3 +1,5 @@
+exec("./Lib_SHA256.cs");
+
 // ==================
 // Digest Access Authentication
 // ==================
@@ -260,4 +262,3 @@ function DigestAccessAuthentication::generateRandom(%this, %num)
 	}
 	return %rand;
 }
-
