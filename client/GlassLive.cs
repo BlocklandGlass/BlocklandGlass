@@ -475,7 +475,6 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %tab.scrollSwatch.verticalMatchChildren(0, 2);
       %tab.scrollSwatch.setVisible(true);
       %tab.scroll.scrollToBottom();
-      //%tab.renderUserList();
     }
   }
 
@@ -959,7 +958,7 @@ function GlassLive::friendAccept(%blid) {
     %user.setFriend(true);
 
     if(isObject(%room = GlassChatroomWindow.activeTab.room))
-      %room.renderUserList();
+      %room.userListUpdate(%user);
   }
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
@@ -1013,7 +1012,7 @@ function GlassLive::removeFriend(%blid, %silent) {
     if(isObject(%user.window))
       GlassLive::openUserWindow(%blid);
     if(isObject(%room = GlassChatroomWindow.activeTab.room))
-      %room.renderUserList();
+      %room.userListUpdate(%blid);
   }
 }
 

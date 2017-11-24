@@ -164,13 +164,13 @@ function GlassLiveUser::setIcon(%this, %icon, %roomid) {
     if(%roomid !$= "") {
       %room = GlassLiveRooms::getFromId(%roomid);
       if(isObject(%room))
-        %room.renderUserList();
+        %room.userListUpdate(%this);
     } else {
       for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
         %window = GlassOverlayGui.getObject(%i);
         if(%window.getName() $= "GlassChatroomWindow") {
           if(isObject(%window.activeTab)) {
-            %window.activeTab.room.renderUserList();
+            %window.activeTab.room.userListUpdate(%this);
           }
         }
       }

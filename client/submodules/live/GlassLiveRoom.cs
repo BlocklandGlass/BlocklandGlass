@@ -135,7 +135,6 @@ function GlassLiveRoom::addUser(%this, %blid) {
   %this.users = trim(%this.users TAB %blid);
 
   if(isObject(%this.view)) {
-    //%this.renderUserList();
     %user = GlassLiveUser::getFromBlid(%blid);
     %this.userListAdd(%user);
   }
@@ -190,7 +189,7 @@ function GlassLiveRoom::createView(%this, %window) {
   %window.addTab(%gui);
 
   %this.view = %gui;
-  %this.renderUserList();
+  %this.userListBuild();
 
   return %gui;
 }
@@ -221,7 +220,6 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
     %this.pushText(%text);
   }
 
-  //%this.renderUserList();
   %this.userListRemoveBLID(%blid);
 }
 
@@ -518,7 +516,7 @@ function GlassLiveRoom::userListHeader(%this, %colorCode, %headerText, %before) 
   return %text;
 }
 
-function GlassLiveRoom::userListAdd(%this, %user) {
+function GlassLiveRoom::userListAdd(%this, %user, %batched) {
   if(isObject(%this.listSwatchBlid[%user.blid])) {
     error("Attempted to add duplicate user (" @ %user.blid @ ") to glass room!");
     return;
@@ -581,7 +579,10 @@ function GlassLiveRoom::userListAdd(%this, %user) {
   }
 
   %userSwatch.add(%swatch);
-  %userSwatch.verticalMatchChildren(0, 5);
+
+  if(!%batched)
+    %userSwatch.verticalMatchChildren(0, 5);
+
   %this.listSwatch[%insert] = %swatch;
   %this.listStrCmp[%insert] = %srt;
 
@@ -589,13 +590,13 @@ function GlassLiveRoom::userListAdd(%this, %user) {
   %this.listSwatchBlid[%user.blid] = %swatch;
 }
 
-function GlassLiveRoom::userListRemove(%this, %user) {
-  %this.userListRemoveBLID(%user.blid);
+function GlassLiveRoom::userListRemove(%this, %user, %batched) {
+  %this.userListRemoveBLID(%user.blid, %batched);
 }
 
-function GlassLiveRoom::userListRemoveBLID(%this, %blid) {
+function GlassLiveRoom::userListRemoveBLID(%this, %blid, %batched) {
   if(!isObject(%this.listSwatchBlid[%blid])) {
-    error("Attempted to remove user not present! (" @ %blid @ ")");
+    //error("Attempted to remove user not present! (" @ %blid @ ")");
     return;
   }
 
@@ -623,7 +624,9 @@ function GlassLiveRoom::userListRemoveBLID(%this, %blid) {
 
   // resize
   %userSwatch = %this.view.userSwatch;
-  %userSwatch.verticalMatchChildren(0, 5);
+
+  if(!%batched)
+    %userSwatch.verticalMatchChildren(0, 5);
 
   // clear
   %this.listSwatchBlid[%user.blid] = "";
@@ -779,163 +782,37 @@ function GlassLiveRoom::userListCreateSwatch(%this, %user) {
   return %swatch;
 }
 
-function GlassLiveRoom::renderUserList(%this, %do) {
+function GlassLiveRoom::userListUpdate(%this, %user) {
+  if(!isObject(%this.userListSwatch[%user.blid]))
+    return; //this is due to laziness, need better code
+
+  // basically need to remove and add back
+  %this.userListRemove(%user, true);
+  %this.userListAdd(%user);
+}
+
+function GlassLiveRoom::userListBuild(%this, %do) {
   %startTime = getRealTime();
 
   cancel(%this.renderUserSch);
   if(!%do) {
-    %this.renderUserSch = %this.schedule(100, renderUserList, true);
+    %this.renderUserSch = %this.schedule(100, userListBuild, true);
     return;
   }
 
   %userSwatch = %this.view.userswatch;
 
-  //%orderedList = %this.getOrderedUserList();
-
   for(%i = 0; %i < getWordCount(%this.users); %i++) {
     %user = %this.getUser(%i);
 
     if(!isObject(%this.listSwatchBlid[%user.blid])) {
-      %this.userListAdd(%user);
+      %this.userListAdd(%user, true);
     }
-    continue;
-
-    if(%user.isBot()) {
-      %colorCode = 5;
-
-		if(!%header["bots"]) {
-		  %last = %this.userListHeader(5, "Bots", %last);
-		  %header["bots"] = true;
-		}
-
-    } else if(%user.isAdmin()) {
-      %colorCode = 4;
-
-		if(!%header["admins"]) {
-		  %last = %this.userListHeader(4, "Admins", %last);
-		  %header["admins"] = true;
-		}
-
-    } else if(%user.isMod()) {
-      %colorCode = 3;
-
-		if(!%header["moderators"]) {
-		  %last = %this.userListHeader(3, "Moderators", %last);
-		  %header["moderators"] = true;
-		}
-
-    } else if(%user.blid == getNumKeyId()) {
-      %colorCode = 1;
-    // } else if(%user.isBlocked()) {
-      // %colorCode = 6;
-    } else if(%user.isFriend()) {
-      %colorCode = 2;
-    } else {
-      %colorCode = 0;
-    }
-
-	 if(%colorCode == 0 || %colorCode == 2 || %colorCode == 1) {
-	   if(!%header["users"]) {
-		  %last = %this.userListHeader(0, "Users", %last);
-		  %header["users"] = true;
-	   }
-	 }
-
-    %icon = %user.icon;
-    if(%icon $= "")
-      %icon = "ask_and_answer";
-
-    if(!isObject(%userSwatch.blid[%user.blid])) {
-      %swatch = new GuiSwatchCtrl() {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "3 3";
-        extent = "110 22";
-        minExtent = "8 2";
-        enabled = "1";
-        visible = "1";
-        clipToParent = "1";
-        color = "0 0 0 0";
-      };
-
-      %swatch.icon = new GuiBitmapCtrl() {
-        horizSizing = "right";
-        vertSizing = "bottom";
-        extent = "16 16";
-        position = "1 3";
-        bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
-        icon = %icon;
-        mKeepCached = "1";
-      };
-
-      %swatch.text = new GuiTextCtrl() {
-        profile = "GlassFriendTextProfile";
-        text = collapseEscape("\\c" @ %colorCode) @ %user.username;
-        rawtext = %user.username;
-        blid = %user.blid;
-        extent = "45 18";
-        position = "22 12";
-      };
-
-      %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = %swatch.extent;
-
-        swatch = %swatch;
-        user = %user;
-      };
-
-      %swatch.add(%swatch.icon);
-      %swatch.add(%swatch.text);
-      %swatch.add(%swatch.mouse);
-      %swatch.text.centerY();
-      %userSwatch.blid[%user.blid] = %swatch;
-    } else {
-      %swatch = %userSwatch.blid[%user.blid];
-      if(%swatch.icon.icon !$= %icon) {
-        %swatch.icon.icon = %icon;
-        %swatch.icon.setBitmap("Add-Ons/System_BlocklandGlass/image/icon/" @ %icon);
-      }
-
-      %text = collapseEscape("\\c" @ %colorCode) @ %user.username;
-      if(%swatch.text.text !$= %text) {
-        %swatch.text.setText(%text);
-      }
-    }
-
-    %swatch.used = true;
-
-    if(%last $= "") {
-      %swatch.position = "3 3";
-    } else {
-      %swatch.placeBelow(%last, 0);
-    }
-
-    %last = %swatch;
-    %userSwatch.add(%swatch);
-
-    %this.userListSwatch[%user.blid] = %swatch;
   }
 
-  //for(%i = 0; %i < %userSwatch.getCount(); %i++) {
-  //  %obj = %userSwatch.getObject(%i);
-  //  if(!%obj.used) {
-  //    %obj.deleteAll();
-  //    %obj.delete();
-  //    %i--;
-  //    continue;
-  //  } else {
-  //    %obj.used = false;
-  //  }
-  //}
-
-  // %userSwatch.getGroup().scrollToTop();
   %userSwatch.verticalMatchChildren(0, 5);
-  %userSwatch.setVisible(true);
+
+  echo("\c2User list (room " @ %this.id @ ") built in " @ (getRealTime() - %startTime) @ "ms");
 }
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {

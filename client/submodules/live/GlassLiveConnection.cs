@@ -382,8 +382,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 			%uo = GlassLiveUser::getFromBlid(%data.blid);
 			%uo.setStatus(%data.status);
 			%room = GlassLiveRooms::getFromId(%data.id);
-			if(isObject(%room))
-				%room.renderUserList();
 
 		case "roomUserIcon":
 			%uo = GlassLiveUser::getFromBlid(%data.blid);
@@ -486,7 +484,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 			GlassLive::createFriendList();
 
 			if(isObject(%room = GlassChatroomWindow.activeTab.room))
-				%room.renderUserList();
+				%room.userListUpdate(%uo);
 
 			new ScriptObject(GlassNotification) {
 				title = "Friend Added";
