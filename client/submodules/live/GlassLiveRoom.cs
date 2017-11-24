@@ -10,6 +10,8 @@ function GlassLiveRooms::create(%id, %name) {
 
     users = "";
     view = "";
+
+    listSize = 0;
   };
 
 
@@ -133,7 +135,9 @@ function GlassLiveRoom::addUser(%this, %blid) {
   %this.users = trim(%this.users TAB %blid);
 
   if(isObject(%this.view)) {
-    %this.renderUserList();
+    //%this.renderUserList();
+    %user = GlassLiveUser::getFromBlid(%blid);
+    %this.userListAdd(%user);
   }
 }
 
@@ -217,7 +221,8 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
     %this.pushText(%text);
   }
 
-  %this.renderUserList();
+  //%this.renderUserList();
+  %this.userListRemoveBLID(%blid);
 }
 
 function GlassLiveRoom::sendMessage(%this, %msg) {
@@ -430,6 +435,8 @@ function GlassLiveRoom::writeLog(%this, %msg) {
 }
 
 function GlassLiveRoom::getOrderedUserList(%this) {
+  %start = getRealTime();
+
   %mods = new GuiTextListCtrl();
   %admins = new GuiTextListCtrl();
   %bots = new GuiTextListCtrl();
@@ -485,8 +492,14 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   // %friends.delete();
   %users.delete();
 
+  echo("\c2 Generated Ordered list in " @ (getRealTime() - %start));
+
   return trim(%idList);
 }
+
+//
+// User List
+//
 
 function GlassLiveRoom::userListHeader(%this, %colorCode, %headerText, %before) {
   %userSwatch = %this.view.userswatch;
@@ -507,7 +520,270 @@ function GlassLiveRoom::userListHeader(%this, %colorCode, %headerText, %before) 
   return %text;
 }
 
+function GlassLiveRoom::userListAdd(%this, %user) {
+  if(isObject(%this.listSwatchBlid[%user.blid])) {
+    error("Attempted to add duplicate user (" @ %user.blid @ ") to glass room!");
+    return;
+  }
+  %rank = 9;
+
+  if(%user.isBot()) {
+    %rank = 2;
+    %this.userListAddHeader(%rank, 5, "Bots");
+  } else if(%user.isAdmin()) {
+    %rank = 0;
+    %this.userListAddHeader(%rank, 4, "Admins");
+  } else if(%user.isMod()) {
+    %rank = 1;
+    %this.userListAddHeader(%rank, 3, "Moderators");
+  } else if(%user.isFriend()) { // TODO setting
+    %rank = 3;
+    %this.userListAddHeader(%rank, 0, "Friends");
+  } else {
+    %this.userListAddHeader(%rank, 0, "Users");
+  }
+
+  %srt = %rank SPC %user.username;
+
+  // find insert pos
+  %insert = 0;
+  for(%i = 0; %i < %this.listSize; %i++) {
+    %cmp = %this.listStrCmp[%i];
+
+    if(stricmp(%srt, %cmp) != 1) {
+      break;
+    }
+
+    %insert++;
+  }
+
+  // create swatch
+  %swatch = %this.userListCreateSwatch(%user);
+  %swatch.index = %insert;
+  %height = getWord(%swatch.extent, 1);
+
+  // shift all others (both position and in list)
+  for(%i = %this.listSize; %i > %insert; %i--) {
+    %s = %this.listSwatch[%i-1];
+    %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)+%height);
+    %s.index    = %i;
+
+    %this.listSwatch[%i] = %s;
+    %this.listStrCmp[%i] = %this.listStrCmp[%i-1];
+  }
+
+  %this.listSize++;
+
+  // insert
+  %userSwatch = %this.view.userSwatch;
+
+  if(%insert > 0) {
+    // place below predecessor
+    %swatch.placeBelow(%this.listSwatch[%insert-1], 0);
+  }
+
+  %userSwatch.add(%swatch);
+  %userSwatch.verticalMatchChildren(0, 5);
+  %this.listSwatch[%insert] = %swatch;
+  %this.listStrCmp[%insert] = %srt;
+
+  // store data
+  %this.listSwatchBlid[%user.blid] = %swatch;
+}
+
+function GlassLiveRoom::userListRemove(%this, %user) {
+  %this.userListRemoveBLID(%user.blid);
+}
+
+function GlassLiveRoom::userListRemoveBLID(%this, %blid) {
+  if(!isObject(%this.listSwatchBlid[%blid])) {
+    error("Attempted to remove user not present! (" @ %blid @ ")");
+    return;
+  }
+
+  // declaration
+  %swatch = %this.listSwatchBlid[%blid];
+  %index  = %swatch.index;
+  %height = getWord(%swatch.extent, 1);
+
+  // delete
+  %swatch.deleteAll();
+  %swatch.delete();
+
+  // decrement list size
+  %this.listSize--;
+
+  // shift list
+  for(%i = %index; %i < %this.listSize; %i++) {
+    %s = %this.listSwatch[%i+1];
+    %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)-%height);
+    %s.index    = %i;
+
+    %this.listSwatch[%i] = %s;
+    %this.listStrCmp[%i] = %this.listStrCmp[%i+1];
+  }
+
+  // resize
+  %userSwatch = %this.view.userSwatch;
+  %userSwatch.verticalMatchChildren(0, 5);
+
+  // clear
+  %this.listSwatchBlid[%user.blid] = "";
+}
+
+function GlassLiveRoom::userListAddHeader(%this, %rank, %colorCode, %text) {
+  if(isObject(%this.listHeader[%rank]))
+    return;
+
+  %srt = %rank;
+
+  %insert = 0;
+  for(%i = 0; %i < %this.listSize; %i++) {
+    %cmp = %this.listStrCmp[%i];
+
+    if(stricmp(%srt, %cmp) != 1) {
+      break;
+    }
+
+    %insert++;
+  }
+
+  // create swatch
+  %swatch = %this.userListCreateHeader(%colorCode, %text);
+  %swatch.index = %insert;
+  %height = getWord(%swatch.extent, 1);
+
+  // shift all others (both position and in list)
+  for(%i = %this.listSize; %i > %insert; %i--) {
+    %s = %this.listSwatch[%i-1];
+    %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)+%height);
+    %s.index    = %i;
+
+    %this.listSwatch[%i] = %s;
+    %this.listStrCmp[%i] = %this.listStrCmp[%i-1];
+  }
+
+  %this.listSize++;
+
+  // insert
+  %userSwatch = %this.view.userSwatch;
+
+  if(%insert > 0) {
+    // place below predecessor
+    %swatch.placeBelow(%this.listSwatch[%insert-1], 0);
+  }
+
+  %userSwatch.add(%swatch);
+  %userSwatch.verticalMatchChildren(0, 5);
+  %this.listSwatch[%insert] = %swatch;
+  %this.listStrCmp[%insert] = %srt;
+
+  %this.listHeader[%rank] = %swatch;
+}
+
+function GlassLiveRoom::userListCreateHeader(%this, %colorCode, %headerText) {
+  %userSwatch = %this.view.userswatch;
+
+  %swatch = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "3 0";
+    extent = "110 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "0 0 0 0";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+	 profile = "GlassFriendTextHeaderProfile";
+	 text = collapseEscape("\\c" @ %colorCode) @ %headerText;
+	 extent = "100 16";
+	 position = "5 2";
+  };
+
+  %swatch.add(%swatch.text);
+
+  return %swatch;
+}
+
+function GlassLiveRoom::userListCreateSwatch(%this, %user) {
+  if(%user.isBot()) {
+    %colorCode = 5;
+  } else if(%user.isAdmin()) {
+    %colorCode = 4;
+  } else if(%user.isMod()) {
+    %colorCode = 3;
+  } else if(%user.blid == getNumKeyId()) {
+    %colorCode = 1;
+  } else if(%user.isFriend()) {
+    %colorCode = 2;
+  } else {
+    %colorCode = 0;
+  }
+
+  %icon = %user.icon;
+  if(%icon $= "")
+    %icon = "ask_and_answer";
+
+  %swatch = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "3 3";
+    extent = "110 22";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    color = "0 0 0 0";
+  };
+
+  %swatch.icon = new GuiBitmapCtrl() {
+    horizSizing = "right";
+    vertSizing = "bottom";
+    extent = "16 16";
+    position = "1 3";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon;
+    icon = %icon;
+    mKeepCached = "1";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GlassFriendTextProfile";
+    text = collapseEscape("\\c" @ %colorCode) @ %user.username;
+    rawtext = %user.username;
+    blid = %user.blid;
+    extent = "45 18";
+    position = "22 12";
+  };
+
+  %swatch.mouse = new GuiMouseEventCtrl(GlassLiveUserListSwatch) {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = %swatch.extent;
+
+    swatch = %swatch;
+    user = %user;
+  };
+
+  %swatch.add(%swatch.icon);
+  %swatch.add(%swatch.text);
+  %swatch.add(%swatch.mouse);
+  %swatch.text.centerY();
+  %userSwatch.blid[%user.blid] = %swatch;
+  %this.userListSwatch[%user.blid] = %swatch;
+
+  return %swatch;
+}
+
 function GlassLiveRoom::renderUserList(%this, %do) {
+  %startTime = getRealTime();
+
   cancel(%this.renderUserSch);
   if(!%do) {
     %this.renderUserSch = %this.schedule(100, renderUserList, true);
@@ -516,10 +792,16 @@ function GlassLiveRoom::renderUserList(%this, %do) {
 
   %userSwatch = %this.view.userswatch;
 
-  %orderedList = %this.getOrderedUserList();
+  //%orderedList = %this.getOrderedUserList();
 
-  for(%i = 0; %i < getWordCount(%orderedList); %i++) {
-    %user = %this.getUser(getWord(%orderedList, %i));
+  for(%i = 0; %i < getWordCount(%this.users); %i++) {
+    %user = %this.getUser(%i);
+
+    if(!isObject(%this.listSwatchBlid[%user.blid])) {
+      //echo("Creating for " @ %user.blid);
+      %this.userListAdd(%user);
+    }
+    continue;
 
     if(%user.isBot()) {
       %colorCode = 5;
@@ -567,6 +849,7 @@ function GlassLiveRoom::renderUserList(%this, %do) {
       %icon = "ask_and_answer";
 
     if(!isObject(%userSwatch.blid[%user.blid])) {
+      echo("\c2 creating...");
       %swatch = new GuiSwatchCtrl() {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -642,21 +925,22 @@ function GlassLiveRoom::renderUserList(%this, %do) {
     %this.userListSwatch[%user.blid] = %swatch;
   }
 
-  for(%i = 0; %i < %userSwatch.getCount(); %i++) {
-    %obj = %userSwatch.getObject(%i);
-    if(!%obj.used) {
-      %obj.deleteAll();
-      %obj.delete();
-      %i--;
-      continue;
-    } else {
-      %obj.used = false;
-    }
-  }
+  //for(%i = 0; %i < %userSwatch.getCount(); %i++) {
+  //  %obj = %userSwatch.getObject(%i);
+  //  if(!%obj.used) {
+  //    %obj.deleteAll();
+  //    %obj.delete();
+  //    %i--;
+  //    continue;
+  //  } else {
+  //    %obj.used = false;
+  //  }
+  //}
 
   // %userSwatch.getGroup().scrollToTop();
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);
+  echo("\c2Rendered User List in " @ (getRealTime() - %startTime) @ "\n");
 }
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
