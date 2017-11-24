@@ -492,8 +492,6 @@ function GlassLiveRoom::getOrderedUserList(%this) {
   // %friends.delete();
   %users.delete();
 
-  echo("\c2 Generated Ordered list in " @ (getRealTime() - %start));
-
   return trim(%idList);
 }
 
@@ -798,7 +796,6 @@ function GlassLiveRoom::renderUserList(%this, %do) {
     %user = %this.getUser(%i);
 
     if(!isObject(%this.listSwatchBlid[%user.blid])) {
-      //echo("Creating for " @ %user.blid);
       %this.userListAdd(%user);
     }
     continue;
@@ -849,7 +846,6 @@ function GlassLiveRoom::renderUserList(%this, %do) {
       %icon = "ask_and_answer";
 
     if(!isObject(%userSwatch.blid[%user.blid])) {
-      echo("\c2 creating...");
       %swatch = new GuiSwatchCtrl() {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -940,7 +936,6 @@ function GlassLiveRoom::renderUserList(%this, %do) {
   // %userSwatch.getGroup().scrollToTop();
   %userSwatch.verticalMatchChildren(0, 5);
   %userSwatch.setVisible(true);
-  echo("\c2Rendered User List in " @ (getRealTime() - %startTime) @ "\n");
 }
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
