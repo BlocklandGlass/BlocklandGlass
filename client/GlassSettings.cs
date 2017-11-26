@@ -51,6 +51,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Live", "checkbox", "", "Log messages to config/client/BLG/chat_log/");
   // Chatroom
   GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
+  GlassSettings.registerSetting("Live::RoomHeaders", true, "", "Group Headers", "Chatroom", "checkbox", "", "Display group headers in room user list (requires reconnect).");
   GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
   GlassSettings.registerSetting("Live::EmotePredict", true, "", "Emote Predictions", "Chatroom", "checkbox", "", "Display emote predictions while typing in the chat.");
   GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");

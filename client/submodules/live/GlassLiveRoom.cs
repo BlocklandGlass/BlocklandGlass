@@ -636,6 +636,9 @@ function GlassLiveRoom::userListAddHeader(%this, %rank, %colorCode, %text) {
   if(isObject(%this.listHeader[%rank]))
     return;
 
+  if(!GlassSetting.get("Live::RoomHeaders"))
+    return;
+
   %srt = %rank;
 
   %insert = 0;
