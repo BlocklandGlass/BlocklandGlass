@@ -1,0 +1,93 @@
+//--- OBJECT WRITE BEGIN ---
+new GuiControl(GlassModManagerGroupGui) {
+   profile = "GuiDefaultProfile";
+   horizSizing = "right";
+   vertSizing = "bottom";
+   position = "0 0";
+   extent = "640 480";
+   minExtent = "8 2";
+   enabled = "1";
+   visible = "1";
+   clipToParent = "1";
+
+   new GuiWindowCtrl() {
+      profile = "GlassWindowProfile";
+      horizSizing = "center";
+      vertSizing = "center";
+      position = "207 160";
+      extent = "225 130";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      text = "Create Group";
+      maxLength = "255";
+      resizeWidth = "1";
+      resizeHeight = "1";
+      canMove = "1";
+      canClose = "1";
+      canMinimize = "0";
+      canMaximize = "0";
+      minSize = "50 50";
+      closeCommand = "canvas.popDialog(GlassModManagerGroupGui);";
+
+      new GuiMLTextCtrl(GlassModManagerGroupGui_Text) {
+         profile = "GuiMLTextProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 35";
+         extent = "205 24";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         lineSpacing = "2";
+         allowColorChars = "0";
+         maxChars = "-1";
+         text = "<font:verdana:12>Please select a name for your group containing <font:verdana bold:12>42<font:verdana:12> add-ons";
+         maxBitmapHeight = "-1";
+         selectable = "1";
+         autoResize = "1";
+      };
+      new GuiTextEditCtrl(GlassModManagerGroupGui_Input) {
+         profile = "GlassTextEditProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "10 70";
+         extent = "205 16";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         maxLength = "255";
+         historySize = "0";
+         password = "0";
+         tabComplete = "0";
+         sinkAllKeyEvents = "0";
+      };
+      new GuiBitmapButtonCtrl(GlassModManagerGroupGui_Button) {
+         profile = "GlassBlockButtonProfile";
+         horizSizing = "right";
+         vertSizing = "bottom";
+         position = "154 95";
+         extent = "60 20";
+         minExtent = "8 2";
+         enabled = "1";
+         visible = "1";
+         clipToParent = "1";
+         command = "GMM_MyAddonsPage.createGroup(true);";
+         accelerator = "enter";
+         text = "Create";
+         groupNum = "-1";
+         buttonType = "PushButton";
+         bitmap = "~/System_BlocklandGlass/image/gui/btn";
+         lockAspectRatio = "0";
+         alignLeft = "0";
+         alignTop = "0";
+         overflowImage = "0";
+         mKeepCached = "0";
+         mColor = "255 255 255 255";
+      };
+   };
+};
+//--- OBJECT WRITE END ---
