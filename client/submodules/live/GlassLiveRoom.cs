@@ -636,7 +636,7 @@ function GlassLiveRoom::userListAddHeader(%this, %rank, %colorCode, %text) {
   if(isObject(%this.listHeader[%rank]))
     return;
 
-  if(!GlassSetting.get("Live::RoomHeaders"))
+  if(!GlassSettings.get("Live::RoomHeaders"))
     return;
 
   %srt = %rank;
@@ -815,7 +815,7 @@ function GlassLiveRoom::userListBuild(%this, %do) {
 
   %userSwatch.verticalMatchChildren(0, 5);
 
-  echo("\c2User list (room " @ %this.id @ ") built in " @ (getRealTime() - %startTime) @ "ms");
+// echo("\c2User list (room " @ %this.id @ ") built in " @ (getRealTime() - %startTime) @ "ms");
 }
 
 function GlassLiveUserListSwatch::onMouseEnter(%this) {
