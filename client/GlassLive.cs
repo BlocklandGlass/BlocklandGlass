@@ -2616,6 +2616,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     tabComplete = "0";
     sinkAllKeyEvents = "0";
   };
+  %dm.input.command = %dm.input.command @ "GlassEmoteSelector::ListEmotes(" @ %dm.input.getID() @ ");";
 
   %dm.userButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonProfile";
@@ -3925,10 +3926,12 @@ function GlassEmoteSelector::CacheEmotes() {
 }
 
 function GlassEmoteSelector::ListEmotes(%msgBox) {
-  %parent = %msgBox.getGroup().getGroup();
+  %parent = %msgBox.getGroup();
+  if(%parent.getName() !$= "GlassMessageGui")
+    %parent = %msgBox.getGroup().getGroup();
 
-  if(isObject(%parent.emoteSelector))
-    %parent.emoteSelector.delete();
+  if(isObject(GlassLive_EmoteSelection))
+    GlassLive_EmoteSelection.delete(); // only allow one emote selection window at a time (not actually necessary)
 
   if(!GlassSettings.get("Live::EmotePredict"))
     return;
@@ -3938,6 +3941,9 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
   %checkEmote = strReplace(%currWord, ":" , "");
 
   if(getSubStr(%currWord, 0, 1) !$= ":" || strLen(%currWord) < 3 || strReplace(%currWord, " ", "") !$= %currWord)
+    return;
+
+  if(getSubStr(%currWord, strLen(%currWord) - 1, 1) $= ":")
     return;
 
   for(%i=0; %i < $GlassEmoteCount; %i++) {
@@ -3971,7 +3977,7 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
     %scrollExtent = %possEmoteCount * 20;
   }
 
-  %scroll = new GuiScrollCtrl() {
+  %scroll = new GuiScrollCtrl(GlassLive_EmoteSelection) {
     profile = "GlassScrollProfile";
 
     willFirstRespond = "0";
