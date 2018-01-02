@@ -2601,8 +2601,8 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
     vertSizing = "top";
-    position = "41 155";
-    extent = "210 16";
+    position = "10 155";
+    extent = "220 16";
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
@@ -2618,32 +2618,16 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   };
   %dm.input.command = %dm.input.command @ "GlassEmoteSelector::ListEmotes(" @ %dm.input.getID() @ ");";
 
-  %dm.userButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    position = "10 155";
+  %dm.userButton = new GuiBitmapCtrl() {
+    position = getWord(%dm.extent, 0) - 24 SPC "155";
     extent = "16 16";
-    text = "I";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
-    mColor = "84 217 140 200";
-    command = "if(isObject(" @ GlassLiveUser::getFromBlid(%blid) @ ".window)){" @ GlassLiveUser::getFromBlid(%blid) @ ".window.forceCenter();} GlassLive::openUserWindow(" @ %blid @ ");";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/user";
+    new GuiButtonBaseCtrl()
+    {
+      extent = "16 16";
+      command = "if(isObject(" @ GlassLiveUser::getFromBlid(%blid) @ ".window)){" @ GlassLiveUser::getFromBlid(%blid) @ ".window.forceCenter();} GlassLive::openUserWindow(" @ %blid @ ");";
+    };
   };
-
-  %dm.blockButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonProfile";
-    position = "26 155";
-    extent = "16 16";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
-  };
-
-  if(GlassLiveUser::getFromBlid(%blid).isBlocked()) {
-    %dm.blockButton.mColor = "237 184 105 200";
-    %dm.blockButton.command = "GlassLive::userUnblock(" @ %blid @ ");";
-    %dm.blockButton.text = "U";
-  } else {
-    %dm.blockButton.mColor = "237 118 105 200";
-    %dm.blockButton.command = "GlassLive::userBlock(" @ %blid @ ");";
-    %dm.blockButton.text = "B";
-  }
 
   %dm.add(%dm.resize);
   %dm.add(%dm.scroll);
@@ -2652,7 +2636,6 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %dm.scrollSwatch.add(%dm.typing);
   %dm.add(%dm.input);
   %dm.add(%dm.userButton);
-  %dm.add(%dm.blockButton);
 
   %dm.scrollSwatch.verticalMatchChildren(0, 3);
 
@@ -2684,7 +2667,7 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window.scrollSwatch.extent = getWord(%extent, 0) - 30 SPC getWord(%window.chattext.extent, 1);
   %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
-  %window.input.extent = getWord(%extent, 0) - 51 SPC getWord(%window.input.extent, 1);
+  %window.input.extent = getWord(%extent, 0) - 38 SPC getWord(%window.input.extent, 1);
   %window.userButton.position = getWord(%window.userButton.position, 0) SPC getWord(%window.input.position, 1);
   %window.blockButton.position = getWord(%window.blockButton.position, 0) SPC getWord(%window.input.position, 1);
 
