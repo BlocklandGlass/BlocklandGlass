@@ -432,67 +432,6 @@ function GlassLiveRoom::writeLog(%this, %msg) {
   %fo.delete();
 }
 
-function GlassLiveRoom::getOrderedUserList(%this) {
-  %start = getRealTime();
-
-  %mods = new GuiTextListCtrl();
-  %admins = new GuiTextListCtrl();
-  %bots = new GuiTextListCtrl();
-  // %friends = new GuiTextListCtrl();
-  %users = new GuiTextListCtrl();
-
-  for(%i = 0; %i < %this.getCount(); %i++) {
-    %user = %this.getUser(%i);
-    if(%user.isBot()) {
-      %bots.addRow(%i, %user.username);
-    } else if(%user.isAdmin()) {
-      %admins.addRow(%i, %user.username);
-    } else if(%user.isMod()) {
-      %mods.addRow(%i, %user.username);
-    // } else if(%user.isFriend()) {
-      // %friends.addRow(%i, %user.username);
-    } else {
-      %users.addRow(%i, %user.username);
-    }
-  }
-
-  %bots.sort(0);
-  %admins.sort(0);
-  %mods.sort(0);
-  // %friends.sort(0);
-  %users.sort(0);
-
-  %idList = "";
-
-  for(%i = 0; %i < %admins.rowCount(); %i++) {
-    %idList = %idList SPC %admins.getRowId(%i);
-  }
-
-  for(%i = 0; %i < %mods.rowCount(); %i++) {
-    %idList = %idList SPC %mods.getRowId(%i);
-  }
-
-  for(%i = 0; %i < %bots.rowCount(); %i++) {
-    %idList = %idList SPC %bots.getRowId(%i);
-  }
-
-  // for(%i = 0; %i < %friends.rowCount(); %i++) {
-    // %idList = %idList SPC %friends.getRowId(%i);
-  // }
-
-  for(%i = 0; %i < %users.rowCount(); %i++) {
-    %idList = %idList SPC %users.getRowId(%i);
-  }
-
-  %bots.delete();
-  %admins.delete();
-  %mods.delete();
-  // %friends.delete();
-  %users.delete();
-
-  return trim(%idList);
-}
-
 //
 // User List
 //
@@ -534,9 +473,9 @@ function GlassLiveRoom::userListAdd(%this, %user, %batched) {
     %this.userListAddHeader(%rank, 3, "Moderators");
   } else if(%user.isFriend()) { // TODO setting
     %rank = 3;
-    %this.userListAddHeader(%rank, 0, "Friends");
+    %this.userListAddHeader(%rank, 2, "Friends");
   } else {
-    %this.userListAddHeader(%rank, 0, "Users");
+    %this.userListAddHeader(%rank, 0, "Online");
   }
 
   %srt = %rank SPC %user.username;
