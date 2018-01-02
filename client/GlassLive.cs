@@ -1458,9 +1458,8 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 135");
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
 
-  GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-15 105");
-  GlassFriendsGui_AddButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-200 105");
-  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-170 105");
+  GlassFriendsGui_AddButton.position   = vectorAdd(GlassFriendsGui_Scroll.extent, "-200 104");
+  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-90 104");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
@@ -2117,9 +2116,9 @@ function GlassLive::setPowerButton(%bool) {
   %btn = GlassFriendsGui_PowerButton;
   %btn.on = %bool;
   if(%btn.on)
-    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweroff");
+    %btn.mColor = "84 217 140 150";
   else
-    %btn.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/btn_poweron");
+    %btn.mColor = "237 118 105 150";
 }
 
 function GlassLive::openAddDlg() {

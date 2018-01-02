@@ -4,7 +4,7 @@ new GuiControl(GlassFriendsGui) {
    horizSizing = "right";
    vertSizing = "bottom";
    position = "0 0";
-   extent = "640 480";
+   extent = "800 600";
    minExtent = "8 2";
    enabled = "1";
    visible = "1";
@@ -14,7 +14,7 @@ new GuiControl(GlassFriendsGui) {
       profile = "GlassWindowProfile";
       horizSizing = "right";
       vertSizing = "bottom";
-      position = "10 10";
+      position = "0 0";
       extent = "230 380";
       minExtent = "230 198";
       enabled = "1";
@@ -57,14 +57,14 @@ new GuiControl(GlassFriendsGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         color = "210 220 255 255";
+         color = "84 217 140 100";
 
          new GuiMLTextCtrl(GlassFriendsGui_HeaderText) {
             profile = "GuiMLTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 5";
-            extent = "190 22";
+            extent = "190 26";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -76,8 +76,8 @@ new GuiControl(GlassFriendsGui) {
             maxBitmapHeight = "-1";
             selectable = "1";
             autoResize = "1";
-               alignLeft = "1";
                maxLength = "255";
+               alignLeft = "1";
          };
          new GuiBitmapButtonCtrl(GlassLive_StatusSwatch) {
             profile = "GlassBlockButtonProfile";
@@ -98,7 +98,7 @@ new GuiControl(GlassFriendsGui) {
             overflowImage = "0";
             mKeepCached = "0";
             mColor = "255 255 255 110";
-			text = "";
+            text = " ";
 
             new GuiMLTextCtrl(GlassLive_Status) {
                profile = "GuiMLTextProfile";
@@ -129,6 +129,39 @@ new GuiControl(GlassFriendsGui) {
                visible = "1";
                clipToParent = "1";
                command = "GlassFriendsGui_StatusSelect::updateStatus();";
+               text = " ";
+               groupNum = "-1";
+               buttonType = "PushButton";
+            };
+         };
+         new GuiObjectView(GlassFriendsGui_Blockhead) {
+            profile = "GuiDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "120 -5";
+            extent = "74 176";
+            minExtent = "8 2";
+            enabled = "1";
+            visible = "1";
+            clipToParent = "1";
+            cameraZRot = "0";
+            forceFOV = "18";
+            lightDirection = "0 0.2 0.2";
+            lightColor = "0.600000 0.580000 0.500000 1.000000";
+            ambientColor = "0.300000 0.300000 0.300000 1.000000";
+
+            new GuiButtonBaseCtrl(GlassFriendsGui_BlockheadAnim) {
+               profile = "GuiDefaultProfile";
+               horizSizing = "right";
+               vertSizing = "bottom";
+               position = "0 0";
+               extent = "74 176";
+               minExtent = "8 2";
+               enabled = "1";
+               visible = "1";
+               clipToParent = "1";
+               command = "GlassLive::BlockheadRandomAnim();";
+               text = " ";
                groupNum = "-1";
                buttonType = "PushButton";
             };
@@ -181,7 +214,7 @@ new GuiControl(GlassFriendsGui) {
             profile = "GlassWindowProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "31 94";
+            position = "31 181";
             extent = "148 62";
             minExtent = "8 2";
             enabled = "1";
@@ -224,11 +257,11 @@ new GuiControl(GlassFriendsGui) {
                altCommand = "GlassLive::addDlgSubmit();";
                accelerator = "enter";
                maxLength = "255";
+               escapeCommand = "GlassLive::addDlgClose();";
                historySize = "0";
                password = "0";
                tabComplete = "0";
                sinkAllKeyEvents = "0";
-               escapeCommand = "GlassLive::addDlgClose();";
             };
             new GuiBitmapCtrl() {
                profile = "GuiDefaultProfile";
@@ -261,6 +294,7 @@ new GuiControl(GlassFriendsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::addDlgSubmit();";
+                  text = " ";
                   groupNum = "-1";
                   buttonType = "PushButton";
                };
@@ -270,7 +304,7 @@ new GuiControl(GlassFriendsGui) {
             profile = "GlassWindowProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "31 94";
+            position = "31 181";
             extent = "148 62";
             minExtent = "8 2";
             enabled = "1";
@@ -313,11 +347,11 @@ new GuiControl(GlassFriendsGui) {
                altCommand = "GlassLive::blockDlgSubmit();";
                accelerator = "enter";
                maxLength = "255";
+               escapeCommand = "GlassLive::addDlgClose();";
                historySize = "0";
                password = "0";
                tabComplete = "0";
                sinkAllKeyEvents = "0";
-               escapeCommand = "GlassLive::addDlgClose();";
             };
             new GuiBitmapCtrl() {
                profile = "GuiDefaultProfile";
@@ -350,6 +384,7 @@ new GuiControl(GlassFriendsGui) {
                   visible = "1";
                   clipToParent = "1";
                   command = "GlassLive::blockDlgSubmit();";
+                  text = " ";
                   groupNum = "-1";
                   buttonType = "PushButton";
                };
@@ -360,7 +395,7 @@ new GuiControl(GlassFriendsGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "195 350";
+         position = "200 2";
          extent = "24 24";
          minExtent = "8 2";
          enabled = "1";
@@ -370,59 +405,59 @@ new GuiControl(GlassFriendsGui) {
          text = " ";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/btn_poweroff";
+         bitmap = "~/System_BlocklandGlass/image/gui/btn_power";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "255 255 255 255";
+         mColor = "84 217 140 150";
             on = "1";
       };
       new GuiBitmapButtonCtrl(GlassFriendsGui_AddButton) {
-         profile = "GuiDefaultProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "10 350";
-         extent = "24 24";
+         position = "10 345";
+         extent = "100 24";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
          command = "GlassLive::openAddDlg();";
-         text = " ";
+         text = "Add Friend";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/btn_add";
+         bitmap = "~/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "255 255 255 255";
+         mColor = "84 217 140 255";
             on = "1";
       };
       new GuiBitmapButtonCtrl(GlassFriendsGui_BlockButton) {
-         profile = "GuiDefaultProfile";
+         profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "40 350";
-         extent = "24 24";
+         position = "120 345";
+         extent = "100 24";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
          clipToParent = "1";
          command = "GlassLive::openBlockDlg();";
-         text = " ";
+         text = "Block User";
          groupNum = "-1";
          buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/btn_block";
+         bitmap = "~/System_BlocklandGlass/image/gui/btn";
          lockAspectRatio = "0";
          alignLeft = "0";
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "255 255 255 255";
+         mColor = "237 118 105 255";
             on = "1";
       };
       new GuiBitmapCtrl(GlassFriendsGui_StatusSelect) {
@@ -464,9 +499,6 @@ new GuiControl(GlassFriendsGui) {
             keepCached = "0";
             mColor = "240 240 220 210";
             mMultiply = "0";
-               groupNum = "-1";
-               buttonType = "PushButton";
-               mKeepCached = "0";
 
             new GuiMLTextCtrl() {
                profile = "GuiMLTextProfile";
@@ -497,6 +529,7 @@ new GuiControl(GlassFriendsGui) {
                visible = "1";
                clipToParent = "1";
                command = "GlassFriendsGui_StatusSelect::selectStatus(\"Away\");";
+               text = " ";
                groupNum = "-1";
                buttonType = "PushButton";
             };
@@ -553,6 +586,7 @@ new GuiControl(GlassFriendsGui) {
                visible = "1";
                clipToParent = "1";
                command = "GlassFriendsGui_StatusSelect::selectStatus(\"Online\");";
+               text = " ";
                groupNum = "-1";
                buttonType = "PushButton";
             };
@@ -609,6 +643,7 @@ new GuiControl(GlassFriendsGui) {
                visible = "1";
                clipToParent = "1";
                command = "GlassFriendsGui_StatusSelect::selectStatus(\"Busy\");";
+               text = " ";
                groupNum = "-1";
                buttonType = "PushButton";
             };
