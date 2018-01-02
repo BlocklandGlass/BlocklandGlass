@@ -591,10 +591,11 @@ function GlassLiveRoom::userListCleanHeaders(%this) {
         %index = %j; //remove this
 
 
-      %height = getWord(%swatch.extent, 1);
+      %swat = %this.listSwatch[%index];
+      %height = getWord(%swat.extent, 1);
 
-      %swatch.deleteAll();
-      %swatch.delete();
+      %swat.deleteAll();
+      %swat.delete();
 
       for(%i = %index; %i < %this.listSize; %i++) {
         %s = %this.listSwatch[%i+1];
