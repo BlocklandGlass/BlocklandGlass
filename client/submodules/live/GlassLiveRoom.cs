@@ -569,6 +569,47 @@ function GlassLiveRoom::userListRemoveBLID(%this, %blid, %batched) {
 
   // clear
   %this.listSwatchBlid[%user.blid] = "";
+
+
+
+  // clean headers
+  if(!%batched)
+    %this.userListCleanHeaders();
+}
+
+function GlassLiveRoom::userListCleanHeaders(%this) {
+  %lastWasHeader = false;
+
+  for(%j = 0; %j < %this.listSize; %j++) {
+    %swatch = %this.listSwatch[%j];
+    %header = %swatch.userListHeader;
+
+    if(%lastWasHeader && %header) {
+      %index  = %j-1;
+      %height = getWord(%swatch.extent, 1);
+
+      %swatch.deleteAll();
+      %swatch.delete();
+
+      for(%i = %index; %i < %this.listSize; %i++) {
+        %s = %this.listSwatch[%i+1];
+        %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)-%height);
+        %s.index    = %i;
+
+        %this.listSwatch[%i] = %s;
+        %this.listStrCmp[%i] = %this.listStrCmp[%i+1];
+      }
+
+      %j--;
+
+    }
+
+    %lastWasHeader = %header;
+  }
+
+  // resize
+  %userSwatch = %this.view.userSwatch;
+  %userSwatch.verticalMatchChildren(0, 5);
 }
 
 function GlassLiveRoom::userListAddHeader(%this, %rank, %colorCode, %text) {
@@ -638,6 +679,7 @@ function GlassLiveRoom::userListCreateHeader(%this, %colorCode, %headerText) {
     visible = "1";
     clipToParent = "1";
     color = "0 0 0 0";
+    userListHeader = true;
   };
 
   %swatch.text = new GuiTextCtrl() {
