@@ -584,8 +584,13 @@ function GlassLiveRoom::userListCleanHeaders(%this) {
     %swatch = %this.listSwatch[%j];
     %header = %swatch.userListHeader;
 
-    if(%lastWasHeader && %header) {
-      %index  = %j-1;
+    if(%header && (%j == %this.listSize-1 || %lastWasHeader)) {
+      if(%lastWasHeader)
+        %index  = %j-1; //remove previous
+      else if(%j == %this.listSize-1)
+        %index = %j; //remove this
+
+
       %height = getWord(%swatch.extent, 1);
 
       %swatch.deleteAll();
