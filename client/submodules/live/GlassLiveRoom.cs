@@ -585,10 +585,11 @@ function GlassLiveRoom::userListCleanHeaders(%this) {
     %header = %swatch.userListHeader;
 
     if(%header && (%j == %this.listSize-1 || %lastWasHeader)) {
-      if(%lastWasHeader)
+      if(%lastWasHeader) {
         %index  = %j-1; //remove previous
-      else if(%j == %this.listSize-1)
+      } else if(%j == %this.listSize-1) {
         %index = %j; //remove this
+      }
 
 
       %swat = %this.listSwatch[%index];
@@ -597,10 +598,14 @@ function GlassLiveRoom::userListCleanHeaders(%this) {
       %swat.deleteAll();
       %swat.delete();
 
+      %this.listSize--;
+
       for(%i = %index; %i < %this.listSize; %i++) {
         %s = %this.listSwatch[%i+1];
         %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)-%height);
         %s.index    = %i;
+
+        echo("Moving " @ %i+1 @ " to " @ %i);
 
         %this.listSwatch[%i] = %s;
         %this.listStrCmp[%i] = %this.listStrCmp[%i+1];
