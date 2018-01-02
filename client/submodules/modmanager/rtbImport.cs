@@ -61,6 +61,9 @@ function GMM_ImportPage::handleResults(%this, %obj) {
     if(strPos(%name, "_") == -1) continue;
     if(!isFile("Add-Ons/" @ %name @ ".zip")) continue;
 
+    if(isFile(filePath(%file) @ "/glass.json"))
+      continue;
+
     %fo.openForRead(%file);
 
     %id = false;
@@ -91,7 +94,7 @@ function GMM_ImportPage::handleResults(%this, %obj) {
   // super hacky but not worth it to redesign mod manager at the moment
   if(%this._unopened) {
     if(%this.imports > 0)
-      glassMessageBoxYesNo("RTB Imports Available", "You have " @ %this.imports @ " RTB add-ons that can be updated to a new version. Would you like to do so now?", "GlassOverlay::openModManager(true); GlassModManagerGui.openPage(GMM_ImportPage);");
+      glassMessageBoxYesNo("RTB Imports Available", "You have " @ %this.imports @ " RTB " @ (%this.imports == 1 ? "add-on" : "add-ons") @ " that can be updated to a new version. Would you like to do so now?", "GlassOverlay::openModManager(true); GlassModManagerGui.openPage(GMM_ImportPage);");
     return;
   }
   GlassModManagerGui.pageDidLoad(%this);
