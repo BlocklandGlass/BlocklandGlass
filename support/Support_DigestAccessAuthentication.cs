@@ -1,5 +1,3 @@
-exec("./Lib_SHA256.cs");
-
 // ==================
 // Digest Access Authentication
 // ==================
@@ -22,7 +20,11 @@ exec("./Lib_SHA256.cs");
 //   nc (require qop)
 //   cnounce (require qop)
 
+// Required functionality
 exec("./general.cs");
+
+// Hashing algorithms
+exec("./Lib_SHA256.cs");
 
 // Example
 // // Create the digest
@@ -140,12 +142,12 @@ function DigestAccessAuthentication::restorePassword(%this, %hash)
 function DigestAccessAuthentication::digest(%this, %data)
 {
 	if (!%this.hasIdent())
-		return;
+		return "";
 
 	if (%this.username $= "" ||
 		%this.uri $= "" ||
 		%this._hash1 $= "")
-		return;
+		return "";
 
 	// Pick qop depending on data
 	if (isObject(%data))
