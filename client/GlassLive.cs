@@ -2668,8 +2668,7 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
   %window.chattext.extent = getWord(%extent, 0) - 35 SPC getWord(%window.chattext.extent, 1);
 
   %window.input.extent = getWord(%extent, 0) - 38 SPC getWord(%window.input.extent, 1);
-  %window.userButton.position = getWord(%window.userButton.position, 0) SPC getWord(%window.input.position, 1);
-  %window.blockButton.position = getWord(%window.blockButton.position, 0) SPC getWord(%window.input.position, 1);
+  %window.userButton.position = getWord(%window.extent, 0) - 24 SPC getWord(%window.input.position, 1);
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
