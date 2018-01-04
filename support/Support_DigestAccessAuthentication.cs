@@ -22,6 +22,7 @@
 
 // Required functionality
 exec("./general.cs");
+exec("./Support_ISAAC.cs");
 
 // Hashing algorithms
 exec("./Lib_SHA256.cs");
@@ -252,15 +253,14 @@ function DigestAccessAuthentication::hash(%this, %a0, %a1, %a2, %a3, %a4, %a5)
 }
 
 // Generate a random string of size %num
-// Note: Might use http://www.burtleburtle.net/bob/rand/isaacafa.html
 function DigestAccessAuthentication::generateRandom(%this, %num)
 {
 	%str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-	%max = strlen(%str) - 1;
+	%max = strlen(%str);
 	%rand = "";
 	for (%i = 0; %i < %num; %i++)
 	{
-		%rand = %rand @ getSubStr(%str, getRandom(0, %max), 1);
+		%rand = %rand @ getSubStr(%str, randc() % %max, 1);
 	}
 	return %rand;
 }
