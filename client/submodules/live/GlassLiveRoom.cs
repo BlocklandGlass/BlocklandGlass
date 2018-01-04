@@ -605,8 +605,6 @@ function GlassLiveRoom::userListCleanHeaders(%this) {
         %s.position = getWord(%s.position, 0) SPC (getWord(%s.position, 1)-%height);
         %s.index    = %i;
 
-        echo("Moving " @ %i+1 @ " to " @ %i);
-
         %this.listSwatch[%i] = %s;
         %this.listStrCmp[%i] = %this.listStrCmp[%i+1];
       }
