@@ -830,10 +830,18 @@ function GlassLiveUserListSwatch::onMouseDown(%this) {
   alxPlay(GlassClick1Audio);
 }
 
-function GlassLiveUserListSwatch::onMouseUp(%this) {
+function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
   %this.swatch.color = "220 220 220 255";
   if(%this.down) {
     %this.down = false;
+
+    if(%mod == 1 && GlassLiveUser::getFromBlid(getNumKeyId()).isMod()) {
+      GlassOverlay::openModeration(true);
+      GlassModeratorGui_PlayerHeader.setText("<font:verdana bold:18>" @ %this.user.username NL "<font:verdana:15>" @ %this.user.blid);
+      GlassModeratorWindow.blid = %this.user.blid;
+      return;
+    }
+
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
