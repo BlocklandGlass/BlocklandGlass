@@ -198,11 +198,11 @@ function DigestAccessAuthentication::digest(%this, %data)
 	if (%qop $= "auth" || %qop $= "auth-int")
 	{
 		// Nonce Counter
-		%nc = num2str(%this._counter);
+		%nc = %this._counter;
 		%nc = strrepeat("0", 8 - strlen(%nc)) @ %nc;
 		%root.set("nc", "string", %nc);
 
-		%this._counter++;
+		%this._counter = safe_add(%this._counter, 1);
 		// Note: Wont happen in a lifetime, but do it anyway
 		if (%this._counter > 0x7FFFFFFE)
 			%this._counter = 1;
