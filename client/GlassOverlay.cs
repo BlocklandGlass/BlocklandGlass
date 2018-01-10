@@ -238,7 +238,7 @@ function GlassOverlay::openChatroom() {
 //= Moderation                                                   =
 //================================================================
 
-function GlassOverlay::openModeration() {
+function GlassOverlay::openModeration(%safe) {
   if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
 	  return;
 
@@ -253,6 +253,8 @@ function GlassOverlay::openModeration() {
     GlassModeratorWindow_Reason.enabled = false;
     GlassModeratorWindow_Duration.enabled = false;
   } else {
+    if(%safe)
+      return;
     GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
     if(!GlassModeratorWindow.visible) {
       GlassModeratorWindow_ReasonBlocker.setVisible(false);

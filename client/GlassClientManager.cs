@@ -203,6 +203,7 @@ function GlassClientManager::skip() {
 
 package GlassClientManager {
   function GameConnection::onConnectRequestRejected(%this, %reason) {
+    //echo("\c2CONNECT ATTEMPT " @ GlassClientManager.connectAttempts);
     GlassClientManager.mods = 0;
     if(getField(%reason, 0) $= "MISSING" || getField(%reason, 0) $= "MISSING_OPT") {
       if(getField(%reason, 0) $= "MISSING")
@@ -230,7 +231,8 @@ package GlassClientManager {
       }
 
       if(GlassClientManager.connectAttempts > 4) {
-        glassMessageBoxOk("Failed to Connect", "There was an error in the required clients protocol.<br><br>Ensure all add-ons are up-to-date.");
+        glassMessageBoxOk("Failed to Connect", "There was an error in the required clients protocol.<br><br>Try to connect again. If the error persists, please file a bug report.");
+        GlassClientManager.connectAttempts = 0;
         return;
       }
 
@@ -258,8 +260,8 @@ package GlassClientManager {
         }
         GlassClientManager.requestedMods = getsubstr(%hasStr, 1, strlen(%hasStr));
         GlassClientManager.tryLegacyNext = !GlassClientManager.tryLegacyNext;
-        GlassClientManager.connectAttempts++;
         reconnectToServer();
+        GlassClientManager.connectAttempts++;
       }
     } else {
       parent::onConnectRequestRejected(%this, %reason);
@@ -277,10 +279,20 @@ package GlassClientManager {
   }
 
   function GameConnection::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, %h, %i, %j, %k, %l, %m, %n, %o,%p) {
-    %ret = parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
+    parent::setConnectArgs(%a, %b, %c, %d, %e, %f, %g, "Glass" TAB Glass.version TAB GlassClientManager.requestedMods TAB GlassClientManager.bypass NL %h, %i, %j, %k, %l, %m, %n, %o, %p);
     GlassClientManager.bypass = false;
     GlassClientManager.requestedMods = "";
-    return %ret;
+    //return %ret;
+  }
+
+  function reconnectToServer() {
+    parent::reconnectToServer();
+
+    %server = $Connection::Address;
+    if(GlassClientManager.lastConnect !$= %server) {
+      GlassClientManager.lastConnect = %server;
+      GlassClientManager.connectAttempts = 0;
+    }
   }
 
   function GlassClientGuiProgress::setValue(%this, %val) {
