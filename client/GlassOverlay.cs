@@ -62,13 +62,13 @@ function GlassOverlayGui::onWake(%this) {
 
   if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
     %pos = GlassSettings.get("Live::FriendsWindow_Pos");
-    %ext = GlassSettings.get("Live::FriendsWindow_Ext");
+    %ext = 260 SPC getWord(GlassSettings.get("Live::FriendsWindow_Ext"), 1);
 
     if(%pos > getWord(getRes(), 0))
       %pos = (getWord(getRes(), 0) - 280) SPC 50;
 
     if(%ext > getWord(getRes(), 1))
-      %ext = "230 380";
+      %ext = "260 380";
 
     GlassFriendsWindow.position = %pos;
     GlassFriendsWindow.extent = %ext;

@@ -1741,7 +1741,7 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
     extent = "16 16";
     position = "5 5";
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
-    mcolor = (%status !$= "offline") ? "255 255 255 255" : "130 130 130 100";
+    mcolor = (%status !$= "offline") ? "255 255 255 255" : "150 150 150 70";
     mMultiply = 0;
   };
 
