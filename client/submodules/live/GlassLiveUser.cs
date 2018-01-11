@@ -248,6 +248,9 @@ function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAd
   %this.serverAddress = %serverAddress;
   %this.serverPassworded = %serverPassworded;
 
+  if(%this.isFriend())
+    GlassLive::createFriendList();
+
   if(isObject(%this.window))
     GlassLive::openUserWindow(%this.blid, %isRequest);
 }

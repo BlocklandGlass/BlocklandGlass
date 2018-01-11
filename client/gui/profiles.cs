@@ -220,6 +220,11 @@ if(!isObject(GlassFriendTextHeaderProfile)) new GuiControlProfile(GlassFriendTex
   fontSize = "12";
 };
 
+if(!isObject(GlassFriendTextOfflineProfile)) new GuiControlProfile(GlassFriendTextOfflineProfile : GlassFriendTextProfile) {
+  fontType = "Verdana Bold";
+  fontColors[0] = "100 100 100 200";
+};
+
 
 if(!isObject(GuiTextVerdanaProfile)) new GuiControlProfile(GuiTextVerdanaProfile : GuiTextProfile) {
   fontType = "Verdana";

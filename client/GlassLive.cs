@@ -1664,7 +1664,7 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
     %color = "255 210 210 255";
     %hcolor = "255 230 230 255";
   } else {
-    %color = "210 210 210 255";
+    %color = "210 210 210 200";
     %hcolor = "230 230 230 255";
 
     %height = 26;
@@ -1692,7 +1692,7 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
   %gui.text = new GuiTextCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    profile = "GlassFriendTextProfile";
+    profile = (%status !$= "offline") ? "GlassFriendTextProfile" : "GlassFriendTextOfflineProfile";
     text = %displayName;
     extent = "31 18";
     position = "25 4";
@@ -1701,14 +1701,29 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
   if(%status !$= "offline") {
     %loc = %uo.getLocation();
     switch$(%loc) {
-      case "playing":
-        %text = %uo.getServerTitle();
-
       case "menus":
         %text = "Main Menu";
 
+      case "playing":
+        %text = %uo.getServerTitle();
+
+      case "playing_lan":
+        %text = "LAN Server";
+
+      case "hosting":
+        %text = %uo.getServerTitle();
+
+      case "hosting_lan":
+        %text = "LAN Server";
+
+      case "singleplayer":
+        %text = "Singleplayer";
+
+      case "private":
+        %text = "Location Private";
+
       default:
-        %text = "\c4" @ %loc;
+        %text = "(Unknown)";
     }
     %gui.details = new GuiTextCtrl() {
       horizSizing = "right";
@@ -1726,6 +1741,8 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
     extent = "16 16";
     position = "5 5";
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %icon @ ".png";
+    mcolor = (%status !$= "offline") ? "255 255 255 255" : "130 130 130 100";
+    mMultiply = 0;
   };
 
   %gui.chaticon = new GuiBitmapCtrl() {
