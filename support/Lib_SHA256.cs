@@ -18,7 +18,7 @@ $sha256_ASCIITable="\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F
 	"\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF";
 
 // implemented using pseudocode from https://en.wikipedia.org/wiki/SHA-2#Pseudocode
-// inline variant of Port's add function from https://forum.blockland.us/index.php?topic=248922.0
+// inline variant of McTwist's add function from https://gist.github.com/McTwist/12ebbf268a56c400bdd61b64cdbc04fc
 // tested against SHA256 test vectors from http://www.di-mgt.com.au/sha_testvectors.html
 function sha256($sha256_text)
 {
@@ -99,7 +99,7 @@ function sha256($sha256_text)
 			$sha256_s0 = ($sha256_w[$sha256_i - 15] >> 7 | $sha256_w[$sha256_i - 15] << 25) ^ ($sha256_w[$sha256_i - 15] >> 18 | $sha256_w[$sha256_i - 15] << 14) ^ $sha256_w[$sha256_i - 15] >> 3;
 			$sha256_s1 = ($sha256_w[$sha256_i - 2] >> 17 | $sha256_w[$sha256_i - 2] << 15) ^ ($sha256_w[$sha256_i - 2] >> 19 | $sha256_w[$sha256_i - 2] << 13) ^ $sha256_w[$sha256_i - 2] >> 10;
 
-			// inline version of Port's add function: https://forum.blockland.us/index.php?topic=248922.0
+			// inline version of McTwist's add function: https://gist.github.com/McTwist/12ebbf268a56c400bdd61b64cdbc04fc
 			// We have to avoid native addition for this because TorqueScript cannot do math. :(
 			// Operation: $sha256_w[$sha256_i] = $sha256_w[$sha256_i - 16] + $sha256_s0 + $sha256_w[$sha256_i - 7] + $sha256_s1;
 			$sha256_add0 = $sha256_w[$sha256_i - 16];
@@ -108,17 +108,11 @@ function sha256($sha256_text)
 			$sha256_add3 = $sha256_s1;
 			for ($sha256_j = 0; $sha256_j < 3; $sha256_j++)
 			{
-				$sha256__a = 1;
-				$sha256__x = $sha256_add[$sha256_j];
-				$sha256__y = $sha256_add[$sha256_j + 1];
-				while ($sha256__a)
-				{
-					$sha256__a = $sha256__x & $sha256__y;
-					$sha256__b = $sha256__x ^ $sha256__y;
-					$sha256__x = $sha256__a << 1;
-					$sha256__y = $sha256__b;
-				}
-				$sha256_add[$sha256_j + 1] = $sha256__b;
+				$sha256__a = $sha256_add[$sha256_j];
+				$sha256__b = $sha256_add[$sha256_j + 1];
+				$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+				$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+				$sha256_add[$sha256_j + 1] = $sha256__b = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
 			}
 			$sha256_w[$sha256_i] = $sha256__b;
 		}
@@ -140,7 +134,7 @@ function sha256($sha256_text)
 			$sha256_s1 = ($sha256_e >> 6 | $sha256_e << 26) ^ ($sha256_e >> 11 | $sha256_e << 21) ^ ($sha256_e >> 25 | $sha256_e << 7);
 			$sha256_ch = ($sha256_e & $sha256_f) ^ (~$sha256_e & $sha256_g);
 
-			// inline Port add
+			// inline McTwist add
 			// Operation: $sha256_temp1 = $sha256_h + $sha256_s1 + $sha256_ch + $sha256_k[$sha256_i] + $sha256_w[$sha256_i]
 			$sha256_add0 = $sha256_h;
 			$sha256_add1 = $sha256_s1;
@@ -149,65 +143,47 @@ function sha256($sha256_text)
 			$sha256_add4 = $sha256_w[$sha256_i];
 			for ($sha256_j = 0; $sha256_j < 4; $sha256_j++)
 			{
-				$sha256__a = 1;
-				$sha256__x = $sha256_add[$sha256_j];
-				$sha256__y = $sha256_add[$sha256_j + 1];
-				while ($sha256__a)
-				{
-					$sha256__a = $sha256__x & $sha256__y;
-					$sha256__b = $sha256__x ^ $sha256__y;
-					$sha256__x = $sha256__a << 1;
-					$sha256__y = $sha256__b;
-				}
-				$sha256_add[$sha256_j + 1] = $sha256__b;
+				$sha256__a = $sha256_add[$sha256_j];
+				$sha256__b = $sha256_add[$sha256_j + 1];
+				$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+				$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+				$sha256_add[$sha256_j + 1] = $sha256__b = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
 			}
 			$sha256_temp1 = $sha256__b;
 			$sha256_s0 = ($sha256_a >> 2 | $sha256_a << 30) ^ ($sha256_a >> 13 | $sha256_a << 19) ^ ($sha256_a >> 22 | $sha256_a << 10);
 			$sha256_maj = ($sha256_a & $sha256_b) ^ ($sha256_a & $sha256_c) ^ ($sha256_b & $sha256_c);
 
-			// inline Port add
+			// inline McTwist add
 			// Operation: $sha256_temp2 = $sha256_s0 + $sha256_maj;
-			$sha256__a = 1;
-			while ($sha256__a)
-			{
-				$sha256__a = $sha256_s0 & $sha256_maj;
-				$sha256__b = $sha256_s0 ^ $sha256_maj;
-				$sha256_s0 = $sha256__a << 1;
-				$sha256_maj = $sha256__b;
-			}
-			$sha256_temp2 = $sha256__b;
+			$sha256__a = $sha256_s0;
+			$sha256__b = $sha256_maj;
+			$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+			$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+			$sha256_temp2 = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
 
 			$sha256_h = $sha256_g;
 			$sha256_g = $sha256_f;
 			$sha256_f = $sha256_e;
 
-			// inline Port add
+			// inline McTwist add
 			// Operation: $sha256_e = $sha256_d + $sha256_temp1;
-			$sha256__a = 1;
-			$sha256__x = $sha256_temp1;
-			while ($sha256__a)
-			{
-				$sha256__a = $sha256__x & $sha256_d;
-				$sha256__b = $sha256__x ^ $sha256_d;
-				$sha256__x = $sha256__a << 1;
-				$sha256_d = $sha256__b;
-			}
-			$sha256_e = $sha256__b;
+			$sha256__a = $sha256_d;
+			$sha256__b = $sha256_temp1;
+			$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+			$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+			$sha256_e = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
+
 			$sha256_d = $sha256_c;
 			$sha256_c = $sha256_b;
 			$sha256_b = $sha256_a;
 
-			// inline Port add
+			// inline McTwist add
 			// Operation: $sha256_a = $sha256_temp1 + $sha256_temp2;
-			$sha256__a = 1;
-			while ($sha256__a)
-			{
-				$sha256__a = $sha256_temp1 & $sha256_temp2;
-				$sha256__b = $sha256_temp1 ^ $sha256_temp2;
-				$sha256_temp1 = $sha256__a << 1;
-				$sha256_temp2 = $sha256__b;
-			}
-			$sha256_a = $sha256__b;
+			$sha256__a = $sha256_temp1;
+			$sha256__b = $sha256_temp2;
+			$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+			$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+			$sha256_a = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
 		}
 
 		// increment $sha256_h[0] through $sha256_h[7] by $sha256_a through $sha256_h
@@ -216,19 +192,13 @@ function sha256($sha256_text)
 		$sha256_v4 = $sha256_e; $sha256_v5 = $sha256_f; $sha256_v6 = $sha256_g; $sha256_v7 = $sha256_h;
 		for ($sha256_i = 0; $sha256_i < 8; $sha256_i++)
 		{
-			// inline Port add
+			// inline McTwist add
 			// Operation: $sha256_h[$sha256_i] = $sha256_h[$sha256_i] + $sha256_v[$sha256_i];
-			$sha256__a = 1;
-			$sha256__x = $sha256_h[$sha256_i];
-			$sha256__y = $sha256_v[$sha256_i];
-			while ($sha256__a)
-			{
-				$sha256__a = $sha256__x & $sha256__y;
-				$sha256__b = $sha256__x ^ $sha256__y;
-				$sha256__x = $sha256__a << 1;
-				$sha256__y = $sha256__b;
-			}
-			$sha256_h[$sha256_i] = $sha256__b;
+			$sha256__a = $sha256_h[$sha256_i];
+			$sha256__b = $sha256_v[$sha256_i];
+			$sha256__lsb = ($sha256__a & 0xffff) + ($sha256__b & 0xffff);
+			$sha256__msb = ($sha256__a >> 16) + ($sha256__b >> 16) + ($sha256__lsb >> 16);
+			$sha256_h[$sha256_i] = ($sha256__msb << 16) | ($sha256__lsb & 0xffff);
 		}
 	}
 
