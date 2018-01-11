@@ -1819,7 +1819,7 @@ function GlassLive::createFriendRequest(%name, %blid) {
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    extent = "180 26";
+    extent = "210 26";
     position = "10 5";
     color = %color;
     hcolor = %hcolor;
