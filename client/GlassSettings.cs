@@ -57,6 +57,9 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");
   GlassSettings.registerSetting("Live::RoomShowBlocked", false, "", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
   GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom
+  // Friends List
+  GlassSettings.registerSetting("Live::ShowFriendLocationList", true, "GlassLive::createFriendList", "Show Locations", "Friends List", "checkbox", "", "Show what server your friends are in.");
+  GlassSettings.registerSetting("Live::ShowFriendOnlineCount", true, "GlassLive::createFriendList", "Show Online Count", "Friends List", "checkbox", "", "Show how many friends are online.");
   // Direct Messaging
   GlassSettings.registerSetting("Live::MessageNotification", true, "", "Message Notifications", "Direct Messaging", "checkbox");
   GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");

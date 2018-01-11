@@ -1498,7 +1498,29 @@ function GlassLive::createFriendList() {
     }
   }
 
-  %h = GlassLive::createFriendHeader("Friends", !GlassLive.hideFriends, "84 217 140 255");
+  // friends
+
+  // get counts
+
+  if(GlassSettings.get("Live::ShowFriendOnlineCount")) {
+    %friendCt = 0;
+    if(getWordCount(trim(GlassLive.friendList)) > 0) {
+      %sorted = GlassLive::sortFriendList(GlassLive.friendList);
+
+      for(%i = 0; %i < getWordCount(%sorted); %i++) {
+        %blid = getWord(%sorted, %i);
+        %uo = GlassLiveUser::getFromBlid(%blid);
+        %friendCt++;
+        if(%uo.getStatus() !$= "offline")
+          %onlineCt++;
+      }
+    }
+    %headerText = "Friends (" @ %onlineCt @ "/" @ %friendCt @")";
+  } else {
+    %headerText = "Friends";
+  }
+
+  %h = GlassLive::createFriendHeader(%headerText, !GlassLive.hideFriends, "84 217 140 255");
   %h.mouse.toggleVar = "GlassLive.hideFriends";
 
   if(getWordCount(trim(GlassLive.friendRequestList)) > 0) {
@@ -1652,7 +1674,7 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
   if(%name $= "")
     %name = "Blockhead" @ %blid;
 
-  %height = 38;
+  %height = GlassSettings.get("Live::ShowFriendLocationList") ? 38 : 26;
 
   if(%status $= "online") {
     %color = "210 220 255 255";
@@ -1698,7 +1720,7 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
     position = "25 4";
   };
 
-  if(%status !$= "offline") {
+  if(%status !$= "offline" && GlassSettings.get("Live::ShowFriendLocationList")) {
     %loc = %uo.getLocation();
     switch$(%loc) {
       case "menus":
