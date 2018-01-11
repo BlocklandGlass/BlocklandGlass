@@ -15,7 +15,7 @@ new GuiControl(GlassFriendsGui) {
       horizSizing = "right";
       vertSizing = "bottom";
       position = "0 0";
-      extent = "230 380";
+      extent = "260 380";
       minExtent = "230 198";
       enabled = "1";
       visible = "1";
@@ -35,7 +35,7 @@ new GuiControl(GlassFriendsGui) {
          horizSizing = "relative";
          vertSizing = "relative";
          position = "0 0";
-         extent = "230 14";
+         extent = "260 14";
          minExtent = "8 2";
          enabled = "1";
          visible = "0";
@@ -52,7 +52,7 @@ new GuiControl(GlassFriendsGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 33";
-         extent = "210 60";
+         extent = "240 60";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -64,7 +64,7 @@ new GuiControl(GlassFriendsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 5";
-            extent = "190 26";
+            extent = "220 26";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -138,7 +138,7 @@ new GuiControl(GlassFriendsGui) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "120 -5";
+            position = "150 -5";
             extent = "74 176";
             minExtent = "8 2";
             enabled = "1";
@@ -172,7 +172,7 @@ new GuiControl(GlassFriendsGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 100";
-         extent = "210 245";
+         extent = "240 245";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -190,7 +190,7 @@ new GuiControl(GlassFriendsGui) {
             horizSizing = "right";
             vertSizing = "bottom";
             position = "1 1";
-            extent = "200 36";
+            extent = "230 36";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
@@ -203,7 +203,7 @@ new GuiControl(GlassFriendsGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 95";
-         extent = "210 245";
+         extent = "240 245";
          minExtent = "8 2";
          enabled = "1";
          visible = "0";
@@ -214,7 +214,7 @@ new GuiControl(GlassFriendsGui) {
             profile = "GlassWindowProfile";
             horizSizing = "center";
             vertSizing = "center";
-            position = "31 181";
+            position = "46 181";
             extent = "148 62";
             minExtent = "8 2";
             enabled = "1";
@@ -395,7 +395,7 @@ new GuiControl(GlassFriendsGui) {
          profile = "GuiDefaultProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "200 2";
+         position = "118 344";
          extent = "24 24";
          minExtent = "8 2";
          enabled = "1";
@@ -419,7 +419,7 @@ new GuiControl(GlassFriendsGui) {
          horizSizing = "right";
          vertSizing = "bottom";
          position = "10 345";
-         extent = "100 24";
+         extent = "105 24";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -441,8 +441,8 @@ new GuiControl(GlassFriendsGui) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "right";
          vertSizing = "bottom";
-         position = "120 345";
-         extent = "100 24";
+         position = "150 345";
+         extent = "105 24";
          minExtent = "8 2";
          enabled = "1";
          visible = "1";

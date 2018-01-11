@@ -1179,7 +1179,7 @@ function GlassLive::createBlockhead() {
 
   GlassFriendsGui_Blockhead.add(GlassFriendsGui_BlockheadAnim);
   GlassFriendsGui_Blockhead.setVisible(false);
-  GlassFriendsGui_Blockhead.position = "120 -5";
+  GlassFriendsGui_Blockhead.position = "150 -5";
   GlassFriendsGui_Blockhead.lightDirection = "0 0.2 0.2";
   GlassFriendsGui_Blockhead.createBlockhead(0, true);
   GlassFriendsGui_InfoSwatch.add(GlassFriendsGui_Blockhead);
@@ -1458,8 +1458,9 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
   GlassFriendsGui_Scroll.extent = vectorSub(GlassFriendsWindow.extent, "20 135");
   GlassFriendsGui_ScrollOverlay.extent = GlassFriendsGui_Scroll.extent;
 
-  GlassFriendsGui_AddButton.position   = vectorAdd(GlassFriendsGui_Scroll.extent, "-200 104");
-  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-90 104");
+  GlassFriendsGui_AddButton.position   = vectorAdd(GlassFriendsGui_Scroll.extent, "-230 104");
+  GlassFriendsGui_BlockButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-95 104");
+  GlassFriendsGui_PowerButton.position = vectorAdd(GlassFriendsGui_Scroll.extent, "-122 103");
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
@@ -1517,7 +1518,7 @@ function GlassLive::createFriendList() {
         %blid = getWord(%sorted, %i);
         %uo = GlassLiveUser::getFromBlid(%blid);
 
-        %gui = GlassLive::createFriendSwatch(%uo.username, %blid, %uo.status, %uo.isFriend());
+        %gui = GlassLive::createFriendSwatch(%uo);
         %gui.placeBelow(%last, 5);
 
         GlassFriendsGui_ScrollSwatch.add(%gui);
@@ -1592,7 +1593,7 @@ function GlassLive::sortFriendList(%list) {
 
 function GlassLive::createFriendHeader(%name, %isOpen, %color) {
   %gui = new GuiSwatchCtrl() {
-    extent = "190 26";
+    extent = "220 26";
     position = "5 5";
     color = %color;
     hcolor = %color;
@@ -1601,7 +1602,7 @@ function GlassLive::createFriendHeader(%name, %isOpen, %color) {
   %gui.text = new GuiTextCtrl() {
     profile = "GlassFriendTextProfile";
     text = %name;
-    extent = "45 18";
+    extent = "190 18";
     position = "10 10";
   };
 
@@ -1609,7 +1610,7 @@ function GlassLive::createFriendHeader(%name, %isOpen, %color) {
     horizSizing = "right";
     vertSizing = "bottom";
     extent = "16 16";
-    position = "169 5";
+    position = "199 5";
     bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%isOpen ? "bullet_arrow_down.png" : "bullet_arrow_right.png");
   };
 
@@ -1643,9 +1644,15 @@ function GlassLive::createFriendHeader(%name, %isOpen, %color) {
   return %gui;
 }
 
-function GlassLive::createFriendSwatch(%name, %blid, %status) {
+function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
+  %name = %uo.username;
+  %blid = %uo.blid;
+  %status = %uo.status;
+
   if(%name $= "")
     %name = "Blockhead" @ %blid;
+
+  %height = 38;
 
   if(%status $= "online") {
     %color = "210 220 255 255";
@@ -1659,6 +1666,8 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
   } else {
     %color = "210 210 210 255";
     %hcolor = "230 230 230 255";
+
+    %height = 26;
   }
 
   %online = (%status $= "offline" ? false : true);
@@ -1670,7 +1679,7 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
   %gui = new GuiSwatchCtrl() {
     horizSizing = "right";
     vertSizing = "bottom";
-    extent = "180 26";
+    extent = "210" SPC %height;
     position = "10 5";
     color = %color;
     hcolor = %hcolor;
@@ -1686,8 +1695,30 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
     profile = "GlassFriendTextProfile";
     text = %displayName;
     extent = "31 18";
-    position = "24 10";
+    position = "25 4";
   };
+
+  if(%status !$= "offline") {
+    %loc = %uo.getLocation();
+    switch$(%loc) {
+      case "playing":
+        %text = %uo.getServerTitle();
+
+      case "menus":
+        %text = "Main Menu";
+
+      default:
+        %text = "\c4" @ %loc;
+    }
+    %gui.details = new GuiTextCtrl() {
+      horizSizing = "right";
+      vertSizing = "bottom";
+      profile = "GuiTextVerdanaProfile";
+      text = "\c2" @ %text;
+      extent = "31 18";
+      position = "25 18";
+    };
+  }
 
   %gui.icon = new GuiBitmapCtrl() {
     horizSizing = "right";
@@ -1730,12 +1761,11 @@ function GlassLive::createFriendSwatch(%name, %blid, %status) {
   %gui.glassHighlight = %gui.mouse;
 
   %gui.add(%gui.text);
+  if(isObject(%gui.details))
+    %gui.add(%gui.details);
   %gui.add(%gui.icon);
   %gui.add(%gui.chaticon);
   %gui.add(%gui.mouse);
-
-  %gui.text.centerY();
-  %gui.icon.centerY();
 
   return %gui;
 }

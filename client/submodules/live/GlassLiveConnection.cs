@@ -61,6 +61,14 @@ function GlassLiveConnection::onConnected(%this) {
 	%obj = JettisonObject();
 	%obj.set("type", "string", "auth");
 
+	if(GlassSettings.get("Live::AutoJoinRoom")) {
+		%obj.set("autoJoinRooms", "string", true);
+		%autoJoin = true;
+		GlassSettings.update("Live::AutoJoinRoom", false);
+	} else {
+		%autoJoin = false;
+	}
+
 	if(GlassAuth.usingDAA) {
 		%data = JettisonObject();
 
@@ -68,13 +76,14 @@ function GlassLiveConnection::onConnected(%this) {
 
 		%data.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
 		%data.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
+		%data.set("autoJoinRooms", "string", %autoJoin);
 
 		%digest = GlassAuth.daa.digest(%data);
 
 		%obj.set("authType", "string", "daa");
 		%obj.set("version", "string", Glass.version);
 
-	   %obj.set("ident", "string", GlassAuth.ident);
+	  %obj.set("ident", "string", GlassAuth.ident);
 		%obj.set("digest", "object", %digest);
 	} else {
 
@@ -86,13 +95,7 @@ function GlassLiveConnection::onConnected(%this) {
 
 		%obj.set("viewAvatar", "string", GlassSettings.get("Live::ViewAvatar"));
 		%obj.set("viewLocation", "string", GlassSettings.get("Live::ViewLocation"));
-	}
-
-	if(GlassSettings.get("Live::AutoJoinRoom")) {
-		%obj.set("autoJoinRooms", "string", true);
-		GlassSettings.update("Live::AutoJoinRoom", false);
-	} else {
-		%obj.set("autoJoinRooms", "string", false);
+		%obj.set("autoJoinRooms", "string", %autoJoin);
 	}
 
 	%this.send(jettisonStringify("object", %obj) @ "\r\n");
