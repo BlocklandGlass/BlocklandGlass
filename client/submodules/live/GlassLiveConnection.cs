@@ -116,8 +116,10 @@ function GlassLiveConnection::onDisconnect(%this) {
 	if(!GlassLive.noReconnect)
 		GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
 
-	GlassLive::setConnectionStatus("Disconnected", 1);
+	cancel(%this.keepaliveTimeout);
+	cancel(%this.keepaliveSchedule);
 
+	GlassLive::setConnectionStatus("Disconnected", 1);
 	GlassLive::cleanUp();
 }
 
@@ -207,7 +209,7 @@ function GlassLiveConnection::gotKeepalivePong(%this) {
 
 function GlassLiveConnection::keepaliveFailed(%this) {
 	%this.doDisconnect();
-	GlassLive::error("Glass Live timed out!");
+	GlassLog::error("Glass Live timed out!");
 	GlassLive::connectToServer();
 }
 
