@@ -1,7 +1,7 @@
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "4.2.0";
+			version = "4.2.1-beta";
 			address = "api.blocklandglass.com"; //api address
 			netAddress = "blocklandglass.com"; //url address
 			enableCLI = true;
@@ -9,6 +9,11 @@ function Glass::init(%context) {
 			liveAddress = "blocklandglass.com";
 			livePort = 27002;
 		};
+	}
+
+	if(!isObject(GlassLog)) {
+		exec("./common/GlassLog.cs");
+		GlassLog::init();
 	}
 
 	if(isFile("Add-Ons/System_BlocklandGlass/dev/config.json")) {

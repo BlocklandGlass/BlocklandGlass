@@ -635,7 +635,9 @@ package GlassModManager {
   }
 
   function GlassAuth::onAuthSuccess(%this) {
-    GlassModManager.checkImports();
+    if(!%this.firstAuth)
+      GlassModManager.checkImports();
+      
     parent::onAuthSuccess(%this);
   }
 };
