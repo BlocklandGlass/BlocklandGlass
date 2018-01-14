@@ -271,7 +271,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getASCIIString(getWord(%msg, %i));
 
-    if(strPos(%word, "@") == 0) {
+    if(strPos(%word, "@") == 0 && strlen(%word) > 1) {
       if(%word $= "@here" || %word $= "@room") {
 
         if(%sender.isAdmin()) {
