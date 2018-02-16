@@ -59,7 +59,7 @@ function isaac_init(%flag)
 	{
 		for (%i = 0; %i < 256; %i++)
 		{
-			$ISAAC::rands[%i] = getRandom(0, 0xffffff);
+			$ISAAC::rands[%i] = getRandom(0, 0x7fffffff) | 0;
 		}
 	}
 
