@@ -889,7 +889,7 @@ function GlassLive::messageTypeEnd(%blid) {
 
 function GlassLive::createMessageReminder() {
   if(isObject(GlassMessageReminder))
-	GlassMessageReminder.delete();
+    GlassMessageReminder.delete();
 
 	if(!GlassSettings.get("Live::ReminderIcon"))
 	  return;

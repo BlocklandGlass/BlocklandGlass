@@ -394,8 +394,9 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     if(%mentioned && GlassSettings.get("Live::RoomMentionNotification") && %sender.canSendMessage()) {
       if(GlassLive.lastMentioned $= "" || $Sim::Time > GlassLive.lastMentioned) {
         if(!%this.view.isAwake()) {
-	      if(GlassSettings.get("Live::ReminderIcon"))
-		    GlassMessageReminder.setVisible(true);
+          if(GlassSettings.get("Live::ReminderIcon"))
+            GlassMessageReminder.setVisible(true);
+
           new ScriptObject(GlassNotification) {
             title = "Mentioned in " @ %this.name;
             text = "You were mentioned by <font:verdana bold:13>" @ %sender.username @ " (" @ %senderblid @ ")";
