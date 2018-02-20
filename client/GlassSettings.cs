@@ -65,8 +65,8 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
   // Servers
   GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
-  GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init", "Display Passworded Favorites", "Servers", "checkbox", "", "Display Favorite Servers that are passworded.");
   GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
+  GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init", "Display Passworded Favorites", "Servers", "checkbox", "", "Display Favorite Servers that are passworded.");
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   // Privacy
   GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "can view my avatar *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view your avatar.<br><br><font:verdana bold:13>Requires reconnect.");

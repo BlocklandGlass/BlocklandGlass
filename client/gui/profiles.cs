@@ -302,5 +302,19 @@ package GlassTheme {
     if(isFunction(%this, onAdd))
       return parent::onAdd(%this, %a);
   }
+  
+  function GuiBitmapButtonCtrl::onAdd(%this, %a) {
+    if(isObject(%this.getGroup()) && %this.getGroup().getName() $= "GlassModManagerGui_Window") {
+      if(%this.profile $= "GlassBlockButtonProfile") {
+        if(GlassSettings.get("Glass::UseDefaultWindows")) {
+          %this.bitmap = "base/client/ui/tab1";
+          %this.setProfile(BlockButtonProfile);
+        }
+      }
+    }
+    
+    if(isFunction(%this, onAdd))
+      return parent::onAdd(%this, %a);
+  }
 };
 activatePackage(GlassTheme);

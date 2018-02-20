@@ -1502,6 +1502,7 @@ function GlassLive::createFriendList() {
 
   // get counts
 
+  %onlineCt = 0;
   if(GlassSettings.get("Live::ShowFriendOnlineCount")) {
     %friendCt = 0;
     if(getWordCount(trim(GlassLive.friendList)) > 0) {
@@ -1727,13 +1728,13 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
         %text = "Main Menu";
 
       case "playing":
-        %text = %uo.getServerTitle();
+        %text = getASCIIString(%uo.getServerTitle());
 
       case "playing_lan":
         %text = "LAN Server";
 
       case "hosting":
-        %text = %uo.getServerTitle();
+        %text = getASCIIString(%uo.getServerTitle());
 
       case "hosting_lan":
         %text = "LAN Server";

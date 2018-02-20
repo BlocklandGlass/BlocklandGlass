@@ -130,13 +130,13 @@ function GlassLog::log(%str, %level, %baseLevel) {
 
     for(%i = 0; %i < getLineCount(%str); %i++) {
       %line = getLine(%str, %i);
-      GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %baseLevelText @ "]\t" @ expandEscape(%line));
+      GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %baseLevelText @ "]\t" @ expandEscape(stripMLControlChars(%line)));
     }
 
   } else {
 
     // alternatively write full chunk. bad formatting but not frequent
-    GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %baseLevelText @ "]\t" @ expandEscape(%str));
+    GlassLogFO.writeLine("[" @ %time @ "]\t[" @ %baseLevelText @ "]\t" @ expandEscape(stripMLControlChars(%str)));
 
   }
   GlassLogFO.close();

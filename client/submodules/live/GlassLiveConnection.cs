@@ -237,14 +237,14 @@ function GlassLiveConnection::onLine(%this, %line) {
 			switch$(%data.status) {
 				case "failed":
 					%this.doDisconnect();
-					GlassLog::log("Glass Live Authentication: FAILED");
+					GlassLog::log("Glass Live Authentication: FAILED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
 					if(%data.action $= "reident") {
 						GlassAuth.reident();
 					}
 
 				case "success":
-					GlassLog::log("Glass Live Authentication: SUCCESS");
-			      GlassLive::checkPendingFriendRequests();
+					GlassLog::log("Glass Live Authentication: SUCCESS \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
+			    GlassLive::checkPendingFriendRequests();
 					GlassLive.onAuthSuccess();
 					GlassLiveConnection.sendKeepalivePing();
 

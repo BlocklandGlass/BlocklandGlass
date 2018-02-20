@@ -145,7 +145,7 @@ function GlassAuth::validateIdentity(%this) {
   }
 
   if(%changed) {
-    GlassLog::log("Glass Auth: \c1Identity changed, re-authenicating");
+    GlassLog::log("Glass Auth: \c1Identity changed, re-authenticating");
     %this.clearIdentity();
   }
 }
@@ -224,10 +224,11 @@ function GlassAuthTCP::onDone(%this) {
       switch$(%object.status) {
         case "success":
           //successful authentication
+          %time = getSubStr(getWord(getDateTime(), 1), 0, 5);
           if(!GlassAuth.isAuthed)
-            GlassLog::log("Glass Auth: \c4SUCCESS");
+            GlassLog::log("Glass Auth: \c4SUCCESS \c3" @ %time);
           else
-            GlassLog::log("Glass Auth: \c4RENEWED \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
+            GlassLog::log("Glass Auth: \c4RENEWED \c3" @ %time);
 
           GlassAuth.hasAccount = %object.hasGlassAccount;
 
@@ -293,7 +294,7 @@ function GlassAuthTCP::onDone(%this) {
 
         case "barred":
           GlassLog::log("Glass Auth: \c2BARRED");
-          glassMessageBoxOk("Barred", "Sorry,<br><br>You have been barred from using online Blockland Glass services");
+          glassMessageBoxOk("Barred", "Sorry,<br><br>You have been barred from using online Blockland Glass services.");
 
         case "error":
           GlassLog::error("Glass Auth: \c2ERROR");

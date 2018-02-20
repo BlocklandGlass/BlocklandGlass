@@ -35,7 +35,7 @@ function GlassAudio::add(%name, %volumeControlled) {
   }
 
   if(%volumeControlled) {
-    for(%volume = 0.2; %volume < 1.1; (%volume = %volume + 0.2)) {
+    for(%volume = 0.2; %volume < 1.1; %volume += 0.2) {
       %unique = strreplace(%volume, ".", "_");
       %description = "GlassAudioVolume" @ %unique @ "Gui";
 

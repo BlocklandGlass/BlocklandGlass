@@ -199,11 +199,18 @@ function Glass::useWindowTheme(%this, %bool) {
 		if(!isObject(%window))
 			continue;
 
-		if(%bool) {
-			%window.setProfile(GlassWindowProfile);
-		} else {
-			%window.setProfile(BlockWindowProfile);
-		}
+    %window.setProfile(%bool ? GlassWindowProfile : BlockWindowProfile);
+    
+    if(%window.getName() $= "GlassModManagerGui_Window") {
+      for(%o = 0; %o < %window.getCount(); %o++) {
+        %ctrl = %window.getObject(%o);
+        
+        if(%ctrl.profile $= "GlassBlockButtonProfile" || %ctrl.profile $= "BlockButtonProfile") {
+          %ctrl.bitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1" : "base/client/ui/tab1");
+          %ctrl.setProfile(%bool ? GlassBlockButtonProfile : BlockButtonProfile);
+        }
+      }
+    }
 	}
 
 	for(%i = 0; %i < canvas.getCount(); %i++) {
