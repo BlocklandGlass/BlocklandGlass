@@ -206,7 +206,7 @@ function Glass::useWindowTheme(%this, %bool) {
         %ctrl = %window.getObject(%o);
         
         if(%ctrl.profile $= "GlassBlockButtonProfile" || %ctrl.profile $= "BlockButtonProfile") {
-          %ctrl.bitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1" : "base/client/ui/tab1");
+          %ctrl.setBitmap(%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1" : "base/client/ui/tab1");
           %ctrl.setProfile(%bool ? GlassBlockButtonProfile : BlockButtonProfile);
         }
       }

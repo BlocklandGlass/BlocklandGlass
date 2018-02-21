@@ -307,7 +307,7 @@ package GlassTheme {
     if(isObject(%this.getGroup()) && %this.getGroup().getName() $= "GlassModManagerGui_Window") {
       if(%this.profile $= "GlassBlockButtonProfile") {
         if(GlassSettings.get("Glass::UseDefaultWindows")) {
-          %this.bitmap = "base/client/ui/tab1";
+          %this.setBitmap("base/client/ui/tab1");
           %this.setProfile(BlockButtonProfile);
         }
       }
