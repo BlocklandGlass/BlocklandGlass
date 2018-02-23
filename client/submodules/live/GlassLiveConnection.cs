@@ -250,6 +250,9 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				default:
 					GlassLog::error("\c2Glass Live received an unknown auth response: " @ %data.status);
+					if(%data.action $= "reident") {
+						GlassAuth.reident();
+					}
 			}
 			// TODO handle failure
 

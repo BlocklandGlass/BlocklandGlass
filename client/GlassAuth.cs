@@ -343,7 +343,10 @@ function GlassAuthTCP::onDone(%this) {
 
 		} else {
 		  GlassLog::error("Glass Auth: \c2INVALID RESPONSE");
-        GlassLog::debug(%this.buffer);
+      GlassLog::debug(%this.buffer);
+      
+      GlassAuth.authing = false;
+      GlassAuth.schedule(5*1000, reident);
 		}
 
 
