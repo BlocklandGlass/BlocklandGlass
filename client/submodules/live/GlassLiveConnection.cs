@@ -329,7 +329,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "roomMessage":
 			%room = GlassLiveRooms::getFromId(%data.room);
 			if(isObject(%room)) {
-				%msg = %data.msg;
+				%msg = getASCIIString(%data.msg);
 				%sender = %data.sender;
 				%senderblid = %data.sender_id;
 

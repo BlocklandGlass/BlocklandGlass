@@ -226,8 +226,9 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
 function GlassLiveRoom::sendMessage(%this, %msg) {
   %obj = JettisonObject();
   %obj.set("type", "string", "roomChat");
-  %obj.set("message", "string", %msg);
+  %obj.set("message", "string", getUTF8String(%msg));
   %obj.set("room", "string", %this.id);
+  %obj.delete();
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 }
