@@ -136,12 +136,11 @@ function GlassAuthS::clearIdentity(%this) {
     %this.daa_nonceCounter = 0 ;
     %this.daa_hash         = "";
     %this.daa              = "";
-
-    %this.isAuthed         = false;
   } else {
     %this.ident = "";
   }
 
+  %this.isAuthed  = false;
   %this.firstAuth = false;
 }
 

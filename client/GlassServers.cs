@@ -513,7 +513,7 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
         if(%cl.status $= "")
           %cl.status = "-";
 
-        GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB %cl.name TAB %cl.blid);
+        GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
       }
     }
   }
