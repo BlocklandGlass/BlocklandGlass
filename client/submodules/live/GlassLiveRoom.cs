@@ -228,9 +228,9 @@ function GlassLiveRoom::sendMessage(%this, %msg) {
   %obj.set("type", "string", "roomChat");
   %obj.set("message", "string", getUTF8String(%msg));
   %obj.set("room", "string", %this.id);
-  %obj.delete();
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
 }
 
 function GlassLiveRoom::sendCommand(%this, %msg) {
