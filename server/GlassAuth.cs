@@ -136,12 +136,11 @@ function GlassAuthS::clearIdentity(%this) {
     %this.daa_nonceCounter = 0 ;
     %this.daa_hash         = "";
     %this.daa              = "";
-
-    %this.isAuthed         = false;
   } else {
     %this.ident = "";
   }
 
+  %this.isAuthed  = false;
   %this.firstAuth = false;
 }
 
@@ -234,6 +233,9 @@ function GlassAuthServerTCP::onDone(%this) {
 		} else {
 			echo("Glass Server Auth: \c2INVALID RESPONSE");
       echo(%this.buffer);
+
+      GlassAuthS.authing = false;
+      GlassAuthS.schedule(10*1000, reident);
 		}
 
 

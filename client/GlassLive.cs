@@ -837,7 +837,7 @@ function GlassLive::joinRoom(%id) {
 function GlassLive::sendRoomMessage(%msg, %id) {
   %obj = JettisonObject();
   %obj.set("type", "string", "roomChat");
-  %obj.set("message", "string", %msg);
+  %obj.set("message", "string", getUTF8String(%msg));
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
