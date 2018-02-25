@@ -27,12 +27,12 @@ function GlassBugReportGui::submit(%this) {
   %body  = GlassBugReportGui_Body.getValue();
 
   if(strlen(%title) < 5) {
-    glassMessageBoxOk("Uh-Oh!", "Submit a long title please!");
+    glassMessageBoxOk("Uh-Oh", "Submit a longer title please!");
     return;
   }
 
   if(strlen(%body) < 5) {
-    glassMessageBoxOk("Uh-Oh!", "Submit a long description please!");
+    glassMessageBoxOk("Uh-Oh", "Submit a longer description please!");
     return;
   }
 

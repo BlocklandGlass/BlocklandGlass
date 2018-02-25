@@ -107,7 +107,7 @@ function GlassLiveGroup::onInvite(%this, %inviter) {
   }
 
   %this.inviteNotification = new ScriptObject(GlassNotification) {
-    title = "Groupchat Invitiation";
+    title = "Groupchat Invitation";
     text = %inviter @ " invited to a Groupchat with " @ %userStr @ ".";
     image = "bell";
 

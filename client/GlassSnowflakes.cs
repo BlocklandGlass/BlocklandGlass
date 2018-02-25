@@ -22,7 +22,7 @@ function GlassSnowflakes::newFlake(%this) {
     speed = getRandom(7, 20);
     position = getRandom(0, %this.width-32) SPC -32;
 
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ (%big ? "snow_big.png" : "snow.png");
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/" @ (%big ? "snow_big.png" : "snow.png");
 
     mcolor = "255 255 255 0";
 

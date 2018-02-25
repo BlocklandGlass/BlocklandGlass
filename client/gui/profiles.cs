@@ -286,9 +286,8 @@ if(!isObject(GlassProgressProfile)) new GuiControlProfile(GlassProgressProfile :
 package GlassTheme {
   function GuiWindowCtrl::onAdd(%this, %a) {
     if(%this.profile $= "GlassWindowProfile") {
-      if(GlassSettings.get("Glass::UseDefaultWindows")) {
-        %this.setProfile(BlockWindowProfile);
-      }
+      if(GlassSettings.get("Glass::UseDefaultWindows"))
+        %this.setProfile("BlockWindowProfile");
 
       %windows = trim(Glass.windows TAB %this.getId());
       Glass.windows = "";
@@ -302,17 +301,21 @@ package GlassTheme {
     if(isFunction(%this, onAdd))
       return parent::onAdd(%this, %a);
   }
-  
+
   function GuiBitmapButtonCtrl::onAdd(%this, %a) {
-    if(isObject(%this.getGroup()) && %this.getGroup().getName() $= "GlassModManagerGui_Window") {
-      if(%this.profile $= "GlassBlockButtonProfile") {
-        if(GlassSettings.get("Glass::UseDefaultWindows")) {
+    if(GlassSettings.get("Glass::UseDefaultWindows")) {
+      if(isObject(%group = %this.getGroup()) && (%group.getName() $= "GlassModManagerGui_Window" || %group.getName() $= "GlassServerControlGui_Window" || %group.getName() $= "GlassChatroomTab")) {
+        %do = true;
+      }
+
+      if(%do) {
+        if(%this.profile $= "GlassBlockButtonProfile") {
           %this.setBitmap("base/client/ui/tab1");
-          %this.setProfile(BlockButtonProfile);
+          %this.setProfile("BlockButtonProfile");
         }
       }
     }
-    
+
     if(isFunction(%this, onAdd))
       return parent::onAdd(%this, %a);
   }

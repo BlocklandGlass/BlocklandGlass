@@ -25,11 +25,9 @@ function GlassCompatibility::oRBs_find() {
         sticky = true;
         callback = "GlassCompatibility::oRBs_warning();";
         image = "hourglass";
-
-        sound = GlassBellAudio;
       };
 
-      //schedule(2500, 0, "alxPlay", GlassBellAudio);
+      GlassAudio::play("bell");
     }
   }
 }

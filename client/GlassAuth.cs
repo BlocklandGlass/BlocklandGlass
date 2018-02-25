@@ -597,7 +597,7 @@ function GlassVerifyAccountGui::submit(%this) {
 
 function GlassVerifyAccountGui::decline(%this, %conf) {
   if(!%conf) {
-    glassMessageBoxYesNo("Are you sure?", "Are you sure you didn't register an account? Clicking \"Yes\" will delete any accounts claiming your BL_ID", "GlassVerifyAccountGui.decline(true);");
+    glassMessageBoxYesNo("Are You Sure", "Are you sure you didn't register an account? Clicking \"Yes\" will delete any accounts claiming your BL_ID", "GlassVerifyAccountGui.decline(true);");
     return;
   }
 

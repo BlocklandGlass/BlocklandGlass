@@ -242,7 +242,8 @@ function GlassLive::cleanup() {
   GlassModeratorWindow.setVisible(false);
   GlassLiveModeratorButton.setVisible(false);
   if(isObject(GlassFriendsGui_Blockhead))
-	GlassFriendsGui_Blockhead.setVisible(false);
+    GlassFriendsGui_Blockhead.setVisible(false);
+  GlassFriendsGui_StatusSelect.setVisible(false);
 
   GlassLive.afkCheck(false);
 }
@@ -303,27 +304,41 @@ function wordPos(%str, %word) {
   return -1;
 }
 
-function secondsToTimeString(%total) { // Crown
-  %days = mFloor(%total / 86400);
-  %remander = %total % 86400;
+function secondsToTimeString(%total) { // Crown, amended by Shock 2/24/18
+  if(%total == -1)
+    return "infinity";
 
-  %hours = mFloor(%remander / 3600);
-  %remander = %remander % 3600;
+  %years = mFloor(%total / 31536000);
+  %remainder = %total % 31536000;
 
-  %minutes = mFloor(%remander / 60);
+  %days = mFloor(%remainder / 86400);
+  %remainder = %remainder % 86400;
 
-  %seconds = mFloor(%remander % 60);
+  %hours = mFloor(%remainder / 3600);
+  %remainder = %remainder % 3600;
 
-  if(%days != 1)
-    %s = "s";
-  if(%hours != 1)
-    %hs = "s";
-  if(%minutes != 1)
-    %ms = "s";
-  if(%seconds != 1)
-    %ss = "s";
+  %minutes = mFloor(%remainder / 60);
 
-  return %days SPC "day" @ %s @ "," SPC %hours SPC "hour" @ %hs @ "," SPC %minutes SPC "minute" @ %ms SPC "and" SPC %seconds SPC "second" @ %ss;
+  %seconds = mFloor(%remainder % 60);
+
+  %ys = (%years != 1 ? "s" : "");
+  %ds = (%days != 1 ? "s" : "");
+  %hs = (%hours != 1 ? "s" : "");
+  %ms = (%minutes != 1 ? "s" : "");
+  %ss = (%seconds != 1 ? "s" : "");
+
+  if(%years > 0)
+    %str = %str SPC %years SPC "year" @ %ys;
+  if(%days > 0)
+    %str = %str SPC %days SPC "day" @ %ds;
+  if(%hours > 0)
+    %str = %str SPC %hours SPC "hour" @ %hs;
+  if(%minutes > 0)
+    %str = %str SPC %minutes SPC "minute" @ %ms;
+  if(%seconds > 0)
+    %str = %str SPC %seconds SPC "second" @ %ss;
+
+  return trim(%str);
 }
 
 //================================================================
@@ -409,7 +424,7 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
     } else {
       %this.openRoomBrowser();
       %this.renderTabs();
-      %this.setText("Chatroom List");
+      %this.setText("Glass Chatroom List");
     }
 
   } else {
@@ -432,7 +447,7 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
 function GlassChatroomWindow::exitTab(%this) {
   %tab = %this.activeTab;
   if(isObject(%tab)) {
-    glassMessageBoxYesNo("Leave Room", "Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:15>?", %tab.room.getId() @ ".leaveRoom();");
+    glassMessageBoxYesNo("Leave Room", "Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:13>?", %tab.room.getId() @ ".leaveRoom();");
   }
 }
 
@@ -463,7 +478,7 @@ function GlassChatroomWindow::openTab(%this, %id) {
       %button.mouseCtrl.setUse(true);
 
     if(%tab.getName() $= "GlassChatroomTab") {
-      %this.text = "Chatroom - " @ %tab.title; // @ " - " @ %this.getId();
+      %this.text = "Glass Chatroom - " @ %tab.title; // @ " - " @ %this.getId();
       %this.setText(%this.text);
 
       // %tab.room.setAwake(true);
@@ -2178,7 +2193,7 @@ function GlassLive::powerButtonPress() {
       GlassLive::disconnect($Glass::Disconnect["Manual"]);
     }
   } else {
-    GlassLive::connectToServer();
+    GlassLive.schedule(0, connectToServer);
   }
 }
 
@@ -3217,6 +3232,7 @@ function GlassModeratorWindow_Selection::onSelect(%this) {
     GlassModeratorWindow_Duration.enabled = true;
   }
   GlassModeratorWindow.selection = %selection;
+  GlassModeratorGui.updateDuration();
 }
 
 function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
@@ -3227,43 +3243,130 @@ function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
   GlassModeratorWindow.blid = %blid;
 }
 
-function GlassModeratorGui::SwapTabs(%this) {
-  if(GlassModeratorGui_PlayerTab.visible) {
-    GlassModeratorGui_PlayerTab.setVisible(false);
-    GlassModeratorGui_LogsTab.setVisible(true);
-    GlassModeratorWindow_SwapButton.setText("Players");
-  } else {
-    GlassModeratorGui_PlayerTab.setVisible(true);
-    GlassModeratorGui_LogsTab.setVisible(false);
-    GlassModeratorWindow_SwapButton.setText("Logs");
-  }
-}
+// function GlassModeratorGui::SwapTabs(%this) {
+  // if(GlassModeratorGui_PlayerTab.visible) {
+    // GlassModeratorGui_PlayerTab.setVisible(false);
+    // GlassModeratorGui_LogsTab.setVisible(true);
+    // GlassModeratorWindow_SwapButton.setText("Players");
+  // } else {
+    // GlassModeratorGui_PlayerTab.setVisible(true);
+    // GlassModeratorGui_LogsTab.setVisible(false);
+    // GlassModeratorWindow_SwapButton.setText("Logs");
+  // }
+// }
 
-function GlassModeratorGui::submit(%this) {
+function GlassModeratorGui::submit(%this, %confirm) {
   %blid = GlassModeratorWindow.blid;
+  %name = GlassLiveUsers.user[%blid].username;
   %type = GlassModeratorWindow_Selection.getValue();
-  %duration = GlassModeratorWindow_Duration.getValue();
+  %duration = trim(GlassModeratorWindow_Duration.getValue());
+  %reason = trim(GlassModeratorWindow_Reason.getValue());
 
-  if(%type !$= "Mute" && %type !$= "Kick") {
-    %reason = GlassModeratorWindow_Reason.getValue();
+  if(%type $= "Bar" || %type $= "Ban") {
     if(%reason $= "") {
       glassMessageBoxOk("Error", "You must enter a reason.");
       return;
     }
+  }
 
-    if((%duration == 0 || %duration $= "") && %duration != -1) {
-      glassMessageBoxOk("Error", "You must enter a valid duration.");
-      return;
+  if(%type !$= "Kick" && (%duration == 0 || %duration $= "") || %duration < -1) {
+    glassMessageBoxOk("Error", "You must enter a valid duration.");
+    return;
+  }
+
+  if(GlassChatroomWindow.activeTab.id $= "") {
+    glassMessageBoxOk("Error", "Active Glass chatroom window was not found.<br><br>Please connect to a chatroom before using the moderation GUI.");
+    return;
+  }
+
+  if(!%confirm) {
+    %txt = "<font:verdana bold:20>Confirm " @ %type @ "<br><br>";
+    %txt = %txt SPC "<font:verdana:18>You are about to";
+    %txt = %txt SPC strlwr(%type);
+    %txt = %txt SPC "<font:verdana bold:18>" @ %name @ "<font:verdana:18>";
+    %txt = %txt SPC "(" @ %blid @ ")";
+    if(%type $= "Ban" || %type $= "Bar")
+      %txt = %txt SPC "with reason \"" @ trim(%reason) @ "\"";
+    if(%type !$= "Kick") {
+      if(%duration == -1)
+        %durTime = secondsToTimeString(%duration);
+      else if(%type !$= "Mute")
+        %durTime = secondsToTimeString(%duration * 60);
+      else
+        %durTime = secondsToTimeString(%duration);
+
+      %txt = %txt SPC "for" SPC %durTime @ ".";
     }
-    %reason = " " @ %reason;
+    %txt = %txt SPC "<br><br><font:verdana:14>";
+    if(%type $= "Bar")
+      %txt = %txt SPC "The user will not be able to use any online Glass services for the duration specified.<br><br><color:FF0000><font:verdana bold:14>Consider this action carefully.";
+    else if(%type $= "Ban")
+      %txt = %txt SPC "The user will not be able to connect to any Glass chatrooms for the duration specified.<br><br>Access to their friends list and DMing will remain available.";
+    else if(%type $= "Kick")
+      %txt = %txt SPC "The user will be kicked from the active Glass chatroom you are in.";
+    else if(%type $= "Mute")
+      %txt = %txt SPC "The user will be muted in all Glass chatrooms for the duration specified.";
+
+    glassMessageBoxOkCancel("Wait", %txt, "GlassModerationGui.submit(true);");
+    return;
   }
 
   if(%type $= "Kick")
     GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
-    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid @ %reason, GlassChatroomWindow.activeTab.id);
+    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid SPC %reason, GlassChatroomWindow.activeTab.id);
 
   Glass::debug("Sent room command:" SPC %cmd);
+}
+
+function GlassModeratorGui::addDuration(%this, %seconds) {
+  if(GlassModeratorWindow_Selection.getValue() $= "Kick" || GlassModeratorWindow_Selection.getValue() $= "Select")
+    return;
+
+  if(GlassModeratorWindow_Selection.getValue() !$= "Mute")
+    %seconds /= 60;
+
+  %current = trim(GlassModeratorWindow_Duration.getValue());
+
+  if(%current == -1)
+    %current = 0;
+
+  GlassModeratorWindow_Duration.setValue(%current + %seconds);
+
+  GlassModeratorGui.updateDuration();
+}
+
+function GlassModeratorGui::updateDuration(%this) {
+  if(GlassModeratorWindow_Selection.getValue() $= "Kick") {
+    GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>Duration Not Available");
+    return;
+  }
+
+  %duration = GlassModeratorWindow_Duration.getValue();
+
+  if(%duration $= "") {
+    GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>No Duration Set");
+    return;
+  }
+
+  if(%duration == -1) {
+    GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center><color:ff0000>Permanent");
+    return;
+  }
+
+  if((%duration == 0 || %duration $= "") || %duration < -1) {
+    GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>Error");
+    return;
+  }
+
+  if(GlassModeratorWindow_Selection.getValue() !$= "Mute")
+    %duration *= 60;
+
+  GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>" @ secondsToTimeString(%duration));
+}
+
+function GlassModeratorWindow_Duration::onUpdate(%this) {
+  GlassModeratorGui.updateDuration();
 }
 
 //================================================================
@@ -3606,11 +3709,19 @@ function GlassChatroomWindow::createTabButton(%this, %i, %width) {
     minextent = %width SPC 18;
   };
 
+  if(GlassSettings.get("Glass::UseDefaultWindows")) {
+    %inUse = "base/client/ui/tab1use";
+    %notInUse = "base/client/ui/tab1";
+  } else {
+    %inUse = "Add-Ons/System_BlocklandGlass/image/gui/tab1use";
+    %notInUse = "Add-Ons/System_BlocklandGlass/image/gui/tab1";
+  }
+
   %button.mouseCtrl = new GuiMouseEventCtrl(GlassChatroomTabMouse) {
     image = %button;
     extent = %button.extent;
     position = "0 0";
-    baseBitmap = (%i == %this.activeTabId ? "Add-Ons/System_BlocklandGlass/image/gui/tab1use" : "Add-Ons/System_BlocklandGlass/image/gui/tab1");
+    baseBitmap = (%i == %this.activeTabId ? %inUse : %notInUse);
     extension = "n";
 
     command = %this.getId() @ ".openTab(" @ %i @ ");";
@@ -3649,8 +3760,7 @@ function GlassChatroomWindow::createAddTabButton(%this) {
     overflowImage = "0";
     mKeepCached = "0";
     mColor = "255 255 255 200";
-
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1";
+    bitmap = (GlassSettings.get("Glass::UseDefaultWindows") ? "base/client/ui/tab1" : "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1");
 
     command = %this.getId() @ ".openRoomBrowser();";
   };
@@ -3658,7 +3768,10 @@ function GlassChatroomWindow::createAddTabButton(%this) {
 }
 
 function GlassChatroomTabMouse::setUse(%this, %bool) {
-  %this.baseBitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tab1use" : "Add-Ons/System_BlocklandGlass/image/gui/tab1");
+  if(GlassSettings.get("Glass::UseDefaultWindows"))
+    %this.baseBitmap = (%bool ? "base/client/ui/tab1use" : "base/client/ui/tab1");
+  else
+    %this.baseBitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tab1use" : "Add-Ons/System_BlocklandGlass/image/gui/tab1");
   %this.render();
 }
 

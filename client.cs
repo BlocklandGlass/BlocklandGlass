@@ -199,16 +199,36 @@ function Glass::useWindowTheme(%this, %bool) {
 		if(!isObject(%window))
 			continue;
 
-    %window.setProfile(%bool ? GlassWindowProfile : BlockWindowProfile);
-    
-    if(%window.getName() $= "GlassModManagerGui_Window") {
+    %window.setProfile(%bool ? "GlassWindowProfile" : "BlockWindowProfile");
+
+    if(%window.getName() $= "GlassModManagerGui_Window" || %window.getName() $= "GlassServerControlGui_Window" || %window.getName() $= "GlassChatroomWindow") {
       for(%o = 0; %o < %window.getCount(); %o++) {
         %ctrl = %window.getObject(%o);
-        
-        if(%ctrl.profile $= "GlassBlockButtonProfile" || %ctrl.profile $= "BlockButtonProfile") {
-          %ctrl.setBitmap(%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1" : "base/client/ui/tab1");
-          %ctrl.setProfile(%bool ? GlassBlockButtonProfile : BlockButtonProfile);
+
+        if(%window.getName() $= "GlassChatroomWindow") {
+          %bitmap = (%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tab1" : "base/client/ui/tab1");
+
+          if(isObject(%ctrl.tabButton.mouseCtrl) && %ctrl.tabButton.mouseCtrl !$= %bitmap) {
+            %ctrl = %ctrl.tabButton.mouseCtrl;
+            %ctrl.baseBitmap = %bitmap;
+            %ctrl.render();
+            continue;
+          }
+
+          if(isObject(%window.tabAddButton) && %window.tabAddButton.bitmap !$= %bitmap) {
+            %ctrl = %window.tabAddButton;
+          }
         }
+
+        if(%ctrl.profile !$= "GlassBlockButtonProfile" && %ctrl.profile !$= "BlockButtonProfile")
+          continue;
+
+        if(%ctrl == %window.tabAddButton)
+          %ctrl.setBitmap(%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tabAdd1" : "base/client/ui/tab1");
+        else
+          %ctrl.setBitmap(%bool ? "Add-Ons/System_BlocklandGlass/image/gui/tab1" : "base/client/ui/tab1");
+
+        %ctrl.setProfile(%bool ? "GlassBlockButtonProfile" : "BlockButtonProfile");
       }
     }
 	}

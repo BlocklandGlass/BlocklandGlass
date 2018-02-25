@@ -86,7 +86,7 @@ function GlassLog::startSessionLog() {
 
   echo("Beginning session log in \c3" @ %path @ "\c0...");
 
-  new ConsoleLogger(GlassSessionLogger, %path);
+  new ConsoleLogger(GlassSessionLogger, %path); // CAUSES PORTS' EVAL TO DUPLICATE LINES...
   GlassSessionLogger.level = 0;
 
   echo("Duplicate Log Started\n\n");
@@ -165,6 +165,9 @@ function GlassLog::debug(%str) {
 }
 
 function strcap(%str) {
+  if(%str $= "")
+    return;
+
 	return strupr(getsubstr(%str, 0, 1)) @ strlwr(getsubstr(%str, 1, strlen(%str)-1));
 }
 

@@ -412,7 +412,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
       %swatch.text = new GuiMLTextCtrl() {
         horizSizing = "right";
         vertSizing = "bottom";
-        text = "<font:verdana:13><color:333333>" @ getLongASCIIString(%action.comment);
+        text = "<font:verdana:13><color:333333>" @ trim(stripMLControlChars(getLongASCIIString(%action.comment)));
         position = "145 10";
         extent = "440 16";
         minextent = "0 0";
@@ -538,15 +538,15 @@ function GMM_AddonPage::handleNonSuccess(%this, %obj) {
   switch$(%obj.status) {
     case "notfound":
       %title = "Not Found";
-      %message = "The add-on you tried to access was not found! If you believe this is an error, please post on the forums.";
+      %message = "The add-on you tried to access was not found! If you believe this is in error, please post on the forums.";
 
     case "notapproved":
       %title = "Not Approved";
-      %message = "The add-on you tried to access is not approved yet!";
+      %message = "The add-on you tried to access has not been approved.";
 
     case "deleted":
       %title = "Deleted";
-      %message = "The add-on you tried to access has been deleted from the Glass Mod Manager!";
+      %message = "The add-on you tried to access has been deleted from the Glass Mod Manager.";
 
     case "private":
       %title = "Private";

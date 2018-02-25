@@ -63,7 +63,7 @@ function GMM_RTBAddonPage::handleResults(%this, %obj) {
     vertSizing = "bottom";
     position = "10 12";
     extent = "32 32";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bricks_large.png";
+    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/bricks_large.png";
   };
   %body.add(%body.rtb);
 

@@ -371,9 +371,9 @@ function GlassServerPreviewGui::close(%this) {
 
 function getServerFromIP(%ip) {
   for(%i=0; %i < ServerInfoGroup.getCount(); %i++) {
-	%search = ServerInfoGroup.getObject(%i);
-	if(%search.ip $= %ip)
-		return %search;
+    %search = ServerInfoGroup.getObject(%i);
+    if(%search.ip $= %ip)
+      return %search;
   }
   return -1;
 }
@@ -434,7 +434,7 @@ function GlassServerPreview::connectToServer(%password) {
   }
 
   if(isObject(serverConnection))
-	disconnectedCleanup();
+    disconnectedCleanup();
 
   connectToServer(%server, %password, "1", "1");
   GlassServerPreviewGui.close();
@@ -531,7 +531,7 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
 	  return;
 
   if(PlayGui.isAwake())
-	 return;
+    return;
 
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
@@ -598,38 +598,39 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
     return;
 
   if(%color $= "")
-	%color = 1;
+    %color = 1;
 
-  switch(%color)
-  {
-	case 0:
-	  %color = "\c0";
-	case 1:
-	  %color = "\c1";
-	case 2:
-	  %color = "\c2";
-	case 3:
-	  %color = "\c3";
-	case 4:
-	  %color = "\c4";
-	case 5:
-	  %color = "\c5";
-	case 6:
-	  %color = "\c6";
-	case 7:
-	  %color = "\c7";
-	case 8:
-	  %color = "\c8";
-	case 9:
-	  %color = "\c9";
+  switch(%color) {
+    case 0:
+      %color = "\c0";
+    case 1:
+      %color = "\c1";
+    case 2:
+      %color = "\c2";
+    case 3:
+      %color = "\c3";
+    case 4:
+      %color = "\c4";
+    case 5:
+      %color = "\c5";
+    case 6:
+      %color = "\c6";
+    case 7:
+      %color = "\c7";
+    case 8:
+      %color = "\c8";
+    case 9:
+      %color = "\c9";
+    default:
+      return;
   }
 
   for(%i = 0; %i < NPL_List.rowCount(); %i++) {
-	%row = NPL_List.getRowText(%i);
-	%id = NPL_List.getRowId(%i);
+    %row = NPL_List.getRowText(%i);
+    %id = NPL_List.getRowId(%i);
 
-	if(getField(%row, 3) $= %blid)
-	  NPL_List.setRowById(%id, setField(%row, 0, %color @ %char));
+    if(getField(%row, 3) $= %blid)
+      NPL_List.setRowById(%id, setField(%row, 0, %color @ %char));
   }
 }
 

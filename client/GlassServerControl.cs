@@ -1058,6 +1058,8 @@ function getServerSettingsBtn() {
     && %obj.text $= "Server Settings >>")
       return %obj;
   }
+
+  return -1;
 }
 
 package GlassServerControlC {

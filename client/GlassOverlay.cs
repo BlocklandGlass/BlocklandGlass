@@ -222,7 +222,7 @@ function GlassOverlay::openChatroom() {
   if(!%chatFound) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
       if(GlassLiveConnection.connected) {
-        glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(100, connectToServer);");
+        glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(1000, connectToServer);");
       } else {
         glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
       }

@@ -128,7 +128,7 @@ new GuiWindowCtrl(GlassLoadingGui) {
         overflowImage = "0";
         mKeepCached = "0";
         mColor = "255 255 255 255";
-	command = "GlassLoadingGui_UserList.sortList(2);";
+	command = "GlassLoadingGui_UserList.sortNumList(2);";
      };
      new GuiBitmapButtonCtrl() {
         profile = "GlassBlockButtonProfile";
@@ -150,7 +150,7 @@ new GuiWindowCtrl(GlassLoadingGui) {
         overflowImage = "0";
         mKeepCached = "0";
         mColor = "255 255 255 255";
-	command = "GlassLoadingGui_UserList.sortNumlist(3);";
+	command = "GlassLoadingGui_UserList.sortNumList(3);";
      };
      new GuiBitmapButtonCtrl() {
         profile = "GlassBlockButtonProfile";

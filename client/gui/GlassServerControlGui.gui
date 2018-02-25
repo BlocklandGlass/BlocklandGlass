@@ -11,7 +11,7 @@ new GuiControl(GlassServerControlGui) {
    clipToParent = "1";
       openCategory = "GlassServerControlGui_Pref0";
 
-   new GuiWindowCtrl() {
+   new GuiWindowCtrl(GlassServerControlGui_Window) {
       profile = "GlassWindowProfile";
       horizSizing = "center";
       vertSizing = "center";

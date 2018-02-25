@@ -223,24 +223,6 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
   %this.userListRemoveBLID(%blid);
 }
 
-function GlassLiveRoom::sendMessage(%this, %msg) {
-  %obj = JettisonObject();
-  %obj.set("type", "string", "roomChat");
-  %obj.set("message", "string", %msg);
-  %obj.set("room", "string", %this.id);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
-
-function GlassLiveRoom::sendCommand(%this, %msg) {
-  %obj = JettisonObject();
-  %obj.set("type", "string", "roomCommand");
-  %obj.set("message", "string", %msg);
-  %obj.set("room", "string", %this.id);
-
-  GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-}
-
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();
   if(%now-%this.lastMessageTime > 1000 * 60 * 5) {
