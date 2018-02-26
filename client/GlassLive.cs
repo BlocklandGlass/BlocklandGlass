@@ -3275,7 +3275,7 @@ function GlassModeratorGui::submit(%this, %confirm) {
   }
 
   if(GlassChatroomWindow.activeTab.id $= "") {
-    glassMessageBoxOk("Error", "Active Glass chatroom window was not found.<br><br>Please connect to a chatroom before using the moderation GUI.");
+    glassMessageBoxOk("Error", "An active Glass chatroom window was not found.<br><br>Please connect to a chatroom before using the moderation GUI.");
     return;
   }
 
@@ -3330,14 +3330,13 @@ function GlassModeratorGui::addDuration(%this, %seconds) {
 
   if(%current == -1)
     %current = 0;
-
-  GlassModeratorWindow_Duration.setValue(%current + %seconds);
+  GlassModeratorWindow_Duration.setValue((%current + %seconds) | 0);
 
   GlassModeratorGui.updateDuration();
 }
 
 function GlassModeratorGui::updateDuration(%this) {
-  if(GlassModeratorWindow_Selection.getValue() $= "Kick") {
+  if(GlassModeratorWindow_Selection.getValue() $= "Kick" || GlassModeratorWindow_Selection.getValue() $= "Select") {
     GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>Duration Not Available");
     return;
   }

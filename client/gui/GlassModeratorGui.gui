@@ -355,7 +355,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(60 | 0);";
+            command = "GlassModeratorGui.addDuration(60);";
             text = "+1 Minute";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -377,7 +377,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(300 | 0);";
+            command = "GlassModeratorGui.addDuration(300);";
             text = "+5 Minutes";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -399,7 +399,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(900 | 0);";
+            command = "GlassModeratorGui.addDuration(900);";
             text = "+15 Minutes";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -421,7 +421,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(3600 | 0);";
+            command = "GlassModeratorGui.addDuration(3600);";
             text = "+1 Hour";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -443,7 +443,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(86400 | 0);";
+            command = "GlassModeratorGui.addDuration(86400);";
             text = "+1 Day";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -465,7 +465,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(604800 | 0);";
+            command = "GlassModeratorGui.addDuration(604800);";
             text = "+1 Week";
             groupNum = "-1";
             buttonType = "PushButton";
@@ -487,7 +487,7 @@ new GuiControl(GlassModeratorGui) {
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            command = "GlassModeratorGui.addDuration(2592000 | 0);";
+            command = "GlassModeratorGui.addDuration(2592000);";
             text = "+1 Month";
             groupNum = "-1";
             buttonType = "PushButton";
