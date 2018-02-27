@@ -112,8 +112,6 @@ function GlassHighlightMouse::onMouseUp(%this, %a, %pos) {
 function GlassHighlightMouse::onRightMouseDown(%this) {
   %this.rdown = true;
 
-  echo("right down");
-
   alxPlay(GlassClick1Audio);
 }
 

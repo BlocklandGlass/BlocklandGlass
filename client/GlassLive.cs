@@ -71,6 +71,8 @@ function GlassLive::init() {
 
   if(GlassSettings.get("Live::OverlayLogo") && !GlassLiveLogo.visible)
     GlassLiveLogo.setVisible(true);
+
+  GlassOverlay::updateButtonAlignment();
 }
 
 //================================================================
@@ -165,6 +167,8 @@ function GlassLive::inviteAcceptBusy(%addr, %isPass) {
 //================================================================
 
 function GlassLive::onAuthSuccess() {
+  GlassLive::checkPendingFriendRequests();
+
   GlassLive::createBlockhead();
 
   GlassLive_StatusSwatch.setVisible(true);
@@ -240,7 +244,7 @@ function GlassLive::cleanup() {
   GlassFriendsGui_ScrollSwatch.setVisible(true);
   GlassFriendsGui_ScrollSwatch.getGroup().setVisible(true);
   GlassModeratorWindow.setVisible(false);
-  GlassLiveModeratorButton.setVisible(false);
+  GlassLiveModerationButton.setVisible(false);
   if(isObject(GlassFriendsGui_Blockhead))
     GlassFriendsGui_Blockhead.setVisible(false);
   GlassFriendsGui_StatusSelect.setVisible(false);
@@ -2852,13 +2856,18 @@ function GlassLive::createUserWindow(%uo) {
     return %uo.window;
   }
 
+  if(%uo.isAdmin())
+    %verified = "Glass Administrator";
+  else if(%uo.isMod())
+    %verified = "Glass Moderator";
+
   %window = new GuiWindowCtrl() {
     profile = "GlassWindowProfile";
     horizSizing = "center";
     vertSizing = "center";
     position = "265 157";
     extent = "340 260";
-    text = "Glass User";
+    text = %verified;
     maxLength = "255";
     resizeWidth = "0";
     resizeHeight = "0";
@@ -3155,7 +3164,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 function GlassCheckModeratorButton() {
   if(%uo = GlassLiveUser::getFromBlid(getNumKeyId())) {
     if(%uo.isMod())
-  	  GlassLiveModeratorButton.setVisible(true);
+  	  GlassLiveModerationButton.setVisible(true);
   } else {
     schedule(1000, 0, GlassCheckModeratorButton);
   }

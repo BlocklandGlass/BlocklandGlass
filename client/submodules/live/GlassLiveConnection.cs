@@ -244,7 +244,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				case "success":
 					GlassLog::log("Glass Live Authentication: SUCCESS \c3" @ getSubStr(getWord(getDateTime(), 1), 0, 5));
-			    GlassLive::checkPendingFriendRequests();
 					GlassLive.onAuthSuccess();
 					GlassLiveConnection.sendKeepalivePing();
 

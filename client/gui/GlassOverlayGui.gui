@@ -30,29 +30,6 @@ new GuiControl(GlassOverlayGui) {
     mColor = "0 0 50 185";
     mMultiply = "1";
 
-    new GuiBitmapButtonCtrl(GlassLiveGuiEscape) {
-      profile = "GlassRoundedButtonProfile";
-      horizSizing = "right";
-      vertSizing = "top";
-      position = "6 562";
-      extent = "90 30";
-      minExtent = "8 2";
-      enabled = "1";
-      visible = "1";
-      clipToParent = "1";
-      command = "GlassOverlay::close();";
-      accelerator = "escape";
-      groupNum = "-1";
-      buttonType = "PushButton";
-      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_close";
-      lockAspectRatio = "0";
-      alignLeft = "0";
-      alignTop = "0";
-      overflowImage = "0";
-      mKeepCached = "0";
-      mColor = "255 255 255 255";
-      text = "";
-    };
     new GuiBitmapCtrl(GlassLiveLogo) {
       horizSizing = "right";
       vertSizing = "bottom";
@@ -61,7 +38,34 @@ new GuiControl(GlassOverlayGui) {
       visible = "0";
       bitmap = "Add-Ons/System_BlocklandGlass/image/logoWhite";
     };
-    new GuiBitmapButtonCtrl(GlassLiveModeratorButton) {
+    new GuiBitmapCtrl(GlassLiveBugReportIcon) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "616 8";
+       extent = "16 16";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bug";
+       wrap = "0";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       keepCached = "0";
+       mColor = "255 255 255 150";
+       mMultiply = "0";
+    };
+    new GuiMouseEventCtrl(GlassLiveBugReportButton) {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "608 0";
+       extent = "32 32";
+    };
+    new GuiBitmapButtonCtrl(GlassLiveModerationButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -83,7 +87,7 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapButtonCtrl() {
+    new GuiBitmapButtonCtrl(GlassLiveChatroomButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -105,7 +109,7 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapButtonCtrl() {
+    new GuiBitmapButtonCtrl(GlassLiveModManagerButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -127,7 +131,7 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapButtonCtrl() {
+    new GuiBitmapButtonCtrl(GlassLiveSettingsButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -149,7 +153,7 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapButtonCtrl() {
+    new GuiBitmapButtonCtrl(GlassLiveManualButton) {
       profile = "GlassRoundedButtonProfile";
       horizSizing = "right";
       vertSizing = "top";
@@ -171,32 +175,28 @@ new GuiControl(GlassOverlayGui) {
       mColor = "255 255 255 255";
       text = "";
     };
-    new GuiBitmapCtrl(GlassBugReportIcon) {
-       profile = "GuiDefaultProfile";
-       horizSizing = "right";
-       vertSizing = "bottom";
-       position = "616 8";
-       extent = "16 16";
-       minExtent = "8 2";
-       enabled = "1";
-       visible = "1";
-       clipToParent = "1";
-       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bug";
-       wrap = "0";
-       lockAspectRatio = "0";
-       alignLeft = "0";
-       alignTop = "0";
-       overflowImage = "0";
-       keepCached = "0";
-       mColor = "255 255 255 150";
-       mMultiply = "0";
-    };
-    new GuiMouseEventCtrl(GlassBugReportButton) {
-       profile = "GuiDefaultProfile";
-       horizSizing = "right";
-       vertSizing = "bottom";
-       position = "608 0";
-       extent = "32 32";
+    new GuiBitmapButtonCtrl(GlassLiveCloseButton) {
+      profile = "GlassRoundedButtonProfile";
+      horizSizing = "right";
+      vertSizing = "top";
+      position = "6 562";
+      extent = "90 30";
+      minExtent = "8 2";
+      enabled = "1";
+      visible = "1";
+      clipToParent = "1";
+      command = "GlassOverlay::close();";
+      accelerator = "escape";
+      groupNum = "-1";
+      buttonType = "PushButton";
+      bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn_close";
+      lockAspectRatio = "0";
+      alignLeft = "0";
+      alignTop = "0";
+      overflowImage = "0";
+      mKeepCached = "0";
+      mColor = "255 255 255 255";
+      text = "";
     };
   };
 };

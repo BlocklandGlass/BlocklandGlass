@@ -450,7 +450,7 @@ function GlassLiveRoom::userListAdd(%this, %user, %batched) {
     %this.userListAddHeader(%rank, 5, "Bots");
   } else if(%user.isAdmin()) {
     %rank = 0;
-    %this.userListAddHeader(%rank, 4, "Admins");
+    %this.userListAddHeader(%rank, 4, "Administrators");
   } else if(%user.isMod()) {
     %rank = 1;
     %this.userListAddHeader(%rank, 3, "Moderators");

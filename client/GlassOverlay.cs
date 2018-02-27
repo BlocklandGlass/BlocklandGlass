@@ -10,10 +10,10 @@ function GlassOverlayGui::onWake(%this) {
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
 
-  GlassBugReportIcon.position = (%x-24) SPC 8;
-  GlassBugReportButton.position = (%x-32) SPC 0;
-  GlassOverlayGui.pushToBack(GlassBugReportIcon);
-  GlassOverlayGui.pushToBack(GlassBugReportButton);
+  GlassLiveBugReportIcon.position = (%x-24) SPC 8;
+  GlassLiveBugReportButton.position = (%x-32) SPC 0;
+  GlassOverlayGui.pushToBack(GlassLiveBugReportIcon);
+  GlassOverlayGui.pushToBack(GlassLiveBugReportButton);
 
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
@@ -113,6 +113,23 @@ function GlassOverlay::setVignette() {
   } else {
     GlassOverlay.mColor = "0 0 0 185";
     GlassOverlay.setBitmap("base/client/ui/btnBlank_d");
+  }
+}
+
+function GlassOverlay::updateButtonAlignment() {
+  %x = getWord(getRes(), 0);
+
+  for(%i = 0; %i < GlassOverlay.getCount(); %i++) {
+    %obj = GlassOverlay.getObject(%i);
+
+    if(%obj.profile $= "GlassRoundedButtonProfile") {
+      if(GlassSettings.get("Glass::AlignOverlayButtons") $= "Right")
+        %pos = (%x - getWord(%obj.extent, 0) - 6) SPC getWord(%obj.position, 1);
+      else if(GlassSettings.get("Glass::AlignOverlayButtons") $= "Left")
+        %pos = 6 SPC getWord(%obj.position, 1);
+
+      %obj.position = %pos;
+    }
   }
 }
 

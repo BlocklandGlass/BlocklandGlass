@@ -80,6 +80,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Log::LogCount", "10", "", "Logs Stored", "Logs", "shorttext", "", "The number of logs stored.");
   // Experimental
   GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Use Blockland Theme", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
+  GlassSettings.registerSetting("Glass::AlignOverlayButtons", "Left", "GlassOverlay::updateButtonAlignment", "Align Overlay Buttons", "Experimental", "dropdown", "Left Right", "Changes the alignment/position of the Glass overlay buttons, defaults to the left.<br><br>EXPERIMENTAL: Notifications will still appear from the right, so this can be cumbersome if set to \"Right\".");
 
 
   %settings = trim(GlassSettings.settingsList);

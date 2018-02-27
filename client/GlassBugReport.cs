@@ -57,14 +57,14 @@ function GlassBugReportGui::onSleep(%this) {
   GlassBugReportGui_Body.setValue("");
 }
 
-function GlassBugReportButton::onMouseEnter(%this) {
-  GlassBugReportIcon.mColor = "255 255 255 255";
+function GlassLiveBugReportButton::onMouseEnter(%this) {
+  GlassLiveBugReportIcon.mColor = "255 255 255 255";
 }
 
-function GlassBugReportButton::onMouseLeave(%this) {
-  GlassBugReportIcon.mColor = "255 255 255 150";
+function GlassLiveBugReportButton::onMouseLeave(%this) {
+  GlassLiveBugReportIcon.mColor = "255 255 255 150";
 }
 
-function GlassBugReportButton::onMouseUp(%this) {
+function GlassLiveBugReportButton::onMouseUp(%this) {
   GlassBugReport::openGui();
 }

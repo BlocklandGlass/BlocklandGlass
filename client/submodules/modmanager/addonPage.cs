@@ -1220,6 +1220,6 @@ function GMM_AddonPage::commentSubmitted(%this, %res) {
 
 function GMM_AddonPage::shareClick(%this, %btn, %aid) {
   %btn.setText("Link Copied");
-  setClipboard("glass://aid-" @ %aid);
+  setClipboard("https://blocklandglass.com/addons/addon.php?id=" @ %aid);
   %btn.schedule(1000, "setText", "Share");
 }
