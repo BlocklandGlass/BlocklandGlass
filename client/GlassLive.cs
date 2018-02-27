@@ -184,7 +184,7 @@ function GlassLive::onAuthSuccess() {
 
   GlassLive::sendAvatarData();
   GlassLive::updateLocation();
-  schedule(1000, 0, "GlassCheckModeratorButton");
+  schedule(1000, "GlassOverlayGui", "GlassCheckModeratorButton");
 
   %roomStr = GlassSettings.get("Live::Rooms");
   for(%i = 0; %i < getWordCount(%roomStr); %i++) {
@@ -196,7 +196,7 @@ function GlassLive::onAuthSuccess() {
       $Glass::defaultRoomWindow = GlassLive::createChatroomWindow();
 
     %window = $Glass::defaultRoomWindow;
-    %window.setText("Join Chatroom");
+    %window.setText("Glass Chatroom List");
     %window.renderTabs();
     %window.openRoomBrowser();
   }
@@ -2043,8 +2043,8 @@ function GlassLive::friendListClick(%swatch, %pos) {
         GlassLive::createFriendList();
 
     default:
-      if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
-        if(%this.online && %this.status !$= "busy") {
+      if(getWord(%pos, 0) > getWord(%this.extent, 0)-25 && %this.online) {
+        if(%this.status !$= "busy") {
           GlassLive::openDirectMessage(%this.blid);
         }
       } else {
@@ -2860,6 +2860,8 @@ function GlassLive::createUserWindow(%uo) {
     %verified = "Glass Administrator";
   else if(%uo.isMod())
     %verified = "Glass Moderator";
+  else
+    %verified = "Glass User";
 
   %window = new GuiWindowCtrl() {
     profile = "GlassWindowProfile";

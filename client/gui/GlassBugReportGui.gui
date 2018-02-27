@@ -20,7 +20,7 @@ new GuiControl(GlassBugReportGui) {
       enabled = "1";
       visible = "1";
       clipToParent = "1";
-      text = "Bug Report";
+      text = "Glass Bug Report";
       maxLength = "255";
       resizeWidth = "0";
       resizeHeight = "0";
@@ -109,7 +109,7 @@ new GuiControl(GlassBugReportGui) {
          enabled = "1";
          visible = "1";
          clipToParent = "1";
-         bitmap = "~/System_BlocklandGlass/image/icon/bug";
+         bitmap = "~/System_BlocklandGlass/image/icon/bug_error";
          wrap = "0";
          lockAspectRatio = "0";
          alignLeft = "0";

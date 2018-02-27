@@ -48,7 +48,7 @@ new GuiControl(GlassOverlayGui) {
        enabled = "1";
        visible = "1";
        clipToParent = "1";
-       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bug";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/icon/bug_error";
        wrap = "0";
        lockAspectRatio = "0";
        alignLeft = "0";
