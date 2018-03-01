@@ -274,8 +274,10 @@ function GlassOverlay::openModeration(%safe) {
     GlassModeratorWindow_Duration.enabled = false;
   } else {
     if(%safe)
-      return;
-    GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
+      GlassModeratorWindow.setVisible(true);
+    else
+      GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
+
     if(!GlassModeratorWindow.visible) {
       GlassModeratorWindow_ReasonBlocker.setVisible(false);
       GlassModeratorWindow_DurationBlocker.setVisible(false);

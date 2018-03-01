@@ -828,11 +828,11 @@ function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
     //if(%this.group)
     //  %this.group.displayUserOptions(%this.user);
     //else
-	if(!isObject(%this.user)) {
-	  if(isObject(%server = getServerFromIP(%this.currentServer)))
-		  GlassServerPreviewGui.open(%server);
-	  return;
-	}
+    if(!isObject(%this.user)) {
+      if(isObject(%server = getServerFromIP(%this.currentServer)))
+        GlassServerPreviewGui.open(%server);
+      return;
+    }
 
     if(%this.user.blid == getNumKeyId()) {
       if(GlassIconSelectorWindow.visible)

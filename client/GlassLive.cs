@@ -4237,36 +4237,29 @@ function GlassChatroomGui_Input::onAdd(%this) {
 //================================================================
 
 package GlassLivePackage {
-  function NewPlayerListGui::onWake(%this) {
-    parent::onWake(%this);
-    
-    %this.glassClickDelay = %this.schedule(500, "");
-  }
+  function NPL_List::onSelect(%this, %rowID, %rowText) {
+    %row = NPL_List.getRowTextById(%rowID);
 
-  function NewPlayerListGui::clickList(%this) {
-    %id = NPL_List.getSelectedId();
-    %row = NPL_List.getRowTextById(%id);
+    %blid = getField(%rowText, 3);
 
-    %blid = getField(%row, 3);
+    if(%blid !$= "") {
+      if(isEventPending(%this.glassDoubleClick) && %this.glassLastClicked $= %blid) {
+        %user = GlassLiveUser::getFromBlid(%blid);
 
-    if(isEventPending(%this.glassDoubleClick) && %this.glassLastClicked $= %blid && !isEventPending(%this.glassClickDelay)) {
-      %user = GlassLiveUser::getFromBlid(%blid);
+        if(!isObject(%user)) {
+          glassMessageBoxOk("Error", "Unable to find the requested user on Glass Live.");
+          return;
+        }
 
-      if(!isObject(%user)) {
-        glassMessageBoxOk("Error", "Unable to find the requested user on Glass Live.");
-        return;
+        GlassOverlay::open();
+        GlassLive::openUserWindow(%blid);
+
+        cancel(%this.glassDoubleClick);
       }
 
-      GlassOverlay::open();
-      GlassLive::openUserWindow(%blid);
-
-      cancel(%this.glassDoubleClick);
+      %this.glassDoubleClick = %this.schedule(200, "");
+      %this.glassLastClicked = %blid;
     }
-
-    %this.glassDoubleClick = %this.schedule(200, "");
-    %this.glassLastClicked = %blid;
-
-    parent::clickList(%this);
   }
 
   function disconnectedCleanup(%doReconnect) {
