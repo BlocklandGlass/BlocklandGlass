@@ -97,9 +97,6 @@ function GlassAuthS::checkinDefault(%this) {
   %url = %url @ "&ident=" @ %this.ident;
 
   %url = %url @ "&clients=" @ urlEnc(%this.getClientList());
-  echo(urlEnc(%this.getClientList()));
-
-
 
   %method = "GET";
   %downloadPath = "";
