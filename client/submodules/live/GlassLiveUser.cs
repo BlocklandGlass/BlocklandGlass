@@ -122,12 +122,8 @@ function GlassLiveUser::canSendMessage(%this) {
   if(%this.isAdmin() || %this.isMod() || %this.isBot())
     return true;
 
-  //%me = GlassLiveUser::getFromBlid(getNumKeyId()); //admins must receive all
-  //if(%me.isAdmin() || %me.isMod())
-  //  return true;
-
   if(%this.isBlocked())
-    return false;
+    return false TAB "You have blocked this user, unblock them before attempting to send them a message.";
 
   if(%this.isFriend())
     return true;

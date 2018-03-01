@@ -2378,14 +2378,19 @@ function GlassLive::afkMouseLoop(%this) {
 //================================================================
 
 function GlassLive::openDirectMessage(%blid, %username) {
-  if(%blid $= "" || %blid == getNumKeyId()) {
+  if(%blid $= "" || %blid == getNumKeyId())
     return false;
-  }
 
   %user = GlassLiveUser::getFromBlid(%blid);
 
-  if(!%user.canSendMessage()) {
-    glassMessageBoxOk("Blocked", "You have blocked this user, unblock them before attempting to send them a message.");
+  if(!isObject(%user)) {
+    glassMessageBoxOk("Error", "Unable to find the requested user on Glass Live.");
+    return;
+  }
+
+  if(!(%error = %user.canSendMessage())) {
+    %error = getField(%error, 1);
+    glassMessageBoxOk("Error", %error);
     return;
   }
 
@@ -4232,6 +4237,38 @@ function GlassChatroomGui_Input::onAdd(%this) {
 //================================================================
 
 package GlassLivePackage {
+  function NewPlayerListGui::onWake(%this) {
+    parent::onWake(%this);
+    
+    %this.glassClickDelay = %this.schedule(500, "");
+  }
+
+  function NewPlayerListGui::clickList(%this) {
+    %id = NPL_List.getSelectedId();
+    %row = NPL_List.getRowTextById(%id);
+
+    %blid = getField(%row, 3);
+
+    if(isEventPending(%this.glassDoubleClick) && %this.glassLastClicked $= %blid && !isEventPending(%this.glassClickDelay)) {
+      %user = GlassLiveUser::getFromBlid(%blid);
+
+      if(!isObject(%user)) {
+        glassMessageBoxOk("Error", "Unable to find the requested user on Glass Live.");
+        return;
+      }
+
+      GlassOverlay::open();
+      GlassLive::openUserWindow(%blid);
+
+      cancel(%this.glassDoubleClick);
+    }
+
+    %this.glassDoubleClick = %this.schedule(200, "");
+    %this.glassLastClicked = %blid;
+
+    parent::clickList(%this);
+  }
+
   function disconnectedCleanup(%doReconnect) {
     GlassLive::updateLocation(false);
 
@@ -4268,8 +4305,8 @@ package GlassLivePackage {
       if(!GlassLive.invitePass) {
         canvas.pushDialog(connectingGui);
         Connecting_Text.setValue("Connecting to " @ %addr @ "<br>");
-		if(isObject(serverConnection))
-		  disconnectedCleanup();
+      if(isObject(serverConnection))
+        disconnectedCleanup();
         connectToServer(%addr, "", 1, 1);
       } else {
         $ServerInfo::Address = %addr;
@@ -4284,13 +4321,14 @@ package GlassLivePackage {
   }
 
   function Crouch(%bool) {
-	if(GlassOverlayGui.isAwake())
+    if(GlassOverlayGui.isAwake())
       %bool = 0;
-	return parent::Crouch(%bool);
+    
+    return parent::Crouch(%bool);
   }
 
   function resetCanvas() {
-	parent::resetCanvas();
+    parent::resetCanvas();
     GlassLive::positionMessageReminder();
   }
 };
