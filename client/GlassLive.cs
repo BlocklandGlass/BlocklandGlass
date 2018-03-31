@@ -2097,8 +2097,15 @@ function GlassFriendsGui_StatusSelect::selectStatus(%status) {
 //
 //====
 
-function GlassLive::setFriendStatus(%blid, %status) {
+function GlassLive::setFriendStatus(%blid, %status, %force) {
   %uo = GlassLiveUser::getFromBlid(%blid);
+
+  if(!isObject(%uo))
+    return;
+
+  if(%status $= %uo.getStatus() && !%force)
+    return;
+
   %uo.setStatus(%status);
 
   GlassLive::createFriendList();
@@ -4316,7 +4323,7 @@ package GlassLivePackage {
   function Crouch(%bool) {
     if(GlassOverlayGui.isAwake())
       %bool = 0;
-    
+
     return parent::Crouch(%bool);
   }
 

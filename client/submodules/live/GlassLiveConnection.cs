@@ -473,7 +473,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 		case "friendStatus":
 			%user = GlassLiveUser::create(%data.username, %data.blid); //update username
-			GlassLive::setFriendStatus(%data.blid, %data.status);
+			GlassLive::setFriendStatus(%data.blid, %data.status, false);
 
 		case "friendIcon":
 			%uo = GlassLiveUser::getFromBlid(%data.blid);
