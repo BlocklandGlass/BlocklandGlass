@@ -167,8 +167,6 @@ function GlassLive::inviteAcceptBusy(%addr, %isPass) {
 //================================================================
 
 function GlassLive::onAuthSuccess() {
-  GlassLive::checkPendingFriendRequests();
-
   GlassLive::createBlockhead();
 
   GlassLive_StatusSwatch.setVisible(true);
@@ -182,16 +180,16 @@ function GlassLive::onAuthSuccess() {
 
   GlassFriendsGui_HeaderText.position = "10 5";
 
-  GlassLive::sendAvatarData();
-  GlassLive::updateLocation();
-  schedule(1000, "GlassOverlayGui", "GlassCheckModeratorButton");
+  GlassLive.disableAvatarTelemetry = (GlassSettings.get("Live::ViewAvatar") $= "Myself");
+  GlassLive.disableLocationTelemetry = (GlassSettings.get("Live::ViewLocation") $= "Myself");
 
-  %roomStr = GlassSettings.get("Live::Rooms");
-  for(%i = 0; %i < getWordCount(%roomStr); %i++) {
-    GlassLive::joinRoom(getWord(%roomStr, %i));
-  }
+  if(!GlassLive.disableAvatarTelemetry)
+    GlassLive::sendAvatarData();
 
-  if(!GlassSettings.get("Live::AutoJoinRoom") && trim(GlassSettings.get("Live::Rooms")) $= "") {
+  if(!GlassLive.disableLocationTelemetry)
+    GlassLive::updateLocation();
+
+  if(trim(GlassSettings.get("Live::Rooms")) $= "" || !GlassSettings.get("Live::AutoJoinRoom")) {
     if(!isObject($Glass::defaultRoomWindow))
       $Glass::defaultRoomWindow = GlassLive::createChatroomWindow();
 
@@ -199,8 +197,25 @@ function GlassLive::onAuthSuccess() {
     %window.setText("Glass Chatroom List");
     %window.renderTabs();
     %window.openRoomBrowser();
+  } else {
+    if(GlassSettings.get("Live::AutoJoinRoom")) {
+      %roomStr = GlassSettings.get("Live::Rooms");
+
+      for(%i = 0; %i < getWordCount(%roomStr); %i++) {
+        GlassLive::joinRoom(getWord(%roomStr, %i));
+      }
+    }
   }
 
+  new ScriptObject(GlassNotification) {
+    title = "Signed In";
+    text = "You have been signed in to Glass Live.";
+    image = "networking_green";
+
+    sticky = false;
+  };
+
+  GlassLive.schedule(1000, "checkPendingFriendREquests");
 }
 
 function GlassLive::disconnect() {
@@ -662,6 +677,9 @@ function GlassLive::sendAvatarData() {
   if(!GlassLiveConnection.connected)
     return;
 
+  if(GlassLive.disableAvatarTelemetry)
+    return;
+
   %obj = JettisonObject();
   %obj.set("type", "string", "avatar");
 
@@ -742,6 +760,11 @@ function GlassLive::sendAvatarData() {
 }
 
 function GlassLive::updateLocation(%inServer) {
+  if(!GlassLiveConnection.connected)
+    return;
+
+  if(GlassLive.disableLocationTelemetry)
+    return;
 
   if(%inServer $= "") {
     %inServer = GlassLive.inServer;
@@ -835,6 +858,8 @@ function GlassLive::joinRoom(%id) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
+  schedule(1000, "GlassOverlayGui", "GlassCheckModeratorButton");
+
   // GlassChatroomWindow.schedule(0, openRoomBrowser);
 }
 
@@ -847,7 +872,8 @@ function GlassLive::sendRoomMessage(%msg, %id) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
   %obj.delete();
 
-  GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
+  if(GlassSettings.get("Live::TalkingAnimation"))
+    GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
 }
 
 function GlassLive::sendRoomCommand(%msg, %id) {
@@ -872,8 +898,6 @@ function GlassLive::sendMessage(%blid, %msg) {
   GlassLive.typing[%blid] = false;
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
-
-  GlassAudio::play("userMsgSent", GlassSettings.get("Volume::DirectMessage"));
 
   %obj.delete();
 }
@@ -1209,27 +1233,17 @@ function GlassLive::createBlockhead() {
 }
 
 function GlassLive::BlockheadRandomAnim() {
-  %rand = getRandom(0, 7);
+  %rand = getRandom(0, 3);
 
   switch (%rand) {
 	  case 0:
 		%thread = "talk";
 	  case 1:
-		%thread = "standjump";
-	  case 2:
-		%thread = "side";
-	  case 3:
-		%thread = "spearReady";
-		%time = 800;
-		return;
-	  case 4:
 		%thread = "undo";
-	  case 5:
+	  case 2:
 		%thread = "back";
-	  case 6:
+	  case 3:
 		%thread = "headside";
-	  case 7:
-		%thread = "armReadyBoth";
   }
 
   if(%time $= "")
@@ -1243,9 +1257,6 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
   if(!isObject(%blockhead))
     return;
 
-   if(GlassSettings.get("Live::TalkingAnimation") == 0 && %thread $= "talk")
-	  return;
-
   cancel(%blockhead.rootSchedule);
 
   if(%type $= "")
@@ -1254,6 +1265,8 @@ function GlassLive::BlockheadAnim(%thread, %time, %type) {
   GlassFriendsGui_Blockhead.setSequence("", %type, %thread, 1);
 
   %blockhead.rootSchedule = %blockhead.schedule(%time, "setSequence", "", 1, "root", 1);
+
+  alxPlay(GlassPop1Audio);
 }
 
 function GuiObjectView::createBlockhead(%this, %json, %usePlayerAvatar) {
@@ -1483,6 +1496,8 @@ function GlassFriendsResize::onResize(%this, %x, %y, %h, %l) {
 
   GlassSettings.update("Live::FriendsWindow_Pos", GlassFriendsWindow.position);
   GlassSettings.update("Live::FriendsWindow_Ext", GlassFriendsWindow.extent);
+
+  GlassFriendsWindow.makeFirstResponder(1);
 }
 
 //====
@@ -2036,6 +2051,11 @@ function GlassLive::friendListClick(%swatch, %pos) {
       if(getWord(%pos, 0) > getWord(%this.extent, 0)-25) {
         glassMessageBoxOk("Unblocked", "<font:verdana bold:13>" @ %this.username SPC "<font:verdana:13>(" @ %this.blid @ ") has been unblocked.");
         GlassLive::userUnblock(%this.blid);
+      } else {
+        if(isObject(%window = GlassLiveUser::getFromBlid(%this.blid).window))
+          %window.delete();
+        else
+          GlassLive::openUserWindow(%this.blid);
       }
 
     case "toggle":
@@ -2381,6 +2401,11 @@ function GlassLive::openDirectMessage(%blid, %username) {
   if(%blid $= "" || %blid == getNumKeyId())
     return false;
 
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to use direct messaging.");
+    return;
+  }
+
   %user = GlassLiveUser::getFromBlid(%blid);
 
   if(!isObject(%user)) {
@@ -2488,7 +2513,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
   %val = %gui.chattext.getValue();
 
-  %msg = "<color:333333><font:verdana bold:12>" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
+  %msg = "<color:333333><font:verdana bold:12><color:" @ (%username $= $Pref::Player::NetName ? "fc0000" : "0000ff") @ ">" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
 
   if(GlassSettings.get("Live::ShowTimestamps")) {
     %msg = "<font:verdana:12><color:666666>" @ %timestamp SPC %msg;
@@ -2514,6 +2539,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
   if(%lp >= -15) {
     %gui.scroll.scrollToBottom();
   }
+
+  GlassAudio::play((%username $= $Pref::Player::NetName ? "userMsgSent" : "userMsgReceived"), GlassSettings.get("Volume::DirectMessage"));
 }
 
 function GlassLive::onMessageNotification(%message, %blid, %create) {
@@ -2604,7 +2631,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "Message - " @ %username @ " (" @ %blid @ ")";
+    text = %username @ " (" @ %blid @ ")";
     maxLength = "255";
     resizeWidth = "1";
     resizeHeight = "1";
@@ -2618,8 +2645,8 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
   %titleLen = strLen(%dm.text);
 
   if(%titleLen > 25) {
-    %dm.extent = mFloor(%titleLen * 10.75 SPC 180); // close enough
-    // %dm.minExtent = %dm.extent;
+    %dm.extent = mFloor(%titleLen * 11.25 SPC 180); // close enough
+    %dm.minExtent = %dm.extent;
   }
 
   %dm.resize = new GuiMLTextCtrl(GlassMessageResize) {
@@ -2719,7 +2746,7 @@ function GlassLive::createDirectMessageGui(%blid, %username) {
     new GuiButtonBaseCtrl()
     {
       extent = "16 16";
-      command = "if(isObject(" @ GlassLiveUser::getFromBlid(%blid) @ ".window)){" @ GlassLiveUser::getFromBlid(%blid) @ ".window.forceCenter();} GlassLive::openUserWindow(" @ %blid @ ");";
+      command = "if(isObject(" @ GlassLiveUser::getFromBlid(%blid) @ ".window)){" @ GlassLiveUser::getFromBlid(%blid) @ ".window.forceCenter();}GlassLive::openUserWindow(" @ %blid @ ");alxPlay(GlassClick1Audio);";
     };
   };
 
@@ -2748,9 +2775,11 @@ function GlassLive::messageInputSend(%id) {
   }
 
   GlassLive::sendMessage(%id, %val);
-  GlassLive::BlockheadAnim("talk", strLen(%val) * 50);
+  if(GlassSettings.get("Live::TalkingAnimation"))
+    GlassLive::BlockheadAnim("talk", strLen(%msg) * 50);
   GlassLive::onMessage(%val, $Pref::Player::NetName, %id);
   %gui.input.setValue("");
+  %gui.input.makeFirstResponder(1);
   %gui.scroll.schedule(100, "scrollToBottom");
 }
 
@@ -2905,6 +2934,14 @@ function GlassLive::createUserWindow(%uo) {
     firstOpen = true;
   };
 
+  %window.privateAvatar = new GuiBitmapCtrl(GlassUserGui_PrivateAvatar) {
+    position = "6 35";
+    extent = "84 84";
+	  bitmap = "Add-Ons/Print_Letters_Default/prints/-qmark.png";
+    mColor = "255 255 255 255";
+    mMultiply = "0";
+    visible = "0";
+  };
 
   %window.headerSwatch = new GuiSwatchCtrl() {
     color = "235 235 235 255";
@@ -2993,6 +3030,7 @@ function GlassLive::createUserWindow(%uo) {
   %window.add(%window.infoSwatch);
   %window.infoSwatch.add(%window.blockheadSwatch);
   %window.blockheadSwatch.add(%window.blockhead);
+  %window.blockheadSwatch.add(%window.privateAvatar);
 
   %window.infoSwatch.add(%window.statusSwatch);
   %window.statusSwatch.add(%window.statusText);
@@ -3017,6 +3055,11 @@ function GlassLive::createUserWindow(%uo) {
 }
 
 function GlassLive::openUserWindow(%blid, %didUpdate) {
+  if(!GlassLiveConnection.connected) {
+    glassMessageBoxOk("No Connection", "You must be connected to Glass Live to open user windows.");
+    return;
+  }
+
   if(%blid < 0) {
     glassMessageBoxOk("Beep Boop", "That's a bot!");
     return;
@@ -3111,7 +3154,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 
     %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:12>" @ getASCIIString(%serverTitle);
 
-    if(%uo.country !$= "") {
+    if(%uo.online && %uo.country !$= "") {
       if(%uo.country $= "United States") {
         %country = "usa";
       } else if(%uo.country $= "United Kingdom") {
@@ -3128,6 +3171,8 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
       } else {
         %countryFlag = "<just:right><font:verdana:12><sPush><color:444444>" @ %uo.country @ "<sPop>";
       }
+    } else {
+
     }
 
     %window.headerText.setText("<font:verdana bold:14>" @ %uo.username @ %countryFlag @ "<br><just:left><font:verdana:12>" @ %uo.blid @ %serverInfo);
@@ -3161,6 +3206,8 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
       %window.forceCenter();
       %window.centered = true;
     }
+  } else {
+    glassMessageBoxOk("Error", "Unable to find the requested user on Glass Live.");
   }
 }
 
@@ -3170,10 +3217,9 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
 // GlassLiveUsers
 function GlassCheckModeratorButton() {
   if(%uo = GlassLiveUser::getFromBlid(getNumKeyId())) {
-    if(%uo.isMod())
+    if(%uo.isMod()) {
   	  GlassLiveModerationButton.setVisible(true);
-  } else {
-    schedule(1000, 0, GlassCheckModeratorButton);
+    }
   }
 }
 
@@ -3323,14 +3369,14 @@ function GlassModeratorGui::submit(%this, %confirm) {
     else if(%type $= "Mute")
       %txt = %txt SPC "The user will be muted in all Glass chatrooms for the duration specified.";
 
-    glassMessageBoxOkCancel("Wait", %txt, "GlassModerationGui.submit(true);");
+    glassMessageBoxOkCancel("Wait", %txt, "GlassModeratorGui.submit(true);");
     return;
   }
 
   if(%type $= "Kick")
     GlassLive::sendRoomCommand(%cmd = "/kickid" SPC %blid, GlassChatroomWindow.activeTab.id);
   else
-    GlassLive::sendRoomCommand(%cmd = "/" @ %type @ "id" SPC %duration SPC %blid SPC %reason, GlassChatroomWindow.activeTab.id);
+    GlassLive::sendRoomCommand(%cmd = "/" @ strlwr(%type) @ "id" SPC %duration SPC %blid SPC %reason, GlassChatroomWindow.activeTab.id);
 
   Glass::debug("Sent room command:" SPC %cmd);
 }
@@ -3629,7 +3675,6 @@ function GlassChatroomWindow::setDropMode(%this, %bool) {
 }
 
 function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
-
   %window = %this.getGroup();
   %extent = %window.extent;
   %position = %window.position;
@@ -3672,6 +3717,8 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
 
   if(!isObject(%activeTab))
     return;
+
+  %input.makeFirstResponder(1);
 
   if(%this.isAwake()) {
     %chatText.forceReflow();
@@ -4238,12 +4285,18 @@ function GlassChatroomGui_Input::onAdd(%this) {
 
 package GlassLivePackage {
   function NPL_List::onSelect(%this, %rowID, %rowText) {
-    %row = NPL_List.getRowTextById(%rowID);
+    %row = %this.getRowTextById(%rowID);
 
     %blid = getField(%rowText, 3);
 
     if(%blid !$= "") {
       if(isEventPending(%this.glassDoubleClick) && %this.glassLastClicked $= %blid) {
+        if(!GlassLiveConnection.connected) {
+          glassMessageBoxOk("No Connection", "You must be connected to Glass Live to open user windows.");
+          cancel(%this.glassDoubleClick);
+          return;
+        }
+
         %user = GlassLiveUser::getFromBlid(%blid);
 
         if(!isObject(%user)) {
@@ -4260,6 +4313,11 @@ package GlassLivePackage {
       %this.glassDoubleClick = %this.schedule(200, "");
       %this.glassLastClicked = %blid;
     }
+  }
+
+  function onExit() {
+    GlassLive::disconnect();
+    parent::onExit();
   }
 
   function disconnectedCleanup(%doReconnect) {
@@ -4281,14 +4339,6 @@ package GlassLivePackage {
       GlassFriendsGui_Blockhead.createBlockhead(0, true);
       GlassLive::sendAvatarData();
     }
-  }
-
-  function onExit() {
-    GlassSettings.update("Live::hideRequests", GlassLive.hideFriendRequests);
-    GlassSettings.update("Live::hideFriends", GlassLive.hideFriends);
-    GlassSettings.update("Live::hideBlocked", GlassLive.hideBlocked);
-
-    parent::onExit();
   }
 
   function MainMenuGui::onRender(%this) {
@@ -4316,7 +4366,7 @@ package GlassLivePackage {
   function Crouch(%bool) {
     if(GlassOverlayGui.isAwake())
       %bool = 0;
-    
+
     return parent::Crouch(%bool);
   }
 

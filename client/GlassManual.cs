@@ -68,7 +68,9 @@ function GlassManualWindow::read(%this, %doc) {
 
   GlassManualGui_Text.setText(trim(GlassManualGui_Text.getText()));
 
-  GlassManualGui_Text.forceReflow();
+  if(GlassManualGui_Text.isAwake())
+    GlassManualGui_Text.forceReflow();
+
   GlassManualGui_Container.verticalMatchChildren(20, 10);
   GlassManualGui_Container.setVisible(true);
 }
@@ -125,7 +127,9 @@ function GlassManualTCP::onDone(%this, %error) {
     GlassManualGui_Text.addText(collapseEscape(%this.buffer) @ "\n", true);
     GlassManualGui_Text.setText(trim(GlassManualGui_Text.getText()));
 
-    GlassManualGui_Text.forceReflow();
+    if(GlassManualGui_Text.isAwake())
+      GlassManualGui_Text.forceReflow();
+
     GlassManualGui_Container.verticalMatchChildren(20, 10);
     GlassManualGui_Container.setVisible(true);
   }

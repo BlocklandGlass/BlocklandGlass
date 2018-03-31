@@ -194,7 +194,7 @@ function GlassAuth::onAuthSuccess(%this) {
   if(GlassAuth.usingDAA) {
     if(GlassPasswordGui.isAwake()) {
       canvas.popDialog(GlassPasswordGui);
-      glassMessageBoxOk("Success", "DAA authentication sucessful!");
+      glassMessageBoxOk("Success", "DAA authentication successful!");
     }
   }
 

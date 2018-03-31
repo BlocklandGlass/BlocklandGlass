@@ -36,7 +36,7 @@ function GlassOverlayGui::onWake(%this) {
       %window.scroll.scrollToBottom();
     } else if(%window.getName() $= "GlassUserGui") {
       if(isObject(%window.Blockhead)) {
-		%window.Blockhead.schedule(1, "setCamera");
+        %window.Blockhead.schedule(1, "setCamera");
         %window.Blockhead.schedule(1, "setOrbitDist", 6);
         %window.Blockhead.schedule(1, "setCameraRot", 0, 0, $pi * 1.1);
       }
@@ -277,14 +277,14 @@ function GlassOverlay::openModeration(%safe) {
       GlassModeratorWindow.setVisible(true);
     else
       GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
+  }
 
-    if(!GlassModeratorWindow.visible) {
-      GlassModeratorWindow_ReasonBlocker.setVisible(false);
-      GlassModeratorWindow_DurationBlocker.setVisible(false);
-      GlassModeratorWindow_Reason.enabled = false;
-      GlassModeratorWindow_Duration.enabled = false;
-      return;
-    }
+  if(!GlassModeratorWindow.visible) {
+    GlassModeratorWindow_ReasonBlocker.setVisible(false);
+    GlassModeratorWindow_DurationBlocker.setVisible(false);
+    GlassModeratorWindow_Reason.enabled = false;
+    GlassModeratorWindow_Duration.enabled = false;
+    return;
   }
 
   GlassOverlayGui.pushToBack(GlassModeratorWindow);

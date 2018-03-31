@@ -65,6 +65,10 @@ function GlassLiveBugReportButton::onMouseLeave(%this) {
   GlassLiveBugReportIcon.mColor = "255 255 255 150";
 }
 
+function GlassLiveBugReportButton::onMouseDown(%this) {
+  alxPlay(GlassClick1Audio);
+}
+
 function GlassLiveBugReportButton::onMouseUp(%this) {
   GlassBugReport::openGui();
 }

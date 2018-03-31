@@ -434,7 +434,7 @@ new GuiControl(GlassFriendsGui) {
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "84 217 140 255";
+         mColor = "200 255 200 200";
             on = "1";
       };
       new GuiBitmapButtonCtrl(GlassFriendsGui_BlockButton) {
@@ -457,7 +457,7 @@ new GuiControl(GlassFriendsGui) {
          alignTop = "0";
          overflowImage = "0";
          mKeepCached = "0";
-         mColor = "237 118 105 255";
+         mColor = "237 118 105 200";
             on = "1";
       };
       new GuiBitmapCtrl(GlassFriendsGui_StatusSelect) {

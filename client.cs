@@ -49,7 +49,6 @@ function Glass::execClient() {
   exec("./client/gui/GlassServerControlGui.gui");
   exec("./client/gui/GlassChatroomGui.gui");
   exec("./client/gui/GlassClientGui.gui");
-  exec("./client/gui/GlassBanGui.gui");
   exec("./client/gui/GlassServerPreviewGui.gui");
   exec("./client/gui/GlassJoinServerGui.gui");
   exec("./client/gui/GlassManualGui.gui");
@@ -312,6 +311,11 @@ package GlassClientPackage {
     }
 
     GlassLog::cleanOld("blockland");
+
+    if(!GlassOverlayGui.isAwake()) {
+      canvas.pushDialog(GlassOverlayGui);
+      canvas.schedule(50, popDialog, GlassOverlayGui); // pre-load overlay
+    }
   }
 };
 activatePackage(GlassClientPackage);

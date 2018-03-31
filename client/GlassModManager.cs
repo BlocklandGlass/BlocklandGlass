@@ -63,7 +63,7 @@ function GlassModManagerImageMouse::onMouseDown(%this) {
 
 function GlassModManagerGui_Window::onWake(%this) {
   if(!GlassModManagerGui.firstWake) {
-    GlassModManagerGui.loadContext("home");
+    GlassModManagerGui.loadContext("activity");
     GlassModManagerGui.firstWake = true;
   }
 }
@@ -605,15 +605,19 @@ package GlassModManager {
     GlassOverlayGui.pushToBack(GlassModManagerGui_Window);
 
     if(%id+0 $= %id || %id > 0) {
+      GMM_Navigation.clear();
+
       GlassModManagerGui.openPage(GMM_AddonPage, %id);
     }
 
     if((%board+0 $= %board || %board > 0) || (%page+0 $= %page || %page > 0)) {
+      GMM_Navigation.clear();
+
       GlassModManagerGui.loadContext("boards");
       GlassModManagerGui.openPage(GMM_BoardPage, %board, %page);
     }
 
-    if(%link $= "home" || %link $= "activity") {
+    if(%link $= "activity") {
       GlassModManagerGui.loadContext("activity");
     } else if(%link $= "boards") {
       GlassModManagerGui.loadContext("boards");
@@ -623,7 +627,7 @@ package GlassModManager {
   }
 
   function newChatHud_AddLine(%line) {
-      for(%i = 0; %i < getWordCount(%line); %i++) {
+    for(%i = 0; %i < getWordCount(%line); %i++) {
       %word = getWord(%line, %i);
       if(strpos(%word, "glass://") != -1) {
         %line = setWord(%line, %i, "<sPush><a:" @ %word @ ">" @ %word @ "</a><sPop>");
@@ -637,7 +641,7 @@ package GlassModManager {
   function GlassAuth::onAuthSuccess(%this) {
     if(!%this.firstAuth)
       GlassModManager.checkImports();
-      
+
     parent::onAuthSuccess(%this);
   }
 };

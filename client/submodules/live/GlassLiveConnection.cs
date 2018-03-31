@@ -107,6 +107,10 @@ function GlassLiveConnection::onConnected(%this) {
 }
 
 function GlassLiveConnection::onDisconnect(%this) {
+  GlassSettings.update("Live::hideRequests", GlassLive.hideFriendRequests);
+  GlassSettings.update("Live::hideFriends", GlassLive.hideFriends);
+  GlassSettings.update("Live::hideBlocked", GlassLive.hideBlocked);
+  
 	GlassLive::setPowerButton(0);
 	GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
 	GlassLive_StatusSwatch.setVisible(false);
@@ -121,6 +125,14 @@ function GlassLiveConnection::onDisconnect(%this) {
 
 	GlassLive::setConnectionStatus("Disconnected", 1);
 	GlassLive::cleanUp();
+
+  new ScriptObject(GlassNotification) {
+    title = "Signed Out";
+    text = "You have been signed out of Glass Live.";
+    image = "networking_red";
+
+    sticky = false;
+  };
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
@@ -190,13 +202,13 @@ function GlassLive::setConnectionStatus(%text, %color) {
 function GlassLiveConnection::sendKeepalivePing(%this) {
 	cancel(%this.keepaliveSchedule);
 
-		%obj = JettisonObject();
-		%obj.set("type", "string", "ping");
-		%obj.set("key", "string", "keepalive");
-		%this.send(jettisonStringify("object", %obj) @ "\r\n");
-		%obj.delete();
+  %obj = JettisonObject();
+  %obj.set("type", "string", "ping");
+  %obj.set("key", "string", "keepalive");
+  %this.send(jettisonStringify("object", %obj) @ "\r\n");
+  %obj.delete();
 
-		%this.keepaliveTimeout = %this.schedule(%this.timeoutThreshold * 1000, keepaliveFailed);
+  %this.keepaliveTimeout = %this.schedule(%this.timeoutThreshold * 1000, keepaliveFailed);
 }
 
 function GlassLiveConnection::gotKeepalivePong(%this) {
@@ -204,7 +216,7 @@ function GlassLiveConnection::gotKeepalivePong(%this) {
 		cancel(%this.keepaliveTimeout);
 	}
 
-	%this.keepaliveSchedule = %this.schedule(%this.timeoutFrequency*1000, sendKeepalivePing);
+	%this.keepaliveSchedule = %this.schedule(%this.timeoutFrequency * 1000, sendKeepalivePing);
 }
 
 function GlassLiveConnection::keepaliveFailed(%this) {
@@ -305,8 +317,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 						};
 					}
 				}
-
-			GlassAudio::play("userMsgReceived", GlassSettings.get("Volume::DirectMessage"));
 
 		case "messageNotification":
 			// TODO create GlassLiveUser ? data.chat_username is sent now

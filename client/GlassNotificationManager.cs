@@ -435,7 +435,7 @@ package GlassNotifications {
           Glass.mmNotification = new ScriptObject(GlassNotification) {
             title = "Glass Live";
             text = "Press <sPush><color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<sPop> to open Glass!";
-            image = "bell";
+            image = "glassLogo";
 
             sticky = true;
             callback = "GlassOverlay::open();";

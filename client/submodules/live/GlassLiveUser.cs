@@ -235,6 +235,9 @@ function GlassLiveUser::gotAvatar(%this, %jsonObj, %private) {
   %this.avatarGui.setOrbitDist(6);
   %this.avatarGui.setCameraRot(0, 0, $pi * 1.1);
   %this.avatarGui.lightDirection = "0 0.2 0.3";
+
+  if(isObject(%this.window))
+    %this.window.privateAvatar.setVisible(!isObject(%jsonObj) || %jsonObj.keyCount == 0 || %private);
 }
 
 function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAddress, %serverPassworded, %isRequest) {
@@ -252,35 +255,35 @@ function GlassLiveUser::updateLocation(%this, %location, %serverTitle, %serverAd
 }
 
 function GlassLiveUser::getLastLocation(%this) {
-  if(%this.status $= "offline")
+  if(%this.status $= "offline" || %this.status $= "")
     return "";
 
   return %this.lastLocation;
 }
 
 function GlassLiveUser::getLocation(%this) {
-  if(%this.status $= "offline")
+  if(%this.status $= "offline" || %this.status $= "")
     return "";
 
   return %this.location;
 }
 
 function GlassLiveUser::getServerTitle(%this) {
-  if(%this.status $= "offline")
+  if(%this.status $= "offline" || %this.status $= "")
     return "";
 
   return %this.serverTitle;
 }
 
 function GlassLiveUser::getServerAddress(%this) {
-  if(%this.status $= "offline")
+  if(%this.status $= "offline" || %this.status $= "")
     return "";
 
   return %this.serverAddress;
 }
 
 function GlassLiveUser::isServerPassworded(%this) {
-  if(%this.status $= "offline")
+  if(%this.status $= "offline" || %this.status $= "")
     return false;
 
   if(%this.location $= "playing" || %this.location $= "hosting") {

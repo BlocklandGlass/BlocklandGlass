@@ -36,7 +36,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
   // Live
   GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
-  GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the chatroom when you connect to Glass Live.");
+  GlassSettings.registerSetting("Live::AutoJoinRoom", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the last chatrooms you were in when you connect to Glass Live.");
   GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
   GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
   GlassSettings.registerSetting("Live::DisplayFriendIDs", false, "GlassLive::createFriendList", "Display Friend BL_IDs", "Live", "checkbox", "", "Display friend's BL_IDs in the friends list.");
@@ -109,7 +109,7 @@ function GlassSettings::init() {
 }
 
 function GlassSettings::registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc) {
-   %obj = new ScriptObject() {
+  %obj = new ScriptObject() {
     class = "GlassSetting";
 
     name = %name;
@@ -376,7 +376,7 @@ function GlassSettings::createSettingHeader(%name) {
     vertSizing = "center";
     horizSizing = "center";
     extent = "12 4";
-    text = "\c3" @ %name;
+    text = "\c0" @ %name;
   };
 
   %gui.add(%gui.text);

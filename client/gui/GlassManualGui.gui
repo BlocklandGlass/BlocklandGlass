@@ -22,8 +22,8 @@ new GuiControl(GlassManualGui) {
       clipToParent = "1";
       text = "Glass Manual";
       maxLength = "255";
-      resizeWidth = "1";
-      resizeHeight = "1";
+      resizeWidth = "0";
+      resizeHeight = "0";
       canMove = "1";
       canClose = "1";
       canMinimize = "0";

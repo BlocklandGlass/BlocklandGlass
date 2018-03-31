@@ -36,10 +36,10 @@ function GlassHighlightSwatch::addToSwatch(%swatch, %highlight, %command, %rcomm
 }
 
 function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {
-  if(%this.skip) {
-    %this.skip = !%this.skip;
-    return; // save those frames
-  }
+  // if(%this.skip) {
+    // %this.skip = !%this.skip;
+    // return; // save those frames
+  // }
 
   %gui = %this.getGroup();
   %pos = vectorSub(%pos, %gui.getCanvasPosition());
@@ -63,7 +63,7 @@ function GlassHighlightMouse::onMouseMove(%this, %a, %pos) {
 }
 
 function GlassHighlightMouse::onMouseLeave(%this) {
-  %this.down = false;
+  // %this.down = false;
   if(!%this.enabled)
     return;
 
@@ -79,7 +79,7 @@ function GlassHighlightMouse::onMouseLeave(%this) {
 }
 
 function GlassHighlightMouse::onMouseEnter(%this) {
-  %this.down = false;
+  // %this.down = false;
   if(!%this.enabled)
     return;
 
