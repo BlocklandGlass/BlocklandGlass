@@ -2117,8 +2117,15 @@ function GlassFriendsGui_StatusSelect::selectStatus(%status) {
 //
 //====
 
-function GlassLive::setFriendStatus(%blid, %status) {
+function GlassLive::setFriendStatus(%blid, %status, %force) {
   %uo = GlassLiveUser::getFromBlid(%blid);
+
+  if(!isObject(%uo))
+    return;
+
+  if(%status $= %uo.getStatus() && !%force)
+    return;
+
   %uo.setStatus(%status);
 
   GlassLive::createFriendList();
