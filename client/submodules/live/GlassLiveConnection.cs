@@ -64,7 +64,6 @@ function GlassLiveConnection::onConnected(%this) {
 	if(GlassSettings.get("Live::AutoJoinRoom")) {
 		%obj.set("autoJoinRooms", "string", true);
 		%autoJoin = true;
-		GlassSettings.update("Live::AutoJoinRoom", false);
 	} else {
 		%autoJoin = false;
 	}
@@ -110,7 +109,7 @@ function GlassLiveConnection::onDisconnect(%this) {
   GlassSettings.update("Live::hideRequests", GlassLive.hideFriendRequests);
   GlassSettings.update("Live::hideFriends", GlassLive.hideFriends);
   GlassSettings.update("Live::hideBlocked", GlassLive.hideBlocked);
-  
+
 	GlassLive::setPowerButton(0);
 	GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
 	GlassLive_StatusSwatch.setVisible(false);
@@ -221,7 +220,7 @@ function GlassLiveConnection::gotKeepalivePong(%this) {
 
 function GlassLiveConnection::keepaliveFailed(%this) {
 	%this.doDisconnect();
-	GlassLog::error("Glass Live timed out!");
+	GlassLog::error("Glass Live ping timed out!");
 	GlassLive::connectToServer();
 }
 
