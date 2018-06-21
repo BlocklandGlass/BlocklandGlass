@@ -61,7 +61,7 @@ function GlassLiveConnection::onConnected(%this) {
 	%obj = JettisonObject();
 	%obj.set("type", "string", "auth");
 
-	if(GlassSettings.get("Live::AutoJoinRoom")) {
+	if(GlassSettings.get("Live::AutoJoinRooms")) {
 		%obj.set("autoJoinRooms", "string", true);
 		%autoJoin = true;
 	} else {

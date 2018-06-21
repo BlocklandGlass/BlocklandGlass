@@ -189,7 +189,7 @@ function GlassLive::onAuthSuccess() {
   if(!GlassLive.disableLocationTelemetry)
     GlassLive::updateLocation();
 
-  if(trim(GlassSettings.get("Live::Rooms")) $= "" || !GlassSettings.get("Live::AutoJoinRoom")) {
+  if(trim(GlassSettings.get("Live::Rooms")) $= "" || !GlassSettings.get("Live::AutoJoinRooms")) {
     if(!isObject($Glass::defaultRoomWindow))
       $Glass::defaultRoomWindow = GlassLive::createChatroomWindow();
 
@@ -198,7 +198,7 @@ function GlassLive::onAuthSuccess() {
     %window.renderTabs();
     %window.openRoomBrowser();
   } else {
-    if(GlassSettings.get("Live::AutoJoinRoom")) {
+    if(GlassSettings.get("Live::AutoJoinRooms")) {
       %roomStr = GlassSettings.get("Live::Rooms");
 
       for(%i = 0; %i < getWordCount(%roomStr); %i++) {
@@ -1780,7 +1780,10 @@ function GlassLive::createFriendSwatch(%uo, %name, %blid, %status) {
         %text = "Location Private";
 
       default:
-        %text = "(Unknown)";
+        if(strlen(trim(%loc)) > 0)
+          %text = "(Unknown: " @ trim(%loc) @ ")";
+        else
+          %text = "(Unknown)";
     }
     %gui.details = new GuiTextCtrl() {
       horizSizing = "right";
