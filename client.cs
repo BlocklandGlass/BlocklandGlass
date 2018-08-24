@@ -58,6 +58,7 @@ function Glass::execClient() {
   exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/GlassBugReportGui.gui");
   exec("./client/gui/GlassPasswordGui.gui");
+  exec("./client/gui/GlassDiscordGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
@@ -89,6 +90,7 @@ function Glass::execClient() {
   exec("./client/GlassNotificationManager.cs");
   exec("./client/GlassServers.cs");
   exec("./client/GlassManual.cs");
+  exec("./client/GlassDiscord.cs");
 
   exec("./client/GlassCompatibility.cs");
   exec("./client/GlassBugReport.cs");
