@@ -128,6 +128,7 @@ function GlassServerControlC::renderCategory(%category) {
       %currentY += 24;
     }
     %swatch = "";
+    // TODO: call %swatch.text.setText(%pref.title) only once
     switch$(%pref.type) {
       case "bool":
         %swatch = GlassServerControlC::createCheckbox();
@@ -194,6 +195,10 @@ function GlassServerControlC::renderCategory(%category) {
         } else {
           %swatch.preview.color = getWords(%pref.value, 0, 3) SPC 255;
         }
+
+      case "color":
+	%swatch = GlassServerControlC::createColor();
+        %swatch.text.setText(%pref.title);
 
       case "colorset":
         %swatch = "unfinished";
@@ -718,6 +723,61 @@ function GlassServerControlC::createRGB() {
   return %swatch;
 }
 
+function GlassServerControlC::createColor() {
+  %swatch = new GuiSwatchCtrl() {
+     profile = "GuiDefaultProfile";
+     horizSizing = "right";
+     vertSizing = "bottom";
+     position = "1 25";
+     extent = "430 32";
+     minExtent = "8 2";
+     enabled = "1";
+     visible = "1";
+     clipToParent = "1";
+     color = "100 100 100 50";
+  };
+
+  %swatch.text = new GuiTextCtrl() {
+    profile = "GuiTextVerdanaProfile";
+    horizSizing = "right";
+    vertSizing = "center";
+    position = "10 7";
+    extent = "77 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = "";
+    maxLength = "255";
+  };
+
+  %swatch.ctrl = new GuiBitmapButtonCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "width";
+    vertSizing = "height";
+    position = "402 7";
+    extent = "18 18";
+    minExtent = "8 2";
+    enabled = "1";
+    visible = "1";
+    clipToParent = "1";
+    text = " ";
+    groupNum = "-1";
+    buttonType = "PushButton";
+    bitmap = "base/client/ui/btnColor";
+    lockAspectRatio = "0";
+    alignLeft = "0";
+    alignTop = "0";
+    overflowImage = "0";
+    mKeepCached = "0";
+    mColor = "255 255 255 255";
+  };
+
+  %swatch.add(%swatch.text);
+  %swatch.add(%swatch.ctrl);
+  return %swatch;
+}
+
 function GlassServerControlC::setEnabled(%this, %enabled) {
   %this.enabled = %enabled;
 
@@ -729,6 +789,116 @@ function GlassServerControlC::setEnabled(%this, %enabled) {
     canvas.popDialog(GlassServerControlGui);
     GlassPrefGroup::cleanup();
   }
+}
+
+// TODO: use different namespace
+// TODO: actually change preference
+// Opens and closes a menu for selecting a color from the currently loaded colorset. If the menu is
+// already open, it will be closed. Menu is opened for the currently open category.
+// @param number x X position of upper right corner of menu.
+// @param number y Y position of upper right corner of menu.
+function GlassServerControlC::createColorMenu(%x, %y) {
+  // Maximum height of scroll view.
+  %maxHeight = 100;
+
+  // Maximum number of columns in the menu's scroll view.
+  %maxColumns = 10;
+
+  // Size of each buttons (buttons are squares).
+  %size = 18;
+
+  %openCat = GlassServerControlGui.openCategory;
+
+  // Close menu if it is already open. Create new color menu otherwise.
+  if (isObject(%openCat.colorMenu)) {
+    %openCat.colorMenu.delete();
+    return;
+  }
+
+  // Create container for color buttons.
+  %menu = new GuiScrollCtrl() {
+    profile = "GlassScrollProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    hScrollBar = "alwaysOff";
+    vScrollBar = "alwaysOn";
+    enabled = true;
+    visible = true;
+    clipToParent = false;
+  };
+  %swatch = new GuiSwatchCtrl() {
+    profile = "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    enabled = true;
+    visible = true;
+    clipToParent = true;
+    color = "240 240 240 255";
+  };
+  %menu.add(%swatch);
+
+  // Fill container with buttons for each color in the colorset.
+  %posX = 0;
+  %posY = 0;
+  %count = 0;
+  for (%i = 0; %i < 65; %i++) { // 65 is the maximum number of colors in a colorset.
+    %color = getColorIdTable(%i);
+    // Only include color if it's alpha values is non-zero.
+    if (getWord(%color, 3) > 0) {
+      %color = mCeil(getWord(%color, 0) * 255)
+	SPC mCeil(getWord(%color, 1) * 255)
+	SPC mCeil(getWord(%color, 2) * 255)
+	SPC mCeil(getWord(%color, 3) * 255);
+      %posX = (%count % %maxColumns) * %size;
+      %posY = mFloor(%count / %maxColumns) * %size;
+      %colorSwatch = new GuiSwatchCtrl() {
+	profile = "GuiDefaultProfile";
+	horizSizing = "right";
+	vertSizing = "bottom";
+	position = %posX SPC %posY;
+	extent = %size SPC %size;
+	color = %color;
+	enabled = true;
+	visible = true;
+	clipToParent = true;
+      };
+      %colorBtn = new GuiBitmapButtonCtrl() {
+	profile = "GuiDefaultProfile";
+	horizSizing = "right";
+	vertSizing = "bottom";
+	position = %posX SPC %posY;
+	extent = %size SPC %size;
+	// TODO: fill command
+	command = "announce(\"color: " @ %i @ "\");" @ %menu.getId() @ ".delete();";
+	buttonType = "PushButton";
+	text = " ";
+	bitmap = "base/client/ui/btnColor";
+	lockAspectRatio = false;
+	overflowImage = false;
+	enabled = true;
+	visible = true;
+	clipToParent = true;
+      };
+      %swatch.add(%colorSwatch);
+      %swatch.add(%colorBtn);
+
+      %count++;
+    }
+  }
+
+  // Calculate extents of container elements.
+  %swatExtY = mCeil(%count / %maxColumns) * %size;
+  %extX = %maxColumns * %size;
+  %extY = mClampF(%swatExtY, %size, %maxHeight);
+   // 12 is the size of the scroll bar.
+  %menu.extent = (%extX + 12) SPC (%extY + 2);
+  %swatch.extent = %extX SPC %swatExtY;
+
+  // Treat (%x, %y) as upper right corner.
+  %menu.position = (%x - getWord(%menu.extent, 0)) SPC %y;
+
+  %openCat.colorMenu = %menu;
+  %openCat.add(%openCat.colorMenu);
 }
 
 function GlassServerControlC::valueUpdate(%obj) {
@@ -772,10 +942,13 @@ function GlassServerControlC::valueUpdate(%obj) {
         %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
       }
     }
-  }
-
-  if(%type $= "dropdown" || %type $= "playercount") {
+  } else if(%type $= "dropdown" || %type $= "playercount") {
     %pref.localvalue = %obj.ctrl.getSelected();
+  } else if (%type $= "color") {
+    // Find the (x, y) position of the upper left corner of color button relative to %obj.
+    %menuX = getWord(%obj.position, 0) + getWord(%obj.ctrl.position, 0);
+    %menuY = getWord(%obj.position, 1) + getWord(%obj.ctrl.position, 1);
+    GlassServerControlC::createColorMenu(%menuX, %menuY);
   } else {
     %pref.localvalue = collapseEscape(%obj.ctrl.getValue());
   }
