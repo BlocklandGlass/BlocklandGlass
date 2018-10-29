@@ -243,7 +243,11 @@ function GlassServerControlC::renderCategory(%category) {
     }
   }
 
-  %parent.verticalMatchChildren(123, 0);
+  %scrollParent = GlassServerControl_PrefScroll.getGroup();
+  // Fill up any extra space in the scroll control.
+  %paddingY = getMax(0, getWord(%scrollParent.extent, 1) - %currentY - 2);
+  %parent.verticalMatchChildren(0, %paddingY);
+
   %category.tab = %parent;
 
   %parent.setName("GlassServerControlGui_Pref" @ %category.id);
