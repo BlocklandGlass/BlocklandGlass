@@ -929,6 +929,7 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
     }
   }
 
+
   // Calculate extents of container elements.
   %swatExtY = mCeil(%count / %maxColumns) * %size;
   %extX = %maxColumns * %size;
@@ -940,11 +941,16 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
   // Find the (x, y) position of the upper left corner of %swatch.btn relative to %swatch's parent.
   %trueBtnX = getWord(%swatch.position, 0) + getWord(%swatch.btn.position, 0);
   %trueBtnY = getWord(%swatch.position, 1) + getWord(%swatch.btn.position, 1);
-  %menu.position = (%trueBtnX - getWord(%menu.extent, 0)) SPC %trueBtnY;
-  // TODO: clamp position to be inside the parent swatch.
+
+  %parent = %swatch.getGroup();
+  %parentExtY = getWord(%parent.extent, 1);
+
+  // Ensure color menu doesn't extend out of reach.
+  %menuY = mClampF(%trueBtnY, 0, %parentExtY - getWord(%menu.extent, 1));
+  %menu.position = (%trueBtnX - getWord(%menu.extent, 0)) SPC %menuY;
 
   %swatch.colorMenu = %menu;
-  %swatch.getGroup().add(%swatch.colorMenu);
+  %parent.add(%swatch.colorMenu);
 }
 
 function GlassServerControlC::valueUpdate(%obj) {
