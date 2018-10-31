@@ -132,33 +132,27 @@ function GlassServerControlC::renderCategory(%category) {
     switch$(%pref.type) {
       case "bool":
         %swatch = GlassServerControlC::createCheckbox();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
 
       case "num":
         %swatch = GlassServerControlC::createInt();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
 
       case "slider":
         %swatch = GlassServerControlC::createSlider();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
         %swatch.ctrl.range = %pref.parm;
 
       case "string":
         %swatch = GlassServerControlC::createText();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));
 
       case "textarea":
         %swatch = GlassServerControlC::createTextArea();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(%pref.value);
 
       case "dropdown":
         %swatch = GlassServerControlC::createList();
-        %swatch.text.setText(%pref.title);
         %options = %pref.params;
         for(%k = 0; %k < getWordCount(%options); %k += 2) {
           %swatch.ctrl.add(strreplace(getWord(%options, %k), "_", " "), getWord(%options, %k+1));
@@ -167,7 +161,6 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "playercount":
         %swatch = GlassServerControlC::createList();
-        %swatch.text.setText(%pref.title);
         %options = %pref.params;
         for(%k = 0; %k < 99; %k++) {
           %swatch.ctrl.add(%k+1, %k+1);
@@ -176,7 +169,6 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "wordlist":
         %swatch = GlassServerControlC::createText();
-        %swatch.text.setText(%pref.title);
         %swatch.ctrl.setValue(expandEscape(%pref.value));
 
       case "userlist": // these should be done at some point
@@ -187,7 +179,6 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "rgb":
         %swatch = GlassServerControlC::createRGB();
-        %swatch.text.setText(%pref.title);
 
         %alpha = %pref.params;
         if(%alpha) {
@@ -198,7 +189,6 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "color":
 	%swatch = GlassServerControlC::createColor();
-        %swatch.text.setText(%pref.title);
 	%color = getColorFromTable(%pref.value);
 	%swatch.btnBack.color = %color;
 
@@ -227,6 +217,7 @@ function GlassServerControlC::renderCategory(%category) {
 
     %odd = !%odd;
 
+    %swatch.text.setText(%pref.title);
     if (isObject(%swatch.ctrl)) {
       %swatch.ctrl.command = "GlassServerControlC::valueUpdate(" @ %swatch.getId() @ ");";
     }
@@ -818,7 +809,8 @@ function GlassServerControlC::setEnabled(%this, %enabled) {
 // @param int i ID of color in colorset table in the range [0, 65].
 // @return words RGBA values in the range [0, 255].
 function getColorFromTable(%i) {
-  // TODO: is getColorIdTable updated on join or spawn?
+  // TODO: the internal color table for getColorIdTable is only updated once the client spawns.
+  //       Need to somehow communicate the true color table to the client on join.
   %color = getColorIdTable(%i);
   // Scale color up from [0, 1] to [0, 255].
   %color = mCeil(getWord(%color, 0) * 255)
@@ -928,7 +920,6 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
       %count++;
     }
   }
-
 
   // Calculate extents of container elements.
   %swatExtY = mCeil(%count / %maxColumns) * %size;
