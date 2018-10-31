@@ -128,14 +128,13 @@ function GlassServerControlC::renderCategory(%category) {
       %currentY += 24;
     }
     %swatch = "";
-    // TODO: call %swatch.text.setText(%pref.title) only once
     switch$(%pref.type) {
       case "bool":
         %swatch = GlassServerControlC::createCheckbox();
         %swatch.ctrl.setValue(%pref.value);
 
       case "button":
-        %swatch = "unfinished";
+	%swatch = "unfinished";
 
       case "color":
 	%swatch = GlassServerControlC::createColor();
@@ -673,10 +672,9 @@ function GlassServerControlC::createRGB() {
      vertSizing = "bottom";
      position = "1 25";
      extent = "430 32";
-     minExtent = "8 2";
-     enabled = "1";
-     visible = "1";
-     clipToParent = "1";
+     enabled = true;
+     visible = true;
+     clipToParent = true;
      color = "100 100 100 50";
   };
 
@@ -686,10 +684,9 @@ function GlassServerControlC::createRGB() {
     vertSizing = "center";
     position = "10 7";
     extent = "77 18";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
+    enabled = true;
+    visible = true;
+    clipToParent = true;
     text = "";
     maxLength = "255";
   };
@@ -698,12 +695,11 @@ function GlassServerControlC::createRGB() {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "408 8";
+    position = "403 8";
     extent = "16 16";
-    minExtent = "8 2";
-    enabled = "1";
-    visible = "1";
-    clipToParent = "1";
+    enabled = true;
+    visible = true;
+    clipToParent = true;
     color = "255 0 255 255";
   };
 
@@ -711,7 +707,7 @@ function GlassServerControlC::createRGB() {
     profile = "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "center";
-    position = "408 8";
+    position = "403 8";
     extent = "16 16";
     command = "GlassServerControlGui::openColorSelector(" @ %swatch.getId() @ ");";
   };
