@@ -835,7 +835,6 @@ function GlassServerControlC::updateColorPref(%swatch, %i) {
 //    GlassServerControlC::createColor().
 // @param number x X position of upper right corner of menu.
 // @param number y Y position of upper right corner of menu.
-//function GlassServerControlC::createColorMenu(%swatch, %x, %y) { // TODO: remove
 function GlassServerControlC::spawnColorMenu(%swatch) {
   // Maximum height of scroll view.
   %maxHeight = 100;
