@@ -134,58 +134,8 @@ function GlassServerControlC::renderCategory(%category) {
         %swatch = GlassServerControlC::createCheckbox();
         %swatch.ctrl.setValue(%pref.value);
 
-      case "num":
-        %swatch = GlassServerControlC::createInt();
-        %swatch.ctrl.setValue(%pref.value);
-
-      case "slider":
-        %swatch = GlassServerControlC::createSlider();
-        %swatch.ctrl.setValue(%pref.value);
-        %swatch.ctrl.range = %pref.parm;
-
-      case "string":
-        %swatch = GlassServerControlC::createText();
-        %swatch.ctrl.setValue(expandEscape(%pref.value));
-
-      case "textarea":
-        %swatch = GlassServerControlC::createTextArea();
-        %swatch.ctrl.setValue(%pref.value);
-
-      case "dropdown":
-        %swatch = GlassServerControlC::createList();
-        %options = %pref.params;
-        for(%k = 0; %k < getWordCount(%options); %k += 2) {
-          %swatch.ctrl.add(strreplace(getWord(%options, %k), "_", " "), getWord(%options, %k+1));
-        }
-        %swatch.ctrl.setSelected(%pref.value);
-
-      case "playercount":
-        %swatch = GlassServerControlC::createList();
-        %options = %pref.params;
-        for(%k = 0; %k < 99; %k++) {
-          %swatch.ctrl.add(%k+1, %k+1);
-        }
-        %swatch.ctrl.setSelected(%pref.value);
-
-      case "wordlist":
-        %swatch = GlassServerControlC::createText();
-        %swatch.ctrl.setValue(expandEscape(%pref.value));
-
-      case "userlist": // these should be done at some point
-        %swatch = "unfinished";
-
       case "button":
         %swatch = "unfinished";
-
-      case "rgb":
-        %swatch = GlassServerControlC::createRGB();
-
-        %alpha = %pref.params;
-        if(%alpha) {
-          %swatch.preview.color = %pref.value;
-        } else {
-          %swatch.preview.color = getWords(%pref.value, 0, 3) SPC 255;
-        }
 
       case "color":
 	%swatch = GlassServerControlC::createColor();
@@ -200,6 +150,56 @@ function GlassServerControlC::renderCategory(%category) {
 
       case "datablocklist":
         %swatch = "unfinished";
+
+      case "dropdown":
+        %swatch = GlassServerControlC::createList();
+        %options = %pref.params;
+        for(%k = 0; %k < getWordCount(%options); %k += 2) {
+          %swatch.ctrl.add(strreplace(getWord(%options, %k), "_", " "), getWord(%options, %k+1));
+        }
+        %swatch.ctrl.setSelected(%pref.value);
+
+      case "num":
+        %swatch = GlassServerControlC::createInt();
+        %swatch.ctrl.setValue(%pref.value);
+
+      case "playercount":
+        %swatch = GlassServerControlC::createList();
+        %options = %pref.params;
+        for(%k = 0; %k < 99; %k++) {
+          %swatch.ctrl.add(%k+1, %k+1);
+        }
+        %swatch.ctrl.setSelected(%pref.value);
+
+      case "rgb":
+        %swatch = GlassServerControlC::createRGB();
+
+        %alpha = %pref.params;
+        if(%alpha) {
+          %swatch.preview.color = %pref.value;
+        } else {
+          %swatch.preview.color = getWords(%pref.value, 0, 3) SPC 255;
+        }
+
+      case "slider":
+        %swatch = GlassServerControlC::createSlider();
+        %swatch.ctrl.setValue(%pref.value);
+        %swatch.ctrl.range = %pref.parm;
+
+      case "string":
+        %swatch = GlassServerControlC::createText();
+        %swatch.ctrl.setValue(expandEscape(%pref.value));
+
+      case "textarea":
+        %swatch = GlassServerControlC::createTextArea();
+        %swatch.ctrl.setValue(%pref.value);
+
+      case "userlist": // these should be done at some point
+        %swatch = "unfinished";
+
+      case "wordlist":
+        %swatch = GlassServerControlC::createText();
+        %swatch.ctrl.setValue(expandEscape(%pref.value));
     }
 
     if(!isObject(%swatch)) {
