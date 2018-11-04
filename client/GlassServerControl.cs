@@ -826,7 +826,8 @@ function GlassServerControlC::updateColorPref(%swatch, %i) {
 }
 
 // Creates a menu for selecting a color from the currently loaded colorset. Menu is created to the
-// left of the color preference swatch's color button.
+// left of the swatch. If a color menu previously created by this function exists, it will be
+// deleted.
 // @param GuiSwatchCtrl swatch Swatch control to bind menu to, created by
 //    GlassServerControlC::createColor().
 // @param number x X position of upper right corner of menu.
@@ -842,9 +843,8 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
   %size = 18;
 
   // If a color menu already exists for %swatch, delete it.
-  if (isObject(%swatch.colorMenu)) {
-    %swatch.colorMenu.delete();
-    return;
+  if (isObject(GlassServerControlGui.colorMenu)) {
+    GlassServerControlGui.colorMenu.delete();
   }
 
   // Create container for color buttons.
@@ -857,7 +857,7 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
     vScrollBar = "alwaysOn";
     enabled = true;
     visible = true;
-    clipToParent = false;
+    clipToParent = true;
   };
   %menuSwatch = new GuiSwatchCtrl() {
     profile = "GuiDefaultProfile";
@@ -935,8 +935,8 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
   %menuY = mClampF(%trueBtnY, 0, %parentExtY - getWord(%menu.extent, 1));
   %menu.position = (%trueBtnX - getWord(%menu.extent, 0)) SPC %menuY;
 
-  %swatch.colorMenu = %menu;
-  %parent.add(%swatch.colorMenu);
+  GlassServerControlGui.colorMenu = %menu;
+  %parent.add(GlassServerControlGui.colorMenu);
 }
 
 function GlassServerControlC::valueUpdate(%obj) {
