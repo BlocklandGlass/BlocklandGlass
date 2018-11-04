@@ -844,7 +844,12 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
 
   // If a color menu already exists for %swatch, delete it.
   if (isObject(GlassServerControlGui.colorMenu)) {
+    // If the color menu belongs to %swatch, do not create a new one.
+    %exit = isObject(%swatch.colorMenu);
     GlassServerControlGui.colorMenu.delete();
+    if (%exit) {
+      return;
+    }
   }
 
   // Create container for color buttons.
@@ -936,7 +941,8 @@ function GlassServerControlC::spawnColorMenu(%swatch) {
   %menu.position = (%trueBtnX - getWord(%menu.extent, 0)) SPC %menuY;
 
   GlassServerControlGui.colorMenu = %menu;
-  %parent.add(GlassServerControlGui.colorMenu);
+  %swatch.colorMenu = %menu;
+  %parent.add(%swatch.colorMenu);
 }
 
 function GlassServerControlC::valueUpdate(%obj) {
