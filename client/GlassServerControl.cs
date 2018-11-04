@@ -136,13 +136,10 @@ function GlassServerControlC::renderCategory(%category) {
       case "button":
 	%swatch = "unfinished";
 
-      case "color":
-	%swatch = GlassServerControlC::createColor();
+      case "colorset":
+	%swatch = GlassServerControlC::createColorset();
 	%color = getColorFromTable(%pref.value);
 	%swatch.btnBack.color = %color;
-
-      case "colorset":
-        %swatch = "unfinished";
 
       case "datablock":
         %swatch = "unfinished";
@@ -720,7 +717,7 @@ function GlassServerControlC::createRGB() {
 
 // Creates a GUI control element for modifying a color preference.
 // @return GuiSwatchCtrl GUI element containing color setter.
-function GlassServerControlC::createColor() {
+function GlassServerControlC::createColorset() {
   // Size of color buttons (buttons are square).
   %size = 18;
 
@@ -817,7 +814,7 @@ function getColorFromTable(%i) {
 }
 
 // Updates the preferences for a color preference swatch.
-// @param GuiSwatchCtrl swatch Swatch control created by GlassServerControlC::createColor().
+// @param GuiSwatchCtrl swatch Swatch control created by GlassServerControlC::createColorset().
 // @param int i ID of color in colorset table in the range [0, 65].
 function GlassServerControlC::updateColorPref(%swatch, %i) {
   %color = getColorFromTable(%i);
@@ -829,7 +826,7 @@ function GlassServerControlC::updateColorPref(%swatch, %i) {
 // left of the swatch. If a color menu previously created by this function exists, it will be
 // deleted.
 // @param GuiSwatchCtrl swatch Swatch control to bind menu to, created by
-//    GlassServerControlC::createColor().
+//    GlassServerControlC::createColorset().
 // @param number x X position of upper right corner of menu.
 // @param number y Y position of upper right corner of menu.
 function GlassServerControlC::spawnColorMenu(%swatch) {
