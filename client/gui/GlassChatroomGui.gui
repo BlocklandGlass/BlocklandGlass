@@ -27,7 +27,7 @@ new GuiControl(GlassChatroomGui) {
       resizeHeight = "0";
       canMove = "1";
       canClose = "1";
-      canMinimize = "0";
+      canMinimize = "1";
       canMaximize = "0";
       minSize = "50 50";
       escapeCommand = "canvas.popDialog(GlassChatroomGui);";
