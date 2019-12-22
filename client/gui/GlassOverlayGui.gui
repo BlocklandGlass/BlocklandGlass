@@ -38,6 +38,30 @@ new GuiControl(GlassOverlayGui) {
       visible = "0";
       bitmap = "Add-Ons/System_BlocklandGlass/image/logoWhite";
     };
+
+    new GuiBitmapButtonCtrl() {
+       profile = "GuiDefaultProfile";
+       horizSizing = "right";
+       vertSizing = "bottom";
+       position = "20 160";
+       extent = "49 48";
+       minExtent = "8 2";
+       enabled = "1";
+       visible = "1";
+       clipToParent = "1";
+       groupNum = "-1";
+       buttonType = "PushButton";
+       bitmap = "Add-Ons/System_BlocklandGlass/image/discord";
+       lockAspectRatio = "0";
+       alignLeft = "0";
+       alignTop = "0";
+       overflowImage = "0";
+       mKeepCached = "0";
+       mColor = "255 255 255 255";
+       text = " ";
+       command = "canvas.pushDialog(GlassDiscordGui);";
+    };
+
     new GuiBitmapCtrl(GlassLiveBugReportIcon) {
        profile = "GuiDefaultProfile";
        horizSizing = "right";
