@@ -983,7 +983,9 @@ function GlassServerControlC::valueUpdate(%obj) {
         %obj.ctrl.setValue(getsubstr(%obj.ctrl.getValue(), 0, %parm));
       }
     }
-  } else if(%type $= "dropdown" || %type $= "playercount") {
+  }
+
+  if(%type $= "dropdown" || %type $= "playercount") {
     %pref.localvalue = %obj.ctrl.getSelected();
   } else {
     %pref.localvalue = collapseEscape(%obj.ctrl.getValue());
