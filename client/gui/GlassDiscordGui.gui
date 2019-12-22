@@ -15,7 +15,7 @@ new GuiControl(GlassDiscordGui) {
       horizSizing = "center";
       vertSizing = "center";
       position = "148 120";
-      extent = "344 239";
+      extent = "344 245";
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -64,7 +64,7 @@ new GuiControl(GlassDiscordGui) {
          lineSpacing = "2";
          allowColorChars = "0";
          maxChars = "-1";
-         text = "<font:verdana:12>To use the Blockland Glass discord channel, you first need to verify your account. After joining the Discord, you\'ll be prompted for a code to enter. This is to link your Blockland and Discord accounts. This can only be done once!";
+         text = "<font:verdana:12>To use the Blockland Glass discord channel, you first need to verify your account. After joining the Discord, you\'ll be prompted for a code to enter. This is to link your Blockland and Discord accounts. Each Blockland account and Discord account may only be linked once!";
          maxBitmapHeight = "-1";
          selectable = "1";
          autoResize = "1";
@@ -73,7 +73,7 @@ new GuiControl(GlassDiscordGui) {
          profile = "GuiBigTextProfile";
          horizSizing = "center";
          vertSizing = "bottom";
-         position = "104 160";
+         position = "104 170";
          extent = "136 40";
          minExtent = "8 2";
          enabled = "1";
@@ -86,7 +86,7 @@ new GuiControl(GlassDiscordGui) {
          profile = "GuiCenterTextProfile";
          horizSizing = "center";
          vertSizing = "bottom";
-         position = "0 195";
+         position = "0 205";
          extent = "344 18";
          minExtent = "344 18";
          enabled = "1";
@@ -99,7 +99,7 @@ new GuiControl(GlassDiscordGui) {
          profile = "GlassBlockButtonProfile";
          horizSizing = "center";
          vertSizing = "bottom";
-         position = "102 170";
+         position = "102 180";
          extent = "140 30";
          minExtent = "8 2";
          enabled = "1";

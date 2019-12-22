@@ -28,12 +28,10 @@ function GlassDiscordGui::onWake(%this) {
   } else {
     GlassDiscord::reset();
   }
-  echo("wake");
 }
 
 function GlassDiscordGui::onSleep(%this) {
   cancel($Glass::DiscordSch);
-  echo("Sleepy");
 }
 
 function GlassDiscordTCP::handleText(%this, %line) {
@@ -55,6 +53,8 @@ function GlassDiscordTCP::onDone(%this, %error) {
   GlassDiscordGui_Code.setVisible(true);
   GlassDiscordGui_Timer.setVisible(true);
   $Glass::DiscordExpire = getRealTime() + 300000;
+
+  GlassDiscordGui_Code.centerX();
 
   GlassDiscord_timer();
 }
