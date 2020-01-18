@@ -36,7 +36,7 @@ function GlassStatistics::scanFiles() {
 		%fo.close();
 		%fo.delete();
 
-    if(!jettisonParse(collapseEscape(%buffer))) {
+    if(!jettisonParse(%buffer)) {
       %glassObj = $JSON::Value;
 
       %go = new ScriptObject(GlassAddonData) {
@@ -46,7 +46,7 @@ function GlassStatistics::scanFiles() {
         title = %glassObj.get("title");
       };
     } else {
-      error("Parse error - " @ $JSON::Error);
+      error("Parse error - " @ $JSON::Error @ " in " @ %file);
     }
 
     if(isfile("Add-Ons/" @ %name @ "/version.json")) {

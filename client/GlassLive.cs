@@ -949,10 +949,13 @@ function GlassLive::createMessageReminder() {
 }
 
 function GlassLive::positionMessageReminder() {
-  if(!isObject(GlassMessageReminder))
-	GlassLive::createMessageReminder();
+	if(!GlassSettings.get("Live::ReminderIcon"))
+	  return;
 
-	GlassMessageReminder.resize(getWord(getRes(), 0) - 26, getWord(getRes(), 1) - 26, 16, 16);
+  if(!isObject(GlassMessageReminder))
+    GlassLive::createMessageReminder();
+
+  GlassMessageReminder.resize(getWord(getRes(), 0) - 26, getWord(getRes(), 1) - 26, 16, 16);
 }
 
 //====
