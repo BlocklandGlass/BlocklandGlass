@@ -14,16 +14,16 @@
 
 Glass relies on some other mods to work, and we'd like to thank their authors for building the backbone that we rely on.
 
-<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Greek2Me<font:verdana:12>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Greek2Me<font:verdana:12> 11902
 <lmargin:14>Support_Updater, TCPClient, Preloader, SemVer
 <lmargin:0>
-<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Port<font:verdana:12>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>Port<font:verdana:12> 46342
 <lmargin:14>Jettison
 <lmargin:0>
-<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>TheBlackParrot<font:verdana:12>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>TheBlackParrot<font:verdana:12> 18701
 <lmargin:14>Support_Preferences
 <lmargin:0>
-<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>McTwist<font:verdana:12>
+<bitmap:Add-Ons/System_BlocklandGlass/image/icon/bullet_black> <font:verdana bold:12>McTwist<font:verdana:12> 9845
 <lmargin:14>Digest Access Authentication
 <lmargin:0>
 
