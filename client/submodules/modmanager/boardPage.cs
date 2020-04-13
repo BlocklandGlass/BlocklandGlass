@@ -114,7 +114,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
       vertSizing = "bottom";
       color = (%odd = !%odd) ? "235 235 235 255" : "230 230 230 255";
       position = "10 10";
-      extent = "595 40";
+      extent = "595 50";
 
       aid = %aid;
     };
@@ -131,7 +131,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
       horizSizing = "left";
       vertSizing = "bottom";
       text = "<color:333333><just:center><font:verdana:13>" @ %author;
-      position = "235 12";
+      position = "235 5";
       extent = "120 16";
     };
 
@@ -139,7 +139,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
       horizSizing = "left";
       vertSizing = "bottom";
       text = "<color:333333><font:verdana:13><just:right>" @ %downloads;
-      position = "500 12";
+      position = "500 5";
       extent = "85 45";
     };
 
@@ -152,8 +152,6 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
     %body.add(%swatch);
     %swatch.placeBelow(%last, 0);
-
-    %swatch.author.centerY();
 
     %last = %swatch;
   }
