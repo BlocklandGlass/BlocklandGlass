@@ -842,12 +842,8 @@ function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
       return;
     }
 
-    if(%this.user.blid == getNumKeyId()) {
-      if(GlassIconSelectorWindow.visible)
-        GlassOverlay::closeIconSelector();
-      else
-        GlassOverlay::openIconSelector();
-    } else if(%this.user.isBot()) {
+
+    if(%this.user.isBot()) {
       glassMessageBoxOk("Beep Boop", "That's a bot!");
     } else {
       if(isObject(%this.user.window))
@@ -870,10 +866,13 @@ function GlassLiveUserListSwatch::onRightMouseUp(%this) {
       }
     }
   } else {
-    if(isObject(%window = GlassLiveUser::getFromBlid(getNumKeyId()).window))
-      %window.delete();
-    else
-      GlassLive::openUserWindow(getNumKeyId());
+    if(%this.user.blid == getNumKeyId()) {
+      if(GlassIconSelectorWindow.visible) {
+        GlassOverlay::closeIconSelector();
+      } else {
+        GlassOverlay::openIconSelector();
+      }
+    }
   }
 }
 
