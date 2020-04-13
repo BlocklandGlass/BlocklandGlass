@@ -512,9 +512,9 @@ function GlassChatroomWindow::openTab(%this, %id) {
     }
   }
 
-  if(%this.isAwake()) {
-    %this.resize.schedule(0, onResize);
-  }
+  %this.resize.schedule(0, onResize);
+
+  GlassOverlay::resetFocus();
 }
 
 function GlassLive::enterRoomDragMode(%obj, %pos) {
@@ -3735,7 +3735,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   if(!isObject(%activeTab))
     return;
 
-  %input.makeFirstResponder(1);
+  // %input.makeFirstResponder(1);
 
   if(%this.isAwake()) {
     %chatText.forceReflow();
