@@ -1,20 +1,22 @@
 function GlassManual::init() {
   if(isObject(GlassManualWindow)) {
     GlassManualWindow.scan();
+    GlassManualWindow.downloadDocListing();
   }
 }
 
 function GlassManualWindow::onWake(%this) {
   if(!%this.firstWake) {
-    GlassManualWindow.read("1 Credits");
+    %this.read("1 Credits");
     GlassManualGui_List.setSelectedRow(0);
     %this.firstWake = true;
   }
-}
 
-function GlassManualWindow::downloadDocListing(%this) {
-  %tcp = GlassApi.request("docs", "", "GlassManualTCP");
-  %tcp.requestType = "list";
+  if(GlassManualGui_Text.isAwake())
+    GlassManualGui_Text.forceReflow();
+
+  GlassManualGui_Container.verticalMatchChildren(20, 10);
+  GlassManualGui_Container.setVisible(true);
 }
 
 function GlassManualWindow::scan(%this) {
@@ -40,7 +42,11 @@ function GlassManualWindow::scan(%this) {
   }
 
   GlassManualGui_List.sortNumerical(0, true);
-  %this.downloadDocListing();
+}
+
+function GlassManualWindow::downloadDocListing(%this) {
+  %tcp = GlassApi.request("docs", "", "GlassManualTCP");
+  %tcp.requestType = "list";
 }
 
 function GlassManualWindow::downloadDoc(%this, %doc) {
@@ -59,12 +65,18 @@ function GlassManualWindow::read(%this, %doc) {
 
   GlassManualGui_Text.setText("<font:verdana:12><color:333333>");
 
-  %fo = new FileObject();
-  %fo.openForRead("Add-Ons/System_BlocklandGlass/docs/" @ %doc @ ".txt");
-  while(!%fo.isEOF())
-    GlassManualGui_Text.addText(collapseEscape(%fo.readLine()) @ "\n", true);
-  %fo.close();
-  %fo.delete();
+  %file = "Add-Ons/System_BlocklandGlass/docs/" @ %doc @ ".txt";
+
+  if(isFile(%file)) {
+    %fo = new FileObject();
+    %fo.openForRead(%file);
+    while(!%fo.isEOF())
+      GlassManualGui_Text.addText(collapseEscape(%fo.readLine()) @ "\n", true);
+    %fo.close();
+    %fo.delete();
+  } else {
+    GlassManualGui_Text.addText("File not found.", true);
+  }
 
   GlassManualGui_Text.setText(trim(GlassManualGui_Text.getText()));
 
@@ -116,21 +128,22 @@ function GlassManualTCP::onDone(%this, %error) {
     }
 
     GlassManualGui_List.sortNumerical(0, true);
-  } else {
-    if(GlassManualWindow.loadingDoc !$= %this.doc) {
-      return;
-    }
 
-
-    GlassManualGui_Text.setText("<font:verdana:12><color:333333>");
-
-    GlassManualGui_Text.addText(collapseEscape(%this.buffer) @ "\n", true);
-    GlassManualGui_Text.setText(trim(GlassManualGui_Text.getText()));
-
-    if(GlassManualGui_Text.isAwake())
-      GlassManualGui_Text.forceReflow();
-
-    GlassManualGui_Container.verticalMatchChildren(20, 10);
-    GlassManualGui_Container.setVisible(true);
+    return;
   }
+
+  if(GlassManualWindow.loadingDoc !$= %this.doc)
+    return;
+
+  GlassManualGui_Text.setText("<font:verdana:12><color:333333>");
+
+  GlassManualGui_Text.addText(collapseEscape(%this.buffer) @ "\n", true);
+
+  GlassManualGui_Text.setText(trim(GlassManualGui_Text.getText()));
+
+  if(GlassManualGui_Text.isAwake())
+    GlassManualGui_Text.forceReflow();
+
+  GlassManualGui_Container.verticalMatchChildren(20, 10);
+  GlassManualGui_Container.setVisible(true);
 }
