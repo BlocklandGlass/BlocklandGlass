@@ -356,7 +356,8 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {

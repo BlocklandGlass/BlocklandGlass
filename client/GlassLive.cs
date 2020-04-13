@@ -831,7 +831,8 @@ function GlassLive::updateLocation(%inServer) {
 function GlassLive::getEmotedMessage(%message) {
   for(%i = 0; %i < getWordCount(%message); %i++) {
     %word = getWord(%message, %i);
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
@@ -2526,7 +2527,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
       //%obj.blid = %blid;
       //%obj.raw = %raw;
     }
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
@@ -4209,6 +4211,9 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
   %checkEmote = strReplace(%currWord, ":" , "");
 
   if(getSubStr(%currWord, 0, 1) !$= ":" || strLen(%currWord) < 3 || strReplace(%currWord, " ", "") !$= %currWord)
+    return;
+
+  if(getSubStr(%currWord, 1, 1) $= ":")
     return;
 
   if(getSubStr(%currWord, strLen(%currWord) - 1, 1) $= ":")
