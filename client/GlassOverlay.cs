@@ -140,6 +140,27 @@ function GlassOverlay::setLogo() {
     GlassLiveLogo.setVisible(false);
 }
 
+function GlassOverlay::resetFocus() {
+  %chatVisible = false;
+
+  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
+    %window = GlassOverlayGui.getObject(%i);
+    if(%window.getName() $= "GlassChatroomWindow" && %window.visible) {
+      %chatVisible = true;
+      break;
+    }
+  }
+
+  if(%chatVisible) {
+    if(isObject(%window.activeTab.input)) {
+      %window.activeTab.input.makeFirstResponder(true);
+      return;
+    }
+  }
+
+  GlassOverlayResponder.schedule(1, makeFirstResponder, true);
+}
+
 //================================================================
 //= Mod Manager                                                  =
 //================================================================
@@ -153,6 +174,10 @@ function GlassOverlay::openModManager(%force) {
   }
   GlassModManagerGui_Window.setVisible(%force $= "" ? !GlassModManagerGui_Window.visible : %force);
 
+  if(!GlassModManagerGui_Window.visible) {
+    GlassOverlay::resetFocus();
+  }
+
   if(GlassModManagerGui.page $= "") {
     GlassModManagerGui.openPage(GMM_ActivityPage);
   }
@@ -162,6 +187,7 @@ function GlassOverlay::openModManager(%force) {
 
 function GlassOverlay::closeModManager() {
   GlassModManagerGui_Window.setVisible(false);
+  GlassOverlay::resetFocus();
 }
 
 //================================================================
@@ -194,11 +220,14 @@ function GlassOverlay::openSettings() {
 
   if(GlassSettingsWindow.visible) {
     GlassOverlayGui.pushToBack(GlassSettingsWindow);
+  } else {
+    GlassOverlay::resetFocus();
   }
 }
 
 function GlassOverlay::closeSettings() {
   GlassSettingsWindow.setVisible(false);
+  GlassOverlay::resetFocus();
 }
 
 //================================================================
@@ -235,6 +264,8 @@ function GlassOverlay::openChatroom() {
       %window.setVisible(!%window.visible);
     }
   }
+
+  GlassOverlay::resetFocus();
 
   if(!%chatFound) {
     if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
@@ -284,6 +315,7 @@ function GlassOverlay::openModeration(%safe) {
     GlassModeratorWindow_DurationBlocker.setVisible(false);
     GlassModeratorWindow_Reason.enabled = false;
     GlassModeratorWindow_Duration.enabled = false;
+    GlassOverlay::resetFocus();
     return;
   }
 
@@ -301,4 +333,6 @@ function GlassOverlay::closeModeration() {
   GlassModeratorWindow_Duration.enabled = false;
 
   GlassModeratorWindow.setVisible(false);
+
+  GlassOverlay::resetFocus();
 }
