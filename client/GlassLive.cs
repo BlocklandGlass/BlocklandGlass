@@ -412,6 +412,13 @@ function GlassChatroomWindow::removeTab(%this, %tabObj) {
 
 function GlassChatroomWindow::removeTabId(%this, %id) {
   %tabObj = %this.tabId[%id];
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %this.tab[%id].input) {
+      GlassLive_EmoteSelection.delete();
+    }
+  }
+
   %tabObj.window = "";
 
   %this.tab[%id] = "";
@@ -2457,6 +2464,13 @@ function GlassLive::openDirectMessage(%blid, %username) {
 
 function GlassLive::closeMessage(%blid) {
   %gui = GlassLive.message[%blid];
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %gui.input) {
+      GlassLive_EmoteSelection.delete();
+    }
+  }
+
   GlassOverlayGui.remove(%gui);
   %gui.deleteAll();
   %gui.delete();
@@ -2808,6 +2822,12 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %window.input) {
+      GlassLive_EmoteSelection.position = vectorAdd(%window.position, 2 SPC getWord(%window.extent, 1));
+    }
+  }
 }
 
 function GlassMessageTyping::startAnimation(%this) {
@@ -3728,12 +3748,14 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
     }
   }
 
-  if(isObject(GlassLive_EmoteSelection)) {
-    GlassLive_EmoteSelection.position = vectorAdd(%position, 2 SPC getWord(%extent, 1));
-  }
-
   if(!isObject(%activeTab))
     return;
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %input) {
+      GlassLive_EmoteSelection.position = vectorAdd(%window.position, 2 SPC getWord(%window.extent, 1));
+    }
+  }
 
   // %input.makeFirstResponder(1);
 
@@ -4170,6 +4192,8 @@ function GlassEmoteSelector::CacheEmotes() {
 }
 
 function GlassEmoteSelector::ListEmotes(%msgBox) {
+  GlassOverlay.activeInput = %msgBox;
+
   %parent = %msgBox.getGroup();
   if(%parent.getName() !$= "GlassMessageGui")
     %parent = %msgBox.getGroup().getGroup();
