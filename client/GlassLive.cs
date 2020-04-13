@@ -3728,6 +3728,10 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
     }
   }
 
+  if(isObject(GlassLive_EmoteSelection)) {
+    GlassLive_EmoteSelection.position = vectorAdd(%position, 2 SPC getWord(%extent, 1));
+  }
+
   if(!isObject(%activeTab))
     return;
 
