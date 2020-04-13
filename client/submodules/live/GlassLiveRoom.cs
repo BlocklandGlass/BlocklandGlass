@@ -510,6 +510,10 @@ function GlassLiveRoom::userListAdd(%this, %user, %batched) {
 
   // store data
   %this.listSwatchBlid[%user.blid] = %swatch;
+
+  if(%this.view.window.isAwake()) {
+    %this.view.window.resize.schedule(0, onResize);
+  }
 }
 
 function GlassLiveRoom::userListRemove(%this, %user, %batched) {
@@ -558,6 +562,10 @@ function GlassLiveRoom::userListRemoveBLID(%this, %blid, %batched) {
   // clean headers
   if(!%batched)
     %this.userListCleanHeaders();
+
+  if(%this.view.window.isAwake()) {
+    %this.view.window.resize.schedule(0, onResize);
+  }
 }
 
 function GlassLiveRoom::userListCleanHeaders(%this) {
