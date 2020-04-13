@@ -470,13 +470,6 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
   }
 }
 
-function GlassChatroomWindow::exitTab(%this) {
-  %tab = %this.activeTab;
-  if(isObject(%tab)) {
-    glassMessageBoxYesNo("Leave Room", "Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:13>?", %tab.room.getId() @ ".leaveRoom();");
-  }
-}
-
 function GlassChatroomWindow::openTab(%this, %id) {
   %current = %this.activeTab;
   %currentId = %this.activeTabId;
@@ -3485,7 +3478,7 @@ function GlassLive::createChatroomWindow() {
     resizeWidth = "1";
     resizeHeight = "1";
     canMove = "1";
-    canClose = "1";
+    canClose = "0";
     canMinimize = "0";
     canMaximize = "0";
     minSize = "50 50";
@@ -3493,8 +3486,6 @@ function GlassLive::createChatroomWindow() {
 
     tabs = 0;
   };
-
-  %chatroom.closeCommand = %chatroom.getId() @ ".exitTab();";
 
   %chatroom.resize = new GuiMLTextCtrl(GlassChatroomResize) {
     profile = "GuiMLTextProfile";
@@ -3849,12 +3840,12 @@ function GlassChatroomWindow::createAddTabButton(%this) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
-    extent = 30 SPC 25;
+    extent = 35 SPC 25;
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "+";
+    text = "+/-";
     groupNum = "-1";
     buttonType = "PushButton";
     lockAspectRatio = "0";
@@ -4040,9 +4031,9 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
       extent = "48 18";
       position = "365 4";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-      text = "Join";
-      visible = !isObject(GlassLive.room[%room.id]);
-      command = "GlassLive::joinRoom(" @ %room.id @ ");";
+      text = (isObject(GlassLive.room[%room.id]) ? "Leave" : "Join");
+      visible = "1";
+      command = (!isObject(GlassLive.room[%room.id]) ? "GlassLive::joinRoom(" @ %room.id @ ");" : GlassLive.room[%room.id] @ ".leaveRoom();");
     };
 
     %swatch.add(%swatch.image);
