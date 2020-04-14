@@ -28,7 +28,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
 
   // Volume
-  GlassSettings.registerSetting("Volume::RoomChat", 0.8, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
+  GlassSettings.registerSetting("Volume::RoomChat", 0, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::FriendStatus", 0.8, "GlassAudio::updateVolume", "Friend Status", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::DirectMessage", 0.8, "GlassAudio::updateVolume", "Direct Messages", "Volume", "slider", "0 1 1 4");
   // Mod Manager
