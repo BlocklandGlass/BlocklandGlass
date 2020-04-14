@@ -323,7 +323,7 @@ function GlassOverlay::openModeration(%safe) {
 
   GlassModeratorWindow_Selection.onSelect();
 
-  GlassModeratorGui::searchPlayers();
+  GlassModeratorGui.updateBLID();
 }
 
 function GlassOverlay::closeModeration() {

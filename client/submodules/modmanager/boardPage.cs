@@ -32,7 +32,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
     GMM_Navigation.steps--;
   }
   GlassModManagerGui.pageDidLoad(%this);
-  
+
   GlassModManagerGui.setLoading(false);
   %status = %res.status;
 
@@ -102,12 +102,17 @@ function GMM_BoardPage::handleResults(%this, %res) {
 
     %aid = %addon.id;
     %addonName = getASCIIString(%addon.name);
+
+    if(strlen(%addonName) > 32)
+      %addonName = getsubstr(%addonName, 0, 32) @ "...";
+
     %author = getASCIIString(%addon.author);
     %downloads = %addon.downloads;
 
-    %summary = getASCIIString(%addon.summary);
-    if(%summary $= "")
-      %summary = "< Missing Summary >";
+    if(strtrim(%addon.summary) $= "")
+      %summary = "< No Summary >";
+    else
+      %summary = getASCIIString(%addon.summary);
 
     %swatch = new GuiSwatchCtrl() {
       horizSizing = "right";

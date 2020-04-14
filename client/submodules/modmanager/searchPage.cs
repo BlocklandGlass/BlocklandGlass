@@ -227,7 +227,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
         %resultSwatch.text = new GuiMLTextCtrl() {
           horizSizing = "right";
           vertSizing = "bottom";
-          text = "<font:verdana bold:13>" @ getASCIIString(%result.title) @ "<font:verdana:13> by " @ getASCIIString(%result.author.username) @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : getASCIIString(%result.summary));
+          text = "<font:verdana bold:13>" @ getASCIIString(%result.title) @ "<font:verdana:13> by " @ getASCIIString(%result.author.username) @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary >" : getASCIIString(%result.summary));
           position = "10 10";
           extent = "575 25";
           minextent = "0 0";
