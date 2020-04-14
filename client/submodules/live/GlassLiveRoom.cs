@@ -829,8 +829,8 @@ function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
 
     if(%mod == 1 && GlassLiveUser::getFromBlid(getNumKeyId()).isMod()) {
       GlassOverlay::openModeration(true);
-      GlassModeratorGui_PlayerHeader.setText("<font:verdana bold:18>" @ %this.user.username NL "<font:verdana:15>" @ %this.user.blid);
-      GlassModeratorWindow.blid = %this.user.blid;
+      GlassModeratorWindow_BLID.setValue(%this.user.blid);
+      GlassModeratorGui.updateBLID();
       return;
     }
 
