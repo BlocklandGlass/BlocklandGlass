@@ -3767,7 +3767,7 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
     %chatText.forceReflow();
   }
 
-  %scroll.scrollToBottom();
+  // %scroll.scrollToBottom();
 
   %scrollSwatch.verticalMatchChildren(0, 2);
   %scrollSwatch.setVisible(true);
