@@ -84,7 +84,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.rtb = new GuiCheckBoxCtrl(GMM_SearchPage_RTB) {
     profile = "GlassCheckBoxProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "480 20";
     extent = "200 20";
     text = "Search RTB Archive";
@@ -96,7 +96,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.blf = new GuiCheckBoxCtrl() {
     profile = "GlassCheckBoxProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "480 40";
     extent = "200 20";
     text = "Search BLF Index";
@@ -108,7 +108,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.board = new GuiPopUpMenuCtrl(GMM_SearchPage_Board) {
     profile = "GuiPopUpMenuProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "105 25";
     extent = "100 20";
     clipToParent = "1";
@@ -120,7 +120,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.author = new GuiTextEditCtrl(GMM_SearchPage_Author) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "106 52";
     extent = "100 20";
     clipToParent = "1";
