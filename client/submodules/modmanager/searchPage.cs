@@ -7,10 +7,13 @@ function GMM_SearchPage::open(%this, %preserve) {
   GMM_Navigation.addStep("Search", "GlassModManagerGui.openPage(GMM_SearchPage, true);");
 
   if(isObject(%this.container)) {
-    GlassModManagerGui.schedule(0, pageDidLoad, %this);
-    return %this.container;
-    //%this.container.deleteAll();
-    //%this.container.delete(); //for development only
+    if(!GlassSettings.get("Glass::ModManagerLoadFix")) {
+      GlassModManagerGui.schedule(0, pageDidLoad, %this);
+      return %this.container;
+    }
+
+    %this.container.deleteAll();
+    %this.container.delete();
   }
 
   %container = new GuiSwatchCtrl() {
