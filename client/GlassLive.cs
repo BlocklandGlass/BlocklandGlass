@@ -3339,7 +3339,7 @@ function GlassModeratorGui::submit(%this, %confirm) {
   %duration = trim(GlassModeratorWindow_Duration.getValue());
   %reason = trim(GlassModeratorWindow_Reason.getValue());
 
-  if(stripChars(%blid, "0123456789") !$= "" || %blid < 1 || %blid > 999999) {
+  if(stripChars(%blid, "-0123456789") !$= "" || %blid < 1 || %blid > 999999) {
     glassMessageBoxOk("Error", "You must enter a valid BL_ID.");
     return;
   }
@@ -3351,7 +3351,7 @@ function GlassModeratorGui::submit(%this, %confirm) {
     }
   }
 
-  if(%type !$= "Kick" && stripChars(%duration, "0123456789") !$= "" && %duration >= -1 && %duration != 0) {
+  if(%type !$= "Kick" && stripChars(%duration, "-0123456789") !$= "" && %duration >= -1 && %duration != 0) {
     glassMessageBoxOk("Error", "You must enter a valid duration.");
     return;
   }
