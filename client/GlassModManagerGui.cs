@@ -7,7 +7,7 @@
 //================================
 
 function GlassModManagerGui::setPane(%pane) {
-  error("Depreciated GlassModManagerGui::setPane");
+  error("Deprecated GlassModManagerGui::setPane");
 }
 
 function GlassModManagerGui::openPage(%this, %page, %arg1, %arg2, %arg3, %arg4) {
@@ -87,7 +87,7 @@ function GlassModManagerGui::loadContext(%this, %context) {
 
 function GlassModManagerGui::setLoading(%this, %bool) {
   if(%this.getId() != GlassModManagerGui.getId()) {
-    error("Depreciated GlassModManagerGui::setLoading usage");
+    error("Deprecated GlassModManagerGui::setLoading usage");
     return;
   }
 
@@ -145,7 +145,7 @@ function GlassModManagerGui::animationTick(%this) {
 }
 
 function GlassModManagerGui::setProgress(%float, %text) {
-  error("Depreciated ::setProgress");
+  error("Deprecated ::setProgress");
 }
 
 exec("./submodules/modmanager/errorPage.cs");

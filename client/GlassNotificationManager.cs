@@ -20,7 +20,7 @@ function GlassNotificationManager::refocus(%this) {
 }
 
 function GlassNotificationManager::newNotification(%title, %text, %image, %darkMode) {
-  error("Depreciated Notification Creation");
+  error("Deprecated Notification Creation");
 }
 
 function orderNumWords(%list) {
