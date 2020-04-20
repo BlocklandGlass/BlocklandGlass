@@ -76,8 +76,11 @@ function GlassLog::cleanOld(%type) {
 
 function GlassLog::startSessionLog() {
   //begins a full console log for this instance of Blockland
+
   if(isObject(GlassSessionLogger))
     return;
+
+  $ConsoleLoggerCount += 2; // Fix for Port's Eval duplicating lines
 
   %path = GlassLog.folder @ "blockland/";
   %path = %path @ ($Server::Dedicated ? "server-" : "client-");
@@ -86,12 +89,10 @@ function GlassLog::startSessionLog() {
 
   echo("Beginning session log in \c3" @ %path @ "\c0...");
 
-  new ConsoleLogger(GlassSessionLogger, %path); // CAUSES PORTS' EVAL TO DUPLICATE LINES...
+  new ConsoleLogger(GlassSessionLogger, %path);
   GlassSessionLogger.level = 0;
 
   echo("Duplicate Log Started\n\n");
-
-  //GlassSessionLogger.attach();
 }
 
 function GlassLog::log(%str, %level, %baseLevel) {
