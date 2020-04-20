@@ -18,7 +18,7 @@ function registerRequiredClient(%name, %glassId, %arg3, %arg4) {
   if(%arg3 !$= 0 && %arg3 !$= 1 && %arg3 !$= "") {
     %version = %arg3;
     %optional = %arg4;
-    warn("registerRequiredClient depreciated format\nPlease use: registerRequiredClient(name, id, optional)");
+    warn("registerRequiredClient deprecated format\nPlease use: registerRequiredClient(name, id, optional)");
   } else {
     %optional = %arg3;
   }

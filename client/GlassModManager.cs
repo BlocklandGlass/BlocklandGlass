@@ -428,7 +428,7 @@ function filecopy_hack(%source, %destination) {
 // beta - bool
 // progressBar - additional progress bar to update other than mod manager
 function GlassModManager::downloadAddon(%this, %id, %progressBar, %progressText) {
-  error("Depreciated GlassModManager::downloadAddon - use GlassDownloadManager directly");
+  error("Deprecated GlassModManager::downloadAddon - use GlassDownloadManager directly");
   if(GlassModManager.getId() != %this.getId()) {
     error("Legacy download addon");
     return;

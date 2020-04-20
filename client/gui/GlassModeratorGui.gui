@@ -113,23 +113,22 @@ new GuiControl(GlassModeratorGui) {
                clipColumnText = "0";
             };
          };
-         new GuiMLTextCtrl(GlassModeratorGui_PlayerHeader) {
-            profile = "GuiMLTextProfile";
+         new GuiTextEditCtrl(GlassModeratorWindow_BLID) {
+            profile = "GlassSearchBarProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = "7 1";
-            extent = "209 13";
+            position = "6 3";
+            extent = "209 32";
             minExtent = "8 2";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
-            lineSpacing = "2";
-            allowColorChars = "0";
-            maxChars = "-1";
-            text = "<font:verdana bold:13>Select a User";
-            maxBitmapHeight = "-1";
-            selectable = "1";
-            autoResize = "1";
+            command = "GlassModeratorGui.updateBLID();";
+            maxLength = "6";
+            historySize = "0";
+            password = "0";
+            tabComplete = "0";
+            sinkAllKeyEvents = "0";
          };
          new GuiSwatchCtrl() {
             profile = "GuiDefaultProfile";

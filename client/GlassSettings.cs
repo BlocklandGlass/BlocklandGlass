@@ -28,7 +28,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
 
   // Volume
-  GlassSettings.registerSetting("Volume::RoomChat", 0.8, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
+  GlassSettings.registerSetting("Volume::RoomChat", 0, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::FriendStatus", 0.8, "GlassAudio::updateVolume", "Friend Status", "Volume", "slider", "0 1 1 4");
   GlassSettings.registerSetting("Volume::DirectMessage", 0.8, "GlassAudio::updateVolume", "Direct Messages", "Volume", "slider", "0 1 1 4");
   // Mod Manager
@@ -81,6 +81,7 @@ function GlassSettings::init() {
   // Experimental
   GlassSettings.registerSetting("Glass::UseDefaultWindows", false, "Glass::updateWindowSetting", "Use Blockland Theme", "Experimental", "checkbox", "", "EXPERIMENTAL: Uses default window themes. Functionality and quality not guaranteed.");
   GlassSettings.registerSetting("Glass::AlignOverlayButtons", "Left", "GlassOverlay::updateButtonAlignment", "Align Overlay Buttons", "Experimental", "dropdown", "Left Right", "Changes the alignment/position of the Glass overlay buttons, defaults to the left.<br><br>EXPERIMENTAL: Notifications will still appear from the right, so this can be cumbersome if set to \"Right\".");
+  GlassSettings.registerSetting("Glass::ModManagerLoadFix", false, "", "Mod Manager Load Fix", "Experimental", "checkbox", "", "EXPERIMENTAL: Forces the Mod Manager to recreate every page on page load. Potential fix for users who have the blank page issue.");
 
 
   %settings = trim(GlassSettings.settingsList);

@@ -412,6 +412,13 @@ function GlassChatroomWindow::removeTab(%this, %tabObj) {
 
 function GlassChatroomWindow::removeTabId(%this, %id) {
   %tabObj = %this.tabId[%id];
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %this.tab[%id].input) {
+      GlassLive_EmoteSelection.delete();
+    }
+  }
+
   %tabObj.window = "";
 
   %this.tab[%id] = "";
@@ -463,13 +470,6 @@ function GlassChatroomWindow::removeTabId(%this, %id) {
   }
 }
 
-function GlassChatroomWindow::exitTab(%this) {
-  %tab = %this.activeTab;
-  if(isObject(%tab)) {
-    glassMessageBoxYesNo("Leave Room", "Are you sure you want to leave <font:verdana bold:13>" @ %tab.title @ "<font:verdana:13>?", %tab.room.getId() @ ".leaveRoom();");
-  }
-}
-
 function GlassChatroomWindow::openTab(%this, %id) {
   %current = %this.activeTab;
   %currentId = %this.activeTabId;
@@ -512,9 +512,9 @@ function GlassChatroomWindow::openTab(%this, %id) {
     }
   }
 
-  if(%this.isAwake()) {
-    %this.resize.schedule(0, onResize);
-  }
+  %this.resize.schedule(0, onResize);
+
+  GlassOverlay::resetFocus();
 }
 
 function GlassLive::enterRoomDragMode(%obj, %pos) {
@@ -824,7 +824,8 @@ function GlassLive::updateLocation(%inServer) {
 function GlassLive::getEmotedMessage(%message) {
   for(%i = 0; %i < getWordCount(%message); %i++) {
     %word = getWord(%message, %i);
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
@@ -949,10 +950,13 @@ function GlassLive::createMessageReminder() {
 }
 
 function GlassLive::positionMessageReminder() {
-  if(!isObject(GlassMessageReminder))
-	GlassLive::createMessageReminder();
+	if(!GlassSettings.get("Live::ReminderIcon"))
+	  return;
 
-	GlassMessageReminder.resize(getWord(getRes(), 0) - 26, getWord(getRes(), 1) - 26, 16, 16);
+  if(!isObject(GlassMessageReminder))
+    GlassLive::createMessageReminder();
+
+  GlassMessageReminder.resize(getWord(getRes(), 0) - 26, getWord(getRes(), 1) - 26, 16, 16);
 }
 
 //====
@@ -2454,6 +2458,13 @@ function GlassLive::openDirectMessage(%blid, %username) {
 
 function GlassLive::closeMessage(%blid) {
   %gui = GlassLive.message[%blid];
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %gui.input) {
+      GlassLive_EmoteSelection.delete();
+    }
+  }
+
   GlassOverlayGui.remove(%gui);
   %gui.deleteAll();
   %gui.delete();
@@ -2509,7 +2520,8 @@ function GlassLive::onMessage(%message, %username, %blid) {
       //%obj.blid = %blid;
       //%obj.raw = %raw;
     }
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
@@ -2805,6 +2817,12 @@ function GlassMessageResize::onResize(%this, %x, %y, %h, %l) {
 
   %window.scrollSwatch.verticalMatchChildren(0, 3);
   %window.scroll.setVisible(true);
+
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %window.input) {
+      GlassLive_EmoteSelection.position = vectorAdd(%window.position, 2 SPC getWord(%window.extent, 1));
+    }
+  }
 }
 
 function GlassMessageTyping::startAnimation(%this) {
@@ -3311,28 +3329,20 @@ function GlassModeratorWindow_Playerlist::onSelect(%this, %rowID, %rowText) {
   %blid = getField(%rowText, 1);
   %name = getField(%rowText, 0);
 
-  GlassModeratorGui_PlayerHeader.setText("<font:verdana bold:18>" @ %name NL "<font:verdana:15>" @ %blid);
-  GlassModeratorWindow.blid = %blid;
+  GlassModeratorWindow_BLID.setValue(%blid);
 }
 
-// function GlassModeratorGui::SwapTabs(%this) {
-  // if(GlassModeratorGui_PlayerTab.visible) {
-    // GlassModeratorGui_PlayerTab.setVisible(false);
-    // GlassModeratorGui_LogsTab.setVisible(true);
-    // GlassModeratorWindow_SwapButton.setText("Players");
-  // } else {
-    // GlassModeratorGui_PlayerTab.setVisible(true);
-    // GlassModeratorGui_LogsTab.setVisible(false);
-    // GlassModeratorWindow_SwapButton.setText("Logs");
-  // }
-// }
-
 function GlassModeratorGui::submit(%this, %confirm) {
-  %blid = GlassModeratorWindow.blid;
+  %blid = GlassModeratorWindow_BLID.getValue();
   %name = GlassLiveUsers.user[%blid].username;
   %type = GlassModeratorWindow_Selection.getValue();
   %duration = trim(GlassModeratorWindow_Duration.getValue());
   %reason = trim(GlassModeratorWindow_Reason.getValue());
+
+  if(stripChars(%blid, "-0123456789") !$= "" || %blid < 1 || %blid > 999999) {
+    glassMessageBoxOk("Error", "You must enter a valid BL_ID.");
+    return;
+  }
 
   if(%type $= "Bar" || %type $= "Ban") {
     if(%reason $= "") {
@@ -3341,7 +3351,7 @@ function GlassModeratorGui::submit(%this, %confirm) {
     }
   }
 
-  if(%type !$= "Kick" && (%duration == 0 || %duration $= "") || %duration < -1) {
+  if(%type !$= "Kick" && stripChars(%duration, "-0123456789") !$= "" && %duration >= -1 && %duration != 0) {
     glassMessageBoxOk("Error", "You must enter a valid duration.");
     return;
   }
@@ -3355,8 +3365,12 @@ function GlassModeratorGui::submit(%this, %confirm) {
     %txt = "<font:verdana bold:20>Confirm " @ %type @ "<br><br>";
     %txt = %txt SPC "<font:verdana:18>You are about to";
     %txt = %txt SPC strlwr(%type);
-    %txt = %txt SPC "<font:verdana bold:18>" @ %name @ "<font:verdana:18>";
-    %txt = %txt SPC "(" @ %blid @ ")";
+    if(%name !$= "") {
+      %txt = %txt SPC "<font:verdana bold:18>" @ %name @ "<font:verdana:18>";
+      %txt = %txt SPC "(" @ %blid @ ")";
+    } else {
+      %txt = %txt SPC "<font:verdana bold:18>BL_ID: " @ %blid @ "<font:verdana:18>";
+    }
     if(%type $= "Ban" || %type $= "Bar")
       %txt = %txt SPC "with reason \"" @ trim(%reason) @ "\"";
     if(%type !$= "Kick") {
@@ -3436,6 +3450,21 @@ function GlassModeratorGui::updateDuration(%this) {
   GlassModeratorWindow_CalcDuration.setValue("<font:verdana:13><just:center>" @ secondsToTimeString(%duration));
 }
 
+function GlassModeratorGui::updateBLID(%this) {
+  %this.refreshPlayerlist();
+
+  for(%i = 0; %i < GlassModeratorWindow_Playerlist.rowCount(); %i++) {
+    %rowText = GlassModeratorWindow_Playerlist.getRowText(%i);
+    %blid = getField(%rowText, 1);
+    %name = getField(%rowText, 0);
+
+    if(GlassModeratorWindow_BLID.getValue() $= %blid) {
+      GlassModeratorWindow_Playerlist.setSelectedRow(%i);
+      return;
+    }
+  }
+}
+
 function GlassModeratorWindow_Duration::onUpdate(%this) {
   GlassModeratorGui.updateDuration();
 }
@@ -3460,7 +3489,7 @@ function GlassLive::createChatroomWindow() {
     resizeWidth = "1";
     resizeHeight = "1";
     canMove = "1";
-    canClose = "1";
+    canClose = "0";
     canMinimize = "0";
     canMaximize = "0";
     minSize = "50 50";
@@ -3468,8 +3497,6 @@ function GlassLive::createChatroomWindow() {
 
     tabs = 0;
   };
-
-  %chatroom.closeCommand = %chatroom.getId() @ ".exitTab();";
 
   %chatroom.resize = new GuiMLTextCtrl(GlassChatroomResize) {
     profile = "GuiMLTextProfile";
@@ -3728,13 +3755,19 @@ function GlassChatroomResize::onResize(%this, %x, %y, %h, %l) {
   if(!isObject(%activeTab))
     return;
 
-  %input.makeFirstResponder(1);
+  if(isObject(GlassLive_EmoteSelection)) {
+    if(GlassOverlay.activeInput == %input) {
+      GlassLive_EmoteSelection.position = vectorAdd(%window.position, 2 SPC getWord(%window.extent, 1));
+    }
+  }
+
+  // %input.makeFirstResponder(1);
 
   if(%this.isAwake()) {
     %chatText.forceReflow();
   }
 
-  %scroll.scrollToBottom();
+  // %scroll.scrollToBottom();
 
   %scrollSwatch.verticalMatchChildren(0, 2);
   %scrollSwatch.setVisible(true);
@@ -3818,12 +3851,12 @@ function GlassChatroomWindow::createAddTabButton(%this) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
-    extent = 30 SPC 25;
+    extent = 35 SPC 25;
     minExtent = "8 2";
     enabled = "1";
     visible = "1";
     clipToParent = "1";
-    text = "+";
+    text = "+/-";
     groupNum = "-1";
     buttonType = "PushButton";
     lockAspectRatio = "0";
@@ -4009,9 +4042,9 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
       extent = "48 18";
       position = "365 4";
       bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
-      text = "Join";
-      visible = !isObject(GlassLive.room[%room.id]);
-      command = "GlassLive::joinRoom(" @ %room.id @ ");";
+      text = (isObject(GlassLive.room[%room.id]) ? "Leave" : "Join");
+      visible = "1";
+      command = (!isObject(GlassLive.room[%room.id]) ? "GlassLive::joinRoom(" @ %room.id @ ");" : GlassLive.room[%room.id] @ ".leaveRoom();");
     };
 
     %swatch.add(%swatch.image);
@@ -4163,6 +4196,8 @@ function GlassEmoteSelector::CacheEmotes() {
 }
 
 function GlassEmoteSelector::ListEmotes(%msgBox) {
+  GlassOverlay.activeInput = %msgBox;
+
   %parent = %msgBox.getGroup();
   if(%parent.getName() !$= "GlassMessageGui")
     %parent = %msgBox.getGroup().getGroup();
@@ -4178,6 +4213,9 @@ function GlassEmoteSelector::ListEmotes(%msgBox) {
   %checkEmote = strReplace(%currWord, ":" , "");
 
   if(getSubStr(%currWord, 0, 1) !$= ":" || strLen(%currWord) < 3 || strReplace(%currWord, " ", "") !$= %currWord)
+    return;
+
+  if(getSubStr(%currWord, 1, 1) $= ":")
     return;
 
   if(getSubStr(%currWord, strLen(%currWord) - 1, 1) $= ":")

@@ -356,7 +356,8 @@ function GlassLiveRoom::pushText(%this, %msg) {
       %word = "<a:" @ %word @ ">" @ %word @ "</a>";
       %msg = setWord(%msg, %i, %word);
     }
-    if(getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":") {
+    %validEmote = (getsubstr(%word, 0, 1) $= ":" && getsubstr(%word, strlen(%word) - 1, strlen(%word)) $= ":" && getsubstr(%word, 1, 1) !$= ":" && getsubstr(%word, strlen(%word) - 2, 1) !$= ":");
+    if(%validEmote) {
       %bitmap = strlwr(stripChars(%word, "[]\\/{};:'\"<>,./?!@#$%^&*-=+`~;"));
       %bitmap = "Add-Ons/System_BlocklandGlass/image/icon/" @ %bitmap @ ".png";
       if(isFile(%bitmap)) {
@@ -510,6 +511,10 @@ function GlassLiveRoom::userListAdd(%this, %user, %batched) {
 
   // store data
   %this.listSwatchBlid[%user.blid] = %swatch;
+
+  if(%this.view.window.isAwake()) {
+    %this.view.window.resize.schedule(0, onResize);
+  }
 }
 
 function GlassLiveRoom::userListRemove(%this, %user, %batched) {
@@ -558,6 +563,10 @@ function GlassLiveRoom::userListRemoveBLID(%this, %blid, %batched) {
   // clean headers
   if(!%batched)
     %this.userListCleanHeaders();
+
+  if(%this.view.window.isAwake()) {
+    %this.view.window.resize.schedule(0, onResize);
+  }
 }
 
 function GlassLiveRoom::userListCleanHeaders(%this) {
@@ -820,8 +829,8 @@ function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
 
     if(%mod == 1 && GlassLiveUser::getFromBlid(getNumKeyId()).isMod()) {
       GlassOverlay::openModeration(true);
-      GlassModeratorGui_PlayerHeader.setText("<font:verdana bold:18>" @ %this.user.username NL "<font:verdana:15>" @ %this.user.blid);
-      GlassModeratorWindow.blid = %this.user.blid;
+      GlassModeratorWindow_BLID.setValue(%this.user.blid);
+      GlassModeratorGui.updateBLID();
       return;
     }
 
@@ -834,12 +843,8 @@ function GlassLiveUserListSwatch::onMouseUp(%this, %mod, %point, %count) {
       return;
     }
 
-    if(%this.user.blid == getNumKeyId()) {
-      if(GlassIconSelectorWindow.visible)
-        GlassOverlay::closeIconSelector();
-      else
-        GlassOverlay::openIconSelector();
-    } else if(%this.user.isBot()) {
+
+    if(%this.user.isBot()) {
       glassMessageBoxOk("Beep Boop", "That's a bot!");
     } else {
       if(isObject(%this.user.window))
@@ -862,10 +867,13 @@ function GlassLiveUserListSwatch::onRightMouseUp(%this) {
       }
     }
   } else {
-    if(isObject(%window = GlassLiveUser::getFromBlid(getNumKeyId()).window))
-      %window.delete();
-    else
-      GlassLive::openUserWindow(getNumKeyId());
+    if(%this.user.blid == getNumKeyId()) {
+      if(GlassIconSelectorWindow.visible) {
+        GlassOverlay::closeIconSelector();
+      } else {
+        GlassOverlay::openIconSelector();
+      }
+    }
   }
 }
 

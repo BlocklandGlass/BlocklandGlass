@@ -7,10 +7,13 @@ function GMM_SearchPage::open(%this, %preserve) {
   GMM_Navigation.addStep("Search", "GlassModManagerGui.openPage(GMM_SearchPage, true);");
 
   if(isObject(%this.container)) {
-    GlassModManagerGui.schedule(0, pageDidLoad, %this);
-    return %this.container;
-    //%this.container.deleteAll();
-    //%this.container.delete(); //for development only
+    if(!GlassSettings.get("Glass::ModManagerLoadFix")) {
+      GlassModManagerGui.schedule(0, pageDidLoad, %this);
+      return %this.container;
+    }
+
+    %this.container.deleteAll();
+    %this.container.delete();
   }
 
   %container = new GuiSwatchCtrl() {
@@ -81,7 +84,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.rtb = new GuiCheckBoxCtrl(GMM_SearchPage_RTB) {
     profile = "GlassCheckBoxProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "480 20";
     extent = "200 20";
     text = "Search RTB Archive";
@@ -93,7 +96,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.blf = new GuiCheckBoxCtrl() {
     profile = "GlassCheckBoxProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "480 40";
     extent = "200 20";
     text = "Search BLF Index";
@@ -105,7 +108,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.board = new GuiPopUpMenuCtrl(GMM_SearchPage_Board) {
     profile = "GuiPopUpMenuProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "105 25";
     extent = "100 20";
     clipToParent = "1";
@@ -117,7 +120,7 @@ function GMM_SearchPage::open(%this, %preserve) {
   %container.searchOptions.author = new GuiTextEditCtrl(GMM_SearchPage_Author) {
     profile = "GlassTextEditProfile";
     horizSizing = "right";
-    vertSizing = "center";
+    vertSizing = "bottom";
     position = "106 52";
     extent = "100 20";
     clipToParent = "1";
@@ -227,7 +230,7 @@ function GMM_SearchPage::handleSearchResults(%this, %res) {
         %resultSwatch.text = new GuiMLTextCtrl() {
           horizSizing = "right";
           vertSizing = "bottom";
-          text = "<font:verdana bold:13>" @ getASCIIString(%result.title) @ "<font:verdana:13> by " @ getASCIIString(%result.author.username) @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary > " : getASCIIString(%result.summary));
+          text = "<font:verdana bold:13>" @ getASCIIString(%result.title) @ "<font:verdana:13> by " @ getASCIIString(%result.author.username) @ "<br><color:555555><font:verdana:12>" @ (%result.summary $= "" ? "< No Summary >" : getASCIIString(%result.summary));
           position = "10 10";
           extent = "575 25";
           minextent = "0 0";
