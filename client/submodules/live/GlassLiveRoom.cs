@@ -226,7 +226,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();
   if(%now-%this.lastMessageTime > 1000 * 60 * 5) {
-    %text = "<font:verdana bold:12><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
+    %text = "<font:verdana bold:16><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
     %this.pushText(%text);
   }
   %this.lastMessageTime = %now;

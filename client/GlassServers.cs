@@ -201,7 +201,7 @@ function GlassFavoriteServers::scanServers() {
 	if(!isObject(GlassFavoriteServers) || !GlassSettings.get("Servers::EnableFavorites"))
 	  return;
 
-  connectToUrl("master2.blockland.us", "GET", "", "GlassFavoriteServersTCP");
+  connectToUrl("master3.blockland.us", "GET", "", "GlassFavoriteServersTCP");
 }
 
 function GlassFavoriteServers::interact(%swatch) {
@@ -218,23 +218,25 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
   } else {
 	%onlineCount = 0;
 	for(%i = 0; %i < getLineCount(%this.buffer); %i++) {
-      %line = getLine(%this.buffer, %i);
+    %line = getLine(%this.buffer, %i);
+
 	  %serverIP = trim(getField(%line, 0) @ ":" @ getField(%line, 1));
-
 	  for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
+
 	    %fav = GlassFavoriteServers.favorite[%j];
-		if(%fav $= %serverIP) {
-		  %passworded = getField(%line, 2);
-		  if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
-			  continue;
+		  if(%fav $= %serverIP) {
+		    %passworded = getField(%line, 2);
+		    
+        if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
+			   continue;
 
-		  %serverName = getField(%line, 4);
-		  %players = getField(%line, 5);
-          %maxPlayers = getField(%line, 6);
-          %map = getField(%line, 7);
+		    %serverName = getField(%line, 3);
+		    %players = getField(%line, 5);
+        %maxPlayers = getField(%line, 6);
+        %gameMode = getField(%line, 7);
 
-		  GlassFavoriteServers.onlineFavorite[%onlineCount++] = %serverIP TAB %serverPort TAB %serverName TAB %passworded TAB %players TAB %maxPlayers TAB %map;
-		}
+		    GlassFavoriteServers.onlineFavorite[%onlineCount++] = %serverIP TAB %serverPort TAB %serverName TAB %passworded TAB %players TAB %maxPlayers TAB %gameMode;
+		  }
 	  }
 	}
 	GlassFavoriteServers.onlineFavoriteCount = %onlineCount;
@@ -349,12 +351,12 @@ function GuiTextListCtrl::sortNumList(%this, %col) {
 
 function GlassServerPreviewGui::open(%this, %server) {
   if(%server $= "") {
-    %server = ServerInfoGroup.getObject(JS_ServerList.getSelectedID());
+    %server = ServerInfoGroup.getObject(JS_ServerListBS.getSelectedID());
   }
 
   %this.server = %server;
-  if(joinServerGui.isAwake()) {
-    canvas.popDialog(joinServerGui);
+  if(joinServerGuiBS.isAwake()) {
+    canvas.popDialog(joinServerGuiBS);
     %this.wakeServerGui = true;
   }
 
@@ -364,7 +366,7 @@ function GlassServerPreviewGui::open(%this, %server) {
 function GlassServerPreviewGui::close(%this) {
   canvas.popDialog(GlassServerPreviewGui);
   if(%this.wakeServerGui) {
-    canvas.pushDialog(joinServerGui);
+    canvas.pushDialog(joinServerGuiBS);
     %this.wakeServerGui = false;
   }
 }
@@ -396,7 +398,16 @@ function GlassServerPreviewGui::onWake(%this) {
     GlassServerPreview_Connect.mColor = "84 217 140 220";
   }
 
-  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%server.name) SPC %img @ "<br><font:verdana:15>" @ %server.currPlayers @ "/" @ %server.maxPlayers SPC "Players");
+  %admin = %server.adminName;
+
+  %endingSCheck = getSubStr(%admin, strLen(%admin) -1, 1) $= "s";
+  if(%endingSCheck)
+    %serverName = %admin @ "'" SPC %server.serverName;
+  else
+    %serverName = %admin @ "'s" SPC %server.serverName;
+
+
+  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<br><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview_Playerlist.clear();
   GlassServerPreview::getServerInfo(%server.ip);
@@ -435,7 +446,7 @@ function GlassServerPreview::connectToServer(%password) {
 
   if(isObject(serverConnection))
     disconnectedCleanup();
-
+//JoinServerGuiBS.join();
   connectToServer(%server, %password, "1", "1");
   GlassServerPreviewGui.close();
 }
@@ -519,8 +530,8 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
   }
 }
 
-function joinServerGui::preview(%this) {
-  if(JS_ServerList.getSelectedID() == -1)
+function joinServerGuiBS::preview(%this) {
+  if(JS_ServerListBS.getSelectedID() == -1)
 	  return;
 
   GlassServerPreviewGui.open();
@@ -634,16 +645,42 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
   }
 }
 
-function Glass::replaceJSWindow() {
-  %this = JoinServerGui;
-  if(!%this.initializedGlass) {
-    %this.initializedGlass = 1;
-    joinServerGui.clear();
-    joinServerGui.add(GlassJS_window);
-    GlassJS_window.setName("JS_window");
+function Glass::addJSPreviewBtn() {
+  %this = JoinServerGuiBS;
+
+  if(%this.initializedGlass) 
+    return;
+
+  %this.initializedGlass = 1;
+   
+  for(%i=0; %i < JS_windowBS.getCount(); %i++) {
+    %obj = JS_windowBS.getObject(%i);
+
+    if(%obj.getCount() == 3 && %obj.getClassName() $= "GuiControl")
+      %btnContainer = %obj;
+    else if(%obj.text $= "Server Name") 
+      %nameLabel = %obj;
   }
+  
+  %btnContainer.extent = "430 41";
+  %btnContainer.position = vectorSub(%btnContainer.position, "100 0");
+  // move server names over
+  %nameLabel.position = "200 0";
+  JS_ServerListBS.columns = "0 34 70 190 470 523 540 550 590 660";
+
+  %previewBtn = new GuiBitmapButtonCtrl() {
+    profile = BlockButtonProfile;
+    extent = "100 30";
+    position = "330 4";
+    text = "Preview";
+    bitmap = "base/client/ui/button1";
+    command = "joinServerGuiBS.preview();";
+  };
+
+  %btnContainer.add(%previewBtn);
+
 }
-Glass::replaceJSWindow();
+Glass::addJSPreviewBtn();
 
 //====================================
 // Promoted Events
