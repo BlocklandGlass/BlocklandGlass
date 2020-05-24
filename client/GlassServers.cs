@@ -151,9 +151,7 @@ function GlassFavoriteServers::buildList(%this) {
 function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %players, %maxPlayers, %map, %addr) {
 
   %swatch = "GlassFavoriteServerGui_Swatch" @ %id;
-  //if(%swatch.text $= "")
-    %swatch.text = %swatch.getObject(0);
-
+  %swatch.text = %swatch.getObject(0);
 
   %swatch.server = new ScriptObject() {
     name = trim(%title);
@@ -222,7 +220,6 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 
 	  %serverIP = trim(getField(%line, 0) @ ":" @ getField(%line, 1));
 	  for(%j = 0; %j < GlassFavoriteServers.favorites; %j++) {
-
 	    %fav = GlassFavoriteServers.favorite[%j];
 		  if(%fav $= %serverIP) {
 		    %passworded = getField(%line, 2);
@@ -230,7 +227,7 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
         if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
 			   continue;
 
-		    %serverName = getField(%line, 3);
+		    %serverName = convertServerName(getField(%line, 10), getField(%line, 4));
 		    %players = getField(%line, 5);
         %maxPlayers = getField(%line, 6);
         %gameMode = getField(%line, 7);
@@ -380,6 +377,15 @@ function getServerFromIP(%ip) {
   return -1;
 }
 
+function convertServerName(%admin, %name) {
+  %endingSCheck = getSubStr(%admin, strLen(%admin) -1, 1) $= "s";
+
+  if(%endingSCheck)
+    %serverName = %admin @ "'" SPC %name;
+  else
+    %serverName = %admin @ "'s" SPC %name;
+}
+
 function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreviewWindowGui.forceCenter();
 
@@ -399,23 +405,20 @@ function GlassServerPreviewGui::onWake(%this) {
   }
 
   %admin = %server.adminName;
+  %serverName = convertServerName(%server.adminName, %server.serverName);
 
-  %endingSCheck = getSubStr(%admin, strLen(%admin) -1, 1) $= "s";
-  if(%endingSCheck)
-    %serverName = %admin @ "'" SPC %server.serverName;
-  else
-    %serverName = %admin @ "'s" SPC %server.serverName;
+  %fullIP = %server.ip @ ":" @ %server.port;
 
 
   GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<br><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
   GlassServerPreview_Playerlist.clear();
-  GlassServerPreview::getServerInfo(%server.ip);
-  GlassServerPreviewWindowGui.openServerIP = %server.ip;
+  GlassServerPreview::getServerInfo(%fullIP);
+  GlassServerPreviewWindowGui.openServerIP = %fullIP;
   GlassServerPreviewWindowGui.openServerName = %server.name;
   GlassServerPreviewWindowGui.passworded = (%server.pass $= "Yes");
 
-  GlassServerPreview::getServerBuild(%server.ip, GlassServerPreview_Preview);
+  GlassServerPreview::getServerBuild(%fullIP, GlassServerPreview_Preview);
 
   if(GlassSettings.get("Servers::EnableFavorites")) {
     for(%i = 0; %i < GlassFavoriteServers.favorites; %i++) {

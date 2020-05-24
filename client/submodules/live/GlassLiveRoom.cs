@@ -348,7 +348,20 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     }
   }
 }
-// todo: GlassLiveRoom::UpdateFontSize
+
+function GlassLive::updateFontSize() {
+  return;
+
+  for(%i=0; %i < 4; %i++) {
+    %room = GlassLive.room[%i];
+    if(!isObject(%room))
+      continue;
+
+    %text = %room.view.chattext.getValue();
+    %oldSize = getSubStr(%text, stripos(%text, "<font verdana bold:"), 1);
+
+  }
+}
 function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
