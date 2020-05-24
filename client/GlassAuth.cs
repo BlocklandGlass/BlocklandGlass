@@ -109,7 +109,22 @@ function GlassAuth::reident(%this) {
 }
 
 function GlassAuth::startNewAuth(%this) {
-  %url = "http://" @ Glass.address @ "/api/3/auth.php?username=" @ urlenc($Pref::Player::NetName) @ "&blid=" @ getNumKeyId() @ "&action=ident&authType=" @ (%this.usingDAA ? "daa" : "default");
+  %url = "http://" @ Glass.address @ "/api/3/joinIp.php";
+
+  %method = "GET";
+  %downloadPath = "";
+  %className = "GlassAuth_dnsTCP";
+
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+}
+
+function GlassAuth::startNewAuth_part2(%this) {
+  %url = "http://" @ Glass.address @ "/api/3/auth.php?action=ident&authType=" @ (%this.usingDAA ? "daa" : "default");
+
+  %url = %url @ "&blid=" @ getNumKeyId();
+  %url = %url @ "&steamid=" @ getSteamId();
+  %url = %url @ "&joinToken=" @ %this.joinToken;
+  %url = %url @ "&username=" @ urlenc($Pref::Player::NetName);
 
   %method = "GET";
   %downloadPath = "";
@@ -303,8 +318,8 @@ function GlassAuthTCP::onDone(%this, %error) {
 
         case "bl-failed":
           GlassLog::error("Glass Auth: \c2BL-FAILED");
-			 glassMessageBoxYesNo("Blockland Auth Failed", "We were unable to authenticate you with Blockland Glass because you are not successfully authenticated with Blockland. Would you like to reauthenticate?", "auth_init_client();", "");
-			 GlassAuth.authing = false;
+          glassMessageBoxYesNo("Blockland Auth Failed", "We were unable to authenticate you with Blockland Glass because you are not successfully authenticated with Blockland. Would you like to reauthenticate?", "auth_init_client();", "");
+          GlassAuth.authing = false;
 
         case "failed":
           GlassLog::log("Glass Auth: \c2FAILED");
@@ -649,3 +664,115 @@ package GlassAuthPackage {
   // }
 };
 activatePackage(GlassAuthPackage);
+
+
+
+
+
+
+
+// Blockland Glass 2020 edition
+function GlassAuth_dnsTCP::handleText(%this, %line) {
+	%this.buffer = %this.buffer NL %line;
+}
+
+function GlassAuth_dnsTCP::onDone(%this, %error) {
+	Glass::debug(%this.buffer);
+
+	if(!%error) {
+    %ip = trim(%this.buffer);
+    echo("Join IP from glass server: " @ %ip);
+    %res = GlassAuth::joinIPThing(%ip);
+    if (!%res) {
+      echo ("joinIPThing failed");
+      GlassAuth.onAuthFailed();
+    }
+  }
+
+}
+
+function GlassAuth::joinIPThing(%joinIP) {
+  if (isObject(ServerConnection)) return false;
+  if (!isObject(authTCPobj_client)) return false;
+
+  %postText = authTCPobj_client.postText;
+
+  if (strlen(%postText) == 0) return false;
+
+  %postText = strreplace(%postText, "&", "\t");
+  %steamTicket = "";
+
+  for (%i = 0; %i < getFieldCount(%postText); %i++) {
+    %pair = getField(%postText, %i);
+    %idx = strpos(%pair, "=");
+    %key = getSubStr(%pair, 0, %idx);
+    %val = getSubStr(%pair, %idx+1, strlen(%pair)-%idx-1);
+    // echo(%key @ "-" @ %val);
+
+    if (%key $= "steamTicket") {
+      %steamTicket = %val;
+      break;
+    }
+  }
+
+  if (%steamTicket $= "") {
+    echo ("no steam ticket");
+    return false;
+  }
+
+  %obj = new TCPObject(GlassJoinIP_tcpObj);
+  %obj.steamTicket = %steamTicket;
+  %obj.joinIp = %joinIP;
+
+  %obj.connect("master3.blockland.us:80");
+
+  return true;
+}
+
+function GlassJoinIP_tcpObj::onConnected(%this) {
+  %content = "joinIP=" @ %this.joinIp @ "&blid=" @ getNumKeyId() @ "&steamTicket=" @ %this.steamTicket;
+
+  // POST /getJoinToken.php HTTP/1.0
+  // Host: master3.blockland.us
+  // User-Agent: Blockland-r2031
+  // Content-Type: application/x-www-form-urlencoded
+  // Content-Length: 510
+
+  %header = "POST /getJoinToken.php HTTP/1.0\r\n";
+  %header = %header @ "Host: master3.blockland.us\r\n";
+  %header = %header @ "User-Agent: Blockland-r" @ getBuildNumber() @ "\r\n";
+  %header = %header @ "Content-Type: application/x-www-form-urlencoded\r\n";
+  %header = %header @ "Content-Length: " @ strlen(%content) @ "\r\n";
+
+  %msg = %header @ "\r\n" @ %content;
+  %this.send(%msg);
+}
+
+function GlassJoinIP_tcpObj::onLine(%this, %line) {
+  if (trim(%line) $= "" && !%this.inData) {
+    %this.inData = true;
+    return;
+  }
+
+  if (%this.inData) {
+    if (strpos(%line, "SUCCESS ") == 0) {
+      %joinToken = getsubstr(%line, 8, strlen(%line));
+      GlassAuth.joinToken = %joinToken;
+      GlassAuth.startNewAuth_part2();
+      %this.success = true;
+    }
+
+    if (strpos(%line, "ERROR") == 0) {
+      GlassLog::log("Glass Auth: \c5failed to get joinToken. Reauth blockland");
+      glassMessageBoxYesNo("Reauthenticate", "To use Blockland Glass, we need to reauthenticate you to the Blockland master server. Would you like to do so now?\n\n(note: this may disconnect you if you are in a server)", "auth_init_client();");
+      GlassAuth.onAuthFailed();
+    }
+  }
+}
+
+function GlassJoinIP_tcpObj::onDisconnect(%this) {
+  if (!%this.success) {
+    GlassLog::log("Glass Auth: \c5failed to get joinToken");
+    GlassAuth.onAuthFailed();
+  }
+}
