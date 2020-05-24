@@ -299,7 +299,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %mentioned = true;
     }
   }
-  %text = "<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><sPush><linkcolor:" @ %color @ "><a:gamelink_glass://user-" @ %sender.blid @ ">" @ %sender.username @ "</a><sPop>:<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><color:333333> " @ %msg;
+  %text = "<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><sPush><linkcolor:" @ %color @ "><a:gamelink_glass://user-" @ %sender.blid @ ">" @ %sender.username @ "</a><sPop>:<font:verdana:" @ GlassSettings.get("Live::FontSize") @ "><color:333333> " @ %msg;
   %this.pushText(%text);
 
   %this.view.setFlashing(true);

@@ -31,6 +31,7 @@ function GlassModManagerGui::pageDidLoad(%this, %page) {
     GlassModManagerGui_MainDisplay.verticalMatchChildren(498, 0);
     GlassModManagerGui_MainDisplay.setVisible(true);
     GlassModManagerGui_MainDisplay.getGroup().scrollToTop();
+    GlassModManagerGui.setLoading(false);
   }
 }
 

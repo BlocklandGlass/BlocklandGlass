@@ -770,7 +770,8 @@ package GlassServers {
       parent::onWake(%this);
 
     NewChatHud.add(GlassLoadingGui);
-    GlassLoadingGui.forceCenter();
+    if(isObject(GlassLoadingGui))
+      GlassLoadingGui.forceCenter();
     NewChatHud.pushToBack(GlassLoadingGui);
     NewChatHud.schedule(50, pushToBack, newChatText);
   }
@@ -789,7 +790,8 @@ package GlassServers {
     %text = NPL_list.rowCount() @ "/" @ $ServerInfo::MaxPlayers @ " Players - " @ $ServerInfo::Name;
     NPL_Window.setText(%text);
 
-    GlassLoadingGui.UpdateWindowTitle();
+    if(isObject(GlassLoadingGui))
+      GlassLoadingGui.UpdateWindowTitle();
   }
 
   function NewPlayerListGui::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score) {
