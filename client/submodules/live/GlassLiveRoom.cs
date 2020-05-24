@@ -90,7 +90,7 @@ function GlassLive::onJoinRoom(%data) {
   %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
   %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
 
-  %motd = "<font:verdana bold:16><color:666666> * " @ %motd;
+  %motd = "<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><color:666666> * " @ %motd;
 
   %room.pushText(%motd);
 
@@ -226,7 +226,7 @@ function GlassLiveRoom::onUserLeave(%this, %blid) {
 function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
   %now = getRealTime();
   if(%now-%this.lastMessageTime > 1000 * 60 * 5) {
-    %text = "<font:verdana bold:16><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
+    %text = "<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><just:center><color:999999>[" @ formatTimeHourMin(%data.datetime) @ "]<just:left>";
     %this.pushText(%text);
   }
   %this.lastMessageTime = %now;
@@ -267,7 +267,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         }
 
         %mentioned = true;
-        %msg = setWord(%msg, %i, "<spush><font:verdana bold:16><color:" @ %hlColor @ ">" @ %word @ "<spop>");
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><color:" @ %hlColor @ ">" @ %word @ "<spop>");
 
       } else {
 
@@ -276,7 +276,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
           %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
           %blid = %user.text.blid;
           if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
-            %msg = setWord(%msg, %i, "<spush><font:verdana bold:16><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
+            %msg = setWord(%msg, %i, "<spush><font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
             %uo = GlassLiveUser::getFromBlid(%blid);
             if(%senderblid == getNumKeyId()) {
               if(%uo.getStatus() $= "away") {
@@ -299,7 +299,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
       %mentioned = true;
     }
   }
-  %text = "<font:verdana bold:12><sPush><linkcolor:" @ %color @ "><a:gamelink_glass://user-" @ %sender.blid @ ">" @ %sender.username @ "</a><sPop>:<font:verdana:12><color:333333> " @ %msg;
+  %text = "<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><sPush><linkcolor:" @ %color @ "><a:gamelink_glass://user-" @ %sender.blid @ ">" @ %sender.username @ "</a><sPop>:<font:verdana bold:" @ GlassSettings.get("Live::FontSize") @ "><color:333333> " @ %msg;
   %this.pushText(%text);
 
   %this.view.setFlashing(true);
@@ -348,7 +348,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
     }
   }
 }
-
+// todo: GlassLiveRoom::UpdateFontSize
 function GlassLiveRoom::pushText(%this, %msg) {
   for(%i = 0; %i < getWordCount(%msg); %i++) {
     %word = getWord(%msg, %i);
@@ -366,6 +366,8 @@ function GlassLiveRoom::pushText(%this, %msg) {
       }
     }
   }
+
+  %fontSize = GlassSettings.get("Live::FontSize");
 
   %timestampedMsg = %msg = "<font:verdana:12><color:666666>[" @ getWord(getDateTime(), 1) @ "]" SPC %msg;
   if(GlassSettings.get("Live::ShowTimestamps")) {

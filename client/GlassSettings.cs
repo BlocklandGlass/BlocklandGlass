@@ -35,6 +35,7 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
   GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
   // Live
+  GlassSettings.registerSetting("Live::FontSize", 12, "",  "Room Font Size", "Live", "slider", "10 20 1 1", "Size of the font to be used in chatrooms.");
   GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
   GlassSettings.registerSetting("Live::AutoJoinRooms", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the last chatrooms you were in when you connect to Glass Live.");
   GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");

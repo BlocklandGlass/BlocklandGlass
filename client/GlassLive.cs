@@ -84,12 +84,12 @@ function GlassLive::init() {
 function GlassLive::chatColorCheck(%this) {
   %room = GlassLiveRooms::getFromId(0);
 
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_mod @  ">Moderator: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_bot @  ">Bot: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_friend @  ">Friend: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_self @  ">Self: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_mod @  ">Moderator: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_admin @  ">Admin: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_bot @  ">Bot: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_default @  ">User: <font:verdana:16><color:333333>rambling message", 0);
   // %room.pushText("<font:verdana bold:12><color:" @ %this.color_blocked @  ">Blocked: <font:verdana:12><color:333333>rambling message", 0);
 }
 
@@ -2535,7 +2535,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
   %val = %gui.chattext.getValue();
 
-  %msg = "<color:333333><font:verdana bold:12><color:" @ (%username $= $Pref::Player::NetName ? "fc0000" : "0000ff") @ ">" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
+  %msg = "<color:333333><font:verdana bold:16><color:" @ (%username $= $Pref::Player::NetName ? "fc0000" : "0000ff") @ ">" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
 
   if(GlassSettings.get("Live::ShowTimestamps")) {
     %msg = "<font:verdana:12><color:666666>" @ %timestamp SPC %msg;
@@ -3180,7 +3180,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     if(strLen(%serverTitle) > 32)
       %br = " - ";
 
-    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:12>" @ getASCIIString(%serverTitle);
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:16>" @ getASCIIString(%serverTitle);
 
     if(%uo.online && %uo.country !$= "") {
       if(%uo.country $= "United States") {
