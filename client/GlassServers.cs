@@ -664,9 +664,6 @@ function Glass::addJSPreviewBtn() {
   
   %btnContainer.extent = "430 41";
   %btnContainer.position = vectorSub(%btnContainer.position, "100 0");
-  // move server names over
-  %nameLabel.position = "200 0";
-  JS_ServerListBS.columns = "0 34 70 190 470 523 540 550 590 660";
 
   %previewBtn = new GuiBitmapButtonCtrl() {
     profile = BlockButtonProfile;

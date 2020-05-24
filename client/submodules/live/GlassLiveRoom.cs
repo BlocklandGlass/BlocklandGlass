@@ -90,7 +90,7 @@ function GlassLive::onJoinRoom(%data) {
   %motd = strreplace(%motd, "[date]", getWord(getDateTime(), 0));
   %motd = strreplace(%motd, "[time]", getWord(getDateTime(), 1));
 
-  %motd = "<font:verdana bold:12><color:666666> * " @ %motd;
+  %motd = "<font:verdana bold:16><color:666666> * " @ %motd;
 
   %room.pushText(%motd);
 
@@ -267,7 +267,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
         }
 
         %mentioned = true;
-        %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><color:" @ %hlColor @ ">" @ %word @ "<spop>");
+        %msg = setWord(%msg, %i, "<spush><font:verdana bold:16><color:" @ %hlColor @ ">" @ %word @ "<spop>");
 
       } else {
 
@@ -276,7 +276,7 @@ function GlassLiveRoom::pushMessage(%this, %sender, %msg, %data) {
           %name = getASCIIString(strreplace(%user.text.rawtext, " ", "_"));
           %blid = %user.text.blid;
           if(%word $= ("@" @ %name) || %word $= ("@" @ %blid)) {
-            %msg = setWord(%msg, %i, "<spush><font:verdana bold:12><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
+            %msg = setWord(%msg, %i, "<spush><font:verdana bold:16><linkcolor:" @ GlassLive.color_self @ "><a:gamelink_glass://user-" @ %blid @ ">" @ %word @ "</a><spop>");
             %uo = GlassLiveUser::getFromBlid(%blid);
             if(%senderblid == getNumKeyId()) {
               if(%uo.getStatus() $= "away") {
