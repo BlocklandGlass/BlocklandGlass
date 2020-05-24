@@ -684,7 +684,7 @@ function GlassAuth_dnsTCP::onDone(%this, %error) {
     echo("Join IP from glass server: " @ %ip);
     %res = GlassAuth::joinIPThing(%ip);
     if (!%res) {
-      echo ("joinIPThing failed");
+      echo ("joinIP glass failed");
       GlassAuth.onAuthFailed();
     }
   }
