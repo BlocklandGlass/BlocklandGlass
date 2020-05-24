@@ -2535,7 +2535,7 @@ function GlassLive::onMessage(%message, %username, %blid) {
 
   %val = %gui.chattext.getValue();
 
-  %msg = "<color:333333><font:verdana bold:16><color:" @ (%username $= $Pref::Player::NetName ? "fc0000" : "0000ff") @ ">" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
+  %msg = "<color:333333><font:verdana bold:12><color:" @ (%username $= $Pref::Player::NetName ? "fc0000" : "0000ff") @ ">" @ %username @ ":<font:verdana:12><color:333333> " @ %message;
 
   if(GlassSettings.get("Live::ShowTimestamps")) {
     %msg = "<font:verdana:12><color:666666>" @ %timestamp SPC %msg;
