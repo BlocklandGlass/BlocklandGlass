@@ -100,7 +100,7 @@ function GuiControl::setMarginResizeParent(%this, %a, %b, %c, %d) {
   %groupLeft = getWord(%this.getGroup().position, 0);
   %groupTop  = getWord(%this.getGroup().position, 1);
   //%this.getGroup().extent = %x SPC %y;
-  %this.group.resize(%groupLeft, %groupTop, %x, %y);
+  %this.getGroup().resize(%groupLeft, %groupTop, %x, %y);
 }
 
 function GuiControl::forceCenter(%this) {
