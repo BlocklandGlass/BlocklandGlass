@@ -154,6 +154,7 @@ function GlassApiTCP::onDone(%this, %error) {
 
       }
 
+      %object.schedule(0,delete);
     } else {
       if(%this._isJSON) {
         GlassLog::error("Glass API: Invalid response for \c1" @ %obj._api @ "\c0!");

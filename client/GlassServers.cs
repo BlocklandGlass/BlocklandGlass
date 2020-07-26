@@ -530,6 +530,8 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
         GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
       }
     }
+
+    %result.schedule(0,delete);
   }
 }
 

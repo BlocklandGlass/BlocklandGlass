@@ -227,6 +227,8 @@ function GlassAuthServerTCP::onDone(%this) {
           echo(%this.buffer);
       }
 
+			%object.schedule(0,delete);
+
 		} else {
 			echo("Glass Server Auth: \c2INVALID RESPONSE");
       echo(%this.buffer);

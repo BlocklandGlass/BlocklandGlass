@@ -54,6 +54,8 @@ function GlassUpdaterSupport::pushGlassUpdater(%force) {
       if(GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]") !$= "") {
         %boardImage = GlassSettings.cacheFetch("MM::BoardImage[" @ %boardId @ "]");
       }
+
+      %glassDat.schedule(0,delete);
     } else {
       %text = "<font:verdana bold:15>" @ %name;
       %boardImage = "";

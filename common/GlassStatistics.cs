@@ -45,6 +45,8 @@ function GlassStatistics::scanFiles() {
         filename = %glassObj.get("filename");
         title = %glassObj.get("title");
       };
+
+      %glassObj.schedule(0,delete);
     } else {
       error("Parse error - " @ $JSON::Error @ " in " @ %file);
     }
@@ -66,6 +68,8 @@ function GlassStatistics::scanFiles() {
 
       %go.version = %versionData.get("version");
       %go.channel = %versionData.get("channel");
+
+      %versionData.schedule(0,delete);
     } else {
       //warn("\c2Missing version.json!");
       %go.delete();
