@@ -6,7 +6,7 @@ function GlassNotificationManager::init() {
 
       enterTime = 500;
     };
-
+    GlassClientGroup.add(GlassNotificationManager);
 
   }
 }

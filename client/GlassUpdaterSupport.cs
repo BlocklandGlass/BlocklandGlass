@@ -1,6 +1,7 @@
 function GlassUpdaterSupport::pushItem(%item) {
   if(!isObject(GlassUpdatesGroup)) {
     new ScriptGroup(GlassUpdatesGroup);
+    GlassClientGroup.add(GlassUpdatesGroup);
   }
 
   %up = new ScriptObject() {

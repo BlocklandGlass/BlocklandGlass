@@ -49,11 +49,15 @@ function GlassLive::init() {
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
 
-  if(!isObject(GlassLiveUsers))
+  if(!isObject(GlassLiveUsers)) {
     new ScriptGroup(GlassLiveUsers);
+    GlassClientGroup.add(GlassLiveUsers);
+  }
 
-  if(!isObject(GlassLiveGroups))
+  if(!isObject(GlassLiveGroups)) {
     new ScriptGroup(GlassLiveGroups);
+    GlassClientGroup.add(GlassLiveGroups);
+  }
 
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);

@@ -795,6 +795,7 @@ function GMM_MyAddonsPage::populateAddons(%this) {
   }
 
   new ScriptGroup(GMM_MyAddonsPage_AddonGroup);
+  GlassClientGroup.add(GMM_MyAddonsPage_AddonGroup);
 
   //rtbInfo.txt
   //server.cs

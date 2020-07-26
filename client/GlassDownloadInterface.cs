@@ -1,6 +1,8 @@
 function GlassDownloadInterface::init() {
   if(!isObject(GlassDownloadInterface)) {
     new ScriptGroup(GlassDownloadInterface);
+
+    GlassClientGroup.add(GlassDownloadInterface);
   }
 }
 
