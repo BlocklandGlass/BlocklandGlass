@@ -17,7 +17,7 @@ function GlassLiveRooms::create(%id, %name) {
 
   if(!isObject(GlassLiveRoomGroup)) {
     new ScriptGroup(GlassLiveRoomGroup);
-    GlassClientGroup.add(GlassLiveRoomGroup);
+    GlassGroup.add(GlassLiveRoomGroup);
 
   }
   GlassLiveRoomGroup.add(%room);

@@ -1,6 +1,6 @@
 if(!isObject(GlassSettings)) {
   new ScriptGroup(GlassSettings);
-  GlassClientGroup.add(GlassSettings);
+  GlassGroup.add(GlassSettings);
 }
 
 function GlassSettings::init() {

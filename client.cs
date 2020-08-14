@@ -103,7 +103,7 @@ function Glass::execClient() {
 
   echo(" ===                   Starting it up                   ===");
 
-  new ScriptGroup(GlassClientGroup);
+  new ScriptGroup(GlassGroup);
 
   //GlassResourceManager::execResource("Support_Preferences", "client");
   GlassResourceManager::execResource("Support_Updater", "client");

@@ -51,12 +51,12 @@ function GlassLive::init() {
 
   if(!isObject(GlassLiveUsers)) {
     new ScriptGroup(GlassLiveUsers);
-    GlassClientGroup.add(GlassLiveUsers);
+    GlassGroup.add(GlassLiveUsers);
   }
 
   if(!isObject(GlassLiveGroups)) {
     new ScriptGroup(GlassLiveGroups);
-    GlassClientGroup.add(GlassLiveGroups);
+    GlassGroup.add(GlassLiveGroups);
   }
 
   GlassSettingsWindow.setVisible(false);

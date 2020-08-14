@@ -22,7 +22,7 @@
 
 if(!isObject(GlassPrefGroup)) {
 	new ScriptGroup(GlassPrefGroup);
-	GlassClientGroup.add(GlassPrefGroup);
+	GlassGroup.add(GlassPrefGroup);
 }
 
 function GlassPrefGroup::cleanup() {
@@ -41,7 +41,7 @@ function GlassPrefGroup::cleanup() {
 	}
 
 	new ScriptGroup(GlassPrefGroup);
-	GlassClientGroup.add(GlassPrefGroup);
+	GlassGroup.add(GlassPrefGroup);
 
 	$ServerInfo::PrefVersion = "";
 	GlassServerControlC::renderAll();

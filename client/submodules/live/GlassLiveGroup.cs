@@ -14,7 +14,7 @@ function GlassLiveGroups::create(%id, %name) {
 
   if(!isObject(GlassLiveGroupGroup)) {
     new ScriptGroup(GlassLiveGroupGroup);
-    GlassClientGroup.add(GlassLiveGroupGroup);
+    GlassGroup.add(GlassLiveGroupGroup);
   }
 
   GlassLiveGroupGroup.add(%group);
