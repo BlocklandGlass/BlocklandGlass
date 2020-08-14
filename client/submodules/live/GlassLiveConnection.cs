@@ -465,6 +465,15 @@ function GlassLiveConnection::onLine(%this, %line) {
 				%username = %data.sender;
 				%uo = GlassLiveUser::create(%username, %blid);
 
+				if(%uo.isBlocked()) {
+					%obj = JettisonObject();
+					%obj.set("type", "string", "friendDecline");
+					%obj.set("blid", "string", %blid);
+
+					GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+					return;
+				}
+
 				GlassLive::addFriendRequestToList(%uo);
 				GlassLive::createFriendList();
 
