@@ -4074,6 +4074,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     %browserSwatch.add(%swatch);
 
     %last = %swatch;
+    %room.schedule(0, delete);
   }
 
   if(isObject(%this.browserSwatch)) {
@@ -4083,6 +4084,8 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
 
   %this.browserSwatch = %browserSwatch;
   %this.add(%this.browserSwatch);
+
+  %rooms.schedule(0, delete);
 }
 
 function GlassChatroomTab::setFlashing(%this, %bool) {

@@ -81,7 +81,12 @@ function GlassLive::onJoinRoom(%data) {
       %uo.setBot(true);
 
     %room.addUser(%uo.blid);
+
+    // Clean up the object after
+    %cl.schedule(0,delete);
   }
+
+  %clients.schedule(0, delete);
 
   %room.createView();
 
