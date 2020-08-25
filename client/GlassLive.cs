@@ -4174,6 +4174,7 @@ function GlassIconSelectorWindow::updateIcons(%this) {
     GlassIconSelectorWindow_Swatch.add(%bitmap);
     GlassIconSelectorWindow_Swatch.add(%button);
   }
+  %file.delete();
   GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
   GlassIconSelectorWindow_Swatch.setVisible(true);
 }
