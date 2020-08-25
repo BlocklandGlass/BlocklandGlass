@@ -99,6 +99,7 @@ function GlassLiveConnection::onConnected(%this) {
 
 	%this.send(jettisonStringify("object", %obj) @ "\r\n");
 	%obj.delete();
+	%digest.delete();
 
 	GlassLive::setConnectionStatus("Authenticating...", 0);
 
@@ -240,6 +241,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 	}
 
 	%data = $JSON::Value;
+	GlassGroup.add(%data);
+	// TODO: Calls are stashed in the GlassGroup for now, but optimally, we should *really* try and clean them up better.
 
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 

@@ -298,9 +298,11 @@ function GlassAuthS::startDAA(%this, %data, %required, %role) {
 function GlassAuthS::sendDigestIdent(%this) {
   // create the object we want the server to receive
   %authData = JettisonObject();
+	%listObj = %this.getClientListObj();
+
   %authData.set("blid", "string", getNumKeyId());
   %authData.set("name", "string", $Pref::Player::NetName);
-  %authData.set("clients", "object", %this.getClientListObj());
+  %authData.set("clients", "object", %listObj);
 
   // encapsulate and stringify
   %obj = %this.daa.digest(%authData);
@@ -309,14 +311,17 @@ function GlassAuthS::sendDigestIdent(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-ident&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
+	%listObj.delete();
   %obj.delete();
 }
 
 function GlassAuthS::checkinDAA(%this) {
   %authData = JettisonObject();
+	%listObj = %this.getClientListObj();
+
   %authData.set("blid", "string", getNumKeyId());
   %authData.set("name", "string", $Pref::Player::NetName);
-  %authData.set("clients", "array", %this.getClientListObj());
+  %authData.set("clients", "array", %listObj);
 
   // encapsulate and stringify
   %obj = %this.daa.digest(%authData);
@@ -325,6 +330,7 @@ function GlassAuthS::checkinDAA(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-checkin&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
+	%listObj.delete();
   %obj.delete();
 }
 

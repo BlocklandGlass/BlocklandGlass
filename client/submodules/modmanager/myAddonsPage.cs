@@ -838,6 +838,7 @@ function GMM_MyAddonsPage::populateAddons(%this) {
       %fo.delete();
       jettisonParse(collapseEscape(%buffer));
       %so.glassdata = $JSON::Value;
+      GlassGroup.add(%so.glassdata);
     }
     GMM_MyAddonsPage_AddonGroup.add(%so);
 	 GMM_MyAddonsPage_AddonGroup.addon[%name] = %so;

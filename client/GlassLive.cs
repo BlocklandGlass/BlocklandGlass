@@ -689,8 +689,6 @@ function GlassLive::sendAvatarData() {
   %obj = JettisonObject();
   %obj.set("type", "string", "avatar");
 
-  %partArray = JettisonArray();
-
   %FaceName = $Pref::Avatar::FaceName;
   %DecalName = $Pref::Avatar::DecalName;
   %HeadColor = $Pref::Avatar::HeadColor;
@@ -868,6 +866,8 @@ function GlassLive::joinRoom(%id) {
   schedule(1000, "GlassOverlayGui", "GlassCheckModeratorButton");
 
   // GlassChatroomWindow.schedule(0, openRoomBrowser);
+
+  %obj.delete();
 }
 
 function GlassLive::sendRoomMessage(%msg, %id) {
@@ -890,6 +890,8 @@ function GlassLive::sendRoomCommand(%msg, %id) {
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 //====
@@ -919,6 +921,8 @@ function GlassLive::messageType(%blid) {
     %obj.set("typing", "string", "1");
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
     GlassLive.typing[%blid] = 1;
+
+    %obj.delete();
   }
 
   GlassLive.typingSched = schedule(2500, 0, eval, "GlassLive::messageTypeEnd(" @ %blid @ ");");
@@ -935,6 +939,8 @@ function GlassLive::messageTypeEnd(%blid) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassLive.typing[%blid] = 0;
+
+  %obj.delete();
 }
 
 function GlassLive::createMessageReminder() {
@@ -999,6 +1005,8 @@ function GlassLive::sendFriendRequest(%blid) {
   glassMessageBoxOk("Friend Request Sent", "Friend request sent to BLID <font:verdana bold:13>" @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 function GlassLive::friendAccept(%blid) {
@@ -2481,6 +2489,7 @@ function GlassLive::closeMessage(%blid) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
+  %obj.delete();
 
   if(GlassLive.typing[%blid]) {
     GlassLive::messageTypeEnd(%blid);

@@ -106,6 +106,8 @@ function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
+  %obj.delete();
+
   if(GlassSettings.get("Live::RoomNotification") && !%inhibitNotification) {
     new ScriptObject(GlassNotification) {
       title = "Exited Room";
