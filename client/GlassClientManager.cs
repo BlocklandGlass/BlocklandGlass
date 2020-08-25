@@ -29,6 +29,8 @@ function GlassClientManager::scan(%this) {
 
     %this.hasAddon[%value.id] = true;
     %this.addons = %this.addons SPC %value.id;
+
+    %value.schedule(0, delete);
   }
   %this.addons = trim(%this.addons);
 }

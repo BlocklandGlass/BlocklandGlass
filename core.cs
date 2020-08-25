@@ -37,6 +37,8 @@ function Glass::init(%context) {
 			Glass.livePort = %config.livePort;
 
 			Glass.dev = %config.debug;
+
+      %config.schedule(0, delete);
 		}
 	}
 
