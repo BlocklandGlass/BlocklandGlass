@@ -13,6 +13,8 @@ function GlassServerGraphing::init() {
     keepOpen = true;
   };
 
+  GlassGroup.add(GlassServerGraphs);
+
   GlassServerGraphs.loadDefault();
 }
 

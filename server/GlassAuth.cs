@@ -10,6 +10,8 @@ function GlassAuthS::init() {
     usingDAA = false; //GlassSettings only loads client sided!
 	};
 
+	GlassGroup.add(GlassAuthS);
+
   GlassAuthS.clearIdentity(); //preps blank identity
 }
 
