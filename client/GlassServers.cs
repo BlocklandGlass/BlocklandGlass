@@ -165,6 +165,8 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
     offline = %status $= "offline";
   };
 
+  GlassGroup.add(%swatch.server);
+
   switch$(%status) {
     case "online":
       %swatch.color = "131 195 243 255";
@@ -224,7 +226,7 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 	    %fav = GlassFavoriteServers.favorite[%j];
 		  if(%fav $= %serverIP) {
 		    %passworded = getField(%line, 2);
-		    
+
         if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
 			   continue;
 
