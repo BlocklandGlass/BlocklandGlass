@@ -20,6 +20,8 @@ function GlassStatistics::scanFiles() {
     GlassAddons.delete();
   }
   new ScriptGroup(GlassAddons);
+  GlassGroup.add(GlassAddons);
+
 	%pattern = "Add-ons/*/glass.json";
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
     %name = getsubstr(%file, 8, strlen(%file)-19);

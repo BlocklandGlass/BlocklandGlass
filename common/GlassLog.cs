@@ -1,11 +1,14 @@
 function GlassLog::init() {
-  if(!isObject(GlassLog))
+  if(!isObject(GlassLog)) {
     new ScriptObject(GlassLog) {
       folder         = "config/log/";
 
   		echoLevel      = 1;
   		echoFormatting = true;
     };
+
+    GlassGroup.add(GlassLog);
+  }
 
   %time = strreplace(getDateTime(), ":", "_");
   %time = strreplace(%time        , "/", "_");
@@ -14,6 +17,8 @@ function GlassLog::init() {
   GlassLog.startTime = %time;
 
   new FileObject(GlassLogFO);
+
+  GlassGroup.add(GlassLogFO);
 
   //create directory, pretty hacky
   GlassLogFO.openforwrite("config/log/blockland/.blank");
@@ -90,6 +95,7 @@ function GlassLog::startSessionLog() {
   echo("Beginning session log in \c3" @ %path @ "\c0...");
 
   new ConsoleLogger(GlassSessionLogger, %path);
+  GlassGroup.add(GlassSessionLogger);
   GlassSessionLogger.level = 0;
 
   echo("Duplicate Log Started\n\n");

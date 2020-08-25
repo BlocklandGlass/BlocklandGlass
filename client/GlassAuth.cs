@@ -18,6 +18,8 @@ function GlassAuth::init() {
     usingDAA      = false;
 	};
 
+  GlassGroup.add(GlassAuth);
+
   GlassAuth.clearIdentity(); //preps blank identity
 }
 

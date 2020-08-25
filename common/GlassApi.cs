@@ -3,6 +3,8 @@ function GlassApi::init() {
     queued = 0;
     unauthorizedMax = 3;
   };
+
+  GlassGroup.add(GlassApi);
 }
 
 function GlassApi::request(%this, %api, %parameters, %className, %authorized, %plaintext) {
@@ -19,6 +21,8 @@ function GlassApi::request(%this, %api, %parameters, %className, %authorized, %p
     _authorized = %authorized;
     _isJSON     = !%plaintext;
   };
+
+  GlassGroup.add(GlassApiHandler);
 
   if(!%authorized) {
     %this.doCall(%obj);

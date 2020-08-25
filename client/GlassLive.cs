@@ -47,6 +47,8 @@ function GlassLive::init() {
     };
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
+
+    GlassGroup.add(GlassLive);
   }
 
   if(!isObject(GlassLiveUsers)) {

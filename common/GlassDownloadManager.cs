@@ -3,6 +3,10 @@
 function GlassDownloadManager::init() {
 	new ScriptObject(GlassDownloadManager);
 	new ScriptGroup(GlassDownloadManagerQueue);
+
+	GlassGroup.add(GlassDownloadManager);
+	GlassGroup.add(GlassDownloadManagerQueue);
+
 	GlassDownloadManager.queue = GlassDownloadManagerQueue;
 }
 

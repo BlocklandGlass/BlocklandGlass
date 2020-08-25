@@ -15,6 +15,7 @@ function GlassServers::init() {
 
   new ScriptObject(GlassFavoriteServers);
   %this = GlassFavoriteServers;
+  GlassGroup.add(GlassFavoriteServers);
 
   %favs = GlassSettings.get("Servers::Favorites");
   %this.favorites = 0;

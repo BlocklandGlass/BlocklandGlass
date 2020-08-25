@@ -4,6 +4,8 @@ function GlassClientManager::init() {
 
   new ScriptObject(GlassClientManager);
 
+  GlassGroup.add(GlassClientManager);
+
   GlassClientManager.scan();
 }
 

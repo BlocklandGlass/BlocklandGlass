@@ -4,6 +4,7 @@ function GlassServerControlC::init() {
       enabled = false;
     };
 
+  GlassGroup.add(GlassServerControlC);
   GlassServerControlC::setTab(2);
 }
 

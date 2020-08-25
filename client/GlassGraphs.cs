@@ -4,8 +4,12 @@ function GlassGraphs::init() {
     barSpacing = 0;
   };
 
+  GlassGroup.add(GlassGraphs);
+
   GlassGraphs.populateTabs();
   GlassGraphs.sets = new SimSet(GlassGraphSets);
+
+  GlassGroup.add(GlassGraphSets);
 
   %extent = GlassServerControlGui_Graph.getExtent();
   %width = getWord(%extent, 0);

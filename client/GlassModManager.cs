@@ -24,6 +24,8 @@ function GlassModManager::init() {
 
   new ScriptObject(GlassModManager);
 
+  GlassGroup.add(GlassModManager);
+
   GlassModManager::scanForRTB();
 }
 

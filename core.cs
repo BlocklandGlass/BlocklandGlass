@@ -15,6 +15,8 @@ function Glass::init(%context) {
 		};
 	}
 
+	GlassGroup.add(Glass);
+
 	if(!isObject(GlassLog)) {
 		exec("./common/GlassLog.cs");
 		GlassLog::init();
