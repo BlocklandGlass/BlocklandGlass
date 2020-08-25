@@ -1,3 +1,7 @@
+//Object and group container
+if(!isObject(GlassGroup))
+  new ScriptGroup(GlassGroup);
+
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
