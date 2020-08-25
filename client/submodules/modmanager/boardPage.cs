@@ -1,5 +1,6 @@
 function GMM_BoardPage::init() {
   new ScriptObject(GMM_BoardPage);
+  GlassGroup.add(GMM_BoardPage);
 }
 
 function GMM_BoardPage::open(%this, %id, %page) {

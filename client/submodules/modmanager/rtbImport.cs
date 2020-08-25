@@ -1,5 +1,6 @@
 function GMM_ImportPage::init() {
   new ScriptObject(GMM_ImportPage);
+  GlassGroup.add(GMM_ImportPage);
 }
 
 function GMM_ImportPage::open(%this) {

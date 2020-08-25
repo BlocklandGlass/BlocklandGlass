@@ -1,5 +1,6 @@
 function GMM_RTBBoardPage::init() {
   new ScriptObject(GMM_RTBBoardPage);
+  GlassGroup.add(GMM_RTBBoardPage);
 }
 
 function GMM_RTBBoardPage::open(%this, %boardName, %page) {

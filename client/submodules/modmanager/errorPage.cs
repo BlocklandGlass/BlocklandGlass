@@ -1,5 +1,6 @@
 function GMM_ErrorPage::init() {
   new ScriptObject(GMM_ErrorPage);
+  GlassGroup.add(GMM_ErrorPage);
 }
 
 function GMM_ErrorPage::open(%this, %errorcode, %buffer) {

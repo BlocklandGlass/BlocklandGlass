@@ -1,5 +1,6 @@
 function GMM_Navigation::init() {
   new ScriptObject(GMM_Navigation);
+  GlassGroup.add(GMM_Navigation);
 }
 
 function GMM_Navigation::clear(%this) {

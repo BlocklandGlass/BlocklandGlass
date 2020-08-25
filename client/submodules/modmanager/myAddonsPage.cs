@@ -1,5 +1,6 @@
 function GMM_MyAddonsPage::init() {
   new ScriptObject(GMM_MyAddonsPage);
+  GlassGroup.add(GMM_MyAddonsPage);
 }
 
 function GMM_MyAddonsPage::open(%this) {

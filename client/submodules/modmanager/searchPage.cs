@@ -1,5 +1,6 @@
 function GMM_SearchPage::init() {
   new ScriptObject(GMM_SearchPage);
+  GlassGroup.add(GMM_SearchPage);
 }
 
 function GMM_SearchPage::open(%this, %preserve) {

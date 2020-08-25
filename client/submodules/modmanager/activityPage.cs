@@ -2,6 +2,8 @@ function GMM_ActivityPage::init() {
   new ScriptObject(GMM_ActivityPage) {
     class = "GlassModManagerPage";
   };
+
+  GlassGroup.add(GMM_ActivityPage);
 }
 
 function GMM_ActivityPage::open(%this) {

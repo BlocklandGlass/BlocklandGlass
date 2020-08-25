@@ -2,6 +2,7 @@ function GMM_BoardsPage::init() {
   new ScriptObject(GMM_BoardsPage) {
     class = "GlassModManagerPage";
   };
+  GlassGroup.add(GMM_BoardsPage);
 }
 
 function GMM_BoardsPage::open(%this) {
