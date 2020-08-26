@@ -99,7 +99,6 @@ function GlassLiveConnection::onConnected(%this) {
 
 	%this.send(jettisonStringify("object", %obj) @ "\r\n");
 	%obj.delete();
-	%digest.delete();
 
 	GlassLive::setConnectionStatus("Authenticating...", 0);
 
