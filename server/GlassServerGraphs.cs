@@ -51,6 +51,8 @@ function GlassServerGraphs::getCollection(%this, %name) {
       id = %this.collections;
     };
     %collection.listeners = new SimSet();
+    GlassGroup.add(%collection.listeners);
+
     %this.collections++;
 
     %this.schedule(1, add, %collection);

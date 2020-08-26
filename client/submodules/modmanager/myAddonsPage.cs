@@ -663,7 +663,11 @@ function GMM_MyAddonsPage::createAddonToggle(%this, %group, %addon) {
 	}
 
 	if(!isObject(%addon.swatchSet))
+  {
 		%addon.swatchSet = new SimSet();
+    GlassGroup.add(%addon.swatchSet);
+    // TODO: Contain these somewhere else?
+  }
 
 	%addon.swatchSet.add(%gui);
 
