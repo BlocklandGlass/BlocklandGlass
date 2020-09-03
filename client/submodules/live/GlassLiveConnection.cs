@@ -84,6 +84,8 @@ function GlassLiveConnection::onConnected(%this) {
 
 	  %obj.set("ident", "string", GlassAuth.ident);
 		%obj.set("digest", "object", %digest);
+
+		%digest.delete();
 	} else {
 
 		%obj.set("authType", "string", "default");
