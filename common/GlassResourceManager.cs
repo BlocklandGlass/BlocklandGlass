@@ -1,7 +1,6 @@
 function GlassResourceManager::execResource(%resource, %context) {
   if(!isObject(GlassResourceManager)) {
-    new ScriptObject(GlassResourceManager);
-    GlassGroup.add(GlassResourceManager);
+    GlassGroup.add(new ScriptObject(GlassResourceManager));
   }
   //first, check if we have an update-able local copy
   //if we do, allow it to load normally

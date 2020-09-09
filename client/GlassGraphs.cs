@@ -9,8 +9,6 @@ function GlassGraphs::init() {
   GlassGraphs.populateTabs();
   GlassGraphs.sets = new SimSet(GlassGraphSets);
 
-  GlassGroup.add(GlassGraphSets);
-
   %extent = GlassServerControlGui_Graph.getExtent();
   %width = getWord(%extent, 0);
   %height = getWord(%extent, 1);

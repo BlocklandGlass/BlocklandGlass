@@ -11,14 +11,12 @@ function GlassAuth::init() {
 		GlassAuth.delete();
 	}
 
-	new ScriptObject(GlassAuth) {
+	GlassGroup.add(new ScriptObject(GlassAuth) {
     debug         = false;
 
 		heartbeatRate = 5; //minutes
     usingDAA      = false;
-	};
-
-  GlassGroup.add(GlassAuth);
+	});
 
   GlassAuth.clearIdentity(); //preps blank identity
 }

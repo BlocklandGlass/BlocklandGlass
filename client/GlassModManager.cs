@@ -22,9 +22,7 @@ function GlassModManager::init() {
     return;
   }
 
-  new ScriptObject(GlassModManager);
-
-  GlassGroup.add(GlassModManager);
+  GlassGroup.add(new ScriptObject(GlassModManager));
 
   GlassModManager::scanForRTB();
 }
@@ -437,8 +435,7 @@ function GlassModManager::downloadAddon(%this, %id, %progressBar, %progressText)
   }
 
   if(!isObject(GlassModManagerQueue)) {
-    new ScriptGroup(GlassModManagerQueue);
-    GlassGroup.add(GlassModManagerQueue);
+    GlassGroup.add(new ScriptGroup(GlassModManagerQueue));
   }
 
   %dl = GlassDownloadManager::newDownload(%id, 1);

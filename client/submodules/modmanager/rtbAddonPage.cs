@@ -1,6 +1,5 @@
 function GMM_RTBAddonPage::init() {
-  new ScriptObject(GMM_RTBAddonPage);
-  GlassGroup.add(GMM_RTBAddonPage);
+  GlassGroup.add(new ScriptObject(GMM_RTBAddonPage));
 }
 
 function GMM_RTBAddonPage::open(%this, %modId) {

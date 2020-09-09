@@ -36,7 +36,7 @@ if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/Gl
 
 function GlassLive::init() {
   if(!isObject(GlassLive)) {
-    new ScriptObject(GlassLive) {
+    GlassGroup.add(new ScriptObject(GlassLive) {
       // color_blocked = "969696";
       color_default = "222222";
       color_self = "55acee";
@@ -44,21 +44,17 @@ function GlassLive::init() {
       color_mod = "e67e22";
       color_admin = "e74c3c";
       color_bot = "9b59b6";
-    };
+    });
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
-
-    GlassGroup.add(GlassLive);
   }
 
   if(!isObject(GlassLiveUsers)) {
-    new ScriptGroup(GlassLiveUsers);
-    GlassGroup.add(GlassLiveUsers);
+    GlassGroup.add(new ScriptGroup(GlassLiveUsers));
   }
 
   if(!isObject(GlassLiveGroups)) {
-    new ScriptGroup(GlassLiveGroups);
-    GlassGroup.add(GlassLiveGroups);
+    GlassGroup.add(new ScriptGroup(GlassLiveGroups));
   }
 
   GlassSettingsWindow.setVisible(false);

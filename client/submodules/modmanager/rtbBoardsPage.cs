@@ -1,8 +1,7 @@
 function GMM_RTBBoardsPage::init() {
-  new ScriptObject(GMM_RTBBoardsPage) {
+  GlassGroup.add(new ScriptObject(GMM_RTBBoardsPage) {
     class = "GlassModManagerPage";
-  };
-  GlassGroup.add(GMM_RTBBoardsPage);
+  });
 }
 
 function GMM_RTBBoardsPage::open(%this) {

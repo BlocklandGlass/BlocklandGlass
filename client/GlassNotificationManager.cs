@@ -1,13 +1,11 @@
 function GlassNotificationManager::init() {
   if(!isObject(GlassNotificationManager)) {
-    new ScriptGroup(GlassNotificationManager) {
+    GlassGroup.add(new ScriptGroup(GlassNotificationManager) {
       offset = 0;
       tickRate = 10;
 
       enterTime = 500;
-    };
-    GlassGroup.add(GlassNotificationManager);
-
+    });
   }
 }
 

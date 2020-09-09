@@ -19,8 +19,7 @@ function GlassStatistics::scanFiles() {
   if(isObject(GlassAddons)) {
     GlassAddons.delete();
   }
-  new ScriptGroup(GlassAddons);
-  GlassGroup.add(GlassAddons);
+  GlassGroup.add(new ScriptGroup(GlassAddons));
 
 	%pattern = "Add-ons/*/glass.json";
 	while((%file $= "" ? (%file = findFirstFile(%pattern)) : (%file = findNextFile(%pattern))) !$= "") {
@@ -79,7 +78,7 @@ function GlassStatistics::scanFiles() {
     }
 
     GlassAddons.add(%go);
-	 
+
 	}
 }
 

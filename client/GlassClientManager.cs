@@ -2,9 +2,7 @@ function GlassClientManager::init() {
   if(isObject(GlassClientManager))
     GlassClientManager.delete();
 
-  new ScriptObject(GlassClientManager);
-
-  GlassGroup.add(GlassClientManager);
+  GlassGroup.add(new ScriptObject(GlassClientManager));
 
   GlassClientManager.scan();
 }

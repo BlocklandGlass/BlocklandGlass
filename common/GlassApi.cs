@@ -1,15 +1,13 @@
 function GlassApi::init() {
-  new ScriptObject(GlassApi) {
+  GlassGroup.add(new ScriptObject(GlassApi) {
     queued = 0;
     unauthorizedMax = 3;
-  };
-
-  GlassGroup.add(GlassApi);
+  });
 }
 
 function GlassApi::request(%this, %api, %parameters, %className, %authorized, %plaintext) {
   // we need to mimic to functionality of TCPClient
-  %obj = new ScriptObject(GlassApiHandler) {
+  GlassGroup.add(%obj = new ScriptObject(GlassApiHandler) {
     className = %className;
 
     isQueued   = true;
@@ -20,9 +18,7 @@ function GlassApi::request(%this, %api, %parameters, %className, %authorized, %p
     _paramaters = %parameters;
     _authorized = %authorized;
     _isJSON     = !%plaintext;
-  };
-
-  GlassGroup.add(GlassApiHandler);
+  });
 
   if(!%authorized) {
     %this.doCall(%obj);

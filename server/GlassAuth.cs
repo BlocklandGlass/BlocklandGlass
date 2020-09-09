@@ -5,12 +5,10 @@ function GlassAuthS::init() {
 		GlassAuthS.delete();
 	}
 
-	new ScriptObject(GlassAuthS) {
+	GlassGroup.add(new ScriptObject(GlassAuthS) {
     debug    = false;
     usingDAA = false; //GlassSettings only loads client sided!
-	};
-
-	GlassGroup.add(GlassAuthS);
+	});
 
   GlassAuthS.clearIdentity(); //preps blank identity
 }

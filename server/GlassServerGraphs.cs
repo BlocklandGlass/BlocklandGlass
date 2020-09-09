@@ -6,14 +6,12 @@
 function GlassServerGraphing::init() {
   //all units in seconds
   //all of these should be prefs eventually
-  new ScriptGroup(GlassServerGraphs) {
+  GlassGroup.add(new ScriptGroup(GlassServerGraphs) {
     increments = 15;
     history = 3600*12; //12 hours
 
     keepOpen = true;
-  };
-
-  GlassGroup.add(GlassServerGraphs);
+  });
 
   GlassServerGraphs.loadDefault();
 }
