@@ -1,11 +1,9 @@
 function GlassGraphs::init() {
-  new ScriptObject(GlassGraphs) {
+  GlassGroup.add(new ScriptObject(GlassGraphs) {
     barWidth = 1;
     barSpacing = 0;
-  };
-
-  GlassGroup.add(GlassGraphs);
-
+  });
+  
   GlassGraphs.populateTabs();
   GlassGraphs.sets = new SimSet(GlassGraphSets);
 
