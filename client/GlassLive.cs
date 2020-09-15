@@ -216,6 +216,7 @@ function GlassLive::onAuthSuccess() {
   };
 
   GlassLive.schedule(1000, "checkPendingFriendREquests");
+  GlassLive.authenticating = false;
 }
 
 function GlassLive::disconnect() {
