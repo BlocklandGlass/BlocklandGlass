@@ -35,7 +35,7 @@ function GlassLive::connectToServer() {
 	}
 
 	%this.connected = false;
-	%this.authenticating = false;
+	%this.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 
@@ -58,7 +58,7 @@ function GlassLiveConnection::onConnected(%this) {
 	GlassLive.hideBlocked = GlassSettings.get("Live::HideBlocked");
 
 	%this.connected = true;
-	GlassLive.authenticating = true;
+	GlassLive.waitingForAuth = true;
 	// "authenticating" status will be reset in GlassLive::onAuthSuccess
 
 	%obj = JettisonObject();
@@ -120,7 +120,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 	%this.connected = false;
 
 	// Don't try to reconnect if we never got past the initial auth.
-	if(!GlassLive.authenticating && !GlassLive.noReconnect) {
+	if(!GlassLive.waitingForAuth && !GlassLive.noReconnect) {
 		GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
 	}
 
@@ -137,6 +137,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 
     sticky = false;
   };
+	GlassLive.waitingForAuth = false;
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
@@ -157,7 +158,7 @@ function GlassLiveConnection::onConnectFailed(%this) {
 	GlassLive::setConnectionStatus("Connect Failed", 1);
 
 	%this.connected = false;
-	GlassLive.authenticating = false;
+	GlassLive.waitingForAuth = false;
 	GlassLive.connectionTries++;
 
 	if(!GlassLive.noReconnect)
@@ -174,7 +175,7 @@ function GlassLiveConnection::doDisconnect(%this) {
 	%this.disconnect();
 	%this.onDisconnect();
 	%this.connected = false;
-	GlassLive.authenticating = false;
+	GlassLive.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 	GlassLive::setConnectionStatus("Disconnected", 1);
