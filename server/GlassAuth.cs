@@ -203,12 +203,12 @@ function GlassAuthServerTCP::onDone(%this) {
         case "error":
           echo("Glass Server Auth: \c2ERROR");
           if(%object.error !$= "")
-            echo(%object.error);
+            echo("Glass Error: " @ %object.error);
 
         case "failed":
           echo("Glass Server Auth: \c2FAILED");
           if(%object.message !$= "")
-            echo(%object.message);
+            echo("Glass Error: " @ %object.message);
 
 					GlassAuthS.failedCt++;
           GlassAuthS.onAuthFailed();
@@ -224,12 +224,12 @@ function GlassAuthServerTCP::onDone(%this) {
           GlassAuthS.reident();
         default:
           echo("Glass Server Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
-          echo(%this.buffer);
+          echo("Glass Error: " @ %this.buffer);
       }
 
 		} else {
 			echo("Glass Server Auth: \c2INVALID RESPONSE");
-      echo(%this.buffer);
+      echo("Glass Error: " @ %this.buffer);
 
       GlassAuthS.authing = false;
       GlassAuthS.schedule(10*1000, reident);
