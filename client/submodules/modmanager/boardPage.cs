@@ -109,7 +109,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %author = getASCIIString(%addon.author);
     %downloads = %addon.downloads;
 
-    if(strtrim(%addon.summary) $= "")
+    if(trim(%addon.summary) $= "")
       %summary = "< No Summary >";
     else
       %summary = getASCIIString(%addon.summary);
