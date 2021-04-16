@@ -93,6 +93,8 @@ function Glass::execClient() {
   exec("./client/GlassCompatibility.cs");
   exec("./client/GlassBugReport.cs");
 
+  exec("./client/GlassTemperedInit.cs");
+
   %date = getDateTime();
   %month = getSubStr(%date, 0, 2);
   %day = getSubStr(%date, strpos(%date, "/")+1, 2);
@@ -134,6 +136,8 @@ function Glass::execClient() {
   GlassManual::init();
 
   GlassGraphs::init();
+
+  GlassTempered::init();
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 

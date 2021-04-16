@@ -23,6 +23,8 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::Rooms", "0");
   GlassSettings.registerSetting("Servers::Favorites", "");
   GlassSettings.registerSetting("Server::UseBLG", true);
+  // Tempered Glass - Hidden
+  GlassSettings.registerSetting("Tempered::IgnoreVersion", "-1");
 
   // Auth
   GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
