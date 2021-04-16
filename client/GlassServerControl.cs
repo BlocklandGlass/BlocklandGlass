@@ -1154,7 +1154,6 @@ function GlassServerControlGui::openColorSelector(%swatch) {
   GlassServerControlGui_ColorSelector.alphaLocked = !%alpha;
   GlassServerControlGui_ColorSelector.updateColor(true);
   GlassServerControlGui_ColorSelector.setVisible(true);
-  GlassServerControlGui.pushToBack(GlassServerControlGui_ColorSelector);
   GlassServerControlGui_ColorSelector.forceCenter();
 }
 
