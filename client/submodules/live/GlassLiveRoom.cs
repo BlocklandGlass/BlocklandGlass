@@ -16,7 +16,8 @@ function GlassLiveRooms::create(%id, %name) {
 
 
   if(!isObject(GlassLiveRoomGroup)) {
-    new ScriptGroup(GlassLiveRoomGroup);
+    GlassGroup.add(new ScriptGroup(GlassLiveRoomGroup));
+
   }
   GlassLiveRoomGroup.add(%room);
   GlassLiveRooms::updatePersistence();
@@ -79,7 +80,12 @@ function GlassLive::onJoinRoom(%data) {
       %uo.setBot(true);
 
     %room.addUser(%uo.blid);
+
+    // Clean up the object after
+    %cl.schedule(0,delete);
   }
+
+  %clients.schedule(0, delete);
 
   %room.createView();
 
@@ -103,6 +109,8 @@ function GlassLiveRoom::leaveRoom(%this, %inhibitNotification) {
   %obj.set("id", "string", %this.id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 
   if(GlassSettings.get("Live::RoomNotification") && !%inhibitNotification) {
     new ScriptObject(GlassNotification) {

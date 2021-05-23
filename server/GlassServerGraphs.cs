@@ -6,12 +6,12 @@
 function GlassServerGraphing::init() {
   //all units in seconds
   //all of these should be prefs eventually
-  new ScriptGroup(GlassServerGraphs) {
+  GlassGroup.add(new ScriptGroup(GlassServerGraphs) {
     increments = 15;
     history = 3600*12; //12 hours
 
     keepOpen = true;
-  };
+  });
 
   GlassServerGraphs.loadDefault();
 }
@@ -49,6 +49,8 @@ function GlassServerGraphs::getCollection(%this, %name) {
       id = %this.collections;
     };
     %collection.listeners = new SimSet();
+    GlassGroup.add(%collection.listeners);
+
     %this.collections++;
 
     %this.schedule(1, add, %collection);

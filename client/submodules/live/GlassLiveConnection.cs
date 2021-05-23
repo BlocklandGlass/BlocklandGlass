@@ -248,6 +248,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 	}
 
 	%data = $JSON::Value;
+	GlassGroup.add(%data);
+	// TODO: Calls are stashed in the GlassGroup for now, but optimally, we should *really* try and clean them up better.
 
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 
@@ -292,8 +294,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "message":
 			%user = GlassLiveUser::getFromBlid(%data.sender_id);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			%sender = getASCIIString(%data.sender);
 
@@ -340,8 +344,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "messageTyping":
 			%user = GlassLiveUser::getFromBlid(%data.sender);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			GlassLive::setMessageTyping(%data.sender, %data.typing);
 
@@ -354,8 +360,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				%senderUser = GlassLiveUser::getFromBlid(%senderblid);
 
-				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked())
+				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked()) {
+					%data.schedule(0, delete);
 					return;
+				}
 
 				%room.pushMessage(%senderUser, %msg, %data);
 			}
@@ -449,9 +457,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 				}
 
 				GlassLive::addFriendToList(%uo);
+
+				// Clean up the object after
+				%friend.schedule(0, delete);
 			}
 			GlassLive::createFriendList();
-
+			%data.friends.schedule(0, delete);
 
 		case "friendRequests":
 			for(%i = 0; %i < %data.requests.length; %i++) {
@@ -461,7 +472,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 				%uo.setFriendRequest(true);
 
 				GlassLive::addfriendRequestToList(%uo);
+
+				// Clean up the object after
+				%friend.schedule(0, delete);
 			}
+
+			%data.requests.schedule(0, delete);
 
 			if(%data.requests.length == 0)
 				GlassLive.friendRequestList = "";
@@ -615,10 +631,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 			GlassLive::displayLocation(%data);
 
 		case "serverListUpdate":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(%data.ip, %data.port, %data.key, %data.value);
 
 		case "serverListing":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
@@ -628,6 +646,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 			%avatarData = %data.avatar;
 
 			%user.gotAvatar(%avatarData, %data.private);
+			%data.avatar.schedule(0, delete);
 
 		case "userLocation":
 			//this is only in response to getLocation
@@ -645,7 +664,11 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				%user = GlassLiveUser::create(%userData.username, %userData.blid);
 				%user.setBlocked(true);
+
+				%userData.schedule(0, delete);
 			}
+
+			%data.blocked.schedule(0, delete);
 
 			if(strlen(%list) > 0)
 				%list = getSubStr(%list, 1, strlen(%list)-1);
@@ -762,6 +785,8 @@ function GlassLiveConnection::onLine(%this, %line) {
 				}
 				%uo.setStatus(%udata.status);
 				%uo.setIcon(%udata.icon);
+
+				%udata.schedule(0, delete);
 			}
 
 			//%inviter = GlassLive::getFromBlid(%data.blid);

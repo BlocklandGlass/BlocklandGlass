@@ -1,5 +1,5 @@
 function GMM_ColorsetsPage::init() {
-  new ScriptObject(GMM_ColorsetsPage);
+  GlassGroup.add(new ScriptObject(GMM_ColorsetsPage));
 }
 
 function GMM_ColorsetsPage::open(%this) {
