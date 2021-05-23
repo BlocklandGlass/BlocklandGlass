@@ -250,7 +250,9 @@ function GlassAuthTCP::onDone(%this, %error) {
           if(GlassAuth.usingDAA) {
             GlassAuth.ident = GlassAuth.daa_opaque;
           } else {
-            GlassAuth.ident = %object.ident;
+            if(%object.ident !$= "") {
+              GlassAuth.ident = %object.ident;
+            }
           }
 
           //there is an unverified web account associated with this blid
