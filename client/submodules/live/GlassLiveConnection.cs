@@ -240,8 +240,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 	}
 
 	%data = $JSON::Value;
-	GlassGroup.add(%data);
-
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 
 	switch$(%data.value["type"]) {
