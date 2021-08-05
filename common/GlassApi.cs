@@ -94,8 +94,6 @@ function GlassApi::doCall(%this, %obj) {
     %digest = GlassAuth.daa.digest(%request);
     %json   = jettisonStringify("object", %digest);
 
-    %request.delete();
-    %data.delete();
     %digest.delete();
 
     %tcp = TCPClient("POST", Glass.address, 80, "/api/3/daa.php?ident=" @ GlassAuth.daa_opaque, %json, "", "GlassApiTCP");
