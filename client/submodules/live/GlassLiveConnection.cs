@@ -35,6 +35,7 @@ function GlassLive::connectToServer() {
 	}
 
 	%this.connected = false;
+	%this.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 
@@ -57,6 +58,8 @@ function GlassLiveConnection::onConnected(%this) {
 	GlassLive.hideBlocked = GlassSettings.get("Live::HideBlocked");
 
 	%this.connected = true;
+	GlassLive.waitingForAuth = true;
+	// "authenticating" status will be reset in GlassLive::onAuthSuccess
 
 	%obj = JettisonObject();
 	%obj.set("type", "string", "auth");
@@ -116,8 +119,10 @@ function GlassLiveConnection::onDisconnect(%this) {
 
 	%this.connected = false;
 
-	if(!GlassLive.noReconnect)
+	// Don't try to reconnect if we never got past the initial auth.
+	if(!GlassLive.waitingForAuth && !GlassLive.noReconnect) {
 		GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
+	}
 
 	cancel(%this.keepaliveTimeout);
 	cancel(%this.keepaliveSchedule);
@@ -132,6 +137,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 
     sticky = false;
   };
+	GlassLive.waitingForAuth = false;
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
@@ -152,6 +158,7 @@ function GlassLiveConnection::onConnectFailed(%this) {
 	GlassLive::setConnectionStatus("Connect Failed", 1);
 
 	%this.connected = false;
+	GlassLive.waitingForAuth = false;
 	GlassLive.connectionTries++;
 
 	if(!GlassLive.noReconnect)
@@ -168,6 +175,7 @@ function GlassLiveConnection::doDisconnect(%this) {
 	%this.disconnect();
 	%this.onDisconnect();
 	%this.connected = false;
+	GlassLive.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 	GlassLive::setConnectionStatus("Disconnected", 1);
@@ -470,6 +478,15 @@ function GlassLiveConnection::onLine(%this, %line) {
 			if(strstr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
 				%username = %data.sender;
 				%uo = GlassLiveUser::create(%username, %blid);
+
+				if(%uo.isBlocked()) {
+					%obj = JettisonObject();
+					%obj.set("type", "string", "friendDecline");
+					%obj.set("blid", "string", %blid);
+
+					GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+					return;
+				}
 
 				GlassLive::addFriendRequestToList(%uo);
 				GlassLive::createFriendList();
