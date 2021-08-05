@@ -241,7 +241,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 	%data = $JSON::Value;
 	GlassGroup.add(%data);
-	// TODO: Calls are stashed in the GlassGroup for now, but optimally, we should *really* try and clean them up better.
 
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 
@@ -451,7 +450,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 				GlassLive::addFriendToList(%uo);
 			}
 			GlassLive::createFriendList();
-			%data.schedule(0, delete);
 
 		case "friendRequests":
 			for(%i = 0; %i < %data.requests.length; %i++) {
@@ -461,12 +459,9 @@ function GlassLiveConnection::onLine(%this, %line) {
 				%uo.setFriendRequest(true);
 
 				GlassLive::addfriendRequestToList(%uo);
-
-				// Clean up the object after
-				%friend.schedule(0, delete);
 			}
 
-			%data.requests.schedule(0, delete);
+			echo("fr" @ %friend);
 
 			if(%data.requests.length == 0)
 				GlassLive.friendRequestList = "";
@@ -626,7 +621,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 			%avatarData = %data.avatar;
 
 			%user.gotAvatar(%avatarData, %data.private);
-			%data.avatar.schedule(0, delete);
 
 		case "userLocation":
 			//this is only in response to getLocation
@@ -644,11 +638,7 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				%user = GlassLiveUser::create(%userData.username, %userData.blid);
 				%user.setBlocked(true);
-
-				%userData.schedule(0, delete);
 			}
-
-			%data.blocked.schedule(0, delete);
 
 			if(strlen(%list) > 0)
 				%list = getSubStr(%list, 1, strlen(%list)-1);
@@ -765,8 +755,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 				}
 				%uo.setStatus(%udata.status);
 				%uo.setIcon(%udata.icon);
-
-				%udata.schedule(0, delete);
 			}
 
 			//%inviter = GlassLive::getFromBlid(%data.blid);
@@ -787,15 +775,13 @@ function GlassLiveConnection::onLine(%this, %line) {
 			if(%data.key $= "keepalive")
 				%this.gotKeepalivePong();
 
-			%data.delete();
-
-
 		default:
 			if(Glass.debug) {
 				GlassLog::error("Unhandled Live Call: " @ %data.value["type"]);
 			}
 	}
-	//%data.delete();
+
+	%data.schedule(0, delete);
 }
 
 function formatTimeHourMin(%datetime) {
