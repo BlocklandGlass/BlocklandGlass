@@ -449,12 +449,9 @@ function GlassLiveConnection::onLine(%this, %line) {
 				}
 
 				GlassLive::addFriendToList(%uo);
-
-				// Clean up the object after
-				%friend.schedule(0, delete);
 			}
 			GlassLive::createFriendList();
-			%data.friends.schedule(0, delete);
+			%data.schedule(0, delete);
 
 		case "friendRequests":
 			for(%i = 0; %i < %data.requests.length; %i++) {
