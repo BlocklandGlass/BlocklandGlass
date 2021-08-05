@@ -227,15 +227,15 @@ function GlassAuthServerTCP::onDone(%this) {
           echo(%this.buffer);
       }
 
-			%object.schedule(0,delete);
+      %object.schedule(0,delete);
 
-		} else {
-			echo("Glass Server Auth: \c2INVALID RESPONSE");
-      echo(%this.buffer);
+      } else {
+          echo("Glass Server Auth: \c2INVALID RESPONSE");
+          echo(%this.buffer);
 
-      GlassAuthS.authing = false;
-      GlassAuthS.schedule(10*1000, reident);
-		}
+          GlassAuthS.authing = false;
+          GlassAuthS.schedule(10*1000, reident);
+      }
 
 
 	} else {
@@ -298,7 +298,7 @@ function GlassAuthS::startDAA(%this, %data, %required, %role) {
 function GlassAuthS::sendDigestIdent(%this) {
   // create the object we want the server to receive
   %authData = JettisonObject();
-	%listObj = %this.getClientListObj();
+  %listObj = %this.getClientListObj();
 
   %authData.set("blid", "string", getNumKeyId());
   %authData.set("name", "string", $Pref::Player::NetName);
@@ -311,7 +311,7 @@ function GlassAuthS::sendDigestIdent(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-ident&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
-	%listObj.delete();
+  %listObj.delete();
   %obj.delete();
 }
 
@@ -330,7 +330,7 @@ function GlassAuthS::checkinDAA(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-checkin&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
-	%listObj.delete();
+  %listObj.delete();
   %obj.delete();
 }
 

@@ -38,7 +38,7 @@ function Glass::init(%context) {
 
 			Glass.dev = %config.debug;
 
-      %config.schedule(0, delete);
+     		%config.schedule(0, delete);
 		}
 	}
 
