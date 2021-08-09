@@ -230,17 +230,17 @@ function GlassAuthServerTCP::onDone(%this) {
       %object.schedule(0,delete);
 
       } else {
-			echo("Glass Server Auth: \c2INVALID RESPONSE");
-			echo("Glass Error: " @ %this.buffer);
+            echo("Glass Server Auth: \c2INVALID RESPONSE");
+            echo("Glass Error: " @ %this.buffer);
       } else {
-    		echo("Glass Server Auth: \c2INVALID RESPONSE");
-			echo(%this.buffer);
+            echo("Glass Server Auth: \c2INVALID RESPONSE");
+            echo(%this.buffer);
 
-			GlassAuthS.authing = false;
-			GlassAuthS.schedule(10*1000, reident);
+            GlassAuthS.authing = false;
+            GlassAuthS.schedule(10*1000, reident);
       }
 	} else {
-    	echo("Glass Server Auth: \c2CONNECTION ERROR " @ %error);
+        echo("Glass Server Auth: \c2CONNECTION ERROR " @ %error);
 
         GlassAuthS.authing = false;
         GlassAuthS.schedule(10*1000, reident);
