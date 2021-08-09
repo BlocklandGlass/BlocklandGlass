@@ -467,8 +467,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 				GlassLive::addfriendRequestToList(%uo);
 			}
 
-			echo("fr" @ %friend);
-
 			if(%data.requests.length == 0)
 				GlassLive.friendRequestList = "";
 
