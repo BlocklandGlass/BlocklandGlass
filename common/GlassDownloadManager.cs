@@ -1,8 +1,9 @@
 // Blockland Glass - Mod Downloader
 
 function GlassDownloadManager::init() {
-	new ScriptObject(GlassDownloadManager);
-	new ScriptGroup(GlassDownloadManagerQueue);
+	GlassGroup.add(new ScriptObject(GlassDownloadManager));
+	GlassGroup.add(new ScriptGroup(GlassDownloadManagerQueue));
+
 	GlassDownloadManager.queue = GlassDownloadManagerQueue;
 }
 

@@ -35,6 +35,7 @@ function GlassLive::connectToServer() {
 	}
 
 	%this.connected = false;
+	%this.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 
@@ -57,6 +58,8 @@ function GlassLiveConnection::onConnected(%this) {
 	GlassLive.hideBlocked = GlassSettings.get("Live::HideBlocked");
 
 	%this.connected = true;
+	GlassLive.waitingForAuth = true;
+	// "authenticating" status will be reset in GlassLive::onAuthSuccess
 
 	%obj = JettisonObject();
 	%obj.set("type", "string", "auth");
@@ -116,8 +119,10 @@ function GlassLiveConnection::onDisconnect(%this) {
 
 	%this.connected = false;
 
-	if(!GlassLive.noReconnect)
+	// Don't try to reconnect if we never got past the initial auth.
+	if(!GlassLive.waitingForAuth && !GlassLive.noReconnect) {
 		GlassLive.reconnect = GlassLive.schedule(5000+getRandom(0, 1000), connectToServer);
+	}
 
 	cancel(%this.keepaliveTimeout);
 	cancel(%this.keepaliveSchedule);
@@ -132,6 +137,7 @@ function GlassLiveConnection::onDisconnect(%this) {
 
     sticky = false;
   };
+	GlassLive.waitingForAuth = false;
 }
 
 function GlassLiveConnection::onDNSFailed(%this) {
@@ -152,6 +158,7 @@ function GlassLiveConnection::onConnectFailed(%this) {
 	GlassLive::setConnectionStatus("Connect Failed", 1);
 
 	%this.connected = false;
+	GlassLive.waitingForAuth = false;
 	GlassLive.connectionTries++;
 
 	if(!GlassLive.noReconnect)
@@ -168,6 +175,7 @@ function GlassLiveConnection::doDisconnect(%this) {
 	%this.disconnect();
 	%this.onDisconnect();
 	%this.connected = false;
+	GlassLive.waitingForAuth = false;
 
 	GlassLive::setPowerButton(0);
 	GlassLive::setConnectionStatus("Disconnected", 1);
@@ -240,7 +248,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 	}
 
 	%data = $JSON::Value;
-
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 
 	switch$(%data.value["type"]) {
@@ -284,8 +291,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "message":
 			%user = GlassLiveUser::getFromBlid(%data.sender_id);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			%sender = getASCIIString(%data.sender);
 
@@ -332,8 +341,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "messageTyping":
 			%user = GlassLiveUser::getFromBlid(%data.sender);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			GlassLive::setMessageTyping(%data.sender, %data.typing);
 
@@ -346,8 +357,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				%senderUser = GlassLiveUser::getFromBlid(%senderblid);
 
-				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked())
+				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked()) {
+					%data.schedule(0, delete);
 					return;
+				}
 
 				%room.pushMessage(%senderUser, %msg, %data);
 			}
@@ -444,7 +457,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 			}
 			GlassLive::createFriendList();
 
-
 		case "friendRequests":
 			for(%i = 0; %i < %data.requests.length; %i++) {
 				%friend = %data.requests.value[%i];
@@ -464,6 +476,15 @@ function GlassLiveConnection::onLine(%this, %line) {
 			if(strstr(GlassLive.friendRequestList, %blid = %data.sender_blid) == -1) {
 				%username = %data.sender;
 				%uo = GlassLiveUser::create(%username, %blid);
+
+				if(%uo.isBlocked()) {
+					%obj = JettisonObject();
+					%obj.set("type", "string", "friendDecline");
+					%obj.set("blid", "string", %blid);
+
+					GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+					return;
+				}
 
 				GlassLive::addFriendRequestToList(%uo);
 				GlassLive::createFriendList();
@@ -598,10 +619,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 			GlassLive::displayLocation(%data);
 
 		case "serverListUpdate":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(%data.ip, %data.port, %data.key, %data.value);
 
 		case "serverListing":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
@@ -765,15 +788,13 @@ function GlassLiveConnection::onLine(%this, %line) {
 			if(%data.key $= "keepalive")
 				%this.gotKeepalivePong();
 
-			%data.delete();
-
-
 		default:
 			if(Glass.debug) {
 				GlassLog::error("Unhandled Live Call: " @ %data.value["type"]);
 			}
 	}
-	//%data.delete();
+
+	%data.schedule(0, delete);
 }
 
 function formatTimeHourMin(%datetime) {

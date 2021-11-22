@@ -1,13 +1,13 @@
 function GlassApi::init() {
-  new ScriptObject(GlassApi) {
+  GlassGroup.add(new ScriptObject(GlassApi) {
     queued = 0;
     unauthorizedMax = 3;
-  };
+  });
 }
 
 function GlassApi::request(%this, %api, %parameters, %className, %authorized, %plaintext) {
   // we need to mimic to functionality of TCPClient
-  %obj = new ScriptObject(GlassApiHandler) {
+  GlassGroup.add(%obj = new ScriptObject(GlassApiHandler) {
     className = %className;
 
     isQueued   = true;
@@ -18,7 +18,7 @@ function GlassApi::request(%this, %api, %parameters, %className, %authorized, %p
     _paramaters = %parameters;
     _authorized = %authorized;
     _isJSON     = !%plaintext;
-  };
+  });
 
   if(!%authorized) {
     %this.doCall(%obj);
@@ -94,6 +94,8 @@ function GlassApi::doCall(%this, %obj) {
     %digest = GlassAuth.daa.digest(%request);
     %json   = jettisonStringify("object", %digest);
 
+    %digest.delete();
+
     %tcp = TCPClient("POST", Glass.address, 80, "/api/3/daa.php?ident=" @ GlassAuth.daa_opaque, %json, "", "GlassApiTCP");
     %tcp.glassApiObj = %obj;
   } else {
@@ -154,6 +156,7 @@ function GlassApiTCP::onDone(%this, %error) {
 
       }
 
+      %object.schedule(0,delete);
     } else {
       if(%this._isJSON) {
         GlassLog::error("Glass API: Invalid response for \c1" @ %obj._api @ "\c0!");

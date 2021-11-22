@@ -1,8 +1,8 @@
 function GlassServerControlC::init() {
   if(!isObject(GlassServerControlC))
-    new ScriptObject(GlassServerControlC) {
+    GlassGroup.add(new ScriptObject(GlassServerControlC) {
       enabled = false;
-    };
+    });
 
   GlassServerControlC::setTab(2);
 }
@@ -1154,7 +1154,6 @@ function GlassServerControlGui::openColorSelector(%swatch) {
   GlassServerControlGui_ColorSelector.alphaLocked = !%alpha;
   GlassServerControlGui_ColorSelector.updateColor(true);
   GlassServerControlGui_ColorSelector.setVisible(true);
-  GlassServerControlGui.pushToBack(GlassServerControlGui_ColorSelector);
   GlassServerControlGui_ColorSelector.forceCenter();
 }
 

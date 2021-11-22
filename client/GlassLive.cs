@@ -36,7 +36,7 @@ if(!isObject(GlassFriendsGui)) exec("Add-Ons/System_BlocklandGlass/client/gui/Gl
 
 function GlassLive::init() {
   if(!isObject(GlassLive)) {
-    new ScriptObject(GlassLive) {
+    GlassGroup.add(new ScriptObject(GlassLive) {
       // color_blocked = "969696";
       color_default = "222222";
       color_self = "55acee";
@@ -44,16 +44,18 @@ function GlassLive::init() {
       color_mod = "e67e22";
       color_admin = "e74c3c";
       color_bot = "9b59b6";
-    };
+    });
 
     GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
   }
 
-  if(!isObject(GlassLiveUsers))
-    new ScriptGroup(GlassLiveUsers);
+  if(!isObject(GlassLiveUsers)) {
+    GlassGroup.add(new ScriptGroup(GlassLiveUsers));
+  }
 
-  if(!isObject(GlassLiveGroups))
-    new ScriptGroup(GlassLiveGroups);
+  if(!isObject(GlassLiveGroups)) {
+    GlassGroup.add(new ScriptGroup(GlassLiveGroups));
+  }
 
   GlassSettingsWindow.setVisible(false);
   GlassOverlayGui.add(GlassSettingsWindow);
@@ -84,12 +86,12 @@ function GlassLive::init() {
 function GlassLive::chatColorCheck(%this) {
   %room = GlassLiveRooms::getFromId(0);
 
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_friend @  ">Friend: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_self @  ">Self: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_mod @  ">Moderator: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_admin @  ">Admin: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_bot @  ">Bot: <font:verdana:12><color:333333>rambling message", 0);
-  %room.pushText("<font:verdana bold:12><color:" @ %this.color_default @  ">User: <font:verdana:12><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_friend @  ">Friend: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_self @  ">Self: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_mod @  ">Moderator: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_admin @  ">Admin: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_bot @  ">Bot: <font:verdana:16><color:333333>rambling message", 0);
+  %room.pushText("<font:verdana bold:16><color:" @ %this.color_default @  ">User: <font:verdana:16><color:333333>rambling message", 0);
   // %room.pushText("<font:verdana bold:12><color:" @ %this.color_blocked @  ">Blocked: <font:verdana:12><color:333333>rambling message", 0);
 }
 
@@ -216,6 +218,7 @@ function GlassLive::onAuthSuccess() {
   };
 
   GlassLive.schedule(1000, "checkPendingFriendREquests");
+  GlassLive.waitingForAuth = false;
 }
 
 function GlassLive::disconnect() {
@@ -683,8 +686,6 @@ function GlassLive::sendAvatarData() {
   %obj = JettisonObject();
   %obj.set("type", "string", "avatar");
 
-  %partArray = JettisonArray();
-
   %FaceName = $Pref::Avatar::FaceName;
   %DecalName = $Pref::Avatar::DecalName;
   %HeadColor = $Pref::Avatar::HeadColor;
@@ -862,6 +863,8 @@ function GlassLive::joinRoom(%id) {
   schedule(1000, "GlassOverlayGui", "GlassCheckModeratorButton");
 
   // GlassChatroomWindow.schedule(0, openRoomBrowser);
+
+  %obj.delete();
 }
 
 function GlassLive::sendRoomMessage(%msg, %id) {
@@ -884,6 +887,8 @@ function GlassLive::sendRoomCommand(%msg, %id) {
   %obj.set("room", "string", %id);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 //====
@@ -913,6 +918,8 @@ function GlassLive::messageType(%blid) {
     %obj.set("typing", "string", "1");
     GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
     GlassLive.typing[%blid] = 1;
+
+    %obj.delete();
   }
 
   GlassLive.typingSched = schedule(2500, 0, eval, "GlassLive::messageTypeEnd(" @ %blid @ ");");
@@ -929,6 +936,8 @@ function GlassLive::messageTypeEnd(%blid) {
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
   GlassLive.typing[%blid] = 0;
+
+  %obj.delete();
 }
 
 function GlassLive::createMessageReminder() {
@@ -993,6 +1002,8 @@ function GlassLive::sendFriendRequest(%blid) {
   glassMessageBoxOk("Friend Request Sent", "Friend request sent to BLID <font:verdana bold:13>" @ %blid);
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
+
+  %obj.delete();
 }
 
 function GlassLive::friendAccept(%blid) {
@@ -2475,6 +2486,7 @@ function GlassLive::closeMessage(%blid) {
 
   GlassLiveConnection.send(jettisonStringify("object", %obj) @ "\r\n");
 
+  %obj.delete();
 
   if(GlassLive.typing[%blid]) {
     GlassLive::messageTypeEnd(%blid);
@@ -3180,7 +3192,7 @@ function GlassLive::openUserWindow(%blid, %didUpdate) {
     if(strLen(%serverTitle) > 32)
       %br = " - ";
 
-    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:12>" @ getASCIIString(%serverTitle);
+    %serverInfo = "<br><br><color:" @ %locationColor @ ">" @ %locationDisplay @ %br @ "<font:verdana bold:16>" @ getASCIIString(%serverTitle);
 
     if(%uo.online && %uo.country !$= "") {
       if(%uo.country $= "United States") {
@@ -4059,6 +4071,7 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
     %browserSwatch.add(%swatch);
 
     %last = %swatch;
+    %room.schedule(0, delete);
   }
 
   if(isObject(%this.browserSwatch)) {
@@ -4068,6 +4081,8 @@ function GlassChatroomWindow::openRoomBrowser(%this, %rooms) {
 
   %this.browserSwatch = %browserSwatch;
   %this.add(%this.browserSwatch);
+
+  %rooms.schedule(0, delete);
 }
 
 function GlassChatroomTab::setFlashing(%this, %bool) {
@@ -4156,6 +4171,7 @@ function GlassIconSelectorWindow::updateIcons(%this) {
     GlassIconSelectorWindow_Swatch.add(%bitmap);
     GlassIconSelectorWindow_Swatch.add(%button);
   }
+  %file.delete();
   GlassIconSelectorWindow_Swatch.extent = getWord(GlassIconSelectorWindow_Swatch.extent, 0) SPC (%row * 16 + %row * 7);
   GlassIconSelectorWindow_Swatch.setVisible(true);
 }

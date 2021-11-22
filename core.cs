@@ -1,7 +1,11 @@
+//Object and group container
+if(!isObject(GlassGroup))
+  new ScriptGroup(GlassGroup);
+
 function Glass::init(%context) {
 	if(!isObject(Glass)) {
 		new ScriptObject(Glass) {
-			version = "4.3.1";
+			version = "4.3.2";
 			address = "api.blocklandglass.com"; //api address
 			netAddress = "blocklandglass.com"; //url address
 			enableCLI = true;
@@ -10,6 +14,8 @@ function Glass::init(%context) {
 			livePort = 27002;
 		};
 	}
+
+	GlassGroup.add(Glass);
 
 	if(!isObject(GlassLog)) {
 		exec("./common/GlassLog.cs");
@@ -31,6 +37,8 @@ function Glass::init(%context) {
 			Glass.livePort = %config.livePort;
 
 			Glass.dev = %config.debug;
+
+     		%config.schedule(0, delete);
 		}
 	}
 

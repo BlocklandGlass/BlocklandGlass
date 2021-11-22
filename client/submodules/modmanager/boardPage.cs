@@ -1,5 +1,5 @@
 function GMM_BoardPage::init() {
-  new ScriptObject(GMM_BoardPage);
+  GlassGroup.add(new ScriptObject(GMM_BoardPage));
 }
 
 function GMM_BoardPage::open(%this, %id, %page) {
@@ -109,7 +109,7 @@ function GMM_BoardPage::handleResults(%this, %res) {
     %author = getASCIIString(%addon.author);
     %downloads = %addon.downloads;
 
-    if(strtrim(%addon.summary) $= "")
+    if(trim(%addon.summary) $= "")
       %summary = "< No Summary >";
     else
       %summary = getASCIIString(%addon.summary);

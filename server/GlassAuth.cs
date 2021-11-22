@@ -5,10 +5,10 @@ function GlassAuthS::init() {
 		GlassAuthS.delete();
 	}
 
-	new ScriptObject(GlassAuthS) {
+	GlassGroup.add(new ScriptObject(GlassAuthS) {
     debug    = false;
     usingDAA = false; //GlassSettings only loads client sided!
-	};
+	});
 
   GlassAuthS.clearIdentity(); //preps blank identity
 }
@@ -203,12 +203,12 @@ function GlassAuthServerTCP::onDone(%this) {
         case "error":
           echo("Glass Server Auth: \c2ERROR");
           if(%object.error !$= "")
-            echo(%object.error);
+            echo("Glass Error: " @ %object.error);
 
         case "failed":
           echo("Glass Server Auth: \c2FAILED");
           if(%object.message !$= "")
-            echo(%object.message);
+            echo("Glass Error: " @ %object.message);
 
 					GlassAuthS.failedCt++;
           GlassAuthS.onAuthFailed();
@@ -224,18 +224,18 @@ function GlassAuthServerTCP::onDone(%this) {
           GlassAuthS.reident();
         default:
           echo("Glass Server Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
-          echo(%this.buffer);
+          echo("Glass Error: " @ %this.buffer);
       }
+
+		  %object.schedule(0,delete);
 
 		} else {
 			echo("Glass Server Auth: \c2INVALID RESPONSE");
-      echo(%this.buffer);
+      echo("Glass Error: " @ %this.buffer);
 
       GlassAuthS.authing = false;
       GlassAuthS.schedule(10*1000, reident);
 		}
-
-
 	} else {
 		echo("Glass Server Auth: \c2CONNECTION ERROR " @ %error);
 
@@ -296,9 +296,11 @@ function GlassAuthS::startDAA(%this, %data, %required, %role) {
 function GlassAuthS::sendDigestIdent(%this) {
   // create the object we want the server to receive
   %authData = JettisonObject();
+  %listObj = %this.getClientListObj();
+
   %authData.set("blid", "string", getNumKeyId());
   %authData.set("name", "string", $Pref::Player::NetName);
-  %authData.set("clients", "object", %this.getClientListObj());
+  %authData.set("clients", "object", %listObj);
 
   // encapsulate and stringify
   %obj = %this.daa.digest(%authData);
@@ -307,14 +309,17 @@ function GlassAuthS::sendDigestIdent(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-ident&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
+  %listObj.delete();
   %obj.delete();
 }
 
 function GlassAuthS::checkinDAA(%this) {
   %authData = JettisonObject();
+	%listObj = %this.getClientListObj();
+
   %authData.set("blid", "string", getNumKeyId());
   %authData.set("name", "string", $Pref::Player::NetName);
-  %authData.set("clients", "array", %this.getClientListObj());
+  %authData.set("clients", "array", %listObj);
 
   // encapsulate and stringify
   %obj = %this.daa.digest(%authData);
@@ -323,6 +328,7 @@ function GlassAuthS::checkinDAA(%this) {
   %tcp = TCPClient("POST", Glass.address, 80, "/api/3/auth.php?server=1&action=daa-checkin&ident=" @ %this.daa_opaque, %json, "", "GlassAuthServerTCP");
 
   %authData.delete();
+  %listObj.delete();
   %obj.delete();
 }
 

@@ -21,7 +21,7 @@
 // $BLPrefs::Version = "1.0.0+glassbridge.2";
 
 if(!isObject(GlassPrefGroup)) {
-	new ScriptGroup(GlassPrefGroup);
+	GlassGroup.add(new ScriptGroup(GlassPrefGroup));
 }
 
 function GlassPrefGroup::cleanup() {
@@ -39,7 +39,8 @@ function GlassPrefGroup::cleanup() {
 		GlassPrefGroup.delete();
 	}
 
-	new ScriptGroup(GlassPrefGroup);
+	GlassGroup.add(new ScriptGroup(GlassPrefGroup));
+
 	$ServerInfo::PrefVersion = "";
 	GlassServerControlC::renderAll();
 
