@@ -2,7 +2,7 @@ function GlassClientManager::init() {
   if(isObject(GlassClientManager))
     GlassClientManager.delete();
 
-  new ScriptObject(GlassClientManager);
+  GlassGroup.add(new ScriptObject(GlassClientManager));
 
   GlassClientManager.scan();
 }
@@ -27,6 +27,8 @@ function GlassClientManager::scan(%this) {
 
     %this.hasAddon[%value.id] = true;
     %this.addons = %this.addons SPC %value.id;
+
+    %value.schedule(0, delete);
   }
   %this.addons = trim(%this.addons);
 }

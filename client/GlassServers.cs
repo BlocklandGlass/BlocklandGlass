@@ -13,7 +13,7 @@ function GlassServers::init() {
   GlassServerPreview_Favorite.setVisible(true);
   GlassFavoriteServers::changeGui();
 
-  new ScriptObject(GlassFavoriteServers);
+  GlassGroup.add(new ScriptObject(GlassFavoriteServers));
   %this = GlassFavoriteServers;
 
   %favs = GlassSettings.get("Servers::Favorites");
@@ -153,7 +153,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
   %swatch = "GlassFavoriteServerGui_Swatch" @ %id;
   %swatch.text = %swatch.getObject(0);
 
-  %swatch.server = new ScriptObject() {
+  GlassGroup.add(%swatch.server = new ScriptObject() {
     name = trim(%title);
     pass = (%status $= "passworded" ? "Yes" : "No");
     currPlayers = %players;
@@ -162,7 +162,7 @@ function GlassFavoriteServers::renderServer(%this, %status, %id, %title, %player
     ip = %addr;
 
     offline = %status $= "offline";
-  };
+  });
 
   switch$(%status) {
     case "online":
@@ -223,7 +223,7 @@ function GlassFavoriteServersTCP::onDone(%this, %err) {
 	    %fav = GlassFavoriteServers.favorite[%j];
 		  if(%fav $= %serverIP) {
 		    %passworded = getField(%line, 2);
-		    
+
         if(!GlassSettings.get("Servers::DisplayPasswordedFavorites") && %passworded)
 			   continue;
 
@@ -530,6 +530,8 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
         GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
       }
     }
+
+    %result.schedule(0,delete);
   }
 }
 
@@ -651,20 +653,20 @@ function clientCmdGlass_setPlayerlistStatus(%blid, %char, %color) {
 function Glass::addJSPreviewBtn() {
   %this = JoinServerGuiBS;
 
-  if(%this.initializedGlass) 
+  if(%this.initializedGlass)
     return;
 
   %this.initializedGlass = 1;
-   
+
   for(%i=0; %i < JS_windowBS.getCount(); %i++) {
     %obj = JS_windowBS.getObject(%i);
 
     if(%obj.getCount() == 3 && %obj.getClassName() $= "GuiControl")
       %btnContainer = %obj;
-    else if(%obj.text $= "Server Name") 
+    else if(%obj.text $= "Server Name")
       %nameLabel = %obj;
   }
-  
+
   %btnContainer.extent = "430 41";
   %btnContainer.position = vectorSub(%btnContainer.position, "100 0");
 

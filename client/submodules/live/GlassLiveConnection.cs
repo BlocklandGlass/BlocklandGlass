@@ -248,7 +248,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 	}
 
 	%data = $JSON::Value;
-
 	GlassLog::debug("Glass Live got \c1" @ %data.value["type"]);
 
 	switch$(%data.value["type"]) {
@@ -292,8 +291,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "message":
 			%user = GlassLiveUser::getFromBlid(%data.sender_id);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			%sender = getASCIIString(%data.sender);
 
@@ -340,8 +341,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 		case "messageTyping":
 			%user = GlassLiveUser::getFromBlid(%data.sender);
 
-			if(!%user.canSendMessage())
+			if(!%user.canSendMessage()) {
+				%data.schedule(0, delete);
 				return;
+			}
 
 			GlassLive::setMessageTyping(%data.sender, %data.typing);
 
@@ -354,8 +357,10 @@ function GlassLiveConnection::onLine(%this, %line) {
 
 				%senderUser = GlassLiveUser::getFromBlid(%senderblid);
 
-				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked())
+				if(!GlassSettings.get("Live::RoomShowBlocked") && %senderUser.isBlocked()) {
+					%data.schedule(0, delete);
 					return;
+				}
 
 				%room.pushMessage(%senderUser, %msg, %data);
 			}
@@ -451,7 +456,6 @@ function GlassLiveConnection::onLine(%this, %line) {
 				GlassLive::addFriendToList(%uo);
 			}
 			GlassLive::createFriendList();
-
 
 		case "friendRequests":
 			for(%i = 0; %i < %data.requests.length; %i++) {
@@ -615,10 +619,12 @@ function GlassLiveConnection::onLine(%this, %line) {
 			GlassLive::displayLocation(%data);
 
 		case "serverListUpdate":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(%data.ip, %data.port, %data.key, %data.value);
 
 		case "serverListing":
+			%data.schedule(0, delete);
 			return;
 			GlassServerList.doLiveUpdate(getWord(%data.addr, 0), getWord(%data.addr, 1), "hasGlass", %data.hasGlass);
 
@@ -782,15 +788,13 @@ function GlassLiveConnection::onLine(%this, %line) {
 			if(%data.key $= "keepalive")
 				%this.gotKeepalivePong();
 
-			%data.delete();
-
-
 		default:
 			if(Glass.debug) {
 				GlassLog::error("Unhandled Live Call: " @ %data.value["type"]);
 			}
 	}
-	//%data.delete();
+
+	%data.schedule(0, delete);
 }
 
 function formatTimeHourMin(%datetime) {

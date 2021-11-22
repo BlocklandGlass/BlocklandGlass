@@ -13,7 +13,7 @@ function GlassLiveGroups::create(%id, %name) {
   };
 
   if(!isObject(GlassLiveGroupGroup)) {
-    new ScriptGroup(GlassLiveGroupGroup);
+    GlassGroup.add(new ScriptGroup(GlassLiveGroupGroup));
   }
 
   GlassLiveGroupGroup.add(%group);

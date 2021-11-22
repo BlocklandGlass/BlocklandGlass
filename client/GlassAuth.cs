@@ -11,12 +11,12 @@ function GlassAuth::init() {
 		GlassAuth.delete();
 	}
 
-	new ScriptObject(GlassAuth) {
+	GlassGroup.add(new ScriptObject(GlassAuth) {
     debug         = false;
 
 		heartbeatRate = 5; //minutes
     usingDAA      = false;
-	};
+	});
 
   GlassAuth.clearIdentity(); //preps blank identity
 }
@@ -357,6 +357,8 @@ function GlassAuthTCP::onDone(%this, %error) {
           GlassLog::error("Glass Auth: \c2UNKNOWN RESPONSE (" @ %object.status @ ")");
           GlassLog::debug(%this.buffer);
       }
+
+      %object.schedule(0,delete);
 
 		} else {
 		  GlassLog::error("Glass Auth: \c2INVALID RESPONSE");

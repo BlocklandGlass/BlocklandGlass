@@ -1,3 +1,7 @@
+//Object and group container
+if(!isObject(GlassGroup))
+  new ScriptGroup(GlassGroup);
+
 exec("./common/GlassLog.cs");
 GlassLog::init();
 GlassLog::startSessionLog();

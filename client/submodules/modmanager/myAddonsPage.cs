@@ -1,5 +1,5 @@
 function GMM_MyAddonsPage::init() {
-  new ScriptObject(GMM_MyAddonsPage);
+  GlassGroup.add(new ScriptObject(GMM_MyAddonsPage));
 }
 
 function GMM_MyAddonsPage::open(%this) {
@@ -662,7 +662,10 @@ function GMM_MyAddonsPage::createAddonToggle(%this, %group, %addon) {
 	}
 
 	if(!isObject(%addon.swatchSet))
-		%addon.swatchSet = new SimSet();
+  {
+		GlassGroup.add(%addon.swatchSet = new SimSet());
+    // TODO: Contain these somewhere else?
+  }
 
 	%addon.swatchSet.add(%gui);
 
@@ -794,7 +797,7 @@ function GMM_MyAddonsPage::populateAddons(%this) {
     GMM_MyAddonsPage_AddonGroup.delete();
   }
 
-  new ScriptGroup(GMM_MyAddonsPage_AddonGroup);
+  GlassGroup.add(new ScriptGroup(GMM_MyAddonsPage_AddonGroup));
 
   //rtbInfo.txt
   //server.cs
@@ -836,7 +839,7 @@ function GMM_MyAddonsPage::populateAddons(%this) {
       %fo.close();
       %fo.delete();
       jettisonParse(collapseEscape(%buffer));
-      %so.glassdata = $JSON::Value;
+      GlassGroup.add(%so.glassdata = $JSON::Value);
     }
     GMM_MyAddonsPage_AddonGroup.add(%so);
 	 GMM_MyAddonsPage_AddonGroup.addon[%name] = %so;
