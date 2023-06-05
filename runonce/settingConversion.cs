@@ -20,12 +20,6 @@ if(!$Server::Dedicated) {
     GlassSettings.cachePut("SettingsReset", "3.2.0");
   }
 
-  if(semanticVersionCompare(%reset, "4.0.1") == 2) {
-    GlassLog::log("Setting Live::ViewLocation to Anyone");
-    GlassSettings.cachePut("SettingsReset", "4.0.1");
-    GlassSettings.update("Live::ViewLocation", "Anyone");
-  }
-
   if(semanticVersionCompare(%reset, "4.3.1") == 2) {
     GlassLog::log("Setting Volume::RoomChat to 0");
     GlassSettings.cachePut("SettingsReset", "4.3.1");

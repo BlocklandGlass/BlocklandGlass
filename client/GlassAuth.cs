@@ -1,11 +1,4 @@
 function GlassAuth::init() {
-  // THIS NEEDS TO BE MOVED
-  GlassFriendsGui_HeaderText.position = "10 19";
-  GlassFriendsGui_HeaderText.setText("<just:center><font:verdana:22><color:e74c3c>Disconnected");
-  GlassLive::setPowerButton(0);
-  GlassFriendsGui_InfoSwatch.color = "210 210 210 255";
-  GlassFriendsGui_StatusSelect.setVisible(false);
-
 	if(isObject(GlassAuth)) {
     GlassLog::log("\c2Glass Auth Re-initializing");
 		GlassAuth.delete();
@@ -217,13 +210,11 @@ function GlassAuth::onAuthSuccess(%this) {
 }
 
 function GlassAuth::onAuthEnd(%this) {
-  GlassLive::disconnect();
   %this.clearIdentity();
   %this.authing = false;
 }
 
 function GlassAuth::onAuthFailed(%this) {
-  GlassLive::disconnect();
   %this.clearIdentity();
   %this.authing = false;
 }

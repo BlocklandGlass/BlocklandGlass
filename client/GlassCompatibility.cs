@@ -14,7 +14,7 @@ function GlassCompatibility::oRBs_delete() {
   }
 }
 
-function GlassCompatibility::oRBs_find() {
+function GlassCompatibility::oRBs_find() { // TODO ?
   if(!GlassSettings.get("Live::oRBsNotified")) {
     // if(getFileCRC("Add-Ons/System_oRBs.zip") == -2099294939) {
     if(isFile("Add-Ons/System_oRBs.zip")) {

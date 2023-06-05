@@ -47,12 +47,10 @@ function Glass::execClient() {
   exec("./client/gui/GlassModManagerImage.gui");
   exec("./client/gui/GlassModManagerGroupGui.gui");
   exec("./client/gui/GlassServerControlGui.gui");
-  exec("./client/gui/GlassChatroomGui.gui");
   exec("./client/gui/GlassClientGui.gui");
   exec("./client/gui/GlassServerPreviewGui.gui");
   exec("./client/gui/GlassJoinServerGui.gui");
   exec("./client/gui/GlassManualGui.gui");
-  exec("./client/gui/GlassModeratorGui.gui");
   exec("./client/gui/GlassIconSelectorGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");

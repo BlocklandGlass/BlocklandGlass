@@ -537,16 +537,6 @@ function GlassModManager::checkImports(%this) {
 package GlassModManager {
   // TODO this needs to be cleaned up
   function GuiMLTextCtrl::onURL(%this, %url) {
-  	// User links
-  	if(getSubStr(%url, 0, 17) $= "gamelink_glass://") {
-      %blid = getSubStr(%url, 22, strLen(%url) - 1);
-      if(isObject(%window = GlassLiveUser::getFromBlid(%blid).window))
-        %window.delete();
-      else
-        GlassLive::openUserWindow(%blid);
-      return;
-  	}
-
 	// Mod Manager links
     if(strpos(%url, "glass://") != -1) {
       //%url = stripChars(%url, "[]\\{};'\"<>,.@#%^*+`~");
@@ -576,11 +566,6 @@ package GlassModManager {
             GlassModManagerGui.openPage(GMM_RTBBoardPage, %board, %page);
             return;
           }
-
-        case "invite":
-          %addr = getSubStr(%link, 7, strlen(%link));
-          GlassLive::inviteClick(%addr);
-          return;
       }
       if(strpos(%link, "aid-") != -1) {
         %id = getsubstr(%link, 4, strlen(%link)-4);
