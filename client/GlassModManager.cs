@@ -126,28 +126,23 @@ function GlassModManager_Remapper::onInputEvent(%this, %device, %key) {
 //====================================
 
 function GlassModManager::placeCall(%call, %params, %uniqueReturn) {
-  if(GlassAuth.ident !$= "") {
-    if(%params !$= "")
-      for(%i = 0; %i < getLineCount(%params); %i++) {
-        %line = getLine(%params, %i);
-        %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
-      }
+  if(%params !$= "")
+    for(%i = 0; %i < getLineCount(%params); %i++) {
+      %line = getLine(%params, %i);
+      %paramText = %paramText @ "&" @ urlenc(getField(%line, 0)) @ "=" @ urlenc(getField(%line, 1));
+    }
 
-    %parameters = "call=" @ %call @ %paramText;
+  %parameters = "call=" @ %call @ %paramText;
 
-    Glass::debug("Calling url: " @ %url);
+  Glass::debug("Calling url: " @ %url);
 
-    %className = "GlassModManagerTCP";
+  %className = "GlassModManagerTCP";
 
-    %tcp = GlassApi.request("mm", %parameters, %className, true);
-    %tcp.glass_call = %call;
-    %tcp.glass_params = %params;
-    %tcp.glass_uniqueReturn = %uniqueReturn;
-    return %tcp;
-  } else {
-    GlassAuth.heartbeat();
-    return false;
-  }
+  %tcp = GlassApi.request("mm", %parameters, %className, true);
+  %tcp.glass_call = %call;
+  %tcp.glass_params = %params;
+  %tcp.glass_uniqueReturn = %uniqueReturn;
+  return %tcp;
 }
 
 function GlassModManagerTCP::handleText(%this, %line) {
@@ -162,12 +157,6 @@ function GlassModManagerTCP::onDone(%this, %error, %object) {
       return;
     }
     %ret = %object;
-
-    if(%ret.action $= "auth") {
-      GlassAuth.ident = "";
-      GlassAuth.heartbeat();
-      error("Call was killed due to auth heartbeat, need to resend");
-    }
 
     if(%this.glass_uniqueReturn !$= "") {
       eval(%this.glass_uniqueReturn @ "(%ret);");
@@ -622,12 +611,6 @@ package GlassModManager {
     }
    return parent::newChatHud_AddLine(%line);
   }
-
-  function GlassAuth::onAuthSuccess(%this) {
-    if(!%this.firstAuth)
-      GlassModManager.checkImports();
-
-    parent::onAuthSuccess(%this);
-  }
 };
 activatePackage(GlassModManager);
+GlassModManager.checkImports();

@@ -35,7 +35,6 @@ function Glass::execClient() {
   exec("./support/Support_MetaTCP.cs");
   exec("./support/Support_Markdown.cs");
   exec("./support/Support_SemVer.cs");
-  exec("./support/Support_DigestAccessAuthentication.cs");
   exec("./support/DynamicGui.cs");
 
   echo(" ===                 Loading Interface                  ===");
@@ -72,7 +71,6 @@ function Glass::execClient() {
 
   exec("./client/GlassClientManager.cs");
 
-  exec("./client/GlassAuth.cs");
   exec("./client/GlassOverlay.cs");
   exec("./client/GlassLive.cs");
   exec("./client/GlassModManager.cs");
@@ -104,7 +102,6 @@ function Glass::execClient() {
 
   GlassApi::init();
   GlassDownloadInterface::init();
-  GlassAuth::init();
 
   GlassLive::init();
   GlassDownloadManager::init();

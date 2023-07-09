@@ -17,8 +17,6 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Servers::Favorites", "");
   GlassSettings.registerSetting("Server::UseBLG", true);
 
-  // Auth
-  GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
 
   // Mod Manager
   GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");

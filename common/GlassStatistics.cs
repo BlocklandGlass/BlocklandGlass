@@ -82,10 +82,5 @@ function GlassStatistics::scanFiles() {
 	}
 }
 
-package GlassStatistics {
-  function GlassAuth::onAuthSuccess(%this) {
-    parent::onAuthSuccess(%this);
-  	GlassStatistics::reportMods();
-  }
-};
 activatePackage(GlassStatistics);
+GlassStatistics::reportMods();

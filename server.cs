@@ -37,7 +37,6 @@ function Glass::execServer() {
   exec("./common/GlassResourceManager.cs");
   exec("./common/GlassApi.cs");
 
-  exec("./server/GlassAuth.cs");
   exec("./server/GlassServerControl.cs");
   exec("./server/GlassClientSupport.cs");
   exec("./server/GlassServerImage.cs");
@@ -49,14 +48,12 @@ function Glass::execServer() {
   GlassResourceManager::execResource("Support_Updater", "server");
   GlassResourceManager::loadPreferences("server");
 
-  GlassAuthS::init();
   GlassServerGraphing::init();
 
   Glass.serverLoaded = true;
 }
 
 function Glass::serverCleanup() {
-	GlassAuthS.delete();
   if(isObject(GlassClientSupport))
 	 GlassClientSupport.delete();
 
