@@ -1,7 +1,11 @@
 ///BEGIN PRE-LOAD SCRIPT LAUNCHER///
 if(!$PreLoadScriptsRun) {
+	//$Pref variables are for backwards compatibility, do not reference them
 	$Pref::PreLoadScriptLauncherInstalled = true;
-	$Pref::PreLoadScriptLauncherVersion = 2;
+	$Pref::PreLoadScriptLauncherVersion = 3;
+
+	$PreLoadScriptLauncherVersion = 3;
+	$PreLoadScriptLauncherInstalled = true;
 
   %mask = "Add-Ons/*/preload.cs";
   for(%file = findFirstFile(%mask); %file !$= ""; %file = findNextFile(%mask))

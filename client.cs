@@ -18,9 +18,9 @@ function filecopy_hack(%source, %destination) {
   %fo_dest.delete();
 }
 
-if($Pref::PreLoadScriptLauncherVersion < 2) {
-	echo("Installing pre-loader.");
-	fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
+if($PreLoadScriptLauncherVersion < 3 || $Pref::PreLoadScriptLauncherVersion < 3) {
+  echo("Installing pre-loader.");
+    fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
   $PreLoaderInstalled = true;
 }
 
