@@ -68,7 +68,6 @@ function Glass::execClient() {
   exec("./common/GlassStatistics.cs");
   exec("./common/GlassApi.cs");
 
-  exec("./client/GlassAudio.cs");
 
   exec("./client/GlassDownloadInterface.cs");
   exec("./client/GlassUpdaterSupport.cs");
@@ -108,19 +107,7 @@ function Glass::execClient() {
   GlassApi::init();
   GlassDownloadInterface::init();
   GlassAuth::init();
-  GlassAudio::init();
-  // move this somewhere else:
-  GlassAudio::add("bell", false);
-  GlassAudio::add("friendRequest", false);
-  GlassAudio::add("friendRemoved", false);
-  GlassAudio::add("friendInvite", false);
-  GlassAudio::add("chatroomMsg1", true);
-  GlassAudio::add("chatroomMsg2", true);
-  GlassAudio::add("friendOnline", true);
-  GlassAudio::add("friendOffline", true);
-  GlassAudio::add("userMsgSent", true);
-  GlassAudio::add("userMsgReceived", true);
-  //
+
   GlassLive::init();
   GlassDownloadManager::init();
   GlassServerControlC::init();

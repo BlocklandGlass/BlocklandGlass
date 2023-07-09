@@ -26,8 +26,6 @@ function GlassCompatibility::oRBs_find() { // TODO ?
         callback = "GlassCompatibility::oRBs_warning();";
         image = "hourglass";
       };
-
-      GlassAudio::play("bell");
     }
   }
 }
