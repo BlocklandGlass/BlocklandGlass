@@ -42,7 +42,6 @@ function Glass::execClient() {
   exec("./client/gui/profiles.cs");
   exec("./client/gui/messageboxes.cs");
   exec("./client/gui/GlassDownloadGui.gui");
-  exec("./client/gui/GlassVerifyAccountGui.gui");
   exec("./client/gui/GlassModManagerGui.gui");
   exec("./client/gui/GlassModManagerImage.gui");
   exec("./client/gui/GlassModManagerGroupGui.gui");
@@ -55,7 +54,6 @@ function Glass::execClient() {
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/GlassBugReportGui.gui");
-  exec("./client/gui/GlassPasswordGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
