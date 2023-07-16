@@ -394,7 +394,7 @@ function GlassServerPreviewGui::onWake(%this) {
   if(!isObject(%server))
 	  return;
 
-  if(%server.pass !$= "No") {
+  if(%server.pass == true) {
     %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock>";
     GlassServerPreview_Connect.mColor = "235 153 80 220";
   } else if(%server.currPlayers >= %server.maxPlayers) {
@@ -416,7 +416,7 @@ function GlassServerPreviewGui::onWake(%this) {
   GlassServerPreview::getServerInfo(%fullIP);
   GlassServerPreviewWindowGui.openServerIP = %fullIP;
   GlassServerPreviewWindowGui.openServerName = %server.name;
-  GlassServerPreviewWindowGui.passworded = (%server.pass $= "Yes");
+  GlassServerPreviewWindowGui.passworded = (%server.pass == true);
 
   GlassServerPreview::getServerBuild(%fullIP, GlassServerPreview_Preview);
 
