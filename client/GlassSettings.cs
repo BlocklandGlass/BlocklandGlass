@@ -23,6 +23,11 @@ function GlassSettings::init() {
   GlassSettings.registerSetting("Live::OverlayLogo", true, "GlassOverlay::setLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
   GlassSettings.registerSetting("Live::Vignette", true, "GlassOverlay::setVignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
   GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
+  // Servers
+  GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
+  GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
+  GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init", "Display Passworded Favorites", "Servers", "checkbox", "", "Display Favorite Servers that are passworded.");
+  GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::DisplayTime", "5", "", "Default Display Time", "Notifications", "shorttext", "", "Unless specifically set by the notification, it will stay on screen for this many seconds.");
