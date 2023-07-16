@@ -114,6 +114,8 @@ function Glass::execClient() {
 
   GlassGraphs::init();
 
+  GlassStatistics::reportMods();
+
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
   Glass.useWindowTheme(!GlassSettings.get("Glass::UseDefaultWindows"));

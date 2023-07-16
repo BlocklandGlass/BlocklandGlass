@@ -81,6 +81,3 @@ function GlassStatistics::scanFiles() {
 
 	}
 }
-
-activatePackage(GlassStatistics);
-GlassStatistics::reportMods();
