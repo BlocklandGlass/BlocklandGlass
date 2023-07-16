@@ -25,6 +25,7 @@ function GlassModManager::init() {
   GlassGroup.add(new ScriptObject(GlassModManager));
 
   GlassModManager::scanForRTB();
+  GlassModManager.checkImports();
 }
 
 function getLongUTF8String(%str) {
@@ -613,4 +614,3 @@ package GlassModManager {
   }
 };
 activatePackage(GlassModManager);
-GlassModManager.checkImports();
