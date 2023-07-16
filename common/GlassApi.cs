@@ -174,6 +174,3 @@ function GlassApiTCP::onBinChunk(%this, %chunk) {
   if(isFunction(%obj.className, "onBinChunk"))
 		eval(%obj.className @ "::onBinChunk(%obj, %chunk);");
 }
-
-activatePackage(GlassApi);
-GlassApi.doCall(GlassApi.current);
