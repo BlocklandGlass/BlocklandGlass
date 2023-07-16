@@ -552,7 +552,7 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
 
-  if(!%showPlayerlist)
+  if(!%showPlayerlist && isObject(GlassLoadingGui))
     GlassLoadingGui.close();
 
   LoadingGUI.lastDownload = $Sim::Time;
@@ -802,19 +802,22 @@ package GlassServers {
   function NewPlayerListGui::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score) {
     parent::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score);
 
-    GlassLoadingGui_UserList.update();
+    if(isObject(GlassLoadingGui_UserList))
+      GlassLoadingGui_UserList.update();
   }
 
   function secureClientCmd_ClientDrop(%a, %b) {
     parent::secureClientCmd_ClientDrop(%a, %b);
 
-    GlassLoadingGui_UserList.update();
+    if(isObject(GlassLoadingGui_UserList))
+      GlassLoadingGui_UserList.update();
   }
 
   function disconnectedCleanup(%a) {
     parent::disconnectedCleanup(%a);
 
-    GlassLoadingGui.onSleep();
+    if(isObject(GlassLoadingGui))
+      GlassLoadingGui.onSleep();
   }
 };
 activatePackage(GlassServers);
