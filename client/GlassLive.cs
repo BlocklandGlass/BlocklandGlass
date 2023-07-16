@@ -1,36 +1,7 @@
-exec("./submodules/live/GlassLiveConnection.cs");
-exec("./submodules/live/GlassLiveUser.cs");
-exec("./submodules/live/GlassLiveRoom.cs");
-//exec("./submodules/live/GlassLiveGroup.cs");
-
-
 // instructions for adding a setting
 // - add pref to %settings variable in glasslive::init() below.
 // - register setting in glasssettings::init() in common/glassettings.cs
 // - if setting is to be changed by the user at will via the glass settings gui, add corresponding .drawsetting() for pref in glasslive::init() below.
-
-//================================================================
-//= Table of Contents (subhect to change)
-//=
-//= 0.   Homeless methods
-//= 1.   System-Level methods
-//= 2.   Data Management
-//= 3.   Chatroom Tabs
-//= 4.   Communcations
-//= 5.   Blockheads
-//= 6.   Friend Gui
-//= 7.   AFK Checks
-//= 8.   Direct Messages
-//= 9.   Direct Messages GUI
-//= 10.  Scroll?
-//= 11.  User Window
-//= 12.  Moderation Gui
-//= 13.  Chatroom Gui
-//= 14.  Tab Buttons
-//= 15.  Icon Selector
-//= 16.  Emote Selection
-//= 17.  Packages
-//================================================================
 
 function GlassLive::init() {
   if(!isObject(GlassLive)) {
@@ -62,11 +33,6 @@ function GlassLive::init() {
 //================================================================
 //= System-level methods                                         =
 //================================================================
-
-function GlassLive::onAuthSuccess() {
-
-}
-
 
 function GlassLive::updateSetting(%category, %setting) {
   %box = "GlassSettingsGui_Prefs_" @ %setting;
