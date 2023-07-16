@@ -49,7 +49,6 @@ function Glass::execClient() {
   exec("./client/gui/GlassServerPreviewGui.gui");
   exec("./client/gui/GlassJoinServerGui.gui");
   exec("./client/gui/GlassManualGui.gui");
-  exec("./client/gui/GlassIconSelectorGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
   exec("./client/gui/GlassBugReportGui.gui");
