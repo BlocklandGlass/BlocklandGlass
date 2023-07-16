@@ -410,10 +410,10 @@ function GlassServerPreviewGui::onWake(%this) {
   %fullIP = %server.ip @ ":" @ %server.port;
 
 
-  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<br><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
+  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<just:right><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
-  GlassServerPreview_Playerlist.clear();
-  GlassServerPreview::getServerInfo(%fullIP);
+  // GlassServerPreview_Playerlist.clear();
+  // GlassServerPreview::getServerInfo(%fullIP);
   GlassServerPreviewWindowGui.openServerIP = %fullIP;
   GlassServerPreviewWindowGui.openServerName = %server.name;
   GlassServerPreviewWindowGui.passworded = (%server.pass == true);
@@ -511,10 +511,10 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
     %result = $JSON::Value;
 
     if(%result.status $= "error") {
-      GlassServerPreview_Playerlist.clear();
-      GlassServerPreview_noGlass.setVisible(true);
+      // GlassServerPreview_Playerlist.clear();
+      // GlassServerPreview_noGlass.setVisible(true);
     } else {
-      GlassServerPreview_noGlass.setVisible(false);
+      // GlassServerPreview_noGlass.setVisible(false);
 
       %playerCount = %result.Clients.length;
 
@@ -527,7 +527,7 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
         if(%cl.status $= "")
           %cl.status = "-";
 
-        GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
+        // GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
       }
     }
 

@@ -1,7 +1,7 @@
 //--- OBJECT WRITE BEGIN ---
 new GuiControl(GlassServerPreviewGui) {
    profile = "GuiDefaultProfile";
-   horizSizing = "right";
+   horizSizing = "left";
    vertSizing = "bottom";
    position = "0 0";
    extent = "1900 1000";
@@ -15,7 +15,7 @@ new GuiControl(GlassServerPreviewGui) {
       horizSizing = "center";
       vertSizing = "center";
       position = "4 4";
-      extent = "640 480";
+      extent = "354 480"; // With player list: 640 480
       minExtent = "8 2";
       enabled = "1";
       visible = "1";
@@ -33,10 +33,10 @@ new GuiControl(GlassServerPreviewGui) {
 
       new GuiSwatchCtrl() {
          profile = "GuiDefaultProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
          position = "10 35";
-         extent = "620 42";
+         extent = "330 42"; // With player list: 620 42
          minExtent = "8 2";
          enabled = "1";
          visible = "1";
@@ -45,11 +45,11 @@ new GuiControl(GlassServerPreviewGui) {
 
          new GuiMLTextCtrl(GlassServerPreview_Name) {
             profile = "GuiMLTextProfile";
-            horizSizing = "right";
+            horizSizing = "left";
             vertSizing = "bottom";
             position = "10 5";
-            extent = "600 32";
-            minExtent = "600 32";
+            extent = "310 32"; // With player list: 600 32
+            minExtent = "310 32";
             enabled = "1";
             visible = "1";
             clipToParent = "1";
@@ -62,130 +62,130 @@ new GuiControl(GlassServerPreviewGui) {
             autoResize = "1";
          };
       };
-      new GuiBitmapButtonCtrl() {
-         profile = "GlassChatroomTabProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "195 82";
-         extent = "60 20";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         command = "GlassServerPreview_Playerlist.sortNumerical(2, 1);";
-         text = "BL_ID";
-         groupNum = "-1";
-         buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
-         lockAspectRatio = "0";
-         alignLeft = "0";
-         alignTop = "0";
-         overflowImage = "0";
-         mKeepCached = "0";
-         mColor = "255 255 255 255";
-      };
-      new GuiScrollCtrl() {
-         profile = "GlassScrollProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "10 102";
-         extent = "280 368";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         willFirstRespond = "0";
-         hScrollBar = "alwaysOff";
-         vScrollBar = "alwaysOn";
-         constantThumbHeight = "0";
-         childMargin = "0 0";
-         rowHeight = "40";
-         columnWidth = "30";
+      //new GuiBitmapButtonCtrl() {
+      //   profile = "GlassChatroomTabProfile";
+      //   horizSizing = "left";
+      //   vertSizing = "bottom";
+      //   position = "195 82";
+      //   extent = "60 20";
+      //   minExtent = "8 2";
+      //   enabled = "1";
+      //   visible = "1";
+      //   clipToParent = "1";
+      //   command = "GlassServerPreview_Playerlist.sortNumerical(2, 1);";
+      //   text = "BL_ID";
+      //   groupNum = "-1";
+      //   buttonType = "PushButton";
+      //   bitmap = "~/System_BlocklandGlass/image/gui/tab1";
+      //   lockAspectRatio = "0";
+      //   alignLeft = "0";
+      //   alignTop = "0";
+      //   overflowImage = "0";
+      //   mKeepCached = "0";
+      //   mColor = "255 255 255 255";
+      //};
+      //new GuiScrollCtrl() {
+      //   profile = "GlassScrollProfile";
+      //   horizSizing = "left";
+      //   vertSizing = "bottom";
+      //   position = "10 102";
+      //   extent = "280 368";
+      //   minExtent = "8 2";
+      //   enabled = "1";
+      //   visible = "1";
+      //   clipToParent = "1";
+      //   willFirstRespond = "0";
+      //   hScrollBar = "alwaysOff";
+      //   vScrollBar = "alwaysOn";
+      //   constantThumbHeight = "0";
+      //   childMargin = "0 0";
+      //   rowHeight = "40";
+      //   columnWidth = "30";
 
-         new GuiTextListCtrl(GlassServerPreview_Playerlist) {
-            profile = "GuiTextListProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "1 1";
-            extent = "262 2";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "1";
-            clipToParent = "1";
-            enumerate = "0";
-            resizeCell = "1";
-            columns = "0 26 192";
-            fitParentWidth = "1";
-            clipColumnText = "1";
-         };
-         new GuiMLTextCtrl(GlassServerPreview_noGlass) {
-            profile = "GuiMLTextProfile";
-            horizSizing = "center";
-            vertSizing = "center";
-            position = "6 177";
-            extent = "267 14";
-            minExtent = "8 2";
-            enabled = "1";
-            visible = "0";
-            clipToParent = "1";
-            lineSpacing = "2";
-            allowColorChars = "0";
-            maxChars = "-1";
-            text = "<just:center><font:verdana bold:15><color:666666>Server not running Glass";
-            maxBitmapHeight = "-1";
-            selectable = "1";
-            autoResize = "1";
-         };
-      };
+      //   new GuiTextListCtrl(GlassServerPreview_Playerlist) {
+      //      profile = "GuiTextListProfile";
+      //      horizSizing = "left";
+      //      vertSizing = "bottom";
+      //      position = "1 1";
+      //      extent = "262 2";
+      //      minExtent = "8 2";
+      //      enabled = "1";
+      //      visible = "1";
+      //      clipToParent = "1";
+      //      enumerate = "0";
+      //      resizeCell = "1";
+      //      columns = "0 26 192";
+      //      fitParentWidth = "1";
+      //      clipColumnText = "1";
+      //   };
+      //   new GuiMLTextCtrl(GlassServerPreview_noGlass) {
+      //      profile = "GuiMLTextProfile";
+      //      horizSizing = "center";
+      //      vertSizing = "center";
+      //      position = "6 177";
+      //      extent = "267 14";
+      //      minExtent = "8 2";
+      //      enabled = "1";
+      //      visible = "0";
+      //      clipToParent = "1";
+      //      lineSpacing = "2";
+      //      allowColorChars = "0";
+      //      maxChars = "-1";
+      //      text = "<just:center><font:verdana bold:15><color:666666>Server not running Glass";
+      //      maxBitmapHeight = "-1";
+      //      selectable = "1";
+      //      autoResize = "1";
+      //   };
+      //};
+      //new GuiBitmapButtonCtrl() {
+      //   profile = "GlassChatroomTabProfile";
+      //   horizSizing = "left";
+      //   vertSizing = "bottom";
+      //   position = "40 82";
+      //   extent = "60 20";
+      //   minExtent = "8 2";
+      //   enabled = "1";
+      //   visible = "1";
+      //   clipToParent = "1";
+      //   command = "GlassServerPreview_Playerlist.sort(1, 1);";
+      //   text = "Name";
+      //   groupNum = "-1";
+      //   buttonType = "PushButton";
+      //   bitmap = "~/System_BlocklandGlass/image/gui/tab1";
+      //   lockAspectRatio = "0";
+      //   alignLeft = "0";
+      //   alignTop = "0";
+      //   overflowImage = "0";
+      //   mKeepCached = "0";
+      //   mColor = "255 255 255 255";
+      //};
+      //new GuiBitmapButtonCtrl() {
+      //   profile = "GlassChatroomTabProfile";
+      //   horizSizing = "left";
+      //   vertSizing = "bottom";
+      //   position = "15 82";
+      //   extent = "20 20";
+      //   minExtent = "8 2";
+      //   enabled = "1";
+      //   visible = "1";
+      //   clipToParent = "1";
+      //   command = "GlassServerPreview_Playerlist.sort(0, 0);";
+      //   text = " ";
+      //   groupNum = "-1";
+      //   buttonType = "PushButton";
+      //   bitmap = "~/System_BlocklandGlass/image/gui/tab1";
+      //   lockAspectRatio = "0";
+      //   alignLeft = "0";
+      //   alignTop = "0";
+      //   overflowImage = "0";
+      //   mKeepCached = "0";
+      //   mColor = "255 255 255 255";
+      //};
       new GuiBitmapButtonCtrl() {
          profile = "GlassChatroomTabProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
-         position = "40 82";
-         extent = "60 20";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         command = "GlassServerPreview_Playerlist.sort(1, 1);";
-         text = "Name";
-         groupNum = "-1";
-         buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
-         lockAspectRatio = "0";
-         alignLeft = "0";
-         alignTop = "0";
-         overflowImage = "0";
-         mKeepCached = "0";
-         mColor = "255 255 255 255";
-      };
-      new GuiBitmapButtonCtrl() {
-         profile = "GlassChatroomTabProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "15 82";
-         extent = "20 20";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         command = "GlassServerPreview_Playerlist.sort(0, 0);";
-         text = " ";
-         groupNum = "-1";
-         buttonType = "PushButton";
-         bitmap = "~/System_BlocklandGlass/image/gui/tab1";
-         lockAspectRatio = "0";
-         alignLeft = "0";
-         alignTop = "0";
-         overflowImage = "0";
-         mKeepCached = "0";
-         mColor = "255 255 255 255";
-      };
-      new GuiBitmapButtonCtrl() {
-         profile = "GlassChatroomTabProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "305 82";
+         position = "17 82"; // 305 82
          extent = "75 20";
          minExtent = "8 2";
          enabled = "1";
@@ -204,9 +204,9 @@ new GuiControl(GlassServerPreviewGui) {
       };
       new GuiSwatchCtrl(GlassServerPreview_PreviewTab) {
          profile = "GuiDefaultProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
-         position = "300 102";
+         position = "12 102"; // 300 102
          extent = "330 330";
          minExtent = "8 2";
          enabled = "1";
@@ -216,7 +216,7 @@ new GuiControl(GlassServerPreviewGui) {
 
          new GuiBitmapCtrl(GlassServerPreview_Preview) {
             profile = "GuiDefaultProfile";
-            horizSizing = "right";
+            horizSizing = "left";
             vertSizing = "bottom";
             position = "0 0";
             extent = "330 330";
@@ -235,31 +235,11 @@ new GuiControl(GlassServerPreviewGui) {
             mMultiply = "0";
          };
       };
-      new GuiBitmapButtonCtrl() {
-         profile = "GuiDefaultProfile";
-         horizSizing = "right";
-         vertSizing = "bottom";
-         position = "334 439";
-         extent = "140 30";
-         minExtent = "8 2";
-         enabled = "1";
-         visible = "1";
-         clipToParent = "1";
-         text = "Button";
-         groupNum = "-1";
-         buttonType = "PushButton";
-         lockAspectRatio = "0";
-         alignLeft = "0";
-         alignTop = "0";
-         overflowImage = "0";
-         mKeepCached = "0";
-         mColor = "255 255 255 255";
-      };
       new GuiBitmapButtonCtrl(GlassServerPreview_Connect) {
          profile = "GlassBlockButtonProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
-         position = "550 442";
+         position = "262 442"; // 550 442
          extent = "80 28";
          minExtent = "8 2";
          enabled = "1";
@@ -280,9 +260,9 @@ new GuiControl(GlassServerPreviewGui) {
       };
       new GuiBitmapButtonCtrl() {
          profile = "GlassBlockButtonProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
-         position = "300 442";
+         position = "13 442"; // 300 442
          extent = "80 28";
          minExtent = "8 2";
          enabled = "1";
@@ -304,9 +284,9 @@ new GuiControl(GlassServerPreviewGui) {
       };
       new GuiBitmapButtonCtrl(GlassServerPreview_Favorite) {
          profile = "GlassBlockButtonProfile";
-         horizSizing = "right";
+         horizSizing = "left";
          vertSizing = "bottom";
-         position = "405 442";
+         position = "116 442"; // 405 442
          extent = "120 28";
          minExtent = "8 2";
          enabled = "1";
