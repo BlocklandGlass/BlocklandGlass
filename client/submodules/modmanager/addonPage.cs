@@ -252,7 +252,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %download.dlButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = "118 10";
+    position = "175 10"; // With comment btn: 378 10
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
@@ -279,7 +279,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %download.shareButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = "378 10";
+    position = "323 10"; // With comment btn: 378 10
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
