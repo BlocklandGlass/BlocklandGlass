@@ -10,10 +10,10 @@ function GlassOverlayGui::onWake(%this) {
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
 
-  GlassLiveBugReportIcon.position = (%x-24) SPC 8;
-  GlassLiveBugReportButton.position = (%x-32) SPC 0;
-  GlassOverlayGui.pushToBack(GlassLiveBugReportIcon);
-  GlassOverlayGui.pushToBack(GlassLiveBugReportButton);
+  // GlassLiveBugReportIcon.position = (%x-24) SPC 8;
+  // GlassLiveBugReportButton.position = (%x-32) SPC 0;
+  // GlassOverlayGui.pushToBack(GlassLiveBugReportIcon);
+  // GlassOverlayGui.pushToBack(GlassLiveBugReportButton);
 
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);

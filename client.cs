@@ -51,7 +51,7 @@ function Glass::execClient() {
   exec("./client/gui/GlassManualGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
-  exec("./client/gui/GlassBugReportGui.gui");
+  //exec("./client/gui/GlassBugReportGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
@@ -83,7 +83,7 @@ function Glass::execClient() {
   exec("./client/GlassManual.cs");
 
   exec("./client/GlassCompatibility.cs");
-  exec("./client/GlassBugReport.cs");
+  //exec("./client/GlassBugReport.cs");
 
   %date = getDateTime();
   %month = getSubStr(%date, 0, 2);
@@ -284,10 +284,10 @@ package GlassClientPackage {
 
   function MM_AuthBar::blinkSuccess(%this) {
     parent::blinkSuccess(%this);
-    if(Glass.wasCrash) {
-      schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
-      Glass.wasCrash = false;
-    }
+    // if(Glass.wasCrash) {
+    //   schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
+    //   Glass.wasCrash = false;
+    // }
 
     GlassLog::cleanOld("blockland");
 
