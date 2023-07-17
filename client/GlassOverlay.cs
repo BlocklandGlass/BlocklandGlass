@@ -10,10 +10,10 @@ function GlassOverlayGui::onWake(%this) {
   %y = getWord(getRes(), 1);
   GlassOverlay.resize(0, 0, %x, %y);
 
-  GlassLiveBugReportIcon.position = (%x-24) SPC 8;
-  GlassLiveBugReportButton.position = (%x-32) SPC 0;
-  GlassOverlayGui.pushToBack(GlassLiveBugReportIcon);
-  GlassOverlayGui.pushToBack(GlassLiveBugReportButton);
+  // GlassLiveBugReportIcon.position = (%x-24) SPC 8;
+  // GlassLiveBugReportButton.position = (%x-32) SPC 0;
+  // GlassOverlayGui.pushToBack(GlassLiveBugReportIcon);
+  // GlassOverlayGui.pushToBack(GlassLiveBugReportButton);
 
   for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
     %window = GlassOverlayGui.getObject(%i);
@@ -43,11 +43,6 @@ function GlassOverlayGui::onWake(%this) {
     }
   }
 
-  if(isObject(GlassFriendsGui_Blockhead)) {
-    GlassFriendsGui_Blockhead.schedule(1, "setOrbitDist", 5.5);
-    GlassFriendsGui_Blockhead.schedule(1, "setCameraRot", 0.22, 0.5, 2.8);
-  }
-
   if(!isObject(GlassOverlayResponder)) {
     new GuiTextEditCtrl(GlassOverlayResponder) {
       profile = "GuiTextEditProfile";
@@ -59,24 +54,6 @@ function GlassOverlayGui::onWake(%this) {
   }
 
   GlassOverlayResponder.schedule(1, makeFirstResponder, true);
-
-  if(!GlassOverlayGui.isMember(GlassFriendsWindow)) {
-    %pos = GlassSettings.get("Live::FriendsWindow_Pos");
-    %ext = 260 SPC getWord(GlassSettings.get("Live::FriendsWindow_Ext"), 1);
-
-    if(%pos > getWord(getRes(), 0))
-      %pos = (getWord(getRes(), 0) - 280) SPC 50;
-
-    if(%ext > getWord(getRes(), 1))
-      %ext = "260 380";
-
-    GlassFriendsWindow.position = %pos;
-    GlassFriendsWindow.extent = %ext;
-
-    GlassOverlayGui.add(GlassFriendsWindow);
-
-    GlassFriendsResize.onResize(getWord(GlassFriendsWindow.position, 0), getWord(GlassFriendsWindow.position, 1), getWord(GlassFriendsWindow.extent, 0), getWord(GlassFriendsWindow.extent, 1));
-  }
 
   if(isObject(GlassMessageReminder)) {
     GlassMessageReminder.setVisible(false);
@@ -227,112 +204,5 @@ function GlassOverlay::openSettings() {
 
 function GlassOverlay::closeSettings() {
   GlassSettingsWindow.setVisible(false);
-  GlassOverlay::resetFocus();
-}
-
-//================================================================
-//= Icon Selector                                                =
-//================================================================
-
-function GlassOverlay::openIconSelector() {
-  if(isObject(GlassIconSelectorWindow)) {
-    GlassIconSelectorWindow.onWake();
-    GlassIconSelectorWindow.setVisible(!GlassIconSelectorWindow.visible);
-  }
-
-  if(GlassIconSelectorWindow.visible) {
-    GlassOverlayGui.pushToBack(GlassIconSelectorWindow);
-  }
-}
-
-function GlassOverlay::closeIconSelector() {
-  GlassIconSelectorWindow.setVisible(false);
-}
-
-//================================================================
-//= Chatroom                                                     =
-//================================================================
-
-function GlassOverlay::openChatroom() {
-  %chatFound = false;
-
-  for(%i = 0; %i < GlassOverlayGui.getCount(); %i++) {
-    %window = GlassOverlayGui.getObject(%i);
-    if(%window.getName() $= "GlassChatroomWindow") {
-      %chatFound = true;
-
-      %window.setVisible(!%window.visible);
-    }
-  }
-
-  GlassOverlay::resetFocus();
-
-  if(!%chatFound) {
-    if(GlassSettings.get("Live::ConfirmConnectDisconnect")) {
-      if(GlassLiveConnection.connected) {
-        glassMessageBoxYesNo("Reconnect", "This will reconnect you to Glass Live, continue?", "GlassLive::disconnect(1); GlassLive.schedule(1000, connectToServer);");
-      } else {
-        glassMessageBoxYesNo("Connect", "This will connect you to Glass Live, continue?", "GlassLive.schedule(0, connectToServer);");
-      }
-    } else {
-      if(GlassLiveConnection.connected) {
-        GlassLive::disconnect($Glass::Disconnect["Manual"]);
-        GlassLive.schedule(100, connectToServer);
-      } else {
-        GlassLive.schedule(0, connectToServer);
-      }
-    }
-  }
-}
-
-//================================================================
-//= Moderation                                                   =
-//================================================================
-
-function GlassOverlay::openModeration(%safe) {
-  if(!GlassLiveUser::getFromBlid(getNumKeyId()).isMod())
-	  return;
-
-  if(!GlassOverlayGui.isMember(GlassModeratorWindow)) {
-    GlassModeratorWindow_Selection.add("Ban", 0);
-    GlassModeratorWindow_Selection.add("Bar", 1);
-    GlassModeratorWindow_Selection.add("Kick", 2);
-    GlassModeratorWindow_Selection.add("Mute", 3);
-    GlassOverlayGui.add(GlassModeratorWindow);
-    GlassModeratorWindow.forceCenter();
-
-    GlassModeratorWindow_Reason.enabled = false;
-    GlassModeratorWindow_Duration.enabled = false;
-  } else {
-    if(%safe)
-      GlassModeratorWindow.setVisible(true);
-    else
-      GlassModeratorWindow.setVisible(!GlassModeratorWindow.visible);
-  }
-
-  if(!GlassModeratorWindow.visible) {
-    GlassModeratorWindow_ReasonBlocker.setVisible(false);
-    GlassModeratorWindow_DurationBlocker.setVisible(false);
-    GlassModeratorWindow_Reason.enabled = false;
-    GlassModeratorWindow_Duration.enabled = false;
-    GlassOverlay::resetFocus();
-    return;
-  }
-
-  GlassOverlayGui.pushToBack(GlassModeratorWindow);
-
-  GlassModeratorWindow_Selection.onSelect();
-
-  GlassModeratorGui.updateBLID();
-}
-
-function GlassOverlay::closeModeration() {
-  GlassModeratorWindow_ReasonBlocker.setVisible(false);
-  GlassModeratorWindow_DurationBlocker.setVisible(false);
-  GlassModeratorWindow_Reason.enabled = false;
-  GlassModeratorWindow_Duration.enabled = false;
-
-  GlassModeratorWindow.setVisible(false);
-
   GlassOverlay::resetFocus();
 }

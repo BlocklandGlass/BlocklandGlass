@@ -9,9 +9,6 @@ function Glass::init(%context) {
 			address = "api.blocklandglass.com"; //api address
 			netAddress = "blocklandglass.com"; //url address
 			enableCLI = true;
-
-			liveAddress = "blocklandglass.com";
-			livePort = 27002;
 		};
 	}
 
@@ -32,9 +29,6 @@ function Glass::init(%context) {
 			%config = $JSON::Value;
 			Glass.address = %config.address;
 			Glass.netAddress = %config.netAddress;
-
-			Glass.liveAddress = %config.liveAddress;
-			Glass.livePort = %config.livePort;
 
 			Glass.dev = %config.debug;
 

@@ -394,7 +394,7 @@ function GlassServerPreviewGui::onWake(%this) {
   if(!isObject(%server))
 	  return;
 
-  if(%server.pass !$= "No") {
+  if(%server.pass == true) {
     %img = "<bitmap:Add-Ons/System_BlocklandGlass/image/icon/lock>";
     GlassServerPreview_Connect.mColor = "235 153 80 220";
   } else if(%server.currPlayers >= %server.maxPlayers) {
@@ -410,13 +410,13 @@ function GlassServerPreviewGui::onWake(%this) {
   %fullIP = %server.ip @ ":" @ %server.port;
 
 
-  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<br><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
+  GlassServerPreview_Name.setText("<font:verdana bold:18>" @ trim(%serverName) SPC %img @ "<just:right><font:verdana:15>" @ %server.players @ "/" @ %server.maxPlayers SPC "Players");
   GlassServerPreview_Preview.setBitmap("Add-Ons/System_BlocklandGlass/image/gui/noImage.png");
-  GlassServerPreview_Playerlist.clear();
-  GlassServerPreview::getServerInfo(%fullIP);
+  // GlassServerPreview_Playerlist.clear();
+  // GlassServerPreview::getServerInfo(%fullIP);
   GlassServerPreviewWindowGui.openServerIP = %fullIP;
   GlassServerPreviewWindowGui.openServerName = %server.name;
-  GlassServerPreviewWindowGui.passworded = (%server.pass $= "Yes");
+  GlassServerPreviewWindowGui.passworded = (%server.pass == true);
 
   GlassServerPreview::getServerBuild(%fullIP, GlassServerPreview_Preview);
 
@@ -511,10 +511,10 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
     %result = $JSON::Value;
 
     if(%result.status $= "error") {
-      GlassServerPreview_Playerlist.clear();
-      GlassServerPreview_noGlass.setVisible(true);
+      // GlassServerPreview_Playerlist.clear();
+      // GlassServerPreview_noGlass.setVisible(true);
     } else {
-      GlassServerPreview_noGlass.setVisible(false);
+      // GlassServerPreview_noGlass.setVisible(false);
 
       %playerCount = %result.Clients.length;
 
@@ -527,7 +527,7 @@ function GlassServerPreviewPlayerTCP::onDone(%this, %error) {
         if(%cl.status $= "")
           %cl.status = "-";
 
-        GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
+        // GlassServerPreview_Playerlist.addRow(%cl.blid, "  " @ %cl.status TAB getASCIIString(%cl.name) TAB %cl.blid);
       }
     }
 
@@ -552,7 +552,7 @@ function clientCmdGlass_setLoadingBackground(%url, %fileType, %crc, %showPlayerl
   if(LoadingGUI.lastDownload + 2 > $Sim::Time)
 	  return;
 
-  if(!%showPlayerlist)
+  if(!%showPlayerlist && isObject(GlassLoadingGui))
     GlassLoadingGui.close();
 
   LoadingGUI.lastDownload = $Sim::Time;
@@ -802,19 +802,22 @@ package GlassServers {
   function NewPlayerListGui::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score) {
     parent::update(%this, %client, %name, %blid, %isAdmin, %isSuperAdmin, %score);
 
-    GlassLoadingGui_UserList.update();
+    if(isObject(GlassLoadingGui_UserList))
+      GlassLoadingGui_UserList.update();
   }
 
   function secureClientCmd_ClientDrop(%a, %b) {
     parent::secureClientCmd_ClientDrop(%a, %b);
 
-    GlassLoadingGui_UserList.update();
+    if(isObject(GlassLoadingGui_UserList))
+      GlassLoadingGui_UserList.update();
   }
 
   function disconnectedCleanup(%a) {
     parent::disconnectedCleanup(%a);
 
-    GlassLoadingGui.onSleep();
+    if(isObject(GlassLoadingGui))
+      GlassLoadingGui.onSleep();
   }
 };
 activatePackage(GlassServers);

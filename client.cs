@@ -18,9 +18,9 @@ function filecopy_hack(%source, %destination) {
   %fo_dest.delete();
 }
 
-if($Pref::PreLoadScriptLauncherVersion < 2) {
-	echo("Installing pre-loader.");
-	fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
+if($PreLoadScriptLauncherVersion < 3 || $Pref::PreLoadScriptLauncherVersion < 3) {
+  echo("Installing pre-loader.");
+    fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
   $PreLoaderInstalled = true;
 }
 
@@ -35,29 +35,23 @@ function Glass::execClient() {
   exec("./support/Support_MetaTCP.cs");
   exec("./support/Support_Markdown.cs");
   exec("./support/Support_SemVer.cs");
-  exec("./support/Support_DigestAccessAuthentication.cs");
   exec("./support/DynamicGui.cs");
 
   echo(" ===                 Loading Interface                  ===");
   exec("./client/gui/profiles.cs");
   exec("./client/gui/messageboxes.cs");
   exec("./client/gui/GlassDownloadGui.gui");
-  exec("./client/gui/GlassVerifyAccountGui.gui");
   exec("./client/gui/GlassModManagerGui.gui");
   exec("./client/gui/GlassModManagerImage.gui");
   exec("./client/gui/GlassModManagerGroupGui.gui");
   exec("./client/gui/GlassServerControlGui.gui");
-  exec("./client/gui/GlassChatroomGui.gui");
   exec("./client/gui/GlassClientGui.gui");
   exec("./client/gui/GlassServerPreviewGui.gui");
   exec("./client/gui/GlassJoinServerGui.gui");
   exec("./client/gui/GlassManualGui.gui");
-  exec("./client/gui/GlassModeratorGui.gui");
-  exec("./client/gui/GlassIconSelectorGui.gui");
   exec("./client/gui/GlassOverlayGui.gui");
   exec("./client/gui/GlassSettingsGui.gui");
-  exec("./client/gui/GlassBugReportGui.gui");
-  exec("./client/gui/GlassPasswordGui.gui");
+  //exec("./client/gui/GlassBugReportGui.gui");
   exec("./client/gui/elements/GlassHighlightSwatch.cs");
 
   GlassSettings::init();
@@ -70,14 +64,12 @@ function Glass::execClient() {
   exec("./common/GlassStatistics.cs");
   exec("./common/GlassApi.cs");
 
-  exec("./client/GlassAudio.cs");
 
   exec("./client/GlassDownloadInterface.cs");
   exec("./client/GlassUpdaterSupport.cs");
 
   exec("./client/GlassClientManager.cs");
 
-  exec("./client/GlassAuth.cs");
   exec("./client/GlassOverlay.cs");
   exec("./client/GlassLive.cs");
   exec("./client/GlassModManager.cs");
@@ -91,7 +83,7 @@ function Glass::execClient() {
   exec("./client/GlassManual.cs");
 
   exec("./client/GlassCompatibility.cs");
-  exec("./client/GlassBugReport.cs");
+  //exec("./client/GlassBugReport.cs");
 
   %date = getDateTime();
   %month = getSubStr(%date, 0, 2);
@@ -109,20 +101,7 @@ function Glass::execClient() {
 
   GlassApi::init();
   GlassDownloadInterface::init();
-  GlassAuth::init();
-  GlassAudio::init();
-  // move this somewhere else:
-  GlassAudio::add("bell", false);
-  GlassAudio::add("friendRequest", false);
-  GlassAudio::add("friendRemoved", false);
-  GlassAudio::add("friendInvite", false);
-  GlassAudio::add("chatroomMsg1", true);
-  GlassAudio::add("chatroomMsg2", true);
-  GlassAudio::add("friendOnline", true);
-  GlassAudio::add("friendOffline", true);
-  GlassAudio::add("userMsgSent", true);
-  GlassAudio::add("userMsgReceived", true);
-  //
+
   GlassLive::init();
   GlassDownloadManager::init();
   GlassServerControlC::init();
@@ -134,6 +113,8 @@ function Glass::execClient() {
   GlassManual::init();
 
   GlassGraphs::init();
+
+  GlassStatistics::reportMods();
 
   GlassSettingsGui_Prefs_Keybind.setText("\c4" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)));
 
@@ -305,10 +286,10 @@ package GlassClientPackage {
 
   function MM_AuthBar::blinkSuccess(%this) {
     parent::blinkSuccess(%this);
-    if(Glass.wasCrash) {
-      schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
-      Glass.wasCrash = false;
-    }
+    // if(Glass.wasCrash) {
+    //   schedule(50, 0, glassMessageBoxYesNo, "Crash Report", "<font:verdana bold:13>Crash Report<font:verdana:13><br><br>We detected a crash while you were using Glass! We can only fix these issues if we know about them. Would you like to submit a bug report?", "GlassBugReport::crashPromptYes();");
+    //   Glass.wasCrash = false;
+    // }
 
     GlassLog::cleanOld("blockland");
 

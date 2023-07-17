@@ -18,9 +18,9 @@ function filecopy_hack(%source, %destination) {
   %fo_dest.delete();
 }
 
-if($Pref::PreLoadScriptLauncherVersion < 1) {
+if($PreLoadScriptLauncherVersion < 3 || $Pref::PreLoadScriptLauncherVersion < 3) {
   echo("Installing pre-loader.");
-	fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
+    fileCopy_hack("Add-Ons/System_BlocklandGlass/support/preloader.cs", "config/main.cs");
   $PreLoaderInstalled = true;
 }
 
@@ -37,7 +37,6 @@ function Glass::execServer() {
   exec("./common/GlassResourceManager.cs");
   exec("./common/GlassApi.cs");
 
-  exec("./server/GlassAuth.cs");
   exec("./server/GlassServerControl.cs");
   exec("./server/GlassClientSupport.cs");
   exec("./server/GlassServerImage.cs");
@@ -49,14 +48,12 @@ function Glass::execServer() {
   GlassResourceManager::execResource("Support_Updater", "server");
   GlassResourceManager::loadPreferences("server");
 
-  GlassAuthS::init();
   GlassServerGraphing::init();
 
   Glass.serverLoaded = true;
 }
 
 function Glass::serverCleanup() {
-	GlassAuthS.delete();
   if(isObject(GlassClientSupport))
 	 GlassClientSupport.delete();
 

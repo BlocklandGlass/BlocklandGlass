@@ -12,66 +12,22 @@ function GlassSettings::init() {
   // registerSetting(%this, %name, %value, %callback, %displayName, %category, %type, %properties, %desc)
   // Hidden Settings
   GlassSettings.registerSetting("MM::Colorset", "Add-Ons/Colorset_Default/colorSet.txt");
-  GlassSettings.registerSetting("Live::AFKTime", 15);
-  GlassSettings.registerSetting("Live::HideRequests", false);
-  GlassSettings.registerSetting("Live::HideFriends", false);
-  GlassSettings.registerSetting("Live::HideBlocked", false);
   GlassSettings.registerSetting("Live::oRBsNotified", false); // do not change
   GlassSettings.registerSetting("Live::Keybind", "keyboard\tctrl space");
-  GlassSettings.registerSetting("Live::FriendsWindow_Pos", (getWord(getRes(), 0) - 280) SPC 50);
-  GlassSettings.registerSetting("Live::FriendsWindow_Ext", "230 380");
-  GlassSettings.registerSetting("Live::Rooms", "0");
   GlassSettings.registerSetting("Servers::Favorites", "");
   GlassSettings.registerSetting("Server::UseBLG", true);
 
-  // Auth
-  GlassSettings.registerSetting("Auth::useDAA", "Default", "GlassAuth::updateDAASetting", "Digest Access Authentication", "Authentication", "dropdown", "Default Always Never", "Uses Digest Access Authentication, which requires an account at blocklandglass.com and password input.");
 
-  // Volume
-  GlassSettings.registerSetting("Volume::RoomChat", 0, "GlassAudio::updateVolume", "Room Chat", "Volume", "slider", "0 1 1 4");
-  GlassSettings.registerSetting("Volume::FriendStatus", 0.8, "GlassAudio::updateVolume", "Friend Status", "Volume", "slider", "0 1 1 4");
-  GlassSettings.registerSetting("Volume::DirectMessage", 0.8, "GlassAudio::updateVolume", "Direct Messages", "Volume", "slider", "0 1 1 4");
   // Mod Manager
   GlassSettings.registerSetting("MM::UseDefault", false, "GlassUpdaterSupport::updateSetting", "Use Default Updater", "Mod Manager", "checkbox", "", "Use Support_Updater's interface when updating add-ons.");
-  GlassSettings.registerSetting("MM::LiveSearch", true, "", "Use Live Search", "Mod Manager", "checkbox");
-  // Live
-  GlassSettings.registerSetting("Live::FontSize", 12, "GlassLive::updateFontSize",  "Room Font Size", "Live", "slider", "10 20 1 1", "Size of the font to be used in chatrooms.");
-  GlassSettings.registerSetting("Live::StartupConnect", true, "", "Auto-Connect During Startup", "Live", "checkbox", "", "Automatically connect to Glass Live on start-up.");
-  GlassSettings.registerSetting("Live::AutoJoinRooms", true, "", "Automatically Join Rooms", "Live", "checkbox", "", "Automatically join the last chatrooms you were in when you connect to Glass Live.");
-  GlassSettings.registerSetting("Live::TalkingAnimation", true, "", "Avatar Talking Animation", "Live", "checkbox", "", "Play avatar talking animation whenever you send a message on Glass Live.");
-  GlassSettings.registerSetting("Live::ConfirmConnectDisconnect", false, "", "Confirm Connect/Disconnect", "Live", "checkbox", "", "Show a dialog box asking for confirmation when connecting and disconnecting to and from Glass Live.");
-  GlassSettings.registerSetting("Live::DisplayFriendIDs", false, "GlassLive::createFriendList", "Display Friend BL_IDs", "Live", "checkbox", "", "Display friend's BL_IDs in the friends list.");
   GlassSettings.registerSetting("Live::OverlayLogo", true, "GlassOverlay::setLogo", "Display Overlay Logo", "Live", "checkbox", "", "Show the Glass logo in the overlay in the top left.");
   GlassSettings.registerSetting("Live::Vignette", true, "GlassOverlay::setVignette", "Display Vignette", "Live", "checkbox", "", "Show the vignette on the Glass overlay.");
-  GlassSettings.registerSetting("Live::ShowFriendLocation", true, "", "Friend Location Notifications", "Live", "checkbox", "", "Show notifications when your friends join or leave a server.");
-  GlassSettings.registerSetting("Live::ShowFriendStatus", true, "", "Friend Status Notifications", "Live", "checkbox", "", "Show notifications when your friends change their status.");
-  GlassSettings.registerSetting("Live::PendingReminder", true, "", "Pending Friend Req. Reminder", "Live", "checkbox", "", "Show notification if you have any pending friend requests when you connect to Glass Live.");
-  GlassSettings.registerSetting("Live::ReminderIcon", true, "GlassLive::createMessageReminder", "Reminder Icon", "Live", "checkbox", "", "Display a Glass icon in the corner of your screen while playing if you have an unread message or mention.");
   GlassSettings.registerSetting("Live::StartupNotification", true, "", "Startup Notification", "Live", "checkbox", "", "Show a start-up notification which includes your current keybind.");
-  GlassSettings.registerSetting("Live::ShowTimestamps", true, "",  "Timestamping", "Live", "checkbox", "", "Show the time next to all chat messages in the chatroom and DMs.");
-  GlassSettings.registerSetting("Live::MessageLogging", true, "", "Message Logging", "Live", "checkbox", "", "Log messages to config/client/BLG/chat_log/");
-  // Chatroom
-  GlassSettings.registerSetting("Live::RoomChatNotification", true, "", "Chat Notifications", "Chatroom", "checkbox");
-  GlassSettings.registerSetting("Live::RoomHeaders", true, "", "Group Headers *", "Chatroom", "checkbox", "", "Display group headers in room user list.<br><br><font:verdana bold:13>Requires reconnect.");
-  GlassSettings.registerSetting("Live::RoomNotification", false, "", "Entered/Exited Notifications", "Chatroom", "checkbox", "", "Show notifications when you enter and exit a room in Glass Live."); // joined room / left room notifications
-  GlassSettings.registerSetting("Live::EmotePredict", true, "", "Emote Predictions", "Chatroom", "checkbox", "", "Display emote predictions while typing in the chat.");
-  GlassSettings.registerSetting("Live::RoomMentionNotification", true, "", "Mentioned Notification", "Chatroom", "checkbox", "", "Display a notification and play a sound when you're @mentioned in a chatroom.");
-  GlassSettings.registerSetting("Live::RoomShowBlocked", false, "", "Show Blocked Users", "Chatroom", "checkbox", "", "Show blocked users' messages in the chatroom.");
-  GlassSettings.registerSetting("Live::ShowJoinLeave", true, "", "User Connection Messages", "Chatroom", "checkbox", "", "Show all users entering and exiting the chatroom."); // user connection messages in chatroom
-  // Friends List
-  GlassSettings.registerSetting("Live::ShowFriendLocationList", true, "GlassLive::createFriendList", "Show Locations", "Friends List", "checkbox", "", "Show what server your friends are in.");
-  GlassSettings.registerSetting("Live::ShowFriendOnlineCount", true, "GlassLive::createFriendList", "Show Online Count", "Friends List", "checkbox", "", "Show how many friends are online.");
-  // Direct Messaging
-  GlassSettings.registerSetting("Live::MessageNotification", true, "", "Message Notifications", "Direct Messaging", "checkbox");
-  GlassSettings.registerSetting("Live::MessageAnyone", true, "", "Messages From Strangers", "Direct Messaging", "checkbox", "", "Receive DMs from people not on your friends list.");
   // Servers
   GlassSettings.registerSetting("Servers::LoadingImages", true, "", "Custom Loading Images", "Servers", "checkbox", "", "Display a custom loading image if the server has set one.");
   GlassSettings.registerSetting("Servers::EnableFavorites", true, "GlassServers::init", "Favorite Servers", "Servers", "checkbox", "", "Display Favorite Servers menu GUI.");
   GlassSettings.registerSetting("Servers::DisplayPasswordedFavorites", true, "GlassServers::init", "Display Passworded Favorites", "Servers", "checkbox", "", "Display Favorite Servers that are passworded.");
   GlassSettings.registerSetting("Servers::LoadingGUI", true, "", "Glass Loading GUI *", "Servers", "checkbox", "", "Use the Glass Loading GUI when connecting to a server.<br><br><font:verdana bold:13>Requires restart.");
-  // Privacy
-  GlassSettings.registerSetting("Live::ViewAvatar", "Anyone", "", "can view my avatar *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view your avatar.<br><br><font:verdana bold:13>Requires reconnect.");
-  GlassSettings.registerSetting("Live::ViewLocation", "Anyone", "", "can view my server *", "Privacy", "dropdown", "Anyone Friends Myself", "Set who is able to view the server you are currently playing on.<br><br><font:verdana bold:13>Requires reconnect.");
   // Notifications
   GlassSettings.registerSetting("Notifications::DarkMode", false, "", "Dark Notifications", "Notifications", "checkbox", "", "Enabled dark mode notifications.");
   GlassSettings.registerSetting("Notifications::DisplayTime", "5", "", "Default Display Time", "Notifications", "shorttext", "", "Unless specifically set by the notification, it will stay on screen for this many seconds.");

@@ -431,7 +431,7 @@ package GlassNotifications {
       if(GlassSettings.get("Live::StartupNotification")) {
         if(!$Glass::StartupNotified) {
           Glass.mmNotification = new ScriptObject(GlassNotification) {
-            title = "Glass Live";
+            title = "Blockland Glass";
             text = "Press <sPush><color:ff3333>" @ strupr(getField(GlassSettings.get("Live::Keybind"), 1)) @ "<sPop> to open Glass!";
             image = "glassLogo";
 

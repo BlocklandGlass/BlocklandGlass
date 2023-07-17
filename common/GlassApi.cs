@@ -61,64 +61,19 @@ function GlassApi::doCall(%this, %obj) {
 
   %obj.isRunning = true;
 
-  if(%authorized && !GlassAuth.isAuthed) {
-    %this.waitingForAuth = true;
-    GlassAuth.reident();
-    return;
-  }
-
   if(strpos(%parameters, "?") == 0)
     %parameters = getSubStr(%parameters, 1, strlen(%parameters)-1);
 
-  if(%authorized && GlassAuth.usingDAA) {
-    // if we're using DAA, we need to send to daa.php and encapsulate
+  %url = "http://" @ Glass.address @ "/api/3/";
+  %url = %url @ %api @ ".php?";
+  %url = %url @ %parameters;
 
-    // create object server will interpret
-    %request = JettisonObject();
-    %request.set("call", "string", %api);
+  %method = "GET";
+  %downloadPath = "";
+  %className = "GlassApiTCP";
 
-    %data    = JettisonObject();
-    %request.set("params", "object", %data);
-
-    %parameters = strReplace(%parameters, "&", "\t");
-    for(%i = 0; %i < getFieldCount(%parameters); %i++) {
-      %param = getField(%parameters, %i);
-      %param = strReplace(%param, "=", "\t");
-
-      %key   = getField(%param, 0);
-      %val   = getField(%param, 1);
-
-      %data.set(%key, "string", %val);
-    }
-
-    %digest = GlassAuth.daa.digest(%request);
-    %json   = jettisonStringify("object", %digest);
-
-    %digest.delete();
-
-    %tcp = TCPClient("POST", Glass.address, 80, "/api/3/daa.php?ident=" @ GlassAuth.daa_opaque, %json, "", "GlassApiTCP");
-    %tcp.glassApiObj = %obj;
-  } else {
-
-    if(%authorized) {
-      if(strlen(%parameters) > 0)
-        %parameters = %parameters @ "&";
-
-      %parameters = %parameters @ "ident=" @ GlassAuth.ident;
-    }
-
-
-    %url = "http://" @ Glass.address @ "/api/3/";
-    %url = %url @ %api @ ".php?";
-    %url = %url @ %parameters;
-
-  	%method = "GET";
-  	%downloadPath = "";
-  	%className = "GlassApiTCP";
-
-  	%tcp = connectToURL(%url, %method, %downloadPath, %className);
-    %tcp.glassApiObj = %obj;
-  }
+  %tcp = connectToURL(%url, %method, %downloadPath, %className);
+  %tcp.glassApiObj = %obj;
 }
 
 function GlassApiTCP::onDone(%this, %error) {
@@ -137,15 +92,6 @@ function GlassApiTCP::onDone(%this, %error) {
       // unauthorization issues
       if(%obj._authorized && %object.status $= "unauthorized") {
         GlassLog::error("Glass API: Unauthorized!");
-
-        GlassApi.unauthorizedCt++; // keep track of how many times we have retried this
-
-        // there was an authorization issue. we will reident and try again
-        if(%obj._authorized && GlassApi.unauthorizedCt < GlassApi.unauthorizedMax) {
-          GlassApi.waitingForAuth = true;
-          GlassAuth.reident();
-          return;
-        }
       } else {
         GlassApi.unauthorizedCt = 0;
         %obj.isFinished = true;
@@ -228,15 +174,3 @@ function GlassApiTCP::onBinChunk(%this, %chunk) {
   if(isFunction(%obj.className, "onBinChunk"))
 		eval(%obj.className @ "::onBinChunk(%obj, %chunk);");
 }
-
-package GlassApi {
-  function GlassAuth::onAuthSuccess(%this) {
-    parent::onAuthSuccess(%this);
-
-    if(GlassApi.waitingForAuth) {
-      GlassApi.waitingForAuth = false;
-      GlassApi.doCall(GlassApi.current);
-    }
-  }
-};
-activatePackage(GlassApi);

@@ -252,7 +252,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
 
   %download.dlButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = "118 10";
+    position = "175 10"; // With comment btn: 378 10
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
@@ -263,22 +263,23 @@ function GMM_AddonPage::handleResults(%this, %obj) {
     mColor = "84 217 140 255";
   };
 
-  %download.commentButton = new GuiBitmapButtonCtrl() {
-    profile = "GlassBlockButtonWhiteProfile";
-    position = "248 10";
-    extent = "120 35";
-    bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
+  // TODO disabled for now as new comments are not supported
+  //%download.commentButton = new GuiBitmapButtonCtrl() {
+  //  profile = "GlassBlockButtonWhiteProfile";
+  //  position = "248 10";
+  //  extent = "120 35";
+  //  bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
-    text = "Comment";
+  //  text = "Comment";
 
-    command = "GMM_AddonPage.commentClick(" @ %obj.aid @ ");";
+  //  command = "GMM_AddonPage.commentClick(" @ %obj.aid @ ");";
 
-    mColor = "131 195 243 255";
-  };
+  //  mColor = "131 195 243 255";
+  //};
 
   %download.shareButton = new GuiBitmapButtonCtrl() {
     profile = "GlassBlockButtonWhiteProfile";
-    position = "378 10";
+    position = "323 10"; // With comment btn: 378 10
     extent = "120 35";
     bitmap = "Add-Ons/System_BlocklandGlass/image/gui/btn";
 
@@ -319,7 +320,7 @@ function GMM_AddonPage::handleResults(%this, %obj) {
   //%download.add(%download.text);
   %download.add(%download.shareButton);
   %download.add(%download.dlButton);
-  %download.add(%download.commentButton);
+  //%download.add(%download.commentButton);
   //%download.dlButton.placeBelow(%download.text);
   //%download.commentButton.placeBelow(%download.text);
 
